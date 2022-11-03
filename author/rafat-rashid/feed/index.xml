@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>rafat.rashid &#8211; Vivasoft</title>
+	<atom:link href="/author/rafat-rashid/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Mon, 24 Oct 2022 09:37:26 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>rafat.rashid &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Concurrency in GO &#8211; goroutine and channels</title>
+		<link>/blog/concurrency-in-go-goroutine-and-channels/</link>
+					<comments>/blog/concurrency-in-go-goroutine-and-channels/#respond</comments>
+		
+		<dc:creator><![CDATA[rafat.rashid]]></dc:creator>
+		<pubDate>Tue, 09 Aug 2022 11:27:53 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=9928</guid>
+
+					<description><![CDATA[Programs that we mainstream developers develop nowadays, almost all has some sort of concurrency employed in them. Be it database access, user I/O, file up or download, requesting web servers, rendering some animation, all these and more use cases are accomplished using different techniques of concurrency. GO is one of the modern languages that is [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Programs that we mainstream developers develop nowadays, almost all has some sort of <strong>concurrency</strong> employed in them. Be it database access, user I/O, file up or download, requesting web servers, rendering some animation, all these and more use cases are accomplished using different techniques of concurrency.</p>
+<p>GO is one of the modern languages that is highly accredited for its handling of concurrency. This accredition came from GO&#8217;s effective implementation of concurrent API&#8217;s and the ease of writing concurrent programs in GO. Although concurrent programming is always tougher than the sequential counterpart, still having the basics grasped, working with concurrency is far more verbose in GO than other well established traditional languages, at least to me it is (having previously worked with JS and C# :D).</p>
+<p>In this post I will try to touch on the basics of concurrent programming in GO. Before that lets have a look at some tidbits of concurrency model in GO.</p>
+<p>The contents of this post is skimmed and researched from the following resources:</p>
+<ul>
+<li>The book: <strong>The GO programming language by Alan A. A. Donovan and Brian W. Kernighan</strong></li>
+<li> Wikiepadia</li>
+</ul>
+<h3>Different concurrency models in GO</h3>
+<p>In GO, there are 2 paradigms of concurrency.</p>
+<p>1. Communicating Sequential Process (CSP)</p>
+<p>In this style, values are passed among the concurrent activities (goroutines) but variables are scoped and used in a single activity</p>
+<p>In this post, I will try to touch the basics of this paradigm</p>
+<p>2. Shared memory multithreading</p>
+<p>This is like the traditional multithreaded style of programming seen in languages like java, C# etc, using thread-safe (in GO&#8217;s vocab, concurrency-safe) techniques</p>
+<p>I will hopefully try to delve onto this in some future post(s)</p>
+<h3>Goroutines</h3>
+<p>When to use which paradigm of concurrency in GO depends entirely on the use-case. But whatever the paradigm is, it all starts with <strong>goroutine</strong>.</p>
+<p>In GO, a goroutine is the equivalent of a thread from other mainstream languages, but it is not exactly a thread. Goroutine is a pseudo-thread kind of stuff. Each activity that runs concurrently in GO is individually a goroutine. And all programs starts with one main goroutine.</p>
+<p>&nbsp;</p>
+<p>Goroutines are lightweight, they have variable stack unlike OS threads.</p>
+<p>Goroutines runs on top of the OS thread. One thread may execute one or more goroutines of a program. And if necessary, can create more OS threads and move the goroutines around the threads as necessary. The GO runtime is responsible for managing these movements or schedulings. These schedulings are very similar to OS kernal scheduling, but they arent that heavyweight because GO&#8217;s scheduling is not required to do *context switching* as the kernal has to do (more on context switch <a href="https://en.wikipedia.org/wiki/Context_switch" rel="nofollow noopener" target="_blank">here</a>.</p>
+<p>To create a goroutine, just append a keyword <em>go</em> before a function call.</p>
+<pre><code class="language-go">go some_function()</code></pre>
+<p>This churns a new goroutine and executes the called function in that goroutine.</p>
+<h3>Channels</h3>
+<p>Channels are the communication channel (no pun intended) among goroutines. A channel can be used to share data among the concerned goroutines without stressing too much about concurrency-safety. Channels are typed, meaning one channel is configured to send/recieve a fixed types values or pointers. Send and recieves to and from a channel are blocking operations.</p>
+<p>To declare a channel, simply calling `make` creates a channel of the passed type:</p>
+<pre><code class="language-go">ch := make(chan int)</code></pre>
+<p>In the above snippet, this line creates a channel of type <em>int</em> . Send and recieve to and from a channel is done using <em>&lt;-</em> operator. To send values on this channel, the channel variable should be on the left side and the value that is to be sent, on right. To recieve just vice versa the send process.</p>
+<pre><code class="language-go">ch &lt;- 10 // this sends 10 to the channel ch
+x := &lt;- ch // this receives a value from channel and assigns it to x</code></pre>
+<p>&nbsp;</p>
+<p>In the above snippet, first line will send 10 to channel. On the next receive call, this 10 will be read from the channel. The second line does that, reads a value (in this case 10) from channel <em>ch</em> and assigns it to <em>x</em>. These sends and recieves will happen spanning on multiple goroutines in real world programs.</p>
+<h3>An example</h3>
+<p>Lets illustrate the above two entities in code to get a better idea:</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func sum(s []int, c chan int) {
+	sum := 0
+	for _, v := range s {
+		sum += v
+	}
+	c &lt;- sum // send sum to c
+}
+
+func main() {
+	s := []int{7, 2, 8, -9, 4, 0}
+	c := make(chan int)
+	
+	go sum(s[:len(s)/2], c)
+	go sum(s[len(s)/2:], c)
+	
+	x, y := &lt;-c, &lt;-c // receive from c
+	
+	fmt.Println(x, y, x+y)
+}
+</code></pre>
+<p>&nbsp;</p>
+<p>The example is taken from the channels section of <a href="https://go.dev/tour/concurrency/2" rel="nofollow noopener" target="_blank">A tour of GO</a></p>
+<p>In this example the <em>sum</em> function calculates the sum of a slice and sends it over to a channel of <em>int</em> type <em>c</em></p>
+<p>The <em>sum</em> function is called in main function in 2 seperate goroutines, once with first half of the slice, then the next half. Each goroutines calculate and sends the values independantly. In the next line, 2 recieves are performed from the channel. They will get the values sent in the channel in orderly fashion, i.e the first one pushed into the channel will be ejected first, then the next.</p>
+<pre><code class="language-go">x, y := &lt;-c, &lt;-c</code></pre>
+<p>In this line, each recieve operation will wait, until it gets its value and then move on.</p>
+<p>Although this example is pretty simple and to some extend contrived, this gives a basic idea as to how to use goroutines and pass values between them.</p>
+<p>In other languages, this simple scenario would require to use mutex locks and other thread safety mechanisms, or complex (or one or 2 levels of) callbacks (JS :D). But the syntax of GO is rather verbose and natural. In my next posts I will try to delve into waitGroups, which is similar to asyn/await in (JS/C#). Until then&#8230;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/concurrency-in-go-goroutine-and-channels/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

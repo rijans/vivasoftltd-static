@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>channels &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/channels/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Wed, 24 Aug 2022 13:01:41 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>channels &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>How and when to use sync.WaitGroup in Golang</title>
+		<link>/blog/how-and-when-to-use-sync-waitgroup-in-golang/</link>
+					<comments>/blog/how-and-when-to-use-sync-waitgroup-in-golang/#respond</comments>
+		
+		<dc:creator><![CDATA[hirok.biswas]]></dc:creator>
+		<pubDate>Mon, 22 Aug 2022 06:58:25 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[channels]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[golang concurrency]]></category>
+		<category><![CDATA[golang waitgroup]]></category>
+		<guid isPermaLink="false">/?p=10198</guid>
+
+					<description><![CDATA[Golang is known for its first-class support for concurrency, or the ability for a program to deal with multiple things at once. Running code concurrently is becoming a more critical part of programming as computers move from running a single code stream faster to running more streams simultaneously. Goroutines solve the problem of running concurrent [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Golang is known for its first-class support for concurrency, or the ability for a program to deal with multiple things at once. Running code concurrently is becoming a more critical part of programming as computers move from running a single code stream faster to running more streams simultaneously.</p>
+<p>Goroutines solve the problem of running concurrent code in a program, and channels solve the problem of communicating safely between concurrently running code.</p>
+<p>Read details concept of Goroutines and Channels <a href="/concurrency-in-go-goroutine-and-channels">Concurrency in GO 101 &#8211; goroutine and channels</a></p>
+<p>In that article, we looked at using channels in Go to get data from one concurrent operation to another. But we also ran across another concern: How do we know when all the concurrent operations are complete? One answer is that we can use<strong> sync.WaitGroup</strong>.</p>
+<h3></h3>
+<h3>Waitgroup</h3>
+<p>Allows you to block a specific code block to allow a set of goroutines to complete their executions.</p>
+<p>WaitGroup ships with 3 methods:</p>
+<ul>
+<li> <strong>wg.Add(int)</strong>: Increase the counter based on the parameter (generally &#8220;1&#8221;).</li>
+<li> <strong>wg.Wait()</strong>: Blocks the execution of code until the internal counter reduces to 0 value.</li>
+<li> <strong>wg.Done()</strong>: Decreases the count parameter in Add(int) by 1.</li>
+</ul>
+<h6>Example:</h6>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang" data-enlighter-theme="monokai">package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+var taskIDs = []int32{1, 2, 3}
+
+func main() {
+    var wg sync.WaitGroup
+    for _, taskID := range taskIDs {
+        wg.Add(1)
+        go performTask(&amp;wg, taskID)
+    }
+    // waiting until counter value reach to 0
+    wg.Wait()
+}
+
+func performTask(wg *sync.WaitGroup, taskID int32) {
+    defer wg.Done()
+    time.Sleep(3 * time.Second)
+    fmt.Println(taskID, " - Done")
+}</pre>
+<p><a href="https://go.dev/play/p/xsJANC2xQA7" rel="nofollow noopener" target="_blank">Run code here</a></p>
+<p>In the above example, we have simply initiated 3 goroutines (we can also initiate more goroutines as we want). Before initiating every goroutine <strong>wg.Add(1)</strong> increases the counter by <strong>1</strong>. From inside goroutine <strong>defer</strong> <strong>wg.Done()</strong> executes after all functionality is done and decreases the counter value by <strong>1</strong>. And finally <strong>wg.Wait()</strong> releases the main block when the counter value reached to <strong>0</strong>.<br />
+So, <strong>WaitGroup</strong> ensures the completion of all initiated goroutine&#8217;s execution.</p>
+<h3>When to use Waitgroup?</h3>
+<ul>
+<li>The major use case is to simply wait for a set of goroutines untill complete their execution.</li>
+<li>Another is to use along with channel(s) to achieve better outcomes.</li>
+</ul>
+<p>For a better explanation of 2nd use case let&#8217;s solve a real-world problem. Assume we have 7 order ids. using concurrency we have to collect successful order details of those orders.</p>
+<p>At First, we will go for channel approach to collect individual order details.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang" data-enlighter-theme="monokai">package main
+import (
+    "fmt"
+    "time"
+)
+
+var orderIDs = []int32{1, 2, 3, 4, 5, 6, 7}
+type order struct {
+    id   int32
+    time string
+}
+
+func main() {
+    var orders []order
+    ch := make(chan order)
+
+    for _, orderID := range orderIDs {
+        go getOrderDetails(ch, orderID)
+    }
+
+    // iterate over length of orderIDs and append orders
+    for i := 0; i &lt; len(orderIDs); i++ {
+        orders = append(orders, &lt;-ch)
+    }
+
+    fmt.Printf("collected orders: %v", orders)
+}
+
+func getOrderDetails(ch chan order, orderID int32) {
+    time.Sleep(3 * time.Second)
+    // details collection logic
+    orderDetails := order{id: orderID, time: time.Now().UTC().Format("15:04:05")}
+
+    ch &lt;- orderDetails
+}</pre>
+<p><a href="https://go.dev/play/p/84IHnwkVz5N" rel="nofollow noopener" target="_blank">Run code here</a></p>
+<p>Here, we have created an unbuffered channel <strong>ch</strong>. Every goroutine collects order details and sends data to the channel. Same time for collecting order details we have iterated over the length of expected order ids to receive order data one by one from the channel for every order ids. As far the program works fine as expected and the output is:</p>
+<h6>Output:</h6>
+<pre><code class="language-bash">collected orders: [{3 23:00:03} {1 23:00:03} {7 23:00:03} {4 23:00:03} {2 23:00:03} {6 23:00:03} {5 23:00:03}]</code></pre>
+<p>But, suppose one of our goroutine returns an error instead of sending order data to the channel. On the other hand, our channel is trying to receive data but data is not available in the channel. In this situation program will enter a <strong>deadlock</strong> situation. <a href="https://go.dev/play/p/TxofC0aqFpQ" rel="nofollow noopener" target="_blank">Try this scenario here</a></p>
+<p>Now we will combine <strong>channel</strong> and <strong>waitgroup</strong> to collect successful order data.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang" data-enlighter-theme="monokai">package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+var orderIDs = []int32{1, 2, 3, 4, 5, 6, 7}
+type order struct {
+    id   int32
+    time string
+}
+
+func main() {
+    var wg sync.WaitGroup
+    var orders []order
+
+    // create a buffered channel wit length of orderIDs
+    ch := make(chan order, len(orderIDs))
+
+    for _, orderID := range orderIDs {
+        wg.Add(1)
+        go getOrderDetails(ch, &amp;wg, orderID)
+    }
+    // here we wait until all jobs done
+    wg.Wait()
+    // closing channel after all job done
+    close(ch)
+
+    // iterate over available channel results
+    for v := range ch {
+        orders = append(orders, v)
+    }
+
+    fmt.Printf("collected orders: %v", orders)
+}
+
+func getOrderDetails(ch chan order, wg *sync.WaitGroup, orderID int32) {
+    defer wg.Done()
+
+    time.Sleep(3 * time.Second)
+    // details collection logic
+    orderDetails := order{id: orderID, time: time.Now().UTC().Format("15:04:05")}
+    
+    if orderID == 4 {
+        fmt.Println("Something went wrong")
+        return
+    }
+
+    ch &lt;- orderDetails
+}</pre>
+<p><a href="https://go.dev/play/p/XrptK2WGgFh" rel="nofollow noopener" target="_blank">Run code here</a></p>
+<p>Here we have created a buffered channel having max buffer size of orders ids length. From goroutine, order data will be sent to channel(not necessary all order data will be sent, in case of error). Here for order id <strong>4</strong> no data is sent to the channel but <strong>wg.Done()</strong> executed as expected. After <strong>wg.Wait()</strong> reached its ends, we have closed the channel as all goroutine&#8217;s job done. Then from the channel, we have simply collected available order data by iterating over available channel results.</p>
+<p>In our case, there were <strong>7</strong> incoming order ids and we finally got <strong>6</strong> successful orders detail from the channel without any error.</p>
+<h6>Output:</h6>
+<pre><code class="language-bash">collected orders: [{5 23:00:00} {6 23:00:00} {3 23:00:00} {1 23:00:00} {7 23:00:00} {2 23:00:00}]</code></pre>
+<h3>Final thoughts:</h3>
+<p>Channels being a signature feature of the Go language shouldn&#8217;t mean that it is idiomatic to use them alone whenever possible. What is idiomatic in Go is to use the simplest and easiest way to understand the solution. The WaitGroup conveys both the meaning (the main function is Waiting for workers to be done) and the mechanic (the workers notify when they are Done).</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/how-and-when-to-use-sync-waitgroup-in-golang/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Worker Pool in Golang</title>
+		<link>/blog/worker-pool-in-golang/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Tue, 23 Mar 2021 12:06:34 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[advance]]></category>
+		<category><![CDATA[channels]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[goroutine]]></category>
+		<category><![CDATA[threadpool]]></category>
+		<category><![CDATA[topic]]></category>
+		<category><![CDATA[workerpool]]></category>
+		<guid isPermaLink="false">/?p=2518</guid>
+
+					<description><![CDATA[Tags: #advance #topic #golang #goroutine #channels #workerpool #threadpool Often we end up with some work which is so time-consuming that if we&#8217;re able to assign, multiple person/worker, to do that job the execution time will reduce the time which will save a lot of time for those particular tasks. Today we&#8217;re going to solve this [&#8230;]]]></description>
+										<content:encoded><![CDATA[<h3>Tags: #advance #topic #golang #goroutine #channels #workerpool #threadpool</h3>
+<p>Often we end up with some work which is so time-consuming that if we&#8217;re able to assign, multiple person/worker, to do that job the execution time will reduce the time which will save a lot of time for those particular tasks.</p>
+<p>Today we&#8217;re going to solve this problem by creating a worker pool also known as thread pool so that tasks are done by multiple workers concurrently. We&#8217;re particularly using Golang&#8217;s lightweight thread also known as Goroutine &amp; Channels.</p>
+<h3>Prerequisites: Goroutine, Channels</h3>
+<h2>Goroutine</h2>
+<p>A goroutine is a lightweight thread managed by the Go runtime unlike other languages like Python who&#8217;s threads are managed by OS and also expensive to run. So goroutines are functions or methods that run concurrently with other functions or methods.</p>
+<h2>Channels</h2>
+<p>Channels are ways in which different goroutines communicate with each other. We can understand them as pipes through which you can connect with different concurrent goroutines. The communication is bidirectional by default, meaning that you can send and receive values from the same channel.</p>
+<p>Let&#8217;s define some workers so that we can solve the time issue using goroutines and channels.</p>
+<h2>Task</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func task() {
+    time.Sleep(time.Second) // some task to be executed
+}</pre>
+<h2>Job</h2>
+<blockquote>
+<h4>Note: Each job takes 1 second to complete</h4>
+</blockquote>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func job(workerID, jobID int) {
+    fmt.Println("worker", workerID, "started  job", jobID)
+    task()
+    fmt.Println("worker", workerID, "finished job", jobID)
+}</pre>
+<h3>Worker</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func worker(workerID int, jobs &lt;-chan int, results chan&lt;- int) {
+    for j := range jobs {
+        job(workerID, j)
+        results&lt;- j * 2
+    }
+}</pre>
+<p>In Golang, we define a channel with the keyword `chan`. Anyone get confused when seeing those arrow signs with channels, let&#8217;s simplified those first&#8230;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">chan   // read-write
+&lt;-chan // read-only
+chan&lt;- // write-only</pre>
+<p>So we can say without any arrow in the `chan` keyword would mean the channel can read-write which is the default behavior, but if we want a read-only channel we put an arrow sign before the `chan` keyword like `&lt;-chan` and if we want a write-only channel we put an arrow sign after the `chan` keyword like `chan&lt;-` this.</p>
+<blockquote><p>So for our example above the `jobs` channel only reads and the `results` channel only writes data.</p></blockquote>
+<p>So let&#8217;s continue on our worker pool example&#8230;</p>
+<p>Our worker function will receive the jobs and send the results of the job in the results channel.</p>
+<p>We make the job function to execute the task function to simulate an actual task running by the worker.</p>
+<blockquote><p>In the `task` function we put a sleep function which will wait for a second so that it behaves like expensive/time-consuming work.</p></blockquote>
+<h2>Create a int channel with buffer</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func makeIntChannels(buffer int) chan int {
+    channel := make(chan int, buffer)
+    return channel
+}</pre>
+<h2>Worker pool</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func execUsingWorkerPool(numOfJobs, numOfWorkers int) {
+    defer duration(track("time using worker pool"))
+
+    jobs := makeIntChannels(numOfJobs)
+    results := makeIntChannels(numOfJobs)
+
+    for w := 1; w &lt;= numOfWorkers; w++ {
+        go worker(w, jobs, results)
+    }
+
+    for job := 1; job &lt;= numOfJobs; job++ {
+        jobs&lt;- job
+    }
+
+    close(jobs) // closing the job channel to indicate that's all the work we have.
+
+    for i := 1; i &lt;= numOfJobs; i++ {
+        &lt;-results
+    }
+}</pre>
+<h2>Without worker pool</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func execWithoutUsingWorkerPool(numOfJobs, worker int) {
+    defer duration(track("time without using worker pool"))
+
+    for j := 1; j &lt;= numOfJobs; j++ {
+        job(worker, j)
+    }
+}</pre>
+<h2>Calculate execution time</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func track(msg string) (string, time.Time) {
+    return msg, time.Now()
+}
+
+func duration(msg string, start time.Time) {
+    log.Printf("%v: %v\n", msg, time.Since(start))
+}</pre>
+<p>whoo!!! lots of code right&#8230;<br />
+Let&#8217;s go through the `main` function to understand what&#8217;s happening</p>
+<h2>Main function</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    const numOfJobs = 5
+    const numOfWorkers = 3
+
+    execUsingWorkerPool(numOfJobs, numOfWorkers)
+
+    execWithoutUsingWorkerPool(numOfJobs, 1)
+}</pre>
+<p>In the main function, we&#8217;re defining the number of jobs and workers as a const a value so that we can reuse them in the worker pool function and single worker pool function.<br />
+Let&#8217;s check out the `execUsingWorkerPool` function to understand what&#8217;s happening.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">defer duration(track("time using worker pool"))</pre>
+<p>In the first line, we use the `defer` keyword, which means that when `execUsingWorkerPool` function executes all other statements in the function block &amp; the last command will be executed would be defined in the `defer` statement, cool right&#8230;</p>
+<p>`duration` &amp; `track` function here is a util function which allows us to track the execution time. `track` function passed as a parameter in the duration function as in the Golang, this is called higher-order function or first-class citizen which means is a function can be assigned to a variable, pass as a parameter to other function and return a function from another function.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">jobs := makeIntChannels(numOfJobs)
+results := makeIntChannels(numOfJobs)</pre>
+<p>Next line we define two int buffer channels as jobs &amp; results. In order to use our pool of workers, we need to send them jobs and collect their results.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">for worker := 1; worker &lt;= numOfWorkers; worker++ {
+    go worker(worker, jobs, results)
+}</pre>
+<p>Next line This starts up workers, for our example, we use 3 workers, initially blocked because there are no jobs yet.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">for job := 1; job &lt;= numOfJobs; job++ {
+    jobs&lt;- job
+}
+
+close(jobs) // closing the job channel to indicate that's all the work we have.</pre>
+<p>Next, we send a total of 5 jobs and then close the jobs channel to indicate, that’s all the work we have right now.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">for i := 1; i &lt;= numOfJobs; i++ {
+    &lt;-results
+}</pre>
+<p>Finally, we collect all the results of the jobs we define. This also ensures that the worker goroutines have finished all the workers.</p>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/worker-pool-in-golang" rel="nofollow noopener" target="_blank">Personal Blog</a></p>
+<p>You can read our other blog-posts <a href="/blog">Here</a></p>
+<p>You can read my other blog-posts <a href="https://rezwanul-haque.hashnode.dev/" rel="nofollow noopener" target="_blank">Here</a></p>
+<h2>Output</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">worker 3 started  job 1
+worker 1 started  job 2
+worker 2 started  job 3
+worker 2 finished job 3
+worker 2 started  job 4
+worker 3 finished job 1
+worker 3 started  job 5
+worker 1 finished job 2
+worker 3 finished job 5
+worker 2 finished job 4
+2021/03/18 09:25:25 time using worker pool: 2.000943787s
+worker 1 started  job 1
+worker 1 finished job 1
+worker 1 started  job 2
+worker 1 finished job 2
+worker 1 started  job 3
+worker 1 finished job 3
+worker 1 started  job 4
+worker 1 finished job 4
+worker 1 started  job 5
+worker 1 finished job 5
+2021/03/18 09:25:30 time without using worker pool: 5.001234313s</pre>
+<p>In Conclusion, we can say using the worker pool, execution time reduces to 2+ seconds where without worker pool, it&#8217;s taking 5+ seconds. Hopefully, After this, we understand what is a worker pool and how to create one in Golang, and the benefit of using a worker pool.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

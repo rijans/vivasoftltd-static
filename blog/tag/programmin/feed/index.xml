@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>programmin &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/programmin/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Tue, 12 Oct 2021 05:29:40 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>programmin &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>থাইমলিফ নিয়ে টুকিটাকি</title>
+		<link>/blog/%e0%a6%a5%e0%a6%be%e0%a6%87%e0%a6%ae%e0%a6%b2%e0%a6%bf%e0%a6%ab-%e0%a6%a8%e0%a6%bf%e0%a7%9f%e0%a7%87-%e0%a6%9f%e0%a7%81%e0%a6%95%e0%a6%bf%e0%a6%9f%e0%a6%be%e0%a6%95%e0%a6%bf/</link>
+					<comments>/blog/%e0%a6%a5%e0%a6%be%e0%a6%87%e0%a6%ae%e0%a6%b2%e0%a6%bf%e0%a6%ab-%e0%a6%a8%e0%a6%bf%e0%a7%9f%e0%a7%87-%e0%a6%9f%e0%a7%81%e0%a6%95%e0%a6%bf%e0%a6%9f%e0%a6%be%e0%a6%95%e0%a6%bf/#respond</comments>
+		
+		<dc:creator><![CDATA[Ashiqul]]></dc:creator>
+		<pubDate>Thu, 03 May 2018 06:10:16 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[coding]]></category>
+		<category><![CDATA[programmin]]></category>
+		<guid isPermaLink="false">http://www.vivacomsolutions.com/?p=1520</guid>
+
+					<description><![CDATA[থাইমলিফ নিয়ে টুকিটাকি জাভা প্রোগ্রামিং ল্যাঙ্গুয়েজ টা বরাবরই হট টপিক আর জাভার যতগুলা ফ্রেমওয়ার্ক আছে তার মদ্ধে স্প্রিং বুটএকটি জনপ্রিয় ওয়েব ডেভেলপমেন্ট ফ্রেমওয়ার্ক । আর আমরা সবাই অবশ্যই জানি ওয়েব ডেভেলপমেন্ট করতে গেলে এইচটিএমএল(HTML) ছাড়া উপায় নাই। মানে আমাদের ওয়েব ডেভেলপমেন্ট করতে গেলে আমাদের কে ভিউ নিয়ে কাজ করতে হবেই আর বাটন টেক্সট এডিটর এইগুলা ত একটা [&#8230;]]]></description>
+										<content:encoded><![CDATA[<h2><strong>থাইমলিফ নিয়ে টুকিটাকি</strong></h2>
+<p><strong>জাভা</strong> প্রোগ্রামিং ল্যাঙ্গুয়েজ টা বরাবরই হট টপিক আর জাভার যতগুলা ফ্রেমওয়ার্ক আছে তার মদ্ধে <strong>স্প্রিং বুট</strong>একটি জনপ্রিয় ওয়েব ডেভেলপমেন্ট ফ্রেমওয়ার্ক । আর আমরা সবাই অবশ্যই জানি ওয়েব ডেভেলপমেন্ট করতে গেলে এইচটিএমএল(<strong>HTML</strong>) ছাড়া উপায় নাই। মানে আমাদের ওয়েব ডেভেলপমেন্ট করতে গেলে আমাদের কে ভিউ নিয়ে কাজ করতে হবেই আর বাটন টেক্সট এডিটর এইগুলা ত একটা কমন বিষয়। এইচটিএমএল লাগবেই লাগবে। ওয়েব ডেভেলপমেন্ট এ এইচটিএমএল প্রায়ই আমাদের সার্ভার সাইট থেকে ডাটা এনে জেনারেইট করতে হয় প্রায়ই সার্ভার সাইট এর ডাটার উপর নির্ভর করে একাধিকবার একি এইচটিএমএল এলেমেন্ট টা দেখাতে হয় আবার সার্ভার সাইট থেকে পাওয়া ডাটা এইচটিএমএল<br />
+এলিমেন্টএ (টেক্সট এডিটর, লাভেল) বসিয়ে দেখাতে হয়। থাইমলিফ একটি জাভা লাইব্রেরি। এটি <strong><em>XML XHTML HTML5</em></strong> ভিউ জেনারেটর টেমপ্লেইট ইঞ্জিন। আজকে আমরা <strong>থাইমলিফ</strong> নিয়ে টুকিটাকি কিছু শিখব।</p>
+<p>১। <strong>থাইমলিফ যেভাবে সেটআপ করব</strong></p>
+<p>আমরা আমাদের pom.xml ফাইল এর properties এর মধ্যে 3.0.6.RELEASE ট্যাগটি যুক্ত করব।</p>
+<p>তারপর dependencies এর মধ্যে নিছের dependency টা যুক্ত করব।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;dependencies&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
+            &lt;exclusions&gt;
+                &lt;exclusion&gt;
+                    &lt;groupId&gt;nz.net.ultraq.thymeleaf&lt;/groupId&gt;
+                    &lt;artifactId&gt;thymeleaf-layout-dialect&lt;/artifactId&gt;
+                &lt;/exclusion&gt;
+            &lt;/exclusions&gt;
+        &lt;/dependency&gt;
+&lt;/dependencies&gt;</pre>
+<p>org.springframework.boot<br />
+spring-boot-starter-thymeleaf</p>
+<p>nz.net.ultraq.thymeleaf<br />
+thymeleaf-layout-dialect</p>
+<p>এইভাবে ঠিক মত ট্যাগগুলো যুক্ত করতে পারলেই আমাদের আইডিই নিজে নিজেই লাইব্রেরির কোড গুলো ডাউনলোড করে ফেলবে আর এর সাথে আমাদের থাইমলিফ সেটআপ সম্পন্ন হল।</p>
+<p>২। <strong>টেক্সট ভিউ</strong></p>
+<p>ধরুন আমাদের একটা রিকুয়েস্ট ইউআরএল আছে যেটা একটা এডিট ফর্ম ওপেন করে। এখানে শুধু আমরা একটা স্টুডেন্ট এর নাম এডিট করতে পারি।</p>
+<p>আমরা ধরে নিলাম আমাদের স্টুডেন্ট এর নাম Akash এখন যখন আমরা এডিট ফর্ম এ জাব আমরা অবশ্যই চাইব স্টুডেন্ট এর বর্তমান নাম টা টেক্সট ভিউ এ ফিল হয়ে থাক। আমাদের কনট্রোলার থেকে স্টুডেন্ট এর নাম টা এভাবে model.addAttribute(“name”, studentName); এর মাধ্যমে কী ভ্যালু আকারে পাঠাব।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">@GetMapping("/edit")
+    public String home(Model model) {
+        String studentName = "Akash";
+        model.addAttribute("name", studentName);
+        return "home";
+    }</pre>
+<p>[av_codeblock wrapper_element=&#8221; wrapper_element_attributes=&#8221; codeblock_type=&#8217;snippet&#8217;]<br />
+@GetMapping(&#8220;/edit&#8221;)<br />
+public String home(Model model) {<br />
+String studentName = &#8220;Akash&#8221;;<br />
+model.addAttribute(&#8220;name&#8221;, studentName);<br />
+return &#8220;home&#8221;;<br />

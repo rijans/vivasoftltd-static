@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>git &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/git/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Mon, 22 Aug 2022 16:18:17 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>git &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>SQL Server Database Source Control using Visual Studio: Git</title>
+		<link>/blog/sql-server-database-source-control-using-visual-studio-git/</link>
+					<comments>/blog/sql-server-database-source-control-using-visual-studio-git/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Mon, 22 Aug 2022 15:35:25 +0000</pubDate>
+				<category><![CDATA[Git]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[git]]></category>
+		<category><![CDATA[visual studio]]></category>
+		<guid isPermaLink="false">/?p=10213</guid>
+
+					<description><![CDATA[In this brief article, we will see how to setup SQL Server Database Source Control using Visual Studio step by step &#8212; 1. Create a new repository to GitHub 2. Clone the repository to local directory 3. Create a new Sql Server Database project inside the repository 4. Right click on the project -&#62; Import -&#62; [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span class="TextRun SCXW47672020 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW47672020 BCX0">In this brief </span></span><span class="TextRun SCXW47672020 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW47672020 BCX0">article, we will see how to setup SQL Server Database Source Control using Visual Studio step by step &#8212; </span></span></p>
+<p><span class="TextRun SCXW154446793 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW154446793 BCX0"><strong>1. Create a new repository to GitHub</strong><br />
+<img decoding="async" class="aligncenter size-full wp-image-10215" src="/wp-content/uploads/2022/08/1.-create-new-repo.png" alt="1. create new repo SQL Server Database Source Control using Visual Studio: Git" width="1957" height="1108" srcset="/wp-content/uploads/2022/08/1.-create-new-repo.png 1957w, /wp-content/uploads/2022/08/1.-create-new-repo-1280x725.png 1280w, /wp-content/uploads/2022/08/1.-create-new-repo-980x555.png 980w, /wp-content/uploads/2022/08/1.-create-new-repo-480x272.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1957px, 100vw"><strong><span class="TextRun SCXW64228351 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW64228351 BCX0">2. Clone the repository to local directory<br />
+</span></span>3. <span class="NormalTextRun SCXW148413887 BCX0">Create a new </span><span class="NormalTextRun SpellingErrorV2Themed SCXW148413887 BCX0">Sql</span><span class="NormalTextRun SCXW148413887 BCX0"> Server Database project inside the repository<br />
+<img decoding="async" class="aligncenter size-full wp-image-10233" src="/wp-content/uploads/2022/08/3.-select-sql-server-database-project-1.png" alt="3. select sql server database project 1 SQL Server Database Source Control using Visual Studio: Git" width="1917" height="1040" srcset="/wp-content/uploads/2022/08/3.-select-sql-server-database-project-1.png 1917w, /wp-content/uploads/2022/08/3.-select-sql-server-database-project-1-1280x694.png 1280w, /wp-content/uploads/2022/08/3.-select-sql-server-database-project-1-980x532.png 980w, /wp-content/uploads/2022/08/3.-select-sql-server-database-project-1-480x260.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1917px, 100vw"><br />
+4. <span class="NormalTextRun SCXW83752731 BCX0">Right click on the project -&gt; Import -&gt; Select Database or Data-tier Application(*.</span><span class="NormalTextRun SpellingErrorV2Themed SCXW83752731 BCX0">dacpac</span><span class="NormalTextRun SCXW83752731 BCX0">)</span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10217" src="/wp-content/uploads/2022/08/4.-import-database-data-tier.png" alt="4. import database data tier SQL Server Database Source Control using Visual Studio: Git" width="1920" height="1200" srcset="/wp-content/uploads/2022/08/4.-import-database-data-tier.png 1920w, /wp-content/uploads/2022/08/4.-import-database-data-tier-1280x800.png 1280w, /wp-content/uploads/2022/08/4.-import-database-data-tier-980x613.png 980w, /wp-content/uploads/2022/08/4.-import-database-data-tier-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><span class="NormalTextRun SCXW83752731 BCX0">For Data-tier Application(*.</span><span class="NormalTextRun SpellingErrorV2Themed SCXW83752731 BCX0">dacpac</span><span class="NormalTextRun SCXW83752731 BCX0">) option, Select/Browse the file then click on ’Start’.<br />
+<img decoding="async" class="aligncenter size-full wp-image-10218" src="/wp-content/uploads/2022/08/4.1.-import-data-tier.png" alt="4.1. import data tier SQL Server Database Source Control using Visual Studio: Git" width="1919" height="1047" srcset="/wp-content/uploads/2022/08/4.1.-import-data-tier.png 1919w, /wp-content/uploads/2022/08/4.1.-import-data-tier-1280x698.png 1280w, /wp-content/uploads/2022/08/4.1.-import-data-tier-980x535.png 980w, /wp-content/uploads/2022/08/4.1.-import-data-tier-480x262.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw">For Database option, Select Connection of the Source <span class="NormalTextRun SpellingErrorV2Themed SCXW83752731 BCX0">Sql</span> Server Database then click on ’Start’.<br />
+</span></span></strong><span class="NormalTextRun SCXW148413887 BCX0"><span class="NormalTextRun SCXW83752731 BCX0">[But this option is not available in Visual Studio Community Edition]<br />
+<img decoding="async" class="aligncenter size-full wp-image-10219" src="/wp-content/uploads/2022/08/4.2.-import-database.png" alt="4.2. import database SQL Server Database Source Control using Visual Studio: Git" width="1919" height="1040" srcset="/wp-content/uploads/2022/08/4.2.-import-database.png 1919w, /wp-content/uploads/2022/08/4.2.-import-database-1280x694.png 1280w, /wp-content/uploads/2022/08/4.2.-import-database-980x531.png 980w, /wp-content/uploads/2022/08/4.2.-import-database-480x260.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw"><br />
+<img decoding="async" class="aligncenter size-full wp-image-10220" src="/wp-content/uploads/2022/08/4.3.-finish.png" alt="4.3. finish SQL Server Database Source Control using Visual Studio: Git" width="1915" height="1041" srcset="/wp-content/uploads/2022/08/4.3.-finish.png 1915w, /wp-content/uploads/2022/08/4.3.-finish-1280x696.png 1280w, /wp-content/uploads/2022/08/4.3.-finish-980x533.png 980w, /wp-content/uploads/2022/08/4.3.-finish-480x261.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1915px, 100vw"><br />
+</span></span><strong><span class="NormalTextRun SCXW148413887 BCX0">5. <span class="NormalTextRun SCXW30582366 BCX0">Now update a Stored procedure (Add comment) from source </span><span class="NormalTextRun SpellingErrorV2Themed SCXW30582366 BCX0">Sql</span><span class="NormalTextRun SCXW30582366 BCX0"> Server Database as well as create a new table for testing purpose.<br />
+<img decoding="async" class="aligncenter size-full wp-image-10221" src="/wp-content/uploads/2022/08/5.-update-source-database.png" alt="5. update source database SQL Server Database Source Control using Visual Studio: Git" width="1914" height="1140" srcset="/wp-content/uploads/2022/08/5.-update-source-database.png 1914w, /wp-content/uploads/2022/08/5.-update-source-database-1280x762.png 1280w, /wp-content/uploads/2022/08/5.-update-source-database-980x584.png 980w, /wp-content/uploads/2022/08/5.-update-source-database-480x286.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1914px, 100vw"><br />
+6. <span class="NormalTextRun SCXW260703710 BCX0">To compare the Source Database and our target project, Right click on the project name the </span><span class="NormalTextRun ContextualSpellingAndGrammarErrorV2Themed SCXW260703710 BCX0">select  ‘</span><span class="NormalTextRun SCXW260703710 BCX0">Schema Compare’</span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10222" src="/wp-content/uploads/2022/08/6.-compare-schema.png" alt="6. compare schema SQL Server Database Source Control using Visual Studio: Git" width="1920" height="1200" srcset="/wp-content/uploads/2022/08/6.-compare-schema.png 1920w, /wp-content/uploads/2022/08/6.-compare-schema-1280x800.png 1280w, /wp-content/uploads/2022/08/6.-compare-schema-980x613.png 980w, /wp-content/uploads/2022/08/6.-compare-schema-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><br />
+7. <span class="TextRun SCXW133696771 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW133696771 BCX0">Select Source Database and Target Project then click on ‘Compare Button’</span></span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10223" src="/wp-content/uploads/2022/08/7.-compare.png" alt="7. compare SQL Server Database Source Control using Visual Studio: Git" width="1920" height="1200" srcset="/wp-content/uploads/2022/08/7.-compare.png 1920w, /wp-content/uploads/2022/08/7.-compare-1280x800.png 1280w, /wp-content/uploads/2022/08/7.-compare-980x613.png 980w, /wp-content/uploads/2022/08/7.-compare-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><br />
+8. <span class="TextRun SCXW202309690 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW202309690 BCX0">Check the changes</span></span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10224" src="/wp-content/uploads/2022/08/8.1.-check-changes.png" alt="8.1. check changes SQL Server Database Source Control using Visual Studio: Git" width="2255" height="1226" srcset="/wp-content/uploads/2022/08/8.1.-check-changes.png 2255w, /wp-content/uploads/2022/08/8.1.-check-changes-1280x696.png 1280w, /wp-content/uploads/2022/08/8.1.-check-changes-980x533.png 980w, /wp-content/uploads/2022/08/8.1.-check-changes-480x261.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2255px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-10225" src="/wp-content/uploads/2022/08/8.2.-check-changes.png" alt="8.2. check changes SQL Server Database Source Control using Visual Studio: Git" width="2260" height="1222" srcset="/wp-content/uploads/2022/08/8.2.-check-changes.png 2260w, /wp-content/uploads/2022/08/8.2.-check-changes-1280x692.png 1280w, /wp-content/uploads/2022/08/8.2.-check-changes-980x530.png 980w, /wp-content/uploads/2022/08/8.2.-check-changes-480x260.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2260px, 100vw"><br />
+9. <span class="TextRun SCXW183378634 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW183378634 BCX0">To update the Target Project/Source Control click on ‘Update’ </span></span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10226" src="/wp-content/uploads/2022/08/9.1.-update-target.png" alt="9.1. update target SQL Server Database Source Control using Visual Studio: Git" width="2257" height="1411" srcset="/wp-content/uploads/2022/08/9.1.-update-target.png 2257w, /wp-content/uploads/2022/08/9.1.-update-target-1280x800.png 1280w, /wp-content/uploads/2022/08/9.1.-update-target-980x613.png 980w, /wp-content/uploads/2022/08/9.1.-update-target-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2257px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-10227" src="/wp-content/uploads/2022/08/9.2.-update-target.png" alt="9.2. update target SQL Server Database Source Control using Visual Studio: Git" width="2242" height="1344" srcset="/wp-content/uploads/2022/08/9.2.-update-target.png 2242w, /wp-content/uploads/2022/08/9.2.-update-target-1280x767.png 1280w, /wp-content/uploads/2022/08/9.2.-update-target-980x587.png 980w, /wp-content/uploads/2022/08/9.2.-update-target-480x288.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2242px, 100vw"><br />
+10. <span class="NormalTextRun SCXW37175716 BCX0">Commit &amp; Push the </span><span class="NormalTextRun SCXW37175716 BCX0">changes.<br />
+<img decoding="async" class="aligncenter size-full wp-image-10228" src="/wp-content/uploads/2022/08/10.-final-updated-source-controll.png" alt="10. final updated source controll SQL Server Database Source Control using Visual Studio: Git" width="2257" height="1411" srcset="/wp-content/uploads/2022/08/10.-final-updated-source-controll.png 2257w, /wp-content/uploads/2022/08/10.-final-updated-source-controll-1280x800.png 1280w, /wp-content/uploads/2022/08/10.-final-updated-source-controll-980x613.png 980w, /wp-content/uploads/2022/08/10.-final-updated-source-controll-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2257px, 100vw"><br />
+<img decoding="async" class="aligncenter size-full wp-image-10236" src="/wp-content/uploads/2022/08/10.1.-final-updated-source-controll.png" alt="10.1. final updated source controll SQL Server Database Source Control using Visual Studio: Git" width="1844" height="980" srcset="/wp-content/uploads/2022/08/10.1.-final-updated-source-controll.png 1844w, /wp-content/uploads/2022/08/10.1.-final-updated-source-controll-1280x680.png 1280w, /wp-content/uploads/2022/08/10.1.-final-updated-source-controll-980x521.png 980w, /wp-content/uploads/2022/08/10.1.-final-updated-source-controll-480x255.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1844px, 100vw"><br />
+</span></span></span></strong></span></span>Thanks&#8230;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/sql-server-database-source-control-using-visual-studio-git/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Multiple Git Account Setup (Ubuntu version)</title>
+		<link>/blog/multiple-git-account-setup-ubuntu-version/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Wed, 27 Jan 2021 12:30:43 +0000</pubDate>
+				<category><![CDATA[Git]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[account]]></category>
+		<category><![CDATA[git]]></category>
+		<category><![CDATA[multiple]]></category>
+		<category><![CDATA[vcs]]></category>
+		<guid isPermaLink="false">/?p=2361</guid>
+
+					<description><![CDATA[ssh-add is a command for adding SSH private keys into the SSH authentication agent for implementing single sign-on with SSH. The agent process is called ssh-agent; The cool thing about ssh-agent and ssh-add is that they allow the user to use any number of servers, spread across any number of organizations, without having to type [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>ssh-add is a command for adding SSH private keys into the SSH authentication agent for implementing single sign-on with SSH. The agent process is called ssh-agent;</p>
+<p>The cool thing about ssh-agent and ssh-add is that they allow the user to use any number of servers, spread across any number of organizations, without having to type in a password whenever moving between servers. This is commonly used by system administrators to move among the machine they administer. It is also widely used in universities and research institutions for accessing computing resources.</p>
+<p>More paractical example would be: when anyone shift to new organization and get a new organization email address for the specific organization. He/She might need to create a <strong>VCS</strong>(version control system) account at github, bitbuckt, gitlab etc. Most Developer already have one personal account on any of the those VCS sites. So to setup this two account on a single machine sometime complex. In this post we will learn how to setup two or more VCS account on a single machine.</p>
+<blockquote>
+<p>The below command will work on Ubuntu and Mac but Windows may not. But In windows, using window subsystem (<strong>WSL</strong>) will solved below command issue.</p>
+</blockquote>
+<h2>Step 1: Create ssh key for different email address</h2>
+<pre><code># With Office Email
+ssh-keygen -t rsa -b 4096 -C &quot;rezwanul.haque@vivasoftltd.com&quot; -f rezwanul.viva
+
+# With Personal Email
+ssh-keygen -t rsa -b 4096 -C &quot;rezwanul.cse@gmail.com&quot; -f rezwanul-haque</code></pre>
+<blockquote>
+<h4>add this ssh public keys to respective VCS accounts</h4>
+</blockquote>
+<h2>Step 2: Create a config file on .ssh file</h2>
+<pre><code>touch config
+
+sudo vim config</code></pre>
+<h3>Add this</h3>
+<pre><code># Personal account - default config
+Host github.com-rezwanul-haque
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/rezwanul-haque
+# Work account - Viva
+Host github.com-rezwanul-viva
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/rezwanul.viva
+</code></pre>
+<h2>Step 3: Create common <code>~/.gitconfig</code> file at home directory</h2>
+<pre><code>sudo vim ~/.gitconfig</code></pre>
+<h3>Add this to <code>~/.gitconfig</code></h3>
+<pre><code># Default account-Personal
+[user]
+        name = rezwanul-haque
+        email = rezwanul.cse@gmail.com
+# Professional account-Office
+[includeIf &quot;gitdir:~/&lt;office_work_space_path&gt;/&quot;]
+        path = ~/&lt;office_work_space_path&gt;/.gitconfig-viva
+</code></pre>
+<h2>Step 4: Create organization specific gitconfig to organization workspace folder</h2>
+<pre><code># Professional account-organization
+[user]
+    name = rezwanul-haque-viva
+    email = rezwanul.haque@vivasoftltd.com
+</code></pre>
+<h2>Step 5: remove ssh keys and entities from the SSH agent</h2>
+<pre><code>ssh-add -D</code></pre>
+<h2>Step 6: Add keys and entities</h2>
+<pre><code>ssh-add rezwanul-haque
+ssh-add rezwanul.viva
+
+# Check if added or not
+ssh-add -l</code></pre>
+<h2>Step 7: Test with Connection using ssh</h2>
+<pre><code>ssh -T github.com-rezwanul-haque
+ssh -T github.com-rezwanul-viva</code></pre>
+<blockquote>
+<h3>Also read this aricle on my personal <a href="https://gist.github.com/Rezwanul-Haque/fbf2f929a6a42407504a93c0ff08376a" rel="nofollow noopener" target="_blank">gist</a></h3>
+</blockquote>
+<h2>Step 8: Cloning any project with organization account(required)</h2>
+<pre><code># need to add github-hostname
+git clone git@&lt;HostName&gt;:Rezwanul-Haque-Viva/&lt;office_project_repo&gt;.git
+
+Example: git clone git@github.com-rezwanul-viva:Rezwanul-Haque-Viva/&lt;office_project_repo&gt;.git</code></pre>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>UI Design &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/ui-design/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Tue, 18 Oct 2022 05:10:59 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>UI Design &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>UI/UX ডিজাইন কি?</title>
+		<link>/blog/ui-ux-%e0%a6%a1%e0%a6%bf%e0%a6%9c%e0%a6%be%e0%a6%87%e0%a6%a8-%e0%a6%95%e0%a6%bf/</link>
+					<comments>/blog/ui-ux-%e0%a6%a1%e0%a6%bf%e0%a6%9c%e0%a6%be%e0%a6%87%e0%a6%a8-%e0%a6%95%e0%a6%bf/#comments</comments>
+		
+		<dc:creator><![CDATA[Ashiqul]]></dc:creator>
+		<pubDate>Wed, 02 May 2018 04:09:14 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[UI Design]]></category>
+		<category><![CDATA[UX Design]]></category>
+		<guid isPermaLink="false">http://www.vivacomsolutions.com/?p=1427</guid>
+
+					<description><![CDATA[UI/UX ডিজাইন কি? সাধারনত আমরা UI মানে কি জানি এটা হচ্ছে সব থেকে বড় বিষয়। UI এর পূর্ণরুপ হচ্ছে User Interface(ইউজার ইন্টারফেস) । মূলত এইটা আমরা চিন্তা করতে পারি মানুষের শরীর নিয়ে। ধরুন মানুষের শরীর নিয়ে কথা বলতে গেলে আমরা প্রথমে কি দেখি? আমরা প্রথমে দেখি তার শরীরের একটা দৃশ্য , যেটা দেখে আমরা বুঝতে পারি যে [&#8230;]]]></description>
+										<content:encoded><![CDATA[<h1 id="03c2" class="graf graf--h3 graf--leading graf--title">UI/UX ডিজাইন কি?</h1>
+<p>সাধারনত আমরা UI মানে কি জানি এটা হচ্ছে সব থেকে বড় বিষয়। UI এর পূর্ণরুপ হচ্ছে User Interface(ইউজার ইন্টারফেস) ।</p>
+<p id="8a13" class="graf graf--p graf-after--figure">মূলত এইটা আমরা চিন্তা করতে পারি মানুষের শরীর নিয়ে। ধরুন মানুষের শরীর নিয়ে কথা বলতে গেলে আমরা প্রথমে কি দেখি?</p>
+<p id="2f77" class="graf graf--p graf-after--p">আমরা প্রথমে দেখি তার শরীরের একটা দৃশ্য , যেটা দেখে আমরা বুঝতে পারি যে এইটা একটা মানুষ । আমরা যা দেখে বুঝতে পারি যে এইটা একটা মানুষ সেটাই হচ্ছে তার ইউয়াই(UI) । তার মানে যখন আমরা কোন Mobile App বা Website বা Interaction Design ইত্যাদি নিয়ে কাজ করব তখন আমরা দেখেই বুঝব যে এইটা হচ্ছে Mobile App বা Website এর UI(ইউয়াই)। যেমন উপরে যে ছবিটি দেওয়া আছে সেটা দেখে আমরা আসলে বুঝতে পারি যে এইটা একটি মোবাইলে এ্যাপ এর ইউয়াই(UI)। কিছুটা হলেও আমরা বুঝতে পারছি যে ইউয়াই ডিজাইন কি , এইটা দেখতে কেমন হয়।</p>
+<div class="single_blog_image"><img decoding="async" src="/wp-content/uploads/2018/05/UI-UX-2-2.jpeg" alt="UI UX 2 2 UI/UX ডিজাইন কি?"></div>
+<p id="5f9a" class="graf graf--p graf-after--figure">UI/UX এই দুইটা ডিজাইনের মধ্যে সব থেকে গুরুত্বপূর্ণ হচ্ছে UX Design । চলুন আমরা এবার ইউএক্স ডিজাইন নিয়ে একটু খেলা ধুলা করি।</p>
+<p id="af4c" class="graf graf--p graf-after--p">আমরা UI মানে জানি । এখন UX এর পূর্ণরূপ হইলো ইউজার এক্সপেরিএন্স(User Experience)। এখন মনে প্রশ্ন জাগতে পারে ইউজার এক্সপেরিএন্স !! এটা আবার কেমন জিনিস??? প্রশ্ন জাগাটা স্বাভাবিক।</p>
+<p id="ec12" class="graf graf--p graf-after--p">জাওজ্ঞা সামনের দিকে আওজ্ঞা………………………………</p>
+<p id="5c83" class="graf graf--p graf-after--p">চলুন একটা উদাহরন দিয়ে আমরা ইউএক্স (UX) টা বুঝার চেস্টা করি। ইউয়াই তে আমরা যেমন মানুষের শরীর নিয়ে উদাহরন দিয়ে বুঝার চেস্টা করসিলাম এইখানেও আমরা সেটা দিয়েও বুঝার চেস্টা করব। আসলে ইউএক্স বলতে বুঝায় কোন কাজ কিভাবে সেটা বুঝায়। এখন এটা যদি আমরা মানুষের শরীর দিয়ে বুঝতে যায় তাহলে ব্যাপার টা হয় এরকম…</p>
+<p id="d382" class="graf graf--p graf-after--p">যখন আমরা কোন মানুষকে দেখি তখন সরবপ্রথম আমরা তার শরীর এবং চেহারা দেখতে পাই এটা হছহে ইউয়াই, আর যখন আমরা এইটা দেখবো যে মানুষের শরীরের অঙ্গগুলা কিভাবে কাজ করে এইটা হচ্ছে তার ইউএক্স(UX) যে সে কিভাবে কাজ করে। আমরা এখানে লেখার শেষে একটা এ্যানিমেশন দেখতে পাচ্ছি, যেইটা দেখে বুঝতে পারতেসি এইটা একটা Website। চলুন এইটা নিয়ে একটু আলোচনা করি।</p>
+<div class="single_blog_image"><img decoding="async" src="/wp-content/uploads/2018/05/UI-Prototype-1-1.gif" alt="UI Prototype 1 1 UI/UX ডিজাইন কি?"></div>
+<p id="d6b5" class="graf graf--p graf-after--figure">এই এ্যানিমেশনটা তে আমরা দেখতে পাচ্ছি যে ইঁদুরের(Mouse) নড়াচড়ার/ক্লিক এর উপর নির্ভর করে Website টি কিভাবে কাজ করছে। এইটাই হচ্ছে মুলত ইউএক্স(UX)। আর এই ফ্লো টা ডিজাইন করা (এটা কিভাবে কাজ করবে) কে ইউএক্স ডিজাইন(UX Design) বলে। আসলে ইউএক্স এর উপর নির্ভর করে ইউয়াই ডিজাইন করা হয়। কারন আমি যদি না জানি যে কোন বাটনে , কোন ইমেজে ক্লিক করলে কি হবে, মাউসে স্ক্রোল করলে কি হবে তাহলে আমরা বুঝতে পারবো না যে ডিজাইন টা কেমন হবে। এই থেকে আমরা বুঝতে পারি যে ইউয়াই ডিজাইনের আগে ইউএক্স ডিজাইন করা কতটা দরকার।</p>
+<p id="f11d" class="graf graf--p graf-after--p">যাই হোক, এই ছিলো ইউয়াই/ইউএক্স ডিজাইনের(UI/UX Design) উপর আমার জানা কিছু কিছু তথ্য। আশা করি আপনারা উপকৃত হবেন।</p>
+<p id="79bb" class="graf graf--p graf-after--p graf--trailing">ধন্যবাদ।</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/ui-ux-%e0%a6%a1%e0%a6%bf%e0%a6%9c%e0%a6%be%e0%a6%87%e0%a6%a8-%e0%a6%95%e0%a6%bf/feed/</wfw:commentRss>
+			<slash:comments>2</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

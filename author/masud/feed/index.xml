@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Masud Rashid &#8211; Vivasoft</title>
+	<atom:link href="/author/masud/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Tue, 12 Oct 2021 05:32:03 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>Masud Rashid &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Benefits of Event Sourcing in Financial Application</title>
+		<link>/blog/benefits-of-event-sourcing-in-financial-application/</link>
+		
+		<dc:creator><![CDATA[Masud Rashid]]></dc:creator>
+		<pubDate>Tue, 16 Feb 2021 12:56:51 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<guid isPermaLink="false">/?p=2384</guid>
+
+					<description><![CDATA[What is Event Sourcing Event sourcing is a practice of keeping record of every change during the lifecycle of an application. In traditional approaches, usually the current state of the application is preserved. But the information of how we reached that state over time is lost. We lose information while updating data models. Event sourcing [&#8230;]]]></description>
+										<content:encoded><![CDATA[<hr />
+<h2><strong>What is Event Sourcing</strong></h2>
+<p>Event sourcing is a practice of keeping record of every change during the lifecycle of an application. In traditional approaches, usually the current state of the application is preserved. But the information of how we reached that state over time is lost. We lose information while updating data models.</p>
+<p>Event sourcing ensures that all changes are captured in the forms of event object and stores them sequentially. Events are stored in append only mode and they are never to be modified.<br />
+Event sourcing is not a new concept. There are real world examples of practicing event sourcing:<br />
+An accountant keeps track of all transactions. He never erases or modifies previous records. He always creates a new entry, even to fix the previous mistake.<br />
+A doctor keeps record of patient&#8217;s medical history by adding new entry at the end of the journal</p>
+<hr />
+<h2><strong>Why Event Sourcing is beneficial in financial application</strong></h2>
+<p></p>
+<h4>Never lose information</h4>
+<p>No risk of losing important business information, as it store every changes in application state as event. It&#8217;s the biggest advantage of event sourcing based application. It is vitally important to keep track of every bit of financial data. And storing information is not that costly nowadays. We might never know in advance, which information will be useful in future.</p>
+<h4>Auditing is simple</h4>
+<p>Auditing is a vital part of any financial system. As all immutable events are appended sequentially in the event store, it is a readily available audit log of all past changes in the system or financial data</p>
+<h4>Event replay and Temporal queries</h4>
+<p>Travelling to a past state of a application is possible. Starting with initial application state and replaying all the events to a particular time, we can determine application state at any point of time. Also in case of failure, reconstruction of application state is possible by replaying the events.</p>
+<h4>Debuggability</h4>
+<p>By replaying, rewinding or stopping the actual events in a test environment, it&#8217;s possible to reproduce what went wrong in a certain situation. This form of debuggability is useful before deployment in production.</p>
+<h4>Scalability</h4>
+<p>Event sourcing is often coupled with CQRS, an approach to separate read or query functionality from the write or command functionality. As reads and writes separated, each can be scalable with different magnitude with their separate optimization.</p>
+<h4>Security</h4>
+<p>As events are never modified and added in the event store on append-only mode, data tampering will be hard and traceable. We can take the advantage of using WORM storage (Write Once Read Many), for storing events to ensure better security.</p>
+<h4>Domain Driven Design</h4>
+<p>Unlike CRUD operations, events are more relatable with business domain. Thus application architecture can be designed in a more Domain Driven approach. It is less likely to get carried away with technicality from the business domain</p>
+<h4>Analytics</h4>
+<p>Keeping all business information allows us to estimate how things co-relate over time. This data allows us to draw various conclusions from past data, project estimates, analize customer behaviour etc.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

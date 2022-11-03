@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>coding &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/coding/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Tue, 12 Oct 2021 05:29:40 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>coding &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>স্ট্রিং এর আদ্যোপান্ত</title>
+		<link>/blog/%e0%a6%b8%e0%a7%8d%e0%a6%9f%e0%a7%8d%e0%a6%b0%e0%a6%bf%e0%a6%82-%e0%a6%8f%e0%a6%b0-%e0%a6%86%e0%a6%a6%e0%a7%8d%e0%a6%af%e0%a7%8b%e0%a6%aa%e0%a6%be%e0%a6%a8%e0%a7%8d%e0%a6%a4/</link>
+					<comments>/blog/%e0%a6%b8%e0%a7%8d%e0%a6%9f%e0%a7%8d%e0%a6%b0%e0%a6%bf%e0%a6%82-%e0%a6%8f%e0%a6%b0-%e0%a6%86%e0%a6%a6%e0%a7%8d%e0%a6%af%e0%a7%8b%e0%a6%aa%e0%a6%be%e0%a6%a8%e0%a7%8d%e0%a6%a4/#respond</comments>
+		
+		<dc:creator><![CDATA[Ashiqul]]></dc:creator>
+		<pubDate>Thu, 03 May 2018 09:06:18 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[coding]]></category>
+		<category><![CDATA[programming]]></category>
+		<category><![CDATA[string]]></category>
+		<guid isPermaLink="false">http://www.vivacomsolutions.com/?p=1551</guid>
+
+					<description><![CDATA[কম্পিউটার প্রোগ্রামিং এ বহুল পরিচিত আর ব্যবহৃত একটা বিষয় হল স্ট্রিং। এক কথায় স্ট্রিং হচ্ছে কতগুলো ক্যারেক্টার এর সিকুয়েন্স বা অনুক্রম।সহজ ভাষায় যখন বেশ কিছু  ক্যারেক্টার একসাথে মিলেমিশে কিছু একটা করার চেষ্টা করে তখন সেটাকে আমরা একটা স্ট্রিং হিসেবে চিন্তা করতেই পারি। প্রোগ্রামিং এ স্ট্রিং এর রয়েছে বিভিন্ন ধরণের ব্যবহার আর নানা ধরণের বৈশিষ্ট্য। তাহলে এখনকার [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>কম্পিউটার প্রোগ্রামিং এ বহুল পরিচিত আর ব্যবহৃত একটা বিষয় হল স্ট্রিং। এক কথায় স্ট্রিং হচ্ছে কতগুলো ক্যারেক্টার এর সিকুয়েন্স বা অনুক্রম।সহজ ভাষায় যখন বেশ কিছু  ক্যারেক্টার একসাথে মিলেমিশে কিছু একটা করার চেষ্টা করে তখন সেটাকে আমরা একটা স্ট্রিং হিসেবে চিন্তা করতেই পারি। প্রোগ্রামিং এ স্ট্রিং এর রয়েছে বিভিন্ন ধরণের ব্যবহার আর নানা ধরণের বৈশিষ্ট্য। তাহলে এখনকার মত পরিচিত হয়ে আসা যাক জাভার স্ট্রিং এর সাথে ।</p>
+<div class="single_blog_image">
+ <img decoding="async" src="/wp-content/uploads/2018/05/string-1-1.jpg" alt="string 1 1 স্ট্রিং এর আদ্যোপান্ত">
+</div>
+<h3><strong>জাভা</strong> <strong>স্ট্রিং</strong> <strong>পরিচিতি: </strong></h3>
+<p>আমাদের খুব পরিচিত প্রোগ্রামিং ভাষা যেমন সি, সি প্লাস প্লাস এগুলোতে স্ট্রিং কে খুব সহজে ডাটা টাইপ এর ভিতরে ফেলে দেওয়া হলেও জাভা তে স্ট্রিং কে দেখা হয় আস্ত একটা অবজেক্ট হিসেবে।আর সে কারণেই জাভার স্ট্রিং এর সাথে যুক্ত হয়েছে বেশ কিছু বৈশিষ্ট্য ।এই লেখার মাধ্যমে আমরা জাভার স্ট্রিং এর আদ্যোপান্ত নিয়েই ঘাটাঘাটি করার চেষ্টা করব । ওওপি (অবজেক্ট ওরিয়েন্টেড প্রোগ্রামিং) এর ধারণা অনুসারে একটা অবজেক্ট অবশ্যই কোন না কোন ক্লাস থেকে তৈরি হয়,জাভাতে স্ট্রিং তৈরি হয় স্ট্রিং ক্লাস থেকে আর এই স্ট্রিং ক্লাসটা রয়েছে <strong>java.lang</strong> এই প্যাকেজ এর ভিতরে । জাভাতে স্ট্রিং তৈরি করার খুব সহজ দুইটা উপায় আছে, প্রথমটা হল স্ট্রিং লিটারেল এর মাধ্যমে এবং দ্বিতীয়তটি হল <strong>new</strong> কিওয়ার্ড এবং কন্সট্রাকটর ব্যবহার করে।<br />
+[/av_textblock]</p>
+<div class="single_blog_image">
+<img decoding="async" class="wp-image-2673 size-full aligncenter" src="/wp-content/uploads/2018/05/public-class-1.png" alt="public class 1 স্ট্রিং এর আদ্যোপান্ত" width="443" height="103" srcset="/wp-content/uploads/2018/05/public-class-1.png 443w, /wp-content/uploads/2018/05/public-class-1-300x70.png 300w" sizes="(max-width: 443px) 100vw, 443px">
+</div>
+<p>এখানে <strong>firstString</strong> কে তৈরি করা হয়েছে লিটারেল ব্যবহার করে এবং <strong>secondString</strong> কে তৈরি করা হয়েছে <strong>new</strong>কিওয়ার্ড এবং কন্সট্রাকটর ব্যবহার করে।আমরা যদি স্ট্রিং তৈরি করা শিখে ফেলি তাহলে আমাদের জন্য পরের ধাপ হবে, যে স্ট্রিং গুলো আমরা তৈরি করব সেগুলোকে জাভা কিভাবে তার মেমোরি তে সংরক্ষণ করে রাখে সেটা জানা । কেননা স্ট্রিং এর জন্য জাভা তার মেমোরি তে বিশেষ একটা জায়গা রেখে দিয়েছে যার নাম হল স্ট্রিং পুল, আর এই বিশেষ জায়গার কাজ অবশ্যই বিশেষ কিছু না হয়ে যায় না।</p>
+<h3><strong>স্ট্রিং</strong> <strong>পুল</strong> <strong>এর</strong> <strong>ধারনা:</strong></h3>
+<p>জাভা ভার্চুয়াল মেশিনে মেমোরি মডেল (Memory Model) দুই ভাবে বিভক্ত। একটা হল হিপ এবং অন্যটি হল থ্রেড স্ট্যাক। জাভা প্রোগ্রামে যখন কোন অবজেক্ট তৈরি হয় তখন তাকে জায়গা দেওয়া হয় হিপ এ এবং কোন থ্রেড এক্সিকিউট করার জন্য ব্যাবহার করা হয় থ্রেড স্ট্যাক। তবে আমদের মাথাব্যথা হল হিপ নিয়ে কেননা জাভা হিপের ভিতরে রয়েছে একটা বিশেষ এলাকা যার নাম হল স্ট্রিং পুল (String পুল)। এখন প্রশ্ন হল এই স্ট্রিং পুল কি জিনিস? সহজ কোথায় এ হল স্ট্রিং এর পুকুর অর্থাৎ যে পুকুরে অসংখ্য স্ট্রিং থাকে ।</p>
+<p>জাভাতে স্ট্রিং immutable হওয়ার কারনে স্ট্রিং নিয়ে কাজ করার সময় হিপে অনেক নতুন নতুন অবজেক্ট তৈরি হয়ে যায় ।  আর স্ট্রিং অবজেক্ট মেমোরি তে জায়গাও নিয়ে থাকে অনেক বেশি। আবার অনেক সময় এমন ও হয় যে একই  রকম স্ট্রিং অবজেক্ট (স্ট্রিংয়ের ক্যারেক্টারগুলো একই) তৈরি হয়ে যাচ্ছে। এখন যদি একই রকম ক্যারেক্টারের স্ট্রিং এর জন্য বারবার নতুন অবজেক্ট তৈরি না করে একটা অবজেক্ট কে শেয়ার করে ব্যাবহার করা যায় তাহলে যেটা অল্প হলেও বাঁচবে সেটা হল মেমোরি । মেমোরি অপটিমাইজেশন এর চিন্তাভাবনা থেকেই মূলত স্ট্রিং পুল এর জন্ম । আর এটা যে জাভা হিপ এরই একটা অংশ সেটা তো আগেই বলা হয়ে গেছে।</p>
+<p>জাভায় যখন লিটারেল ব্যাবহার করে স্ট্রিং তৈরি করা হয় তখন তার জায়গা হয় স্ট্রিং পুল এ। তবে তার আগে জাভা রানটাইম মেশিন <strong>(JVM)</strong> একটা কাজ করে, সে খুঁজে দেখে যে স্ট্রিং টা তৈরি করার পায়তারা চলছে সেটা স্ট্রিং পুলে আছে কিনা! যদি থাকে তাহলে আর নতুন করে কোন অবজেক্ট তৈরি না করে আগের অবজেক্ট এর একটা রেফারেন্স নতুন স্ট্রিংটা কে দিয়ে দেওয়া হয় । তবে আমরা যদি new কিওয়ার্ড এবং কন্সট্রাকটর ব্যবহার করে স্ট্রিং তৈরি করতে চাই তাহলে সবসময়ই নতুন করে অবজেক্ট তৈরি হবে।</p>
+<p><img decoding="async" class="wp-image-2674 size-full aligncenter" src="/wp-content/uploads/2018/05/myclass2-1.png" alt="myclass2 1 স্ট্রিং এর আদ্যোপান্ত" width="678" height="255" srcset="/wp-content/uploads/2018/05/myclass2-1.png 678w, /wp-content/uploads/2018/05/myclass2-1-480x181.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 678px, 100vw"></p>
+<p>[av_textblock size=&#8221; font_color=&#8221; color=&#8221; av-medium-font-size=&#8221; av-small-font-size=&#8221; av-mini-font-size=&#8221; admin_preview_bg=&#8221;]<br />
+উপরের উদাহরণ এ <strong>firstString</strong> এবং <strong>secondString</strong> এর ভ্যালু একই হওয়ায়  <strong>firstString</strong> অবজেক্ট এর একটা রেফারেন্স <strong>secondString</strong> কে দিয়ে দেওয়া হয়েছে, নতুন করে কোন অবজেক্ট তৈরি করা হয় নি। কিন্তু <strong>thirdString</strong> কে তৈরি করা হচ্ছে new কিওয়ার্ড এবং কন্সট্রাকটর ব্যবহার করে, তাই এ ক্ষেত্রে নতুন একটা অবজেক্ট তৈরি হচ্ছে । এ কারনেই আমরা যখন <strong>firstString</strong> এবং <strong>secondString</strong> কে তুলনা করে দেখছি তখন আউটপুট হিসেবে আমরা পাচ্ছি যে তারা দুই জনেই সমান কেননা তারা একই ইন্সটান্স কে রেফার করে আছে। আবার <strong>firstString</strong> এবং <strong>thirdString</strong> তুলনা করলে আমরা দেখছি যে তারা সমান না কেননা তারা দুই জনেই ভিন্ন ভিন্ন অবজেক্ট,যদিও তাদের ভ্যালু একই । জাভাতে একটা স্ট্রিং এর সাথে আরেকটা স্ট্রিং কে তুলনা করার জন্য<strong>boolean equals(Object another)</strong> এবং <strong>boolean equalsIgnoreCase(String another)</strong> নামে দুইটা মেথড আছে যাদের মধ্যে প্রথম টির কাজ মূলত অবজেক্ট এর ভ্যালু নিয়ে  তুলনা করা এবং দ্বিতীয় টির কাজ হল অন্য একটা স্ট্রিং অবজেক্ট এর ভ্যালু  নিয়ে তুলনা করা । কিন্তু == অপারেটর (operator) তুলনা করে রেফারেন্সের মাধ্যমে, ভ্যালুর মাধ্যমে নয় ।</p>
+<p>কম্পিউটার সায়েন্সে <a href="https://en.wikipedia.org/wiki/String_interning" rel="nofollow noopener" target="_blank"><strong>String interning</strong></a> নামে একটি টার্ম আছে যা এই স্ট্রিং পুলিং এর কাজ করে দেয়। String interning এর কাজ হল একই ধরনের স্ট্রিংগুলোর শুধু একটাই কপি মেমরিতে থাকবে।</p>
+<h4><strong>ইমমিউটেবল(Immutable) </strong><strong>স্ট্রিং</strong><strong>:</strong></h4>
+<p>জাভাতে স্ট্রিং ক্লাস হল <strong>immutable</strong>, এর মানে হচ্ছে ,আমি যদি একবার কোন একটা  স্ট্রিং অবজেক্ট তৈরি করে ফেলি তাহলে  তাকে আর পরিবর্তন করতে পারব না। একটু সহজ করে বলতে গেলে, আমরা অনেক ক্লাস লিখি, তারপর এর মাঝে বিভিন্ন ক্লাস ভ্যারিয়েবল রাখি, অবজেক্ট তৈরি করার পর সেই অবজেক্টর এর ভেতরের ভ্যারিয়েবল গুলো বিভিন্ন সময় পরিবতর্তন করতে পারি। কিন্তু স্ট্রিং এর ক্ষেত্রে এটি সম্ভব নয়। অর্থাৎ আমরা যদি কোন একটি ভ্যালু দিয়ে একবার একটি স্ট্রিং অবজেক্ট তৈরি করি তাহলে সেটি আর পরিবর্তন করা যাবে না। নিচের উদাহরণটি ভালভাবে খেয়াল করলে বিষয়টা আমাদের কাছে পরিষ্কার হয়ে যাবে আশা করি।<br />
+[/av_textblock]</p>
+<p>[av_image src=&#8217;/wp-content/uploads/2018/05/first-strings.png&#8217; attachment=&#8217;1555&#8242; attachment_size=&#8217;full&#8217; align=&#8217;center&#8217; styling=&#8221; hover=&#8217;av-hover-grow&#8217; link=&#8221; target=&#8221; caption=&#8221; font_size=&#8221; appearance=&#8221; overlay_opacity=&#8217;0.4&#8242; overlay_color=&#8217;#000000&#8242; overlay_text_color=&#8217;#ffffff&#8217; animation=&#8217;no-animation&#8217; admin_preview_bg=&#8221;][/av_image]</p>
+<div class="single_blog_image">
+<img decoding="async" class="aligncenter wp-image-2675 size-full" src="/wp-content/uploads/2018/05/first-strings-1.png" alt="first strings 1 স্ট্রিং এর আদ্যোপান্ত" width="660" height="249" srcset="/wp-content/uploads/2018/05/first-strings-1.png 660w, /wp-content/uploads/2018/05/first-strings-1-480x181.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 660px, 100vw">
+</div>
+<p>[av_textblock size=&#8221; font_color=&#8221; color=&#8221; av-medium-font-size=&#8221; av-small-font-size=&#8221; av-mini-font-size=&#8221; admin_preview_bg=&#8221;]<br />
+এখানে <strong>concat</strong>() এই মেথড টার কাজ হল একটা স্ট্রিং এর শেষে আরেকটি স্ট্রিংকে জুড়ে দেওয়া ।কাজেই আমাদের কাছে যদিও মনে হচ্ছে যে <strong>firstString</strong> অবজেক্টটির ভ্যালু বদলে গেছে, কিন্তু আসলে যেটা হয়েছে সেটা হল “<strong>ShadmanSakib</strong>” এই  ভ্যালু  নিয়ে নতুন একটা অবজেক্ট তৈরি হয়েছে । কিন্তু <strong>firstString</strong>  এখনো রেফার করে আছে “<strong>Shadman</strong>” কেই এবং নতুন তৈরি হওয়া অবজেক্ট টির কোন রেফারেন্স ভ্যারিয়েবল না থাকার কারনে আমরা যখন <strong>firstString</strong> কে প্রিন্ট করে দেখছি তখন আমরা ভ্যালু পাচ্ছি “<strong>Shadman</strong>” । তার মানে <strong>firstString</strong> এর কোন পরিবর্তন হয়নি । এখন কোডটা একটু বদলে দিলাম ।<br />
+[/av_textblock]</p>
+<p>[av_image src=&#8217;/wp-content/uploads/2018/05/first-strings-output.png&#8217; attachment=&#8217;1556&#8242; attachment_size=&#8217;full&#8217; align=&#8217;center&#8217; styling=&#8221; hover=&#8217;av-hover-grow&#8217; link=&#8221; target=&#8221; caption=&#8221; font_size=&#8221; appearance=&#8221; overlay_opacity=&#8217;0.4&#8242; overlay_color=&#8217;#000000&#8242; overlay_text_color=&#8217;#ffffff&#8217; animation=&#8217;no-animation&#8217; admin_preview_bg=&#8221;][/av_image]</p>
+<div class="single_blog_image">
+<img decoding="async" class="aligncenter wp-image-2676 size-full" src="/wp-content/uploads/2018/05/first-strings-output-1.png" alt="first strings output 1 স্ট্রিং এর আদ্যোপান্ত" width="664" height="249" srcset="/wp-content/uploads/2018/05/first-strings-output-1.png 664w, /wp-content/uploads/2018/05/first-strings-output-1-480x180.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 664px, 100vw">
+</div>
+<p>[av_textblock size=&#8221; font_color=&#8221; color=&#8221; av-medium-font-size=&#8221; av-small-font-size=&#8221; av-mini-font-size=&#8221; admin_preview_bg=&#8221;]<br />
+এবার যদিও মনে হচ্ছে আমরা স্ট্রিং এর ভ্যালু পরিবর্তন করে ফেলতে পেরেছি, কিন্তু আসলে এবারও সেটা হয় নি। এখানে firstString অবজেক্ট এর ভ্যালুর সাথে নতুন ভ্যালু যোগ করে একেবারে নতুন একটা অবজেক্ট তৈরি হচ্ছে এবং firstString এখন রেফার করবে এই নতুন অবজেক্ট টিকে । তাহলে আগের অবজেক্টটির কি হবে? জাভার  গার্বেজ কালেক্টর এই রেফারেন্স বিহীন অবজেক্টটি কে মেমোরি থেকে সরিয়ে ফেলবে। এখন প্রশ্ন হচ্ছে “Shadman” এই  ভ্যালুটির কোন পরিবর্তন কি আমরা করতে পেরেছি? উত্তর হল না, কেননা Immutable হওয়ার কারণে ভ্যালু পরিবর্তন করতে গেলে নতুন ভ্যালু নিয়ে নতুন আরেকটি অবজেক্ট তৈরি হচ্ছে ।</p>
+<h4><strong> </strong><strong>ইমমিউটেবল(Immutable) </strong><strong>স্ট্রিং কেন দরকার</strong><strong>??</strong></h4>
+<p>স্ট্রিং পুল থেকে যদি একই ভ্যালু হয় তাহলে নতুন অবজেক্ট তৈরি না করে রেফারেন্স দিয়ে দেওয়া হয় যেটা আমরা আগেই দেখে ফেলছি। এখন যদি স্ট্রিং <strong>Immutable</strong> না হত তাহলে কোন একটা স্ট্রিং যদি পরিবর্তন করা হয় তাহলে অন্যান্য রেফারেন্স গুলোর ও পরিবর্তন হয়ে যাবে, যেটা কখনোই কাম্য নয়।</p>
+<p>বিভিন্ন নেটওয়ার্ক কানেকশন, ডাটাবেজ কানেকশন ইউ আর এল (<strong>URL</strong>) , ইউজারনেম পাসওয়ার্ড ইত্যাদি ক্ষেত্রে প্যারামিটার হিসেবে স্ট্রিং ব্যবহার করা হয়। সুতরাং স্ট্রিং <strong>immutable</strong> না হলে পরিবর্তন করে ফেলা সম্ভব,  যা কিনা একটি সিরিয়াস রকম সিকিউরিটি থ্রেড হতে পারে।</p>
+<p>ক্লাস লোডিং এর ক্ষেত্রে স্ট্রিং কে আর্গুমেন্ট হিসেবে ব্যবহার করা হয়। স্ট্রিং যদি <strong>Immutable</strong> না হত থলে ভুল ক্লাস লোড হয়ে যাওয়ার একটা সম্ভাবনা থেকে যেত। এছাড়া স্ট্রিং <strong>Immutable</strong> হওয়ার কারণে এটা থ্রেড সেফ এবং স্বাধীনভাবে থ্রেড একসেস করতে পারে। যার ফলে থ্রেড <strong>synchronization</strong> এবং থ্রেড সেফটি  নিয়ে আমাদের চিন্তা করতে হয় না।</p>
+<h3><strong>শেষ কথা</strong><strong>:</strong></h3>
+<p>জাভা স্ট্রিংয়ের বিভিন্ন ধরনের অপারেশন করার জন্য আমাদের অনেক গুলো মেথড তৈরি করে দিয়েছে। যেমন স্ট্রিং এর দৈর্ঘ্য বের করার জন্য <strong>length</strong>(), বড় হাতের অক্ষরে পরিবর্তন করার জন্য <strong>toUpperCase</strong>(), ছোট হাতের অক্ষরে পরিবর্তন করার জন্য <strong>toLowerCase</strong>() ইত্যাদি আরো অনেক। এখন একটা শেষ প্রশ্ন , জাভা স্ট্রিং ক্লাস <strong>Immutable</strong>,কিন্তু আমাদের যদি <strong>mutable</strong> স্ট্রিং এর দরকার হয় তাহলে উপায় কি ? জাভা  আমাদের <strong>StringBuffer</strong> আর <strong>StringBuilder</strong> নামক দুইটি ক্লাস দিয়েছে যাদের মাধ্যমে <strong>mutable</strong> স্ট্রিং তৈরি করা সম্ভব।<br />
+[/av_textblock]<br />
+[/av_one_full]</p>
+<p>[av_hr class=&#8217;invisible&#8217; height=&#8217;50&#8217; shadow=&#8217;no-shadow&#8217; position=&#8217;center&#8217; custom_border=&#8217;av-border-thin&#8217; custom_width=&#8217;50px&#8217; custom_border_color=&#8221; custom_margin_top=&#8217;30px&#8217; custom_margin_bottom=&#8217;30px&#8217; icon_select=&#8217;yes&#8217; custom_icon_color=&#8221; icon=&#8217;ue808&#8242; font=&#8217;entypo-fontello&#8217; admin_preview_bg=&#8221;]</p>
+<p>[av_comments_list ]</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/%e0%a6%b8%e0%a7%8d%e0%a6%9f%e0%a7%8d%e0%a6%b0%e0%a6%bf%e0%a6%82-%e0%a6%8f%e0%a6%b0-%e0%a6%86%e0%a6%a6%e0%a7%8d%e0%a6%af%e0%a7%8b%e0%a6%aa%e0%a6%be%e0%a6%a8%e0%a7%8d%e0%a6%a4/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>থাইমলিফ নিয়ে টুকিটাকি</title>
+		<link>/blog/%e0%a6%a5%e0%a6%be%e0%a6%87%e0%a6%ae%e0%a6%b2%e0%a6%bf%e0%a6%ab-%e0%a6%a8%e0%a6%bf%e0%a7%9f%e0%a7%87-%e0%a6%9f%e0%a7%81%e0%a6%95%e0%a6%bf%e0%a6%9f%e0%a6%be%e0%a6%95%e0%a6%bf/</link>
+					<comments>/blog/%e0%a6%a5%e0%a6%be%e0%a6%87%e0%a6%ae%e0%a6%b2%e0%a6%bf%e0%a6%ab-%e0%a6%a8%e0%a6%bf%e0%a7%9f%e0%a7%87-%e0%a6%9f%e0%a7%81%e0%a6%95%e0%a6%bf%e0%a6%9f%e0%a6%be%e0%a6%95%e0%a6%bf/#respond</comments>
+		
+		<dc:creator><![CDATA[Ashiqul]]></dc:creator>
+		<pubDate>Thu, 03 May 2018 06:10:16 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[coding]]></category>
+		<category><![CDATA[programmin]]></category>
+		<guid isPermaLink="false">http://www.vivacomsolutions.com/?p=1520</guid>
+
+					<description><![CDATA[থাইমলিফ নিয়ে টুকিটাকি জাভা প্রোগ্রামিং ল্যাঙ্গুয়েজ টা বরাবরই হট টপিক আর জাভার যতগুলা ফ্রেমওয়ার্ক আছে তার মদ্ধে স্প্রিং বুটএকটি জনপ্রিয় ওয়েব ডেভেলপমেন্ট ফ্রেমওয়ার্ক । আর আমরা সবাই অবশ্যই জানি ওয়েব ডেভেলপমেন্ট করতে গেলে এইচটিএমএল(HTML) ছাড়া উপায় নাই। মানে আমাদের ওয়েব ডেভেলপমেন্ট করতে গেলে আমাদের কে ভিউ নিয়ে কাজ করতে হবেই আর বাটন টেক্সট এডিটর এইগুলা ত একটা [&#8230;]]]></description>
+										<content:encoded><![CDATA[<h2><strong>থাইমলিফ নিয়ে টুকিটাকি</strong></h2>
+<p><strong>জাভা</strong> প্রোগ্রামিং ল্যাঙ্গুয়েজ টা বরাবরই হট টপিক আর জাভার যতগুলা ফ্রেমওয়ার্ক আছে তার মদ্ধে <strong>স্প্রিং বুট</strong>একটি জনপ্রিয় ওয়েব ডেভেলপমেন্ট ফ্রেমওয়ার্ক । আর আমরা সবাই অবশ্যই জানি ওয়েব ডেভেলপমেন্ট করতে গেলে এইচটিএমএল(<strong>HTML</strong>) ছাড়া উপায় নাই। মানে আমাদের ওয়েব ডেভেলপমেন্ট করতে গেলে আমাদের কে ভিউ নিয়ে কাজ করতে হবেই আর বাটন টেক্সট এডিটর এইগুলা ত একটা কমন বিষয়। এইচটিএমএল লাগবেই লাগবে। ওয়েব ডেভেলপমেন্ট এ এইচটিএমএল প্রায়ই আমাদের সার্ভার সাইট থেকে ডাটা এনে জেনারেইট করতে হয় প্রায়ই সার্ভার সাইট এর ডাটার উপর নির্ভর করে একাধিকবার একি এইচটিএমএল এলেমেন্ট টা দেখাতে হয় আবার সার্ভার সাইট থেকে পাওয়া ডাটা এইচটিএমএল<br />
+এলিমেন্টএ (টেক্সট এডিটর, লাভেল) বসিয়ে দেখাতে হয়। থাইমলিফ একটি জাভা লাইব্রেরি। এটি <strong><em>XML XHTML HTML5</em></strong> ভিউ জেনারেটর টেমপ্লেইট ইঞ্জিন। আজকে আমরা <strong>থাইমলিফ</strong> নিয়ে টুকিটাকি কিছু শিখব।</p>
+<p>১। <strong>থাইমলিফ যেভাবে সেটআপ করব</strong></p>
+<p>আমরা আমাদের pom.xml ফাইল এর properties এর মধ্যে 3.0.6.RELEASE ট্যাগটি যুক্ত করব।</p>
+<p>তারপর dependencies এর মধ্যে নিছের dependency টা যুক্ত করব।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;dependencies&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
+            &lt;exclusions&gt;
+                &lt;exclusion&gt;
+                    &lt;groupId&gt;nz.net.ultraq.thymeleaf&lt;/groupId&gt;
+                    &lt;artifactId&gt;thymeleaf-layout-dialect&lt;/artifactId&gt;
+                &lt;/exclusion&gt;
+            &lt;/exclusions&gt;
+        &lt;/dependency&gt;
+&lt;/dependencies&gt;</pre>
+<p>org.springframework.boot<br />
+spring-boot-starter-thymeleaf</p>
+<p>nz.net.ultraq.thymeleaf<br />
+thymeleaf-layout-dialect</p>
+<p>এইভাবে ঠিক মত ট্যাগগুলো যুক্ত করতে পারলেই আমাদের আইডিই নিজে নিজেই লাইব্রেরির কোড গুলো ডাউনলোড করে ফেলবে আর এর সাথে আমাদের থাইমলিফ সেটআপ সম্পন্ন হল।</p>
+<p>২। <strong>টেক্সট ভিউ</strong></p>
+<p>ধরুন আমাদের একটা রিকুয়েস্ট ইউআরএল আছে যেটা একটা এডিট ফর্ম ওপেন করে। এখানে শুধু আমরা একটা স্টুডেন্ট এর নাম এডিট করতে পারি।</p>
+<p>আমরা ধরে নিলাম আমাদের স্টুডেন্ট এর নাম Akash এখন যখন আমরা এডিট ফর্ম এ জাব আমরা অবশ্যই চাইব স্টুডেন্ট এর বর্তমান নাম টা টেক্সট ভিউ এ ফিল হয়ে থাক। আমাদের কনট্রোলার থেকে স্টুডেন্ট এর নাম টা এভাবে model.addAttribute(“name”, studentName); এর মাধ্যমে কী ভ্যালু আকারে পাঠাব।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">@GetMapping("/edit")
+    public String home(Model model) {
+        String studentName = "Akash";
+        model.addAttribute("name", studentName);
+        return "home";
+    }</pre>
+<p>[av_codeblock wrapper_element=&#8221; wrapper_element_attributes=&#8221; codeblock_type=&#8217;snippet&#8217;]<br />
+@GetMapping(&#8220;/edit&#8221;)<br />
+public String home(Model model) {<br />
+String studentName = &#8220;Akash&#8221;;<br />
+model.addAttribute(&#8220;name&#8221;, studentName);<br />
+return &#8220;home&#8221;;<br />
+}</p>
+<p>এবার এই name এর ভ্যালু টাকে দেখানুর জন্য আমাদের এইচটিএমএল কোড টা নিছে দেয়া হল।</p>
+<div class="single_blog_image"><img decoding="async" class="alignnone size-full wp-image-2732" src="/wp-content/uploads/2018/05/html-input-field-1.png" alt="html input field 1 থাইমলিফ নিয়ে টুকিটাকি" width="768" height="319" srcset="/wp-content/uploads/2018/05/html-input-field-1.png 768w, /wp-content/uploads/2018/05/html-input-field-1-480x199.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 768px, 100vw"></div>
+<p>[av_image src=&#8217;/wp-content/uploads/2018/05/html-input-field.png&#8217; attachment=&#8217;1529&#8242; attachment_size=&#8217;full&#8217; align=&#8217;center&#8217; styling=&#8221; hover=&#8217;av-hover-grow&#8217; link=&#8221; target=&#8221; caption=&#8221; font_size=&#8221; appearance=&#8221; overlay_opacity=&#8217;0.4&#8242; overlay_color=&#8217;#000000&#8242; overlay_text_color=&#8217;#ffffff&#8217; animation=&#8217;no-animation&#8217; admin_preview_bg=&#8221;][/av_image]</p>
+<p>&nbsp;</p>
+<p>[av_textblock size=&#8221; font_color=&#8221; color=&#8221; av-medium-font-size=&#8221; av-small-font-size=&#8221; av-mini-font-size=&#8221; admin_preview_bg=&#8221;]<br />
+থাইমলিফ শিখা অনেক সহজ যদি আপনি আগে থেকেই ভাল করে এইচটিএমএল জানেন। এই উদাহরন টাতে আমি একটা ফর্ম নিয়েছি খুব এ সিম্পল একটা ফর্ম । এখানে মাত্র একটা label আর একটা টেক্সট ভিউ আছে। টেক্সট ভিউ টার প্রপার্টি গুলা পরিচিত ই কিন্তু আমরা দেখতে পারছি কিছু কিছু প্রপার্টি তে <strong>th:</strong> ট্যাগ টা ব্যাবহার করেছি। যেমন <strong>th:value=”${name}”</strong> এই টেক্সট ভিউ তে আমরা চাচ্ছি সার্ভার সাইট এর ডাটা টা প্রিন্ট হউক। এইখানে থাইমলিফ যেটা করবে সেটা হল সার্ভার থেকে পাওয়া ডাটা জাভা এর সাথে ইন্তিগ্রেট করে ভেলু টা প্রিন্ট করবে। তাছারা আপনার যদি নরমাল টেক্সট ভিউ দেখাতে ইচ্ছা করে মানে সার্ভার সাইট এর ডাটা দেখাতে না চান তাহলে আপনার <strong>th:</strong> ট্যাগ টা ব্যাবহার না করলেও চলবে। থাইমলিফ অনেক শক্তিশালী একটা <strong><em>HTML5</em></strong> ভিউ জেনারেটর ইঞ্জিন। আপনার থাইমলিফ লিখা ফরম্যাট এ এইচটিএমএল পেজ টা যদি জাভা সার্ভার রান না করেও দেখতে চান তাহলে এই পেজ টা ইন্ডিপেন্ডেন্ট ভাবেও কাজ করবে তখন ব্রাউজার আপনার <strong>th:</strong> ট্যাগ টা টা মুছে দিয়ে আপনাকে পরিপূর্ণ একটা এইচটিএমএল দেখাবে।</p>
+<p>3। <strong>থাইমলিফ ইউআরএল</strong></p>
+<p>উপরের উদাহরনে আমরা আমাদের ফর্ম এর অ্যাকশান ইউআরএল th:action=”@{/admin/category/save}”এইভাবে লিখেছিলাম। থাইমলিফ এ কন এইচটিএমএল এলিমেন্ট ইউআরএল কে @{} এর ভিতরে লিখতে হয় তখন আপনার রুট ইউআরএল টাকে সে নিজে থেকে ধরে নিবে। আরেকটা উদাহরন দিচ্ছি সিএসএস স্টাইল এর লিঙ্ক এর ক্ষেত্রে</p>
+<p>এইখানে আমার প্রোজেক্ট এর resources/static ডিরেক্টরি কে সে রুট ধরে বাকি ইউআরএল থেকে আমার এই <strong>daterangepicker.min.css</strong> ফাইল টি খুজে নিয়েছে।</p>
+<p>৪। <strong>ড্রপডাউন</strong></p>
+<p>সার্ভার সাইট থেকে ডাটা এর উপর ভিত্তি করে আমাদেরকে অনেক ভাবেই ভিউ জেনারেট করতে হয়। এইবার আমরা কিছু আর মজার জিনিশ শিখব।<br />
+ধরুন সার্ভার থেকে আমাদের কাছে কিছু লিস্ট অফ স্টুডেন্ট অব্জেক্ট আসল এখন আমাদেরকে ফর্ম এ ওই স্টুডেন্ট দের লিস্ট একটা ড্রপডাউন এ দেখাতে হবে। সেই ক্ষেত্রে অবশ্যই ডাটা টাকে সার্ভার থেকে পাঠাতে হবে তারপর এই ডাটাএর মদ্ধে লুপ চালিয়ে ড্রপডাউন জেনারেট করতে হবে।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">@RequestMapping("/create")
+public String create(Model model) {
+
+        List&lt;Student&gt; students = (List&lt;Student&gt;) categoryRepository.findAll();
+    model.addAttribute("students", students);
+    
+    return "admin/student/create";
+}</pre>
+<p>@RequestMapping(&#8220;/create&#8221;)<br />
+public String create(Model model) {</p>
+<p>List students = (List) categoryRepository.findAll();<br />
+model.addAttribute(&#8220;students&#8221;, students);</p>
+<p>return &#8220;admin/student/create&#8221;;<br />
+}</p>
+<p>এখানে আমরা সার্ভার সাইট থেকে স্টুডেন্ট এর লিস্ট অফ অব্জেক্ট পাঠাচ্ছি আর আমরা ধরেই নিতে পারি প্রতিটা স্টুডেন্ট অব্জেক্ট এ স্টুডেন্ট এর নাম আর আইডি থাকবেই। এখন ক্লায়েন্ট সাইট এ আমাদের থাইমলিফ এর কোড টা হবে এমন।</p>
+<p>&nbsp;</p>
+<p>থাইমলিফ এর মাধ্যমে আমরা একটা এইচটিএমএল এলিমেন্ট এর মদ্ধে লুপ চালাতে পারি। এখানে আমরা সিলেক্ট এর অপশন গুলো লুপ চালিয়ে জেনারেট করেছি।সার্ভার থেকে পাওয়া লিস্ট অফ স্টুডেন্ট অব্জেক্ট এর মদ্ধে এক এক করে লুপ চলেছে th:each এর মাধ্যমে এখানে                  student : ${students} প্রত্যেকটা অবজেক্ট student নামের অবজেক্ট এর মদ্ধে সেট হচ্চে যার মদ্ধে আইডি একং নেইম প্রপার্টি আছে। এখন ধরা যাক আমরা জেনারেট ও করব আবার ড্রপডাউন এর একটা নির্দিষ্ট অপশন সিলেক্টেড থাকবে। এখন আমাদের যেটা করতে হবে th:selected প্রপার্টি ব্যাবহার করতে হবে।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="xml">&lt;select name="student" id="student" class="form-control"&gt;
+    &lt;option value="0"&gt;--Please Select--&lt;/option&gt;
+    &lt;option th:each="student : ${students}"
+            th:value="${student.id}"
+            th:text="${student.name}"&gt;
+    &lt;/option&gt;
+&lt;/select&gt;</pre>
+<p>&nbsp;</p>
+<p>th:selected= প্রপার্টি আমাদের কাছে একটা ট্রু বুলিয়ান ভেলো এক্সপেক্ট করে। তাই এখানে আমরা যে স্টুডেন্ট এর আইডি ৫ তাকে সিলেক্টেড করেছি।থাইমলিফে আমাদের সব ইউআরএল প্যারামিটার param নাকম ভেরিয়েবল এ সেট থাকে। যেমন http://localhost:8085/items?id=5 এই ইউআরএল এর id এর ভেলু আমরা param.id তে পাব। উপরের সিলেক্টেড অপশন টা একটু পরিবর্তন করে যদি লিখি</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="xml">&lt;select name="student" id="student" class="form-control"&gt;
+    &lt;option value="0"&gt;--Please Select--&lt;/option&gt;
+    &lt;option th:each="student : ${students}"
+            th:value="${student.id}"
+            th:text="${student.name}"&gt;
+    &lt;/option&gt;
+&lt;/select&gt;</pre>
+<p>৫। <strong>থাইমলিফ ফ্রেগমেন্ট</strong></p>
+<p>এইবার আমি থাইমলিফ এর যে বিষয় টা নিয়ে আলুচনা করব সেটা হল ফ্রেগমেন্ট। থাইমলিফের এই ফ্রেগমেন্ট। বিষয়টা আমার কাছে খুব ভাল লাগে। সাধারনত ওয়েবসাইট এর পেজ গুলা কমন কিছু সেকশন শেয়ার করে থাকে যেমন হেডার, ফুটার, মেনু ইত্যাদি। আবার প্রায় পেজ এই আমরা কমন এইচটিএমএল ফরম্যাট এ এরর মেসেজ, সাক্সেস মেসেজ দেখিয়ে থাকি। এইসব ক্ষেত্রে আমাদের এই পেজ কন্টেন্ট গুলো আলাদা থাকলে ভাল হয় যাতে করে যখন এই কন্টেন্ট গুলো লাগবে যেন এনে আমার বর্তমান পেজ এ দেখাতে পারি। থাইমলিফ এর লেয়াউট ব্যবস্থা আমাদের কে ফ্রেগমেন্ট নামক একটি সুবিধা দিয়ে থাকে যেটা যেএসপি (JSP) ইনক্লুড এর মতই। কিন্তু থাইমলিফ কে সে ক্ষেত্রে একটু বেশি পণ্ডিত বলা যায়। থাইমলিফ একটা পেজ এর একটা নির্দিষ্ট অংশ কে ইনক্লুড করতে পারে যেখানে যেএসপি শুধু কেবল একটা কমপ্লিট পেজ ইনক্লুড করতে সক্ষম। আর যে জন্যই আমরা এক একটা কন্তেন্ট কে একটা একটা ফ্রেগমেন্ট হিসেবে ধরব। এতক্ষন যা বক বক করলাম আসুন কোড দেখে আরও সহজে বোঝার চেষ্টা করি। একটা সম্পূর্ণ ওয়েব পেজ এর জন্য আমাদের একটা হেডার এবং একটা ফুটার আছে। তাই আমরা আমাদের হেডার এবং ফুটারটাকে আলাদা করে দুইটি পুরনাঙ্গ এইচটিএমএল ফাইল এ রাখতে পারি। আমাদের header.html এবং <strong>footer.html</strong> ফাইলটি যথাক্রমে <strong>templates/fragments</strong> ডিরেক্টরি তে রাখতে পারি।<br />
+<strong>header.html</strong> ফাইল টি যেমন হবেঃ</p>
+<p><img decoding="async" class="alignnone size-full wp-image-2735" src="/wp-content/uploads/2018/05/header-fragment-1-1.png" alt="header fragment 1 1 থাইমলিফ নিয়ে টুকিটাকি" width="719" height="336" srcset="/wp-content/uploads/2018/05/header-fragment-1-1.png 719w, /wp-content/uploads/2018/05/header-fragment-1-1-480x224.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 719px, 100vw"></p>
+<p><strong>footer.html</strong> ফাইল টি যেমন হবেঃ</p>
+<p><img decoding="async" class="alignnone size-full wp-image-2736" src="/wp-content/uploads/2018/05/footer-fragment-1-1.png" alt="footer fragment 1 1 থাইমলিফ নিয়ে টুকিটাকি" width="727" height="281" srcset="/wp-content/uploads/2018/05/footer-fragment-1-1.png 727w, /wp-content/uploads/2018/05/footer-fragment-1-1-480x186.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 727px, 100vw"></p>
+<p>উপরের দুইটা ফাইল এই দেখা যাচ্ছে আমরা th:fragment নামে থাইমলিফ এর এই প্রপার্টি টা ব্যবহার করেছি। একটি সম্পূর্ণ এইচটিএমএল ফাইল এ আলাদা আলাদা সেকশন কে আলাদা আলদা ফ্রেগমেন্ট হিসেবে ধরা যায়। আমরা শুধু এখানে একটা ফাইল এ একটাই <strong>ফ্রেগমেন্ট</strong> নিয়েছি। আমাদের header.html ফাইলে th:fragment=”header” ট্যাগটি দাড়া বঝানু হছে এই ফ্রেগমেন্ট এর নাম header ঠিক তেমনি ভাবে আমরা footer.html এও footer নামে একটি ফ্রেগমেন্ট নিয়েছি। আমরা যখন আমাদের মেইন পেজ কন্টেন্ট লিখব তখন শুধু আমরা পেজ কন্টেন্ট এর উপরে হেডার আর নিছে ফুটার দেখানুর জন্য <strong>th:replace=”fragments/header :: header”</strong> এবং <strong>th:replace=”fragments/footer :: footer”</strong> লিখব।</p>
+<p>এখানে th:replace প্রপার্টি আমাদের দরকারি ফ্রেগমেন্ট টা খুজে বের করে এবং ওই ফ্রেগমেন্ট এর ভিতরের এইচটিএমএল এলিমেন্ট গুলা এনে এই ডিভ এর ভিতরে রিপ্লেস করে দেয়। th:replace=”fragments/header :: header” এর প্রথম অংশ fragments/header এটা হল আমাদের ফাইল এর ডিরেক্টরি এবং দ্বিতীয় অংশ :: header ওই ফাইল এর যে ফ্রেগমেন্ট টা আমরা এনে বসাতে চাই সেই ফ্রেগমেন্ট এর নাম। এবার আসুন দেখি আমাদের মেইন কন্টেন্ট পেজ কেমন হবে।</p>
+<p>home.html ফাইল টি যেমন হবেঃ</p>
+<p><img decoding="async" class="alignnone size-full wp-image-2737" src="/wp-content/uploads/2018/05/home-fragment-1.jpg" alt="home fragment 1 থাইমলিফ নিয়ে টুকিটাকি" width="768" height="344" srcset="/wp-content/uploads/2018/05/home-fragment-1.jpg 768w, /wp-content/uploads/2018/05/home-fragment-1-480x215.jpg 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 768px, 100vw"></p>
+<p>এবার যদি আমরা আমাদের স্প্রিং বুট কনট্রোলার এ এই কোড টি যুক্ত করি তাহলে যে ওয়েব ভিউ টা দেখাবে টা নিচে দেখানু হল।</p>
+<p><strong>জাভা কোড</strong></p>
+<p>&nbsp;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="xml">@GetMapping("/home")
+public String home(Model model) {
+    return "home";
+}</pre>
+<p><img decoding="async" class="alignnone size-full wp-image-2738" src="/wp-content/uploads/2018/05/fragment-final-2.png" alt="fragment final 2 থাইমলিফ নিয়ে টুকিটাকি" width="768" height="290" srcset="/wp-content/uploads/2018/05/fragment-final-2.png 768w, /wp-content/uploads/2018/05/fragment-final-2-480x181.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 768px, 100vw"><br />
+আমাদের templates/home.html file এ</p>
+<div></div>
+<p>ডিভটাই আসলে header <strong>ফ্রেগমেন্ট</strong>কে এনে রিপ্লেস করে দেয়। <strong>ফ্রেগমেন্ট</strong> নিয়ে আমাদের আলোচনা এখনও শেষ হয়ে যায়নি। ফ্রেগমেন্টকে ফাংশন এর মত করেও কাজ করানো যায়। যেমন ধরুন আপনার একটা ফ্রেগমেন্ট আছে যার মদ্ধে এরর ম্যাসেজিং এর জন্য এইচটিএমএল লিখা আছে কিন্তু আপনার মেসেজ টা নির্দিষ্ট না বা সার্ভার এর ডাটার উপর নির্ভর করে ওই এইচটিএমএল এর মদ্ধে আপনার মেসেজটা বসাতে হবে। আমাদের <strong>fragments/message.html</strong> একটা ফাইল আছে যার মদ্ধে alert একটি ফ্রেগমেন্ট।</p>
+<p><img decoding="async" class="alignnone size-full wp-image-2740" src="/wp-content/uploads/2018/05/message-fragment-1.png" alt="message fragment 1 থাইমলিফ নিয়ে টুকিটাকি" width="768" height="261" srcset="/wp-content/uploads/2018/05/message-fragment-1.png 768w, /wp-content/uploads/2018/05/message-fragment-1-480x163.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 768px, 100vw"></p>
+<p>এই alert ফ্রেগমেন্টি এখন একটি ফাংশন এর মত কাজ করবে আর এই ফাংশন এর দুইটি প্যারামিটার আছে <strong>type</strong> এবং <strong>message</strong> আমরা যখন এই ফ্রেগমেন্টি ব্যাবহার করব তখন যেন </p>
+<p><img decoding="async" class="alignnone size-full wp-image-2741" src="/wp-content/uploads/2018/05/fragment-call-1.png" alt="fragment call 1 থাইমলিফ নিয়ে টুকিটাকি" width="764" height="102" srcset="/wp-content/uploads/2018/05/fragment-call-1.png 764w, /wp-content/uploads/2018/05/fragment-call-1-480x64.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 764px, 100vw"></p>
+<p>এই ডিভ থেকে আমরা alert ফ্রেগমেন্টি ব্যাবহার করেছি এবং সার্ভার থেকে পাওয়া এরর মেসেজ টি পাঠিয়ে দিয়েছি। পরিপূর্ণ এইচটিএমএল যেটা আমাদের দেখাবে</p>
+<p><img decoding="async" class="alignnone size-full wp-image-2742" src="/wp-content/uploads/2018/05/message-html-1.png" alt="message html 1 থাইমলিফ নিয়ে টুকিটাকি" width="768" height="138" srcset="/wp-content/uploads/2018/05/message-html-1.png 768w, /wp-content/uploads/2018/05/message-html-1-480x86.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 768px, 100vw"></p>
+<p><strong>th:classappend=”‘alert-‘ + ${type}”</strong> অংশ নিয়ে বলা একটু দরকারি। এই <strong>classappend</strong> আসলে আমাদের প্রয়োজন মতে একটা ক্লাস এর নাম তৈরি করে এবং শেষে এইচটিএমএল এর class প্রপার্টি এর সাথে যুক্ত করে দেয়।</p>
+<p><strong>থাইমলিফ </strong>নিয়ে আমাদের আলোচনা আজকের মত এখানেই শেষ আরও সময় পেলে আমরা বিস্তারিত আরও অনেক কীছূ শিখার চেষ্টা করব।</p>
+<p><strong>থাইমলিফ </strong>নিয়ে জানতে <a href="https://www.thymeleaf.org/" rel="nofollow noopener" target="_blank">https://www.thymeleaf.org/  এই লিঙ্ক এ যেটে পারেন।</a></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/%e0%a6%a5%e0%a6%be%e0%a6%87%e0%a6%ae%e0%a6%b2%e0%a6%bf%e0%a6%ab-%e0%a6%a8%e0%a6%bf%e0%a7%9f%e0%a7%87-%e0%a6%9f%e0%a7%81%e0%a6%95%e0%a6%bf%e0%a6%9f%e0%a6%be%e0%a6%95%e0%a6%bf/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

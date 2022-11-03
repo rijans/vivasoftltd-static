@@ -1,0 +1,2284 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Khairul Alam &#8211; Vivasoft</title>
+	<atom:link href="/author/khairul-alam/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Tue, 01 Nov 2022 05:24:11 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>Khairul Alam &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Efficient way to handle Procedures, Views, Functions in EF Core</title>
+		<link>/blog/procedures-views-functions-in-entity-framework-core/</link>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Mon, 31 Oct 2022 10:00:24 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[entity framework]]></category>
+		<category><![CDATA[function]]></category>
+		<category><![CDATA[procedure]]></category>
+		<category><![CDATA[view]]></category>
+		<guid isPermaLink="false">/?p=12348</guid>
+
+					<description><![CDATA[Sometimes we need to write new Functions, Views and Procedures or use existing ones. In the past, EFCore hasn’t had a super nice way to handle non-table database structures. Therefore, in order to work with non-table database objects in EFCore5 code first implemented some new functionality around some of these items, including the ability to [&#8230;]]]></description>
+										<content:encoded><![CDATA[<div dir="ltr">Sometimes we need to write new Functions, Views and Procedures or use existing ones. In the past, EFCore hasn’t had a super nice way to handle non-table database structures. Therefore, in order to work with non-table database objects in EFCore5 code first implemented some new functionality around some of these items, including the ability to do a ToFunction or ToView call in the Fluent API to map queries to table-valued functions, procedures and views, which we can leverage in EFCore6.</div>
+<div dir="ltr"></div>
+<div dir="ltr">In this post, we will see how to add non-table database objects to db context  and put the SQL scripts into migration script in a nicer and cleaner way.</div>
+<div dir="ltr"></div>
+<div dir="ltr">
+<p>At first we will create one Procedure (spGetWeatherInformation), one View (vwLocationTemperatureSummery) and one Function (fnGetTemperatureByLocation) for example.  Then we will keep them in  three seperate directory in Sql Script directory of our WeatherForecast.Infrastructure project.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">CREATE OR ALTER VIEW vwLocationTemperatureSummery
+AS
+SELECT 
+     Date,
+     Location,
+     TemperatureC Temperature,
+     Summary
+FROM WeatherForecasts</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">CREATE OR ALTER PROCEDURE spGetWeatherForecast
+(
+   @location NVARCHAR(50)
+)
+AS
+BEGIN
+    SELECT 
+         Date,
+         Location,
+         TemperatureC Temperature,
+         Summary
+    FROM WeatherForecasts
+    WHERE LOWER(Location) = LOWER(@location)
+END</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">CREATE OR ALTER FUNCTION fnGetTemperatureByLocation
+(
+   @location NVARCHAR(50)
+)
+RETURNS INT
+AS
+BEGIN
+
+    DECLARE @Temperature INT
+
+    SELECT TOP(1)
+    	@Temperature = TemperatureC
+    FROM WeatherForecasts
+    WHERE LOWER(Location) = LOWER(@location)
+    ORDER BY Id DESC
+
+    RETURN @Temperature
+
+END</pre>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter size-full wp-image-12356" src="/wp-content/uploads/2022/10/script-directory-1.png" alt="script directory 1 Efficient way to handle Procedures, Views, Functions in EF Core" width="448" height="821" srcset="/wp-content/uploads/2022/10/script-directory-1.png 448w, /wp-content/uploads/2022/10/script-directory-1-164x300.png 164w" sizes="(max-width: 448px) 100vw, 448px"><br />
+Build Action of those file should be Embedded resource- Right click on the file then select Property—<br />
+<img decoding="async" class="aligncenter size-full wp-image-12357" src="/wp-content/uploads/2022/10/2-build-action.png" alt="2 build action Efficient way to handle Procedures, Views, Functions in EF Core" width="570" height="902" srcset="/wp-content/uploads/2022/10/2-build-action.png 570w, /wp-content/uploads/2022/10/2-build-action-480x760.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 570px, 100vw"></p>
+</div>
+<div dir="ltr"></div>
+<div dir="ltr">
+<div dir="ltr">
+<p>Now opening the Package Manager Console, will run following migration command—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="bash">add-migration v1_3 -c ApplicationDbContext -o Migrations</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-12358" src="/wp-content/uploads/2022/10/3.-run-migration.png" alt="3. run migration Efficient way to handle Procedures, Views, Functions in EF Core" width="1885" height="946" srcset="/wp-content/uploads/2022/10/3.-run-migration.png 1885w, /wp-content/uploads/2022/10/3.-run-migration-1280x642.png 1280w, /wp-content/uploads/2022/10/3.-run-migration-980x492.png 980w, /wp-content/uploads/2022/10/3.-run-migration-480x241.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1885px, 100vw"></p>
+<p>we could have add the SQL Scripts like bellow in our migration to generate migration script</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">namespace WeatherForecast.Infrastucture.Migrations
+{
+    public partial class v1_3 : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(@"'CREATE OR ALTER VIEW vwLocationTemperatureSummery
+                                    AS
+                                    SELECT 
+    	                                Date,
+    	                                Location,
+    	                                TemperatureC Temperature,
+    	                                Summary
+                                    FROM WeatherForecasts'");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(string.Format(@"DROP VIEW IF EXISTS {0}", "vwLocationTemperatureSummery"));
+        }
+    }
+}</pre>
+<p>But we will follow another approach so that we can create migration scripts dynamically from previously created scripts as well as those scripts can be tracked by the source control easily.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">namespace WeatherForecast.Infrastucture.Migrations
+{
+    public partial class v1_3 : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.RunSqlScript(View.LocationTemperatureSummery);
+            migrationBuilder.RunSqlScript(Procedure.GetWeatherInformation);       
+            migrationBuilder.RunSqlScript(Function.GetTemperatureByLocation);
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(string.Format(@"DROP VIEW IF EXISTS {0}", View.LocationTemperatureSummery));
+            migrationBuilder.Sql(string.Format(@"DROP PROCEDURE IF EXISTS {0}", Procedure.GetWeatherInformation));
+            migrationBuilder.Sql(string.Format(@"DROP FUNCTION IF EXISTS dbo.{0}", Function.GetTemperatureByLocation));
+        }
+    }
+}</pre>
+<p>Here RunSqlScript is an Extention funtion that takes the script name as parameter to generate the script—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">namespace WeatherForecast.Infrastucture.Extensions
+{
+    public static class MigrationExtension
+    {
+        public static void RunSqlScript(this MigrationBuilder migrationBuilder, string script)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(x =&gt; x.EndsWith($"{script}.sql"));
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            using var reader = new StreamReader(stream);
+            var sqlResult = reader.ReadToEnd();
+            migrationBuilder.Sql(sqlResult);
+        }
+    }
+}</pre>
+<p>Besides this, we will use constants to keep the name of View, Procedure and Function because this name needs to be used in many places.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class View
+{
+    /// &lt;summary&gt;
+    /// vwLocationTemperatureSummery
+    /// &lt;/summary&gt;
+    public const string LocationTemperatureSummery = "vwLocationTemperatureSummery";
+}
+
+public class Function
+{
+    /// &lt;summary&gt;
+    /// fnGetTemperatureByLocation(@location nvarchar) returns int
+    /// &lt;/summary&gt;
+    public const string GetTemperatureByLocation = "fnGetTemperatureByLocation";
+}
+
+public class Procedure
+{
+    /// &lt;summary&gt;
+    /// spGetWeatherInformation(@location nvarchar(50))
+    /// &lt;/summary&gt;
+    public const string GetWeatherInformation = "spGetWeatherInformation";
+}</pre>
+<p>Now to generate the migration script, run the following command—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="bash">Script-Migration location-added v1_3 -c ApplicationDbContext -o Services/WeatherForecast/WeatherForecast.Infrastucture/Migrations/Scripts/v1.3.sql -i</pre>
+<p>-o = output location<br />
+-c = db-context<br />
+From location-added to v1_3<br />
+-i = Generate a script that can be used on a database at any migration</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    CREATE OR ALTER VIEW vwLocationTemperatureSummery
+    AS
+    SELECT 
+    	Date,
+    	Location,
+    	TemperatureC Temperature,
+    	Summary
+    FROM WeatherForecasts
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    CREATE OR ALTER PROCEDURE spGetWeatherForecast(@location nvarchar(50))
+    AS
+    SELECT 
+    	Date,
+    	Location,
+    	TemperatureC Temperature,
+    	Summary
+    FROM WeatherForecasts
+    WHERE LOWER(Location) = LOWER(@location)
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+
+    CREATE OR ALTER FUNCTION fnGetTemperatureByLocation
+    (
+
+    	@location NVARCHAR(50)
+    )
+    RETURNS int
+    AS
+    BEGIN
+
+    	DECLARE @Temperature int
+
+    	SELECT TOP(1)
+    		@Temperature = TemperatureC
+    	FROM WeatherForecasts
+    	WHERE LOWER(Location) = LOWER(@location)
+    	ORDER BY Id DESC
+
+    	RETURN @Temperature
+
+    END
+
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20221031051328_v1_3', N'6.0.4');
+END;
+GO
+
+COMMIT;
+GO
+
+</pre>
+<p>But this script show some syntax error—<br />
+<img decoding="async" class="aligncenter size-full wp-image-12360" src="/wp-content/uploads/2022/10/4.-error-1-1.png" alt="4. error 1 1 Efficient way to handle Procedures, Views, Functions in EF Core" width="1922" height="818" srcset="/wp-content/uploads/2022/10/4.-error-1-1.png 1922w, /wp-content/uploads/2022/10/4.-error-1-1-1280x545.png 1280w, /wp-content/uploads/2022/10/4.-error-1-1-980x417.png 980w, /wp-content/uploads/2022/10/4.-error-1-1-480x204.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1922px, 100vw">So that we will add some modification maually and script sould be like folllowing—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+EXEC(N'    CREATE OR ALTER VIEW vwLocationTemperatureSummery
+    AS
+    SELECT 
+    	Date,
+    	Location,
+    	TemperatureC Temperature,
+    	Summary
+    FROM WeatherForecasts')
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    EXEC(N'    CREATE OR ALTER PROCEDURE spGetWeatherForecast(@location nvarchar(50))
+        AS
+        SELECT 
+    		Date,
+    		Location,
+    		TemperatureC Temperature,
+    		Summary
+        FROM WeatherForecasts
+        WHERE LOWER(Location) = LOWER(@location)')
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+
+   EXEC(N' CREATE OR ALTER FUNCTION fnGetTemperatureByLocation
+    (
+    	@location NVARCHAR(50)
+    )
+    RETURNS int
+    AS
+    BEGIN
+
+    	DECLARE @Temperature int
+
+    	SELECT TOP(1)
+    		@Temperature = TemperatureC
+    	FROM WeatherForecasts
+    	WHERE LOWER(Location) = LOWER(@location)
+    	ORDER BY Id DESC
+
+    	RETURN @Temperature
+
+    END')
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20221031051328_v1_3', N'6.0.4');
+END;
+GO
+
+COMMIT;
+GO
+
+</pre>
+<p>Run the script and see the output—<br />
+<img decoding="async" class="aligncenter size-full wp-image-12362" src="/wp-content/uploads/2022/10/5.script-runngr-1-1.png" alt="5.script runngr 1 1 Efficient way to handle Procedures, Views, Functions in EF Core" width="1920" height="910" srcset="/wp-content/uploads/2022/10/5.script-runngr-1-1.png 1920w, /wp-content/uploads/2022/10/5.script-runngr-1-1-1280x607.png 1280w, /wp-content/uploads/2022/10/5.script-runngr-1-1-980x464.png 980w, /wp-content/uploads/2022/10/5.script-runngr-1-1-480x228.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><br />
+Migration is done, Now we will create Dtos against our View, Procedure and Functions as well as map them in DbContext.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class ApplicationDbContext: DbContext, IApplicationDbContext
+{
+   public ApplicationDbContext()
+   {
+   }
+    #region TABLES
+    public DbSet&lt;WeatherForecastEntity&gt; WeatherForecasts =&gt; Set&lt;WeatherForecastEntity&gt;();
+    #endregion
+
+    #region VIEWS
+    /// &lt;summary&gt;
+    /// vwLocationTemperatureSummery
+    /// &lt;/summary&gt;
+    public DbSet&lt;LocationTemperatureSummeryDto&gt; LocationTemperatureSummery =&gt; Set&lt;LocationTemperatureSummeryDto&gt;();
+    #endregion
+
+    #region PROCEDURES
+    /// &lt;summary&gt;
+    /// spGetWeatherInformation(@location nvarchar(50)
+    /// &lt;/summary&gt;
+    public DbSet&lt;WeatherInformationDto&gt; GetWeatherInformation =&gt; Set&lt;WeatherInformationDto&gt;();
+    #endregion
+
+    #region FUNCTIONS
+    /// &lt;summary&gt;
+    /// fnGetTemperatureByLocation(@location nvarchar(50)
+    /// &lt;/summary&gt;
+    public DbSet&lt;TemperatureByLocationDto&gt; GetTemperatureByLocation =&gt; Set&lt;TemperatureByLocationDto&gt;();
+    #endregion
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        base.OnModelCreating(builder);
+
+        #region VIEWS
+        builder.Entity&lt;LocationTemperatureSummeryDto&gt;(x =&gt;
+        {
+            x.HasNoKey();
+            x.ToView(View.LocationTemperatureSummery);
+            x.Metadata.SetIsTableExcludedFromMigrations(true);
+        });
+        #endregion
+
+        #region FUNCTIONS
+        builder.Entity&lt;TemperatureByLocationDto&gt;(x =&gt;
+        {
+            x.HasNoKey();
+            x.ToFunction(Function.GetTemperatureByLocation);
+            x.Metadata.SetIsTableExcludedFromMigrations(true);
+        });
+        #endregion
+
+        #region PROCEDURES
+        builder.Entity&lt;WeatherInformationDto&gt;(x =&gt;
+        {
+            x.HasNoKey();
+            x.ToView(Procedure.GetWeatherInformation);
+            x.Metadata.SetIsTableExcludedFromMigrations(true);
+        });
+        #endregion
+    }
+}
+</pre>
+<p>all are done, now test with running following code—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var locationTemp = await _context
+    .LocationTemperatureSummery
+    .Where(x =&gt; x.Location == request.Location)
+    .ToListAsync();
+
+var location = new SqlParameter("location", System.Data.SqlDbType.NVarChar);
+location.Value = request.Location;
+
+// procedure 
+var weatherInfo = await _context
+    .GetWeatherInformation
+    .FromSqlRaw($"EXEC dbo.{Procedure.GetWeatherInformation} @location", location)
+    .ToListAsync();
+
+// function         
+var temp = (await _context
+.GetTemperatureByLocation
+.FromSqlRaw($"SELECT dbo.{Function.GetTemperatureByLocation}(@location) Temperature", location)
+.FirstOrDefaultAsync())!.Temperature;</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-12363" src="/wp-content/uploads/2022/10/final.png" alt="final Efficient way to handle Procedures, Views, Functions in EF Core" width="1914" height="918" srcset="/wp-content/uploads/2022/10/final.png 1914w, /wp-content/uploads/2022/10/final-1280x614.png 1280w, /wp-content/uploads/2022/10/final-980x470.png 980w, /wp-content/uploads/2022/10/final-480x230.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1914px, 100vw"></p>
+<p>Hope this will help to track non-table database objects by source controll and make easy to use of non-table database like View, Procedure and Function.</p>
+<p>Thanks with <a href="https://github.com/Khairultaher/SimpleCleanArchV2" rel="nofollow noopener" target="_blank">Source</a>.</p>
+</div>
+</div>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Power Apps:  Custom REST API Connector</title>
+		<link>/blog/power-apps-custom-rest-api-connector/</link>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Fri, 30 Sep 2022 09:13:46 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=12112</guid>
+
+					<description><![CDATA[With custom connectors, we can utilize existing REST API services or create new APIs to expose complex server-side operations that are not available with the out-of-the-box connectors. In this case, we&#8217;re dealing with a middle-tier architecture where Power Apps is used as a UI layer. This architecture also offers flexibility. In general, as the complexity [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>With custom connectors, we can utilize existing REST API services or create new APIs to expose complex server-side operations that are not available with the out-of-the-box connectors. In this case, we&#8217;re dealing with a middle-tier architecture where Power Apps is used as a UI layer. This architecture also offers flexibility. In general, as the complexity of the app increases, you should strongly consider this type of architecture. When multiple data sources are needed to build a single view in that case we can use an API layer to deliver a performant experience, because the data response can be shaped server-side and delivered to the client more efficiently. The use of this middle-tier layer means that you can add a server-side caching layer and implement richer telemetry for the app.</p>
+<p>Let&#8217;s create a Canvas App with custom REST API connector &#8211;</p>
+<ol>
+<li>From Power Apps home expand Dataverse<br />
+<img decoding="async" class="aligncenter size-full wp-image-12140" src="/wp-content/uploads/2022/09/Capture1-3.png" alt="Capture1 3 Power Apps: Custom REST API Connector" width="1916" height="938" srcset="/wp-content/uploads/2022/09/Capture1-3.png 1916w, /wp-content/uploads/2022/09/Capture1-3-1280x627.png 1280w, /wp-content/uploads/2022/09/Capture1-3-980x480.png 980w, /wp-content/uploads/2022/09/Capture1-3-480x235.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1916px, 100vw"></li>
+<li>Select Country/Region and Get started<br />
+<img decoding="async" class="aligncenter size-full wp-image-12141" src="/wp-content/uploads/2022/09/Capture2-2.png" alt="Capture2 2 Power Apps: Custom REST API Connector" width="1919" height="937" srcset="/wp-content/uploads/2022/09/Capture2-2.png 1919w, /wp-content/uploads/2022/09/Capture2-2-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture2-2-980x479.png 980w, /wp-content/uploads/2022/09/Capture2-2-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw"></li>
+<li>From top right expand new custom connector, From available options we will select &#8216;Create from blank&#8217; option. But we can import postman collection, swagger json and so on.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12143" src="/wp-content/uploads/2022/09/Capture3-3.png" alt="Capture3 3 Power Apps: Custom REST API Connector" width="1924" height="934" srcset="/wp-content/uploads/2022/09/Capture3-3.png 1924w, /wp-content/uploads/2022/09/Capture3-3-1280x621.png 1280w, /wp-content/uploads/2022/09/Capture3-3-980x476.png 980w, /wp-content/uploads/2022/09/Capture3-3-480x233.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1924px, 100vw"> <img decoding="async" class="aligncenter size-full wp-image-12144" src="/wp-content/uploads/2022/09/Capture4-2.png" alt="Capture4 2 Power Apps: Custom REST API Connector" width="1917" height="936" srcset="/wp-content/uploads/2022/09/Capture4-2.png 1917w, /wp-content/uploads/2022/09/Capture4-2-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture4-2-980x478.png 980w, /wp-content/uploads/2022/09/Capture4-2-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1917px, 100vw">give a name and continue&#8230;</li>
+<li>In general section select Schema and provide base URL<br />
+<img decoding="async" class="aligncenter size-full wp-image-12145" src="/wp-content/uploads/2022/09/Capture5-1.png" alt="Capture5 1 Power Apps: Custom REST API Connector" width="1921" height="932" srcset="/wp-content/uploads/2022/09/Capture5-1.png 1921w, /wp-content/uploads/2022/09/Capture5-1-1280x621.png 1280w, /wp-content/uploads/2022/09/Capture5-1-980x475.png 980w, /wp-content/uploads/2022/09/Capture5-1-480x233.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1921px, 100vw"></li>
+<li>From Security section expand authentication options and select authentication type<br />
+<img decoding="async" class="aligncenter size-full wp-image-12146" src="/wp-content/uploads/2022/09/Capture6-1.png" alt="Capture6 1 Power Apps: Custom REST API Connector" width="1923" height="937" srcset="/wp-content/uploads/2022/09/Capture6-1.png 1923w, /wp-content/uploads/2022/09/Capture6-1-1280x624.png 1280w, /wp-content/uploads/2022/09/Capture6-1-980x478.png 980w, /wp-content/uploads/2022/09/Capture6-1-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1923px, 100vw"></li>
+<li>In defination section provide the required information then click on &#8216;Import from sample&#8217; then provide the full URL and click on &#8216;Import&#8217;<br />
+<img decoding="async" class="aligncenter size-full wp-image-12147" src="/wp-content/uploads/2022/09/Capture7-1.png" alt="Capture7 1 Power Apps: Custom REST API Connector" width="1921" height="938" srcset="/wp-content/uploads/2022/09/Capture7-1.png 1921w, /wp-content/uploads/2022/09/Capture7-1-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture7-1-980x479.png 980w, /wp-content/uploads/2022/09/Capture7-1-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1921px, 100vw">Next scrool down and click on &#8216;Add default response&#8217;, provide the example response data then click on import<br />
+<img decoding="async" class="aligncenter size-full wp-image-12148" src="/wp-content/uploads/2022/09/Capture8-1.png" alt="Capture8 1 Power Apps: Custom REST API Connector" width="1919" height="937" srcset="/wp-content/uploads/2022/09/Capture8-1.png 1919w, /wp-content/uploads/2022/09/Capture8-1-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture8-1-980x479.png 980w, /wp-content/uploads/2022/09/Capture8-1-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw"></li>
+<li>Skip the Code(Preview) , Keep it as it is. Click on &#8216;Create connector&#8217; before moving  to &#8216;Test&#8217; section.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12151" src="/wp-content/uploads/2022/09/Capture9-3.png" alt="Capture9 3 Power Apps: Custom REST API Connector" width="1922" height="932" srcset="/wp-content/uploads/2022/09/Capture9-3.png 1922w, /wp-content/uploads/2022/09/Capture9-3-1280x621.png 1280w, /wp-content/uploads/2022/09/Capture9-3-980x475.png 980w, /wp-content/uploads/2022/09/Capture9-3-480x233.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1922px, 100vw"></li>
+<li>Now select the an operation then clieck on &#8216;Test operation&#8217;<br />
+<img decoding="async" class="aligncenter size-full wp-image-12152" src="/wp-content/uploads/2022/09/Capture11-1.png" alt="Capture11 1 Power Apps: Custom REST API Connector" width="1925" height="935" srcset="/wp-content/uploads/2022/09/Capture11-1.png 1925w, /wp-content/uploads/2022/09/Capture11-1-1280x622.png 1280w, /wp-content/uploads/2022/09/Capture11-1-980x476.png 980w, /wp-content/uploads/2022/09/Capture11-1-480x233.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1925px, 100vw">Our connector is ready, Now we will move to next section, Build a Canvas App</li>
+<li>From Home click on &#8216;Create&#8217; then  Blank App<br />
+<img decoding="async" class="aligncenter size-full wp-image-12153" src="/wp-content/uploads/2022/09/Capture1-4.png" alt="Capture1 4 Power Apps: Custom REST API Connector" width="1921" height="936" srcset="/wp-content/uploads/2022/09/Capture1-4.png 1921w, /wp-content/uploads/2022/09/Capture1-4-1280x624.png 1280w, /wp-content/uploads/2022/09/Capture1-4-980x478.png 980w, /wp-content/uploads/2022/09/Capture1-4-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1921px, 100vw"></li>
+<li>Now select  Blank Canvas App -&gt; click on &#8216;Create&#8217; -&gt; Give a name then click on &#8216;Create&#8217; again<br />
+<img decoding="async" class="aligncenter size-full wp-image-12154" src="/wp-content/uploads/2022/09/Capture2-3.png" alt="Capture2 3 Power Apps: Custom REST API Connector" width="1914" height="935" srcset="/wp-content/uploads/2022/09/Capture2-3.png 1914w, /wp-content/uploads/2022/09/Capture2-3-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture2-3-980x479.png 980w, /wp-content/uploads/2022/09/Capture2-3-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1914px, 100vw"> <img decoding="async" class="aligncenter size-full wp-image-12155" src="/wp-content/uploads/2022/09/Capture3-4.png" alt="Capture3 4 Power Apps: Custom REST API Connector" width="1919" height="937" srcset="/wp-content/uploads/2022/09/Capture3-4.png 1919w, /wp-content/uploads/2022/09/Capture3-4-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture3-4-980x479.png 980w, /wp-content/uploads/2022/09/Capture3-4-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw"></li>
+<li>Click on Data icon then select &#8216;CustomRestApiConnector&#8217; as data source<br />
+<img decoding="async" class="aligncenter size-full wp-image-12156" src="/wp-content/uploads/2022/09/Capture5-2.png" alt="Capture5 2 Power Apps: Custom REST API Connector" width="1921" height="937" srcset="/wp-content/uploads/2022/09/Capture5-2.png 1921w, /wp-content/uploads/2022/09/Capture5-2-1280x624.png 1280w, /wp-content/uploads/2022/09/Capture5-2-980x478.png 980w, /wp-content/uploads/2022/09/Capture5-2-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1921px, 100vw"></li>
+<li>Now insert a Button controll inside the container. Then select the button and write following function on OnSelect action:<br />
+<img decoding="async" class="aligncenter size-full wp-image-12157" src="/wp-content/uploads/2022/09/Capture5.2.png" alt="Capture5.2 Power Apps: Custom REST API Connector" width="1920" height="936" srcset="/wp-content/uploads/2022/09/Capture5.2.png 1920w, /wp-content/uploads/2022/09/Capture5.2-1280x624.png 1280w, /wp-content/uploads/2022/09/Capture5.2-980x478.png 980w, /wp-content/uploads/2022/09/Capture5.2-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>Now insert a Gallary controll inside the container. Then select datasource<br />
+<img decoding="async" class="aligncenter size-full wp-image-12158" src="/wp-content/uploads/2022/09/Capture7.1.png" alt="Capture7.1 Power Apps: Custom REST API Connector" width="1921" height="935" srcset="/wp-content/uploads/2022/09/Capture7.1.png 1921w, /wp-content/uploads/2022/09/Capture7.1-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture7.1-980x477.png 980w, /wp-content/uploads/2022/09/Capture7.1-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1921px, 100vw"></li>
+<li>Run the app and click on &#8216;Load Data&#8217; &#8211;<br />
+<img decoding="async" class="aligncenter size-full wp-image-12159" src="/wp-content/uploads/2022/09/Capture8-2.png" alt="Capture8 2 Power Apps: Custom REST API Connector" width="1921" height="935" srcset="/wp-content/uploads/2022/09/Capture8-2.png 1921w, /wp-content/uploads/2022/09/Capture8-2-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture8-2-980x477.png 980w, /wp-content/uploads/2022/09/Capture8-2-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1921px, 100vw">Yes, our app is running and fetching data from the API.</li>
+</ol>
+<p>Our Test API is running on localhost, For testing purpose, accessing localhost from outside and HTTPS has been enbled using <a href="https://ngrok.com/" rel="nofollow noopener" target="_blank">ngrok</a><br />
+<img decoding="async" class="aligncenter size-full wp-image-12165" src="/wp-content/uploads/2022/09/Capture4.1.png" alt="Capture4.1 Power Apps: Custom REST API Connector" width="1920" height="1006" srcset="/wp-content/uploads/2022/09/Capture4.1.png 1920w, /wp-content/uploads/2022/09/Capture4.1-1280x671.png 1280w, /wp-content/uploads/2022/09/Capture4.1-980x513.png 980w, /wp-content/uploads/2022/09/Capture4.1-480x252.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12167" src="/wp-content/uploads/2022/09/Capture4.2-1.png" alt="Capture4.2 1 Power Apps: Custom REST API Connector" width="1924" height="512" srcset="/wp-content/uploads/2022/09/Capture4.2-1.png 1924w, /wp-content/uploads/2022/09/Capture4.2-1-1280x341.png 1280w, /wp-content/uploads/2022/09/Capture4.2-1-980x261.png 980w, /wp-content/uploads/2022/09/Capture4.2-1-480x128.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1924px, 100vw"><br />
+Thanks&#8230;.</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Microsoft Power Platform: Power Apps</title>
+		<link>/blog/microsoft-power-platform-power-apps/</link>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Wed, 28 Sep 2022 11:33:41 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=11969</guid>
+
+					<description><![CDATA[Microsoft Power Platform is a group of business intelligence, app development and app connectivity software applications. Power Platform integration lets us create apps and flows by using the new Power Platform environment that is automatically created for you. Integrate finance and operations apps data with the Dataverse platform by using virtual tables, business events, and [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><strong>Microsoft Power Platform</strong> is a group of business intelligence, app development and app connectivity software applications. Power Platform integration lets us create apps and flows by using the new Power Platform environment that is automatically created for you. Integrate finance and operations apps data with the Dataverse platform by using virtual tables, business events, and dual-write features. Microsoft developed the Power Fx low-code programming language for expressing logic across the Power Platform. It also provides integrations with GitHub, Teams etc.</p>
+<p>Microsoft Power Platform is combination of four key products: Power Apps, Power Automate, Power BI and Power Virtual Agents-</p>
+<ul>
+<li><strong>Power Apps</strong> provides a rapid low code or no code development environment for building custom apps for business needs. It has services, connectors(built in + custom), a scalable data service and app platform (Microsoft Dataverse) to allow simple integration and interaction with existing data. Power Apps enables the creation of web and mobile applications that run on all devices. Power Apps eases users into app development with a simple interface so that every business user or pro developer can build custom apps. Power Apps integration allows you to connect data from multiple services and dashboards, including Outlook, OneDrive,PowerPoint, Excel, SharePoint, Dynamics 365, Salesforce, Dropbox, and others.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12044" src="/wp-content/uploads/2022/09/c1.jpg" alt="c1 Microsoft Power Platform: Power Apps" width="908" height="577" srcset="/wp-content/uploads/2022/09/c1.jpg 908w, /wp-content/uploads/2022/09/c1-480x305.jpg 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 908px, 100vw"></p>
+<ul>
+<li><strong>Canvas app </strong>is one of the main types of applications that you can create in PowerApps. It gives you a blank canvas and allows you to design the form, also it allows you to connect with many types of data sources. If you want to make your own design, then the Canvas app is the best choice for you. The Canvas app provides you with a blank canvas and you will design your app screen-by-screen, which means that you will have full control of building your own design.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12045" src="/wp-content/uploads/2022/09/canvas.png" alt="canvas Microsoft Power Platform: Power Apps" width="1923" height="937" srcset="/wp-content/uploads/2022/09/canvas.png 1923w, /wp-content/uploads/2022/09/canvas-1280x624.png 1280w, /wp-content/uploads/2022/09/canvas-980x478.png 980w, /wp-content/uploads/2022/09/canvas-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1923px, 100vw"></li>
+<li><strong>Model-driven app</strong> is another app type that you can create in PowerApps. Unlike the Canvas App, the PowerApps will design the appearance of your Model-driven app according to the data you will add to your app. If you don’t have a custom design and your data is in Data Verse ” common data service before” then you should choose the model-driven app.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12046" src="/wp-content/uploads/2022/09/model-drivem.png" alt="model drivem Microsoft Power Platform: Power Apps" width="2736" height="1463" srcset="/wp-content/uploads/2022/09/model-drivem.png 2736w, /wp-content/uploads/2022/09/model-drivem-1280x684.png 1280w, /wp-content/uploads/2022/09/model-drivem-980x524.png 980w, /wp-content/uploads/2022/09/model-drivem-480x257.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2736px, 100vw"></li>
+<li><strong>Portal </strong>is an external-facing website that enables users outside their organizations to sign in to create and view data. Also, the Portal App provides viewing the content anonymously. When you want to create websites that can be accessed by external users with a wide variety of identities including personal accounts, LinkedIn, and other Azure Active Directory organizations, and enable anonymous access to content, then you will use Portal App.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12047" src="/wp-content/uploads/2022/09/portal.png" alt="portal Microsoft Power Platform: Power Apps" width="1918" height="935" srcset="/wp-content/uploads/2022/09/portal.png 1918w, /wp-content/uploads/2022/09/portal-1280x624.png 1280w, /wp-content/uploads/2022/09/portal-980x478.png 980w, /wp-content/uploads/2022/09/portal-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"></li>
+</ul>
+</li>
+<li><strong>Power Automate</strong> allows users create automated workflows between applications and services. It helps automate repetitive business processes such as communication, data collections, and decision approvals.Don&#8217;t waste important productive hours on drafting the same email for a weekly update or walking approvals through. Not only for the individual user, Power Automate allows for the creation of enterprise-grade process automation. Power Automate&#8217;s simple interface allows every level of user to automate work tasks &#8211; from beginners to seasoned developers.</li>
+<li><strong>Power BI </strong>(Business Intelligence) is a business analytics service that delivers insights for analyzing data. It can share those insights through data visualizations which make up reports and dashboards to enable fast, informed decisions. Power BI scales across an organization, and it has built-in governance and security allowing businesses to focus on using data more than managing it.<br />
+You can consider Power BI as the analysis and insights leg of Microsoft Power Platform. It takes business data and allows you to display it in ways that makes the most sense to users. A Power BI dashboard could potentially replace a standing meeting to report out on company metrics such as sales data, progress against goals, or employee performance.</li>
+<li><strong>Power Virtual Agents </strong>enables anyone to create powerful chatbots using a guided, no-code graphical interface, without the need for data scientists or developers.<br />
+It minimizes the IT effort required to deploy and maintain a custom solution by empowering subject matter experts to build and maintain their own conversational solutions. Power Virtual Agents is part of Microsoft Power Platform, therefore integration into existing systems is streamlined with out-of-the-box integration with Power Automate and its ecosystems of hundreds of connectors. Users can enable chatbots to perform an action by simply calling a Power Automate flow. Flows help users automate activities or call back end systems. Users can utilize existing flows that have been created in their Power Apps environment or they can create a flow within Power Virtual Agents authoring canvas.</li>
+</ul>
+<p>Among the programs listed above, there are cross cutting features which enable Microsoft Power Platform to be leveraged to its full potential. Some of these are:</p>
+<ul>
+<li><strong>AI Builder</strong> lets users and developers add AI capabilities to the workflows and Power Apps they create and use. AI Builder is a turnkey solution that allows you to easily add intelligence to your workflows and apps and predict outcomes to help improve business performance without writing code.</li>
+<li><strong>Microsoft Dataverse</strong> is scalable data service and app platform which lets users securely store and manage data from multiple sources and integrate that data in business applications using a common data model to ensure ease and consistency to users. Microsoft Dataverse is the common currency that enables the components of Microsoft Power Platform to work together. It’s the foundation that enables the consolidation, display, and manipulation of data.</li>
+<li><strong>Connectors</strong> enable you to connect apps, data, and devices in the cloud. Consider connectors the bridge across which information and commands travel. There are more than 600 connectors for Microsoft Power Platform, enabling all of your data and actions to connect cohesively. Examples of popular connectors include Salesforce, Office 365, Twitter, Dropbox, Google services, and more.</li>
+</ul>
+<p>Want to see how easy and fast it is to create a Power Apps? Let&#8217;s create a canvas app with data from an Excel file.</p>
+<ul>
+<li>Sign in to <a href="https://make.powerapps.com/?utm_source=padocs&amp;utm_medium=linkinadoc&amp;utm_campaign=referralsfromdoc" data-linktype="external" rel="nofollow noopener" target="_blank">Power Apps</a>.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12049" src="/wp-content/uploads/2022/09/Capture1-1.png" alt="Capture1 1 Microsoft Power Platform: Power Apps" width="1920" height="849" srcset="/wp-content/uploads/2022/09/Capture1-1.png 1920w, /wp-content/uploads/2022/09/Capture1-1-1280x566.png 1280w, /wp-content/uploads/2022/09/Capture1-1-980x433.png 980w, /wp-content/uploads/2022/09/Capture1-1-480x212.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>Click on create and select Excel<br />
+<img decoding="async" class="aligncenter size-full wp-image-12051" src="/wp-content/uploads/2022/09/Capture2-1.png" alt="Capture2 1 Microsoft Power Platform: Power Apps" width="1917" height="937" srcset="/wp-content/uploads/2022/09/Capture2-1.png 1917w, /wp-content/uploads/2022/09/Capture2-1-1280x626.png 1280w, /wp-content/uploads/2022/09/Capture2-1-980x479.png 980w, /wp-content/uploads/2022/09/Capture2-1-480x235.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1917px, 100vw"></li>
+<li>Select Google Drive as Source connection then click on Create button<br />
+<img decoding="async" class="aligncenter size-full wp-image-12056" src="/wp-content/uploads/2022/09/Capture3-1.png" alt="Capture3 1 Microsoft Power Platform: Power Apps" width="1918" height="934" srcset="/wp-content/uploads/2022/09/Capture3-1.png 1918w, /wp-content/uploads/2022/09/Capture3-1-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture3-1-980x477.png 980w, /wp-content/uploads/2022/09/Capture3-1-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"></li>
+<li>Select your source Excel file and click on Connect button, You can download the example file from here <a href="https://az787822.vo.msecnd.net/documentation/get-started-from-data/FlooringEstimates.xlsx" data-linktype="external" rel="nofollow noopener" target="_blank">Flooring Estimates </a><br />
+<img decoding="async" class="aligncenter size-full wp-image-12059" src="/wp-content/uploads/2022/09/Capture6.png" alt="Capture6 Microsoft Power Platform: Power Apps" width="1920" height="936" srcset="/wp-content/uploads/2022/09/Capture6.png 1920w, /wp-content/uploads/2022/09/Capture6-1280x624.png 1280w, /wp-content/uploads/2022/09/Capture6-980x478.png 980w, /wp-content/uploads/2022/09/Capture6-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>Your App is now ready to run, Click on run button<br />
+<img decoding="async" class="aligncenter size-full wp-image-12060" src="/wp-content/uploads/2022/09/Capture7.png" alt="Capture7 Microsoft Power Platform: Power Apps" width="1920" height="935" srcset="/wp-content/uploads/2022/09/Capture7.png 1920w, /wp-content/uploads/2022/09/Capture7-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture7-980x477.png 980w, /wp-content/uploads/2022/09/Capture7-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12061" src="/wp-content/uploads/2022/09/Capture8.png" alt="Capture8 Microsoft Power Platform: Power Apps" width="1412" height="927" srcset="/wp-content/uploads/2022/09/Capture8.png 1412w, /wp-content/uploads/2022/09/Capture8-1280x840.png 1280w, /wp-content/uploads/2022/09/Capture8-980x643.png 980w, /wp-content/uploads/2022/09/Capture8-480x315.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1412px, 100vw"> <img decoding="async" class="aligncenter size-full wp-image-12062" src="/wp-content/uploads/2022/09/Capture9.png" alt="Capture9 Microsoft Power Platform: Power Apps" width="1417" height="937" srcset="/wp-content/uploads/2022/09/Capture9.png 1417w, /wp-content/uploads/2022/09/Capture9-1280x846.png 1280w, /wp-content/uploads/2022/09/Capture9-980x648.png 980w, /wp-content/uploads/2022/09/Capture9-480x317.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1417px, 100vw"> <img decoding="async" class="aligncenter size-full wp-image-12063" src="/wp-content/uploads/2022/09/Capture10.png" alt="Capture10 Microsoft Power Platform: Power Apps" width="1414" height="939" srcset="/wp-content/uploads/2022/09/Capture10.png 1414w, /wp-content/uploads/2022/09/Capture10-1280x850.png 1280w, /wp-content/uploads/2022/09/Capture10-980x651.png 980w, /wp-content/uploads/2022/09/Capture10-480x319.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1414px, 100vw"></li>
+<li>To publish the app click on publish icon from top right corner<br />
+<img decoding="async" class="aligncenter size-full wp-image-12064" src="/wp-content/uploads/2022/09/Capture11.0.png" alt="Capture11.0 Microsoft Power Platform: Power Apps" width="1918" height="937" srcset="/wp-content/uploads/2022/09/Capture11.0.png 1918w, /wp-content/uploads/2022/09/Capture11.0-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture11.0-980x479.png 980w, /wp-content/uploads/2022/09/Capture11.0-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12065" src="/wp-content/uploads/2022/09/Capture11.png" alt="Capture11 Microsoft Power Platform: Power Apps" width="1918" height="936" srcset="/wp-content/uploads/2022/09/Capture11.png 1918w, /wp-content/uploads/2022/09/Capture11-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture11-980x478.png 980w, /wp-content/uploads/2022/09/Capture11-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"></li>
+<li>Now you can share the app to your users, To share click on share icon from top right corner<br />
+<img decoding="async" class="aligncenter size-full wp-image-12067" src="/wp-content/uploads/2022/09/Capture13.0.png" alt="Capture13.0 Microsoft Power Platform: Power Apps" width="1920" height="934" srcset="/wp-content/uploads/2022/09/Capture13.0.png 1920w, /wp-content/uploads/2022/09/Capture13.0-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture13.0-980x477.png 980w, /wp-content/uploads/2022/09/Capture13.0-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12066" src="/wp-content/uploads/2022/09/Capture13.png" alt="Capture13 Microsoft Power Platform: Power Apps" width="1920" height="937" srcset="/wp-content/uploads/2022/09/Capture13.png 1920w, /wp-content/uploads/2022/09/Capture13-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture13-980x478.png 980w, /wp-content/uploads/2022/09/Capture13-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>To use the App, Users will find the shared app list in Power Apps Desktop or in Power Apps mobile<br />
+<img decoding="async" class="aligncenter wp-image-12068" src="/wp-content/uploads/2022/09/Capture14.1.jpeg" alt="Capture14.1 Microsoft Power Platform: Power Apps" width="236" height="498"><img decoding="async" class="aligncenter size-full wp-image-12132" src="/wp-content/uploads/2022/09/Capture14-3.png" alt="Capture14 3 Microsoft Power Platform: Power Apps" width="1912" height="1134" srcset="/wp-content/uploads/2022/09/Capture14-3.png 1912w, /wp-content/uploads/2022/09/Capture14-3-1280x759.png 1280w, /wp-content/uploads/2022/09/Capture14-3-980x581.png 980w, /wp-content/uploads/2022/09/Capture14-3-480x285.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1912px, 100vw"><br />
+<img decoding="async" class="aligncenter size-full wp-image-12131" src="/wp-content/uploads/2022/09/Capture15.png" alt="Capture15 Microsoft Power Platform: Power Apps" width="1913" height="1200" srcset="/wp-content/uploads/2022/09/Capture15.png 1913w, /wp-content/uploads/2022/09/Capture15-1280x803.png 1280w, /wp-content/uploads/2022/09/Capture15-980x615.png 980w, /wp-content/uploads/2022/09/Capture15-480x301.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1913px, 100vw"><br />
+Next, Will try to show how to create custom REST connector for a Canvas Apps.<br />
+Thanks&#8230;</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Machine Learning quick start guide for enthusiast</title>
+		<link>/blog/machine-learning-quick-start-guide-for-enthusiast/</link>
+					<comments>/blog/machine-learning-quick-start-guide-for-enthusiast/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Fri, 16 Sep 2022 08:26:45 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=10277</guid>
+
+					<description><![CDATA[To achieve a better and professional level in Machine Learning as well as a quick start, We have to have some basic and professional level skills and knowledge in some related topics. In this post we will see the related topics, where to start, where the resources are available for study and practice. Understand your [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>To achieve a better and professional level in Machine Learning as well as a quick start, We have to have some basic and professional level skills and knowledge in some related topics. In this post we will see the related topics, where to start, where the resources are available for study and practice.</p>
+<ul>
+<li><strong>Understand your data first:<br />
+<img decoding="async" class="wp-image-10290 alignnone" src="/wp-content/uploads/2022/09/UntitledDiagram13.png" alt="UntitledDiagram13 Machine Learning quick start guide for enthusiast" width="800" height="290" srcset="/wp-content/uploads/2022/09/UntitledDiagram13.png 800w, /wp-content/uploads/2022/09/UntitledDiagram13-480x174.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 800px, 100vw"><br />
+</strong>“Data! Data! Data!” he cried impatiently. “I can’t make bricks without clay.” —Arthur Conan Doyle.<br />
+Machine Learning is highly dependent on data, historical data. we are to collect, clean, preprocess (For ML model need numeric data)  the data then  identify and discover the hidden pattern of data to teach the machine. There are basically two types  data &#8211; <strong>Structured</strong> (organized) data, <strong>Unstructured</strong> (unorganized) data.</p>
+<ul>
+<li><span class="TextRun SCXW177857176 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW177857176 BCX0">These two data types can be defined as follows:</span></span>
+<ul>
+<li><strong>Quantitative data:</strong> This data can be described using numbers, and basic mathematical procedures, including addition, are possible on the set.<br />
+Quantitative/Numeric data can be broken down, one step further, into discrete and continuous quantities. These can be defined as follows:</p>
+<ul>
+<li><strong> Discrete data</strong>: This describes data that is counted. It can only take on certain values. Examples of discrete quantitative data include a dice roll, because it can only take on six values, and the number of customers in a café, because you can&#8217;t have a real range of people.</li>
+<li><strong>Continuous data</strong>: This describes data that is measured. It exists on an infinite range of values.</li>
+</ul>
+</li>
+<li><strong>Qualitative data:</strong> This data cannot be described using numbers and basic mathematics. This data is generally thought of as being described using &#8220;natural&#8221; categories and language.<br />
+Qualitative /Categorical data takes only a fixed set of values, such as a type of TV screen (plasma, LCD, LED, etc.) or a state name (Alabama, Alaska, etc.). Binary data is an important special case of categorical data that takes on only one of two values, such as 0/1, yes/no, or true/false. Another useful type of categorical data is ordinal data in which the categories are ordered; an example of this is a numerical rating (1, 2, 3, 4, or 5)</li>
+</ul>
+</li>
+<li>There also four levels of data to understand:
+<ul>
+<li><strong>The nominal level:</strong> Data at the nominal level is mostly categorical in nature. At the nominal level, we deal with data usually described using vocabulary (but sometimes with numbers), with no order, and little use of mathematics. In order to find the center of nominal data, we generally turn to the mode (the most common element) of the dataset.</li>
+<li><strong>The ordinal level</strong>: At the ordinal level, we have data that can be described with numbers and also have a &#8220;natural&#8221; order, allowing us to put one in front of the other. At the ordinal level, the median is usually an appropriate way of defining the center of the data. The mean, however, would be impossible because division is not allowed at this level.</li>
+<li><strong>The interval level:</strong> Allow Addition, Subtraction. At this level, we can use the median and mode to describe this data; however, usually the most accurate description of the center of data would be the arithmetic mean, more commonly referred to as, simply, &#8220;the mean&#8221;</li>
+<li><strong>The ratio level:</strong> the ratio level proves to be the strongest of the four. Not only can we define order and difference, the ratio level allows us to multiply and divide as well. The arithmetic mean still holds meaning at this level, as does a new type of mean called the geometric mean. Data at the ratio level is usually non-negative.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Understanding of data will help to collect, clean and pre-process data as per the need to build the ML model</p>
+<ul>
+<li><strong>Programming Langulage &amp; Lybraries:<br />
+<img decoding="async" class="size-full wp-image-10292 alignnone" src="/wp-content/uploads/2022/09/25f6b013-351d-442f-b6f1-0ae11cd285d3-e1581506887542.jpg" alt="25f6b013 351d 442f b6f1 0ae11cd285d3 e1581506887542 Machine Learning quick start guide for enthusiast" width="600" height="321" srcset="/wp-content/uploads/2022/09/25f6b013-351d-442f-b6f1-0ae11cd285d3-e1581506887542.jpg 600w, /wp-content/uploads/2022/09/25f6b013-351d-442f-b6f1-0ae11cd285d3-e1581506887542-480x257.jpg 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 600px, 100vw"><br />
+</strong>For machine learning Python/R is in leading but from a developer perspective Python could be a choice for it&#8217;s huge community and rich <span class="TextRun SCXW144258744 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW144258744 BCX0">libraries</span></span>. We need a bettter understanding with all of it&#8217;s language related basics like- <em>Lists, List Slicing, Tuples, Dictionaries, Counters, Sets, Zip and Argument Unpacking</em> , data structure and algorighms. As well as following libraries are need to know while starting-</p>
+<ul>
+<li><strong>NumPy</strong> is a well known general-purpose array-processing package. An extensive collection of high complexity mathematical functions make NumPy powerful to process large multi-dimensional arrays and matrices</li>
+<li><strong>SciPy</strong> is a free and open-source library that’s based on NumPy. It can be used to perform scientific and technical computing on large sets of data. Similar to NumPy, SciPy comes with embedded modules for array optimization and linear algebra. It’s considered a foundational Python library due to its critical role in scientific analysis and engineering.</li>
+<li><strong>scikit-learn</strong> is a free Python library based on NumPy and SciPy, that’s often considered a direct extension of SciPy. It was specifically designed for data modeling and developing machine learning algorithms, both supervised and unsupervised.</li>
+<li><strong>Pandas</strong> is another Python library that is built on top of NumPy, responsible for preparing high-level data sets for machine learning and training. It relies on two types of data structures, one-dimensional (series) and two-dimensional (DataFrame).</li>
+<li><strong>Seaborn</strong> is another open-source Python library, one that is based on Matplotlib (which focuses on plotting and data visualization) but features Pandas’ data structures. Seaborn is often used in ML projects because it can generate plots of learning data.</li>
+<li><strong>Matplotlib</strong> is a Python library focused on data visualization and primarily used for creating beautiful graphs, plots, histograms, and bar charts. It is compatible for plotting data from SciPy, NumPy, and Pandas. If you have experience using other types of graphing tools, Matplotlib might be the most intuitive choice for you.there are many more <span class="TextRun SCXW144258744 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW144258744 BCX0">libraries</span></span></li>
+</ul>
+</li>
+<li><strong>Linear Algebra:<br />
+<img decoding="async" class="wp-image-10293 alignnone" src="/wp-content/uploads/2022/09/linear-algebra.jpg" alt="linear algebra Machine Learning quick start guide for enthusiast" width="738" height="359"><br />
+</strong></p>
+<ul>
+<li>Vectors Basics: Introduction to vectors, Vector arithmetic, Coordinate system</li>
+<li>Vector Projections and Basis: Dot product of vectors, Scalar and vector projection, Changing basis of vectors, Basis, linear independence, and span</li>
+<li>Matrices: Matrices introduction,Types of matrices,Types of matrix transformation,Composition or combination of matrix transformations</li>
+<li>Gaussian Elimination: Solving linear equations using Gaussian elimination,Gaussian elimination and finding the inverse matrix, Inverse and determinant</li>
+<li>Matrices from Orthogonality to Gram–Schmidt Process: Matrices changing basis ,Transforming to the new basis ,Orthogonal matrix, Gram–Schmidt process</li>
+<li>Eigenvalues and Eigenvectors: Calculating eigenvalues and eigenvectors</li>
+</ul>
+</li>
+</ul>
+<p><span class="EOP SCXW177857176 BCX0" data-ccp-props="{&quot;335559739&quot;:0}">                 For <a href="https://www.khanacademy.org/math/linear-algebra" rel="nofollow noopener" target="_blank">Linear algebra Khan Accademy</a>  and <a href="https://learning.edx.org/course/course-v1:Microsoft+DAT256x+2T2018/home" rel="nofollow noopener" target="_blank">edX Essential Math for Machine Learning: Python Edition </a> </span></p>
+<ul>
+<li><strong>Statistics &amp; Probability:<br />
+<img decoding="async" class="wp-image-10295 alignnone" src="/wp-content/uploads/2022/09/Screen-Shot-2022-06-13-at-10.20.58-AM.png" alt="Screen Shot 2022 06 13 at 10.20.58 AM Machine Learning quick start guide for enthusiast" width="846" height="385"><br />
+</strong></p>
+<ul>
+<li>Populations and Samples</li>
+<li>Mean, Median, Mode</li>
+<li>Variance, Range, Inter Quartile Range (IQR), Skewness</li>
+<li>Correlation, Correlation and Causation</li>
+<li>Dependence and Independency</li>
+<li>Conditional Probability</li>
+<li>Bayes&#8217;s Theorem and Random variables</li>
+<li>Distributions
+<ul>
+<li>Continuous Distribution</li>
+<li>Normal Distribution</li>
+</ul>
+</li>
+<li>Central Limit Theorem (CLT)</li>
+<li>Hypothesis Testing: Null Hypothesis(H0), Alternate Hypothesis (HA)</li>
+<li>Errors in Hypothesis Testing: Type 1 Error, Type 2 Error</li>
+<li>Statistical Significance and P-Values</li>
+<li>The chi-square goodness of fit test</li>
+<li><span class="TextRun SCXW130375983 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW130375983 BCX0">Confusion Matrix, <span class="TextRun Underlined SCXW112836330 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW112836330 BCX0">Precision, <span class="TextRun SCXW82991890 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW82991890 BCX0">Accuracy</span></span>, Recall, F1 Score</span></span></span></span></li>
+</ul>
+</li>
+</ul>
+<p>Resource for learning: <a href="https://www.khanacademy.org/math/statistics-probability" rel="nofollow noopener" target="_blank">Statistics and probability &#8211; Khan Academy</a>,<a href="https://www.coursera.org/learn/stanford-statistics" rel="nofollow noopener" target="_blank"> Introduction to Statistics-Coursera</a>,  <a href="https://www.coursera.org/learn/statistics-for-data-science-python" rel="nofollow noopener" target="_blank">Statistics for Data Science with Python-Coursera </a></p>
+<ul>
+<li><strong>Database Knowledge</strong>: Some basics of SQL and NoSQL may help. Basic of SQL queries like-
+<ul>
+<li>Join (Inner, Outer, Full, Cross)</li>
+<li>Pivot and Unpivote</li>
+<li>Window Functions
+<ul>
+<li>Aggregate Window Functions &#8211; SUM, MIN, MAX, AVG, COUNT</li>
+<li>Ranking Window Functions &#8211;  RANK, DENSE_RANK, ROW_NUMBER, NTILE</li>
+<li>Value Window Functions &#8211; LAG() and LEAD,FIRST_VALUE and LAST_VALUE</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>IDE:<br />
+<img decoding="async" class="wp-image-10298 alignnone" src="/wp-content/uploads/2022/09/maxresdefault.jpg" alt="Machine Learning quick start guide for enthusiast" width="711" height="400"><br />
+</strong></p>
+<ul>
+<li><strong>Spyder</strong>: Scientific Python Development Environment (Spyder) is a free &amp; open-source python IDE. It is lightweight and is an excellent python ide for data science &amp; ML</li>
+<li><strong>Jupiter Notebook:</strong> For its simplicity this one became a great IDE among the data enthusiasts as it is the descendant of IPython. Best thing of JuPyter is that there you can very easily switch between the different versions of python (or any other language) according to your preference.</li>
+<li><strong>Visual Studio Code</strong>: Visual Code is one of the most used Python IDE by ML &amp; DS professionals. It works on Windows, Mac, and Linux operating systems.</li>
+</ul>
+</li>
+<li><strong><span class="NormalTextRun SCXW174132279 BCX0">Machine</span> Learning:</strong> Supervised and Unsupervised learning are the two techniques of machine learning. But both the techniques are used in different scenarios and with different datasets.<br />
+<strong>Supervised</strong> learning is a machine learning method in which models are trained using labeled data.In supervised learning, models need to find the mapping function to map the input variable (X)<br />
+with the output variable (Y).<br />
+<strong>Unsupervised</strong> learning is another machine learning method in which patterns inferred from the unlabeled input data. The goal of unsupervised learning is to find the structure and patterns from the input data. Unsupervised learning does not need any supervision. Instead, it finds patterns from the data by its own. Machine Learning steps are &#8211;</p>
+<ul>
+<li><strong>Business Understanding</strong>: What you want to achieve by implementing it. This is the “business understanding”.
+<ul>
+<li>Identify the business objective/problem
+<ul>
+<li>Regression problems: We have data that needs to be mapped onto a predictor variable, so we need to learn a function that can do this mapping.</li>
+<li>Classification problems: Here, we have data that needs to be divided into predefined classes, based on some features of the data. We need an algorithm that can use previously classified data to learn how to put unknown data into the correct class. Ex: K-Nearest Neighbor for classification of a categorical outcome or prediction of a numerical outcome, Naïve Bays Classifier- Can be applied to data with categorical predictor.</li>
+<li>Summarization problems: Suppose we have data that needs to be shortened or summarized in some way. This could be as simple as calculating basic statistics from data, or as complex as learning how to summarize text or finding a topic model for text.</li>
+<li>Dependency modeling problems: For these problems, we have data that might be connected in some way, and we need to develop an algorithm that can calculate the probability of connection or describe the structure of connected data.</li>
+<li>Change and deviation detection problems: In another case, we have data that has changed significantly or where some subset of the data deviates from normative values. To solve these problems, we need an algorithm that can detect these issues automatically.</li>
+</ul>
+</li>
+<li>Assess the situation</li>
+<li>Determine the analytical goals</li>
+<li>Produce a project plan</li>
+</ul>
+</li>
+<li><strong>Data Understanding</strong>: Determining what kind of data can be collected to build a deployable model. In the next phase, “data understanding,”
+<ul>
+<li>Collect the data</li>
+<li>Describe the data</li>
+<li>Explore the data</li>
+<li>Verify the data quality</li>
+</ul>
+</li>
+<li><strong>Data Preprocessing:</strong>
+<ul>
+<li style="text-align: left;">Importing/Selecting the Dataset<br />
+<img decoding="async" class="wp-image-10363 alignnone" src="/wp-content/uploads/2022/09/5.3.1.png" alt="5.3.1 Machine Learning quick start guide for enthusiast" width="858" height="115"></li>
+<li style="text-align: left;">Handling Missing Data<br />
+<img decoding="async" class=" wp-image-10364 alignnone" src="/wp-content/uploads/2022/09/5.3.2.png" alt="5.3.2 Machine Learning quick start guide for enthusiast" width="858" height="139"></li>
+<li style="text-align: left;">Handling Categorical Data<br />
+<img decoding="async" class=" wp-image-10365 alignnone" src="/wp-content/uploads/2022/09/5.3.3.png" alt="5.3.3 Machine Learning quick start guide for enthusiast" width="858" height="222"></li>
+<li style="text-align: left;">Splitting the Dataset into the Training set and Test set<br />
+<img decoding="async" class=" wp-image-10366 alignnone" src="/wp-content/uploads/2022/09/5.3.4.png" alt="5.3.4 Machine Learning quick start guide for enthusiast" width="859" height="84"></li>
+<li style="text-align: left;">Feature Scaling<br />
+<img decoding="async" class=" wp-image-10367 alignnone" src="/wp-content/uploads/2022/09/5.3.5.1-1.png" alt="5.3.5.1 1 Machine Learning quick start guide for enthusiast" width="858" height="199"><br />
+<img decoding="async" class=" wp-image-10368 alignnone" src="/wp-content/uploads/2022/09/5.3.5.2.png" alt="5.3.5.2 Machine Learning quick start guide for enthusiast" width="857" height="332"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li><strong><span class="TextRun SCXW89223852 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW89223852 BCX0" data-ccp-parastyle="heading 2">Modeling: </span></span></strong><span class="TextRun SCXW89223852 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW89223852 BCX0" data-ccp-parastyle="heading 2">As per the business need we have to chose <span class="NormalTextRun SCXW205233688 BCX0">appropriate</span> model from various kind of available models-</span></span>
+<ul>
+<li><strong>Regression:</strong> Value estimation, Ex- how much wills this customer use the service?
+<ul>
+<li><strong>Linear Regression:</strong> Linear regression is an approach in modeling that helps model the scalar linear relationship between a scalar dependent variable, Y, and an independent variable, X, which can be one or more in value: y = X_ +_
+<ul>
+<li><span class="TextRun SCXW60745364 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW60745364 BCX0" data-ccp-charstyle="Heading 4 Char"><strong>Simple linear regression:</strong> <span class="TextRun SCXW241629472 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW241629472 BCX0">A simple linear regression has a single variable, and it can be described using the following formula: </span></span><span class="TextRun SCXW241629472 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW241629472 BCX0">y= A + Bx</span></span><span class="EOP SCXW241629472 BCX0" data-ccp-props="{&quot;201341983&quot;:0,&quot;335559685&quot;:720,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span></span></span></li>
+<li>
+<p aria-level="5"><span data-contrast="none"><strong>Multiple linear regression model:</strong> </span><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto">Multiple linear regression occurs when more than one independent variable is used to predict a dependent variable: Y_ = a +b1x1+b2x2 +…+ bnxn</span><span data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span></p>
+</li>
+<li>
+<p aria-level="5"><b><span data-contrast="none">Polynomial Regression:</span></b><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto">A regression equation is a polynomial regression equation if the power of independent variable is more than 1. The equation below represents a polynomial equation: y=a + b*x^2</span><span data-ccp-props="{}"><br />
+<img decoding="async" class="aligncenter size-full wp-image-10339" src="/wp-content/uploads/2022/09/regression.png" alt="regression Machine Learning quick start guide for enthusiast" width="1183" height="250" srcset="/wp-content/uploads/2022/09/regression.png 1183w, /wp-content/uploads/2022/09/regression-980x207.png 980w, /wp-content/uploads/2022/09/regression-480x101.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1183px, 100vw"><br />
+</span></p>
+</li>
+</ul>
+</li>
+<li><strong><span class="NormalTextRun SCXW80789932 BCX0" data-ccp-parastyle="heading 4">Non-Linear</span><span class="NormalTextRun SCXW80789932 BCX0" data-ccp-parastyle="heading 4"> Regression:</span></strong>
+<ul>
+<li><span class="TextRun SCXW151676946 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW151676946 BCX0" data-ccp-parastyle="heading 5">Support Vector Regression SVR</span></span></li>
+<li><span class="TextRun SCXW221411858 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW221411858 BCX0" data-ccp-parastyle="heading 5">Decision Tree Regression</span></span><span class="EOP SCXW221411858 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span></li>
+<li><span class="TextRun SCXW58969965 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW58969965 BCX0" data-ccp-parastyle="heading 5">Random Forest Regression</span></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong><span class="TextRun SCXW213434387 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW213434387 BCX0" data-ccp-parastyle="heading 3">Classification: </span></span></strong><span class="TextRun SCXW213434387 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW213434387 BCX0" data-ccp-parastyle="heading 3"><span class="TextRun SCXW9609195 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW9609195 BCX0">Will this customer purchase service S1 if given incentive I? Which service package (S1, S2, or none) will a customer likely purchase if given incentive I?</span></span></span></span>
+<ul>
+<li><span class="TextRun Underlined SCXW196884260 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><strong><span class="NormalTextRun SCXW196884260 BCX0" data-ccp-parastyle="heading 4">Decision trees</span></strong><span class="NormalTextRun SCXW196884260 BCX0" data-ccp-parastyle="heading 4">: </span></span><span class="EOP SCXW196884260 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW36949272 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW36949272 BCX0">Decision tree is a type of supervised learning algorithm (having a pre-defined target variable) that is mostly used in classification problems. It works for both categorical and continuous input and output variables.</span></span></li>
+<li><strong><span class="TextRun SCXW235591358 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW235591358 BCX0" data-ccp-parastyle="heading 4">Random Forest Classification</span></span></strong><span class="TextRun SCXW235591358 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW235591358 BCX0" data-ccp-parastyle="heading 4">:</span></span><span class="EOP SCXW235591358 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW131443930 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW131443930 BCX0">Random Forest is a trademark term for an ensemble of decision trees. In Random Forest, we’ve collection of decision trees (so known as “Forest”). To classify a new object based on attributes, each tree gives a classification and we say the tree “votes” for that class. The forest chooses the classification having the most votes (over all the trees in the forest.</span></span><span class="EOP SCXW131443930 BCX0" data-ccp-props="{}"> </span></li>
+<li><span class="TextRun SCXW256144533 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><strong><span class="NormalTextRun SCXW256144533 BCX0" data-ccp-parastyle="heading 4">Logistic regression</span></strong><span class="NormalTextRun SCXW256144533 BCX0" data-ccp-parastyle="heading 4"><strong>:</strong> </span></span><span class="EOP SCXW256144533 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW250130968 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW250130968 BCX0">Logistic regression extends the idea of linear regression to the situation where the dependent variable Y is categorical. We can think of a categorical variable as dividing the observations in to classes.  </span></span><span class="LineBreakBlob BlobObject DragDrop SCXW250130968 BCX0"><span class="SCXW250130968 BCX0"> </span></span><span class="TextRun SCXW250130968 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW250130968 BCX0">Don’t get confused by its name! It is a classification not a regression algorithm.<br />
+<img decoding="async" class="wp-image-10343 alignnone" src="/wp-content/uploads/2022/09/lr.png" alt="lr Machine Learning quick start guide for enthusiast" width="924" height="310"><br />
+</span></span></li>
+<li>
+<p aria-level="4"><b><span data-contrast="none">The naive Bayes classifier: </span></b><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto">It works on Bayes theorem of probability to predict the class of unknown data set.</span> <span data-contrast="auto">Naive Bayes uses a similar method to predict the probability of different class based on various attributes. This algorithm is mostly used in text classification and with problems having multiple classes.</span></p>
+</li>
+<li>
+<p aria-level="4"><b><i><span data-contrast="none">SVM (Support Vector Machine):</span></i></b><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto"> </span><span data-contrast="auto">It is a classification method. In this algorithm, we plot each data item as a point in n-dimensional space (where n is number of features you have) with the value of each feature being the value of a particular coordinate.</span><span data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span><span data-contrast="auto">For example, if we only had two features like Height and Hair length of an individual, we’d first plot these two variables in two dimensional space where each point has two co-ordinates (these co-ordinates are known as Support Vectors)</span><span data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span></p>
+</li>
+<li><span class="TextRun SCXW157341624 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW157341624 BCX0" data-ccp-parastyle="heading 4"><strong>K-Nearest Neighbor:</strong> </span></span><span class="EOP SCXW157341624 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW48525375 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW48525375 BCX0">KNN can be used for both classification and regression predictive problems. The “K” in KNN algorithm is the nearest neighbors we wish to take vote from?<br />
+<img decoding="async" class="wp-image-10349 alignnone" src="/wp-content/uploads/2022/09/knn.png" alt="knn Machine Learning quick start guide for enthusiast" width="783" height="297"><br />
+</span></span></li>
+</ul>
+</li>
+<li><span class="TextRun SCXW77015521 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW77015521 BCX0" data-ccp-parastyle="heading 3"><strong>Clustering</strong>: </span></span>
+<ul>
+<li><span class="NormalTextRun SCXW193408192 BCX0"><strong>k-means clustering:</strong>  The k-means clustering is an unsup</span><span class="NormalTextRun SCXW193408192 BCX0">ervised learning technique that </span><span class="NormalTextRun SCXW193408192 BCX0">helps in partitioning data of n observations into K buckets of similar observations.</span></li>
+<li><strong><span class="TextRun Underlined SCXW129119889 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW129119889 BCX0">Hierarchical clustering:</span></span></strong> <span class="TextRun SCXW129119889 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW129119889 BCX0">Hierarchical clustering is an unsupervised learning technique where a hierarchy of clusters is built out of observations</span></span></li>
+<li><strong> <span class="TextRun SCXW65955475 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW65955475 BCX0">Divisive hierarchical clustering</span></span></strong><span class="TextRun SCXW65955475 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW65955475 BCX0"><strong>:</strong> This is a top-down approach where observations start off in a single cluster and then they are split into two as they go down a hierarchy</span><span class="NormalTextRun SCXW65955475 BCX0">.</span></span></li>
+</ul>
+</li>
+<li><strong>Recommender Systems: </strong>Recommendations help monetize user behavior data that businesses capture. This allows them to recommend the content that they like. Recommender systems are a way of suggesting or similar items and ideas to a user’s specific way of thinking.</li>
+</ul>
+</li>
+<li><strong><span class="TextRun Underlined SCXW60958742 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW60958742 BCX0" data-ccp-parastyle="heading 2">Model </span><span class="NormalTextRun SCXW60958742 BCX0" data-ccp-parastyle="heading 2">Evaluation:</span></span><span class="EOP SCXW60958742 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}"> </span></strong>
+<ul>
+<li><span class="TextRun SCXW28168107 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW28168107 BCX0"> Evaluate the results, is it Overfitting (Good performance on the training data, poor generliazation to other data) or Underfitting (Poor performance on the training data and poor generalization to other data)</span></span></li>
+<li><span class="TextRun SCXW13247658 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW13247658 BCX0">Review the process</span></span></li>
+<li><span class="TextRun SCXW172585727 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="TextRun SCXW172585727 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW172585727 BCX0">Determine the next steps based on evaluation score<br />
+<img decoding="async" class="wp-image-10352 alignnone" src="/wp-content/uploads/2022/09/model-evPNG.png" alt="model evPNG Machine Learning quick start guide for enthusiast" width="706" height="284" srcset="/wp-content/uploads/2022/09/model-evPNG.png 706w, /wp-content/uploads/2022/09/model-evPNG-480x193.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 706px, 100vw"></span></span></span></li>
+</ul>
+</li>
+<li><strong><span class="TextRun Underlined SCXW146877088 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW146877088 BCX0" data-ccp-parastyle="heading 2">Test &amp; Deployment:</span></span><span class="EOP SCXW146877088 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}">  </span></strong><span class="EOP SCXW146877088 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}"><span class="EOP SCXW146877088 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}">After validation using various matix model is ready for testing. Here test set will be used for testing. The more data we will use the more the model will be robust.</span></span>More resource</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>for study and parctice : <a href="https://www.coursera.org/learn/machine-learning-with-python" rel="nofollow noopener" target="_blank"> Machine Learning with Python -Coursera</a>   , <a href="https://www.kaggle.com/" rel="nofollow noopener" target="_blank">Kaggle</a>, <a href="https://www.edx.org/" rel="nofollow noopener" target="_blank">edX</a><br />
+Hope this will help to quick start and Achieve Success Quicker.<br />
+Thanks&#8230;..</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/machine-learning-quick-start-guide-for-enthusiast/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>ছোটদের Agile ও Scrum : মুরুব্বিদের জন্য নিষিদ্ধ</title>
+		<link>/blog/agile-scrum/</link>
+					<comments>/blog/agile-scrum/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Thu, 08 Sep 2022 10:40:23 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=10382</guid>
+
+					<description><![CDATA[কি করতেছি, কেন করতেছি, করলে ফায়দাটাই কি বা এভাবেই কেন, আরও ভালো কিছু করা যায় না, যা সময় উপযোগী ও বেশি কার্যকরী?  এসব প্রশ্ন কখনো মনে আসে নাই বা সময় করতে পারিনাই। মুরব্বিরা এই ভাবেই করে গেছে তাই আমরাও করি। দিনে একবার সবাই মিলে মিটিং রুমে গোল হয়ে দাড়িয়ে ম্যানেজার/টিমলিড কে কাজের জবাবদিহি করি আর [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>কি করতেছি, কেন করতেছি, করলে ফায়দাটাই কি বা এভাবেই কেন, আরও ভালো কিছু করা যায় না, যা সময় উপযোগী ও বেশি কার্যকরী?  এসব প্রশ্ন কখনো মনে আসে নাই বা সময় করতে পারিনাই। মুরব্বিরা এই ভাবেই করে গেছে তাই আমরাও করি। দিনে একবার সবাই মিলে মিটিং রুমে গোল হয়ে দাড়িয়ে ম্যানেজার/টিমলিড কে কাজের জবাবদিহি করি আর ম্যানেজার/টিমলিড আমদেরকে কাজ দিয়ে (ডেড লাইন সহ) সেটা Kanban বোর্ডে টানিয়ে দেয়। এইতো হয়ে গেল Agile মেথড আর Scrum, সিম্পল তাই না! হ্যাঁ, এভাবেই — <em>দিনে দিনে হলো আমার দিন আখেরি&#8230;!</em></p>
+<p>যাদের মনে উপরের প্রশ্ন গুলো আসে, তাদের জন্য  Agile ও Scrum নিয়ে আজকের সংক্ষিপ্ত আলোচনা।</p>
+<p><img decoding="async" class="aligncenter size-full wp-image-10384" src="/wp-content/uploads/2022/09/agile-software-development-umberilla.png" alt="agile software development umberilla ছোটদের Agile ও Scrum : মুরুব্বিদের জন্য নিষিদ্ধ" width="652" height="422" srcset="/wp-content/uploads/2022/09/agile-software-development-umberilla.png 652w, /wp-content/uploads/2022/09/agile-software-development-umberilla-480x311.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 652px, 100vw"></p>
+<p><strong>Agile: </strong>আমরা জানি <em>Agile</em> ইনক্রিমেন্টাল ডেভেলপমেন্টের একটা Methodology! আসলে <em>Agile</em> &#8211; Mindset, Ideology, যা কিনা একটা বৃহৎ ছাতার মত, যে ইনক্রিমেন্টাল ডেভেলপমেন্টের অনেক গুলো ফ্রেমওয়ার্ক কে ধারন করে। কেন এইটা Methodology না হয়ে Mindset বা Ideology? তা বোঝার জন্য আমাদের <em>Agile</em> <em>Manifesto </em>-র সাহায্য নিতে হবে। দেখি <em>Agile</em> <em>Manifesto </em>কি বলে-</p>
+<ul>
+<li><strong>Individuals and interactions</strong> over processes and tools</li>
+<li><strong>Working software</strong> over comprehensive documentation</li>
+<li><strong>Customer collaboration</strong> over contract negotiation</li>
+<li><strong>Responding to change</strong> over following a plan</li>
+</ul>
+<div class="wpb_text_column wpb_content_element dbd-mani-text">
+<div class="wpb_wrapper">
+<p>That is, while there is value in the items on the right, <strong>we value the items on the left more </strong>(Source: agilealliance)</p>
+<p><em>Agile</em> <em>Manifesto </em>কে আরও সহজ করে বোঝার জন্য রয়েছে <em>Agile</em> <em>Manifesto </em>-র আরও ১২ টি ব্যাখ্যা মূলক Principle, যা <em>Agile</em> কে বোঝার জন্য বা ধারন করার জন্য। <em>Agile</em> <em>Manifesto </em>-র উপর ভিত্তি করে ১২ টি Principle &#8211;</p>
+<ol>
+<li>Our highest priority is to satisfy the customer through early and continuous delivery of valuable software.</li>
+<li>Welcome changing requirements, even late in development. Agile processes harness change for the customer’s competitive advantage.</li>
+<li>Deliver working software frequently, from a couple of weeks to a couple of months, with a preference to the shorter timescale.</li>
+<li>Business people and developers must work together daily throughout the project.</li>
+<li>Build projects around motivated individuals. Give them the environment and support they need, and trust them to get the job done.</li>
+<li>The most efficient and effective method of conveying information to and within a development team is face-to-face conversation.</li>
+<li>Working software is the primary measure of progress.</li>
+<li>Agile processes promote sustainable development. The sponsors, developers, and users should be able to maintain a constant pace indefinitely.</li>
+<li>Continuous attention to technical excellence and good design enhances agility.</li>
+<li>Simplicity–the art of maximizing the amount of work not done–is essential.</li>
+<li>The best architectures, requirements, and designs emerge from self-organizing teams.</li>
+<li>At regular intervals, the team reflects on how to become more effective, then tunes and adjusts its behavior accordingly.</li>
+</ol>
+</div>
+<p>আসল কথা হল- <em>&#8216;Continuous delivery of valuable software, <strong>Working software</strong>&#8216; , </em>যার জন্য দরকার সেলফ অর্গানাইজড একটা টিম- যারা নিজেদের মাঝে কমিউনিকেশন/আলোচনার মাধ্যমে কাজকে এগিয়ে নেয়, প্রয়োজনে কাস্টমারের অংশ গ্রহণকেও নিশ্চিত করে এগিয়ে যাওয়ার জন্য। বস্তা বস্তা ডকুমেন্টের চেয়ে সরাসরি আলোচনা ও শুধু মাত্র প্রয়োজনীয় ডকুমেন্ট কে প্রাধান্য দেয় (এখানে বলে রাখা ভাল অনেকে ধারনা করে বা মনে করে থাকে <em>Agile</em> -এ ডকুমেন্টের প্রয়োজন নেই) । এই সেলফ অর্গানাইজড টিম ধাপে ধাপে শিখতে থাকে এবং উত্তর উত্তর উন্নতি করতে থাকে যা কাস্টমার ও অর্গানিজেশন উভয়ের জন্য ফলপ্রসূ ।</p>
+<p><em>Agile</em> <em>Manifesto </em>ও <em>Principle</em> এর উপর ভিত্তি করে অনেক গুলো ফ্রেমওয়ার্ক আছে যেমন- XP, Lean, Kanban, Scrum  যা কিভাবে একটা সেলফ অর্গানাইজড টিম কমিউনিকেট করবে, কাস্টমারের অংশ গ্রহণকে নিশ্চিত করবে, ধারাবাহিক ডেলিভারি অক্ষুন্ন রাখবে সে সব বিষয়ে ফ্লেক্সিবল গাইডলাইন তৈরি করেছে। এই ফ্রেমওয়ার্ক গুলো সময়ের সাথে সাথে বিবর্তিত হয়ে থাকে। এক একটা অর্গানিজেশন বা টিম তাদের ন্যাচার এর উপর ভিত্তি করে তাদের উপযোগী ফ্রেমওয়ার্কে কাজ করে থাকে। আজ আমরা <strong>Scrum</strong> কে জানার ও বোঝার চেষ্টা করব।<br />
+<img decoding="async" class="aligncenter size-full wp-image-10388" src="/wp-content/uploads/2022/09/agile-scrum-lifecycle-diagram.png" alt="agile scrum lifecycle diagram ছোটদের Agile ও Scrum : মুরুব্বিদের জন্য নিষিদ্ধ" width="930" height="320" srcset="/wp-content/uploads/2022/09/agile-scrum-lifecycle-diagram.png 930w, /wp-content/uploads/2022/09/agile-scrum-lifecycle-diagram-480x165.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 930px, 100vw"></p>
+<p><strong>Scrum:</strong> এটি একটি লাইটওয়েট ও সহজবোধ্য ফ্রেমওয়ার্ক যার সাহায্যে একজন মানুষ, টিম বা অর্গানিজেশন জটিল সমস্যার অভিযোজিত সমাধানের (Adaptive Solution) মাধ্যমে সম্ভাব্য সর্বোচ্চ ডেলিভারি দিয়ে থাকে।<br />
+সহজে বলতে গেলে, একজন Scrum Master  এর সাহায্যে একটি পরিবেশ গড়ে তোলা হয় যেখানে-</p>
+<ul>
+<li>একজন Product Owner কাজগুলো কে Product Backlog  অ্যাড করে এবং গুরুত্ব অনুযায়ী সাজায়</li>
+<li>Scrum Team কাজ গুলোকে বাস্তবায়িত করে থাকে</li>
+<li>Scrum Team ও কাস্টমাররা বাস্তবায়িত কাজের ফলাফল গুলোকে পর্যবেক্ষণ করে পরের স্প্রিন্টের কাজ কে অভিযোজিত করে</li>
+<li>পুনরাবর্তন</li>
+</ul>
+<p><strong>Scrum Theory:</strong> অভিজ্ঞতাবাদ (Empiricism) ও লিন থিঙ্কিং (Lean Thinking) এর উপর Scrum প্রতিষ্ঠিত। অভিজ্ঞতাবাদ শেখায় অভিজ্ঞতা ও পর্যবেক্ষণের ভিত্তিতে নেয়া সিদ্ধান্তের মাধ্যমে জ্ঞান আহরন করা ও কাজে লাগানো। লিন থিঙ্কিং অপ্রয়োজনীয় অংশকে বাদ দিয়ে শুধু প্রয়োজনীয় অংশের উপরে ফোকাস করে। Scrum এর অভিজ্ঞতাবাদী  ভিত্তি তিনটি &#8211;</p>
+<ul>
+<li>স্বচ্ছতা (Transparency)</li>
+<li>পর্যবেক্ষণ (Inspection)</li>
+<li>অভিযোজন (Adaptation)</li>
+</ul>
+<p><strong>Scrum Values:</strong> Scrum এর পাঁচটি Values হল- প্রতিশ্রুতিবদ্ধা (commitment), স্থির লক্ষ্য (focus), গোপনীয়তা হীনতা (openness), সম্মান (respect) এবং সাহস (courage). এই পাঁচটির উপরেই একজন মানুষ বা একটি টিমের সাফল্য নির্ভর করে থাকে।<br />
+টিমের সদস্যরা লক্ষ্য অর্জনের জন্য ও একে অপরের সাহায্যের জন্য প্রতিশ্রুতিবদ্ধ।<br />
+টিম তাদের মুল লক্ষে স্থির থাকে এবং লক্ষ অর্জনের জন্য সর্বোচ্চ চেষ্টা ও সেরা পন্থা অবলম্বন করে থাকে।<br />
+টিম এবং স্টেকহোল্ডারদের মাঝে কাজের অগ্রগতি বা কোন অসুবিধা নিয়ে কোন গোপনীয়তা থাকবেনা<br />
+টিমের সদস্যরা একে অন্যর প্রতি- অন্যর  স্বাধীন ব্যক্তিত্ব ও মতামতের প্রতি সম্মান রাখে<br />
+টিমের সদস্যরা কঠিন কাজ বা সঠিক সময়ে সঠিক কাজ করার সাহস রাখে।</p>
+<p><strong>Scrum Team:</strong> Scrum টিমের মুল ভিত্তি হল- কয়েকজন জন মানুষের একটা টিম, যেখানে থাকে একজন Product Owner, Scrum Master, Developers.<br />
+<img decoding="async" class="aligncenter size-full wp-image-10801" src="/wp-content/uploads/2022/09/I-Am-Not-Lazy-Funny-Polar-Bear-Meme-Image.jpg" alt="I Am Not Lazy Funny Polar Bear Meme Image ছোটদের Agile ও Scrum : মুরুব্বিদের জন্য নিষিদ্ধ" width="540" height="432" srcset="/wp-content/uploads/2022/09/I-Am-Not-Lazy-Funny-Polar-Bear-Meme-Image.jpg 540w, /wp-content/uploads/2022/09/I-Am-Not-Lazy-Funny-Polar-Bear-Meme-Image-480x384.jpg 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 540px, 100vw"></p>
+<p>না উপরের ছবিটার মত নয় একেবারেই! Scrum টিম হাইলি মোটিভেটেড, সেলফ অরগানাইজড, ক্রস ফাংশনাল। এর মানে একটি স্প্রিন্টকে অর্থবহ করা ও লক্ষ অর্জনের জন্য প্রয়োজনীয় সকল দক্ষতা টিমের থাকে, এরা স্ব-পরিচালিত হয়, টিম সিদ্ধান্ত নেয় কে কি করবে, কখন করবে, কিভাবে করবে যার মাধ্যমে তাদের  মধ্যকার পারস্পরিক বোঝাপড়াও প্রতিফলিত হয়।</p>
+<ul>
+<li><strong>Product Owner:</strong><em> Product Owner এর </em>কাজের মাধ্যমেই  তাকে জানার চেষ্টা করি-<br />
+১) প্রোডাক্ট এর মিশন ভিসন তৈরি করা এবং তা সু-স্পষ্ট ভাবে সবাইকে বুঝিয়ে দেয়া<br />
+২) প্রোডাক্ট ব্যাকলগ তৈরি করা এবং সবাইকে অবগত করা<br />
+৩) ব্যাকলগ আইটেমের গুরুত্ব অনুযায়ী ক্রমবিন্যাস করা<br />
+৪) প্রোডাক্ট ব্যাকলগ সবার কাছে পরিষ্কার, সু-স্পষ্ট, এবং বোধগম্য কি না তা সুনিশ্চিত করা।<br />
+এই কাজ গুলো <em>Product Owner </em>নিজে করতে পারে বা অন্যকে দিয়েও করাতে পারে কিন্তু দায়বদ্ধতা <em>Product Owner </em>নিজের।</li>
+<li><strong>Developers:</strong> এরা হল সেই সব সদস্য যারা স্প্রিন্ট শেষে একটি ব্যবহার উপযোগী ইনক্রিমেন্ট গড়ে তলার জন্য প্রতিশ্রুতিবদ্ধ। ব্যবহার উপযোগী ইনক্রিমেন্টের জন্য তারা যা করে থাকে-<br />
+১) চলমান স্প্রিন্টের জন্য স্প্রিন্ট  ব্যাকলগ তৈরি করা<br />
+২) Definition of Done (DOD) এর সাথে সঙ্গতি রেখে কাজের গুনগত মান নিশ্চিত করা<br />
+৩) স্প্রিন্টের লক্ষ্য অনুযায়ী প্রতিদিন তাদের পরিকল্পনা কে অভিযোজিত (adjust, adapt) করা<br />
+৪) পেশাদারিত্বের সাথে প্রতেকের সামর্থ্য অনুযায়ী কাজ ভাগ করে নেয়া ও সম্পন্ন করা</li>
+<li><strong>Scrum Master: </strong>Scrum Guide অনুযায়ী, টিমে বা অর্গানাইজেশনে <em>Scrum </em>বাস্তবায়ন করা বা সবাইকে <em>Scrum  </em>সম্বন্ধে অবহিত করে, <em>Scrum </em>তত্ত্ব বা মূলনীতি বুঝিয়ে তা বাস্তবে রূপ দেয়ার জন্য সম্পূর্ণ ভাবে দায়বদ্ধ। <em>Scrum Master </em>কে বলা হয় Servant leader -যার কাজ টিমকে সর্বোচ্চ অর্জনে নিন্মক্তভাবে সাহায্য করা-<br />
+১) টিম মেম্বার বা টিমের লক্ষ্য অর্জনের পথে যদি কোন প্রতিবন্ধকতা থেকে থাকে তা অপসারণে ব্যবস্থা নেয়া।<br />
+২) টিম কে সেলফ ম্যানেজমেন্ট ও ক্রস ফাংশনালিটি বিষয়ে কোচিং দেয়া যাতে করে টিম তাদের সর্বোচ্চ প্রচেষ্টা সুনিশ্চিত করতে পারে।<br />
+৩) সকল Scrum event গুলো কে সঠিক ভাবে, সাফল্যের সাথে, টাইম বক্সের মধ্যে শেষ হয় তা সুনিশ্চিত করা<br />
+৪) <em>Product Owner </em>কে প্রোডাক্ট প্লানিং এ সহায়তা করা ও টিম কে ব্যাকলগ আইটেম বুঝতে সহায়তা করা<br />
+৫) অর্গানিজেশন Scrum কে প্রতিষ্ঠিত করতে, ব্যবহারে ও পরিচালনায় উপদেশ এবং পরিকল্পনা করা<br />
+৬) Developers, Product Owner এবং Stakeholder দের মাঝে সেতু বন্ধন তৈরি করা।<br />
+A funny Scrum Master movie with Jeff Sutherland(must watch):<br />
+<iframe title="a funny Scrum Master movie with Jeff Sutherland" width="1080" height="608" src="https://www.youtube.com/embed/oheekef7oJk?feature=oembed"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></li>
+</ul>
+<p><em>এইবার আর একটু সহজ করার চেষ্টা করি, আশাকরি নৌকা বাইচ দেখেছেন- Scrum টিমকে যদি একটা বাইচের নৌকার সাথে তুলনা করি তবে&#8211;</em><br />
+<em>নৌকার পেছনে একজন লক্ষের দিকে শক্ত করে হাল ধরে আছে, প্রয়োজনে সে একবার ডাইনে কাটে আবার বায়ে, সে তার লক্ষে স্থির, এ হল আমাদের নৌকার Product Owner যে এই বাইচ/Race টা জিততে চায়।</em><br />
+<em>মাঝের সদস্যরা সর্বোচ্চ চেষ্টা দিয়ে বৈঠা চালিয়ে যাচ্ছে- এরা আমাদের Developers যারা ও  এই বাইচ/Race টা জিততে চায়।</em><br />
+<em>সবার সামনে একটা লোক গ্রাম্য একটা টেঁটা  বা রামদ নিয়ে দাড়িয়ে আছে তার সামনে যে বাধাই আসুক সে মোকাবেলা করবে আর সর্বদাই গুলুয়ে দাড়িয়ে সামনে ঝুকে ঝুকে একটানা একটা রিদম দিয়ে যাচ্ছে যার তালে তালে সবাই বৈঠা চালায়- এ আমাদের নৌকার Scrum Master.<br />
+এখানে আমি তুমি বলে কিছু নেই , আমরা &#8211; মানে যদি এই  নৌকা  ডোবে তবে সবাই ডুববে / যদি জেতে তবে সবাই জিতে যাবে।</em></p>
+<p><strong>Scrum Events: </strong>Scrum -এর প্রতিটা ইভেন্ট Scrum artifact গুলোকে পর্যবেক্ষণ ও অভিযোজনের জন্য সুযোগ এনে দেয়। এই ইভেন্ট গুলো কাজের স্বচ্ছতা আনার জন্য বিশেষ ভাবে তৈরি। এই ইভেন্ট গুলো নিয়ামুবর্তিতা তৈরি করতে এবং Scrum ইভেন্ট এর বাইরের  মিটিং গুলো কমাতে সাহায্য করে। Scrum ইভেন্ট গুলো সাধারণত  একই  জায়গায়, একই  সময়ে এবং Time Bound  হয়ে থাকে।</p>
+<ul>
+<li><strong><strong>Sprint: </strong></strong>এটি Scrum -এর প্রাণ, যেখানে আইডিয়া বা ব্যাকলগ আইটেম Values &#8211; রুপান্তরিত হয়। ব্যাকলগ আইটেম থেকে গুরুত্ব অনুসারে কিছু আইটেম টিম নিজে বাছাই করে থাকে। Sprint এর দৈর্ঘ্য কত হবে তা টিম দ্বারা নির্ধারিত হয় যা একমাস বা তার চেয়ে কম সময়ের  একটি নির্দিষ্ট দৈর্ঘ্যের হয়ে থাকে। কাজের অগ্রগতি পর্যবেক্ষণের জন্য বার্ন-ডাউন, বার্ন-আপ চার্ট ব্যাবহার করা যেতে পারে। Sprint এর দৈর্ঘ্য বেশি হয়ে গেলে তা কার্যকারিতা হারায়, কাজের জটিলতা বাড়ে, ঝুকি বেড়ে যায়। যদি কোন কারনে দেখা যায় যে Sprint কার্যকারি হবে না বা লক্ষ্য পরিবর্তন বা অপ্রয়োজনীয় হয়ে যায় সে ক্ষেত্রে একমাত্র Product Owner Sprint টি বাতিল করতে পারবে।</li>
+<li><strong><strong>Sprint Planning: </strong></strong>Sprint -এ যা যা করা হবে তার জন্য পরিকল্পনা। টিম পরস্পরে সহযোগিতায়, আলোচনার ভিত্তিতে সব থেকে গুরুত্বপূর্ণ আইটেম গুলো ব্যাকলগ থেকে নির্বাচিত করা হয় এবং এটা প্রোডাক্টের লক্ষের সাথে সামঞ্জস্যপূর্ণ কিনা তা Product Owner নিশ্চিত করে।  এই পরিকল্পনা সাধারণত তিনটি বিষয়ে জোর দেয়া হয়-<br />
+১) Sprint টি কেন প্রয়োজনীয় বা গুরুত্বপূর্ণ<br />
+২) এই Sprint  -এ কি কি করা যেতে পারে<br />
+৩)  নির্বাচিত কাজ গুলো কিভাবে সম্পূর্ণ করা হবে<br />
+পরিকল্পনার সময়সীমা (timebox)  সাধারণত এক মাসের Sprint এর জন্য ৮ ঘণ্টা হয়ে থাকে। ছোট Sprint এর জন্য আনুপাতিক হারে কম সময় নিরধারন করা হয়।</li>
+<li><strong><strong>Daily Scrum: </strong></strong>এটা Scrum এর অন্যতম গুরুত্বপূর্ণ একটা ইভেন্ট যার মাধ্যমে Sprint এর অগ্রগতি পর্যবেক্ষণ করা হয়। জটিলতা কমানোর জন্য প্রতিদিন একই সময়ে এবং একই জায়গায় অনুষ্ঠিত হয় যার দৈর্ঘ্য ১৫ মিনিট। Scrum Master  সাধারণত এটি পরিচালনা করে থাকে। টিম মেম্বাররা এখানে তিনটি প্রশ্নের উত্তর দিয়ে থাকে &#8211;<br />
+১) গতকাল কি করেছি<br />
+২) আজ কি করব<br />
+৩) কাজের ক্ষেত্রে কোন আসুবিধা বা  প্রতিবন্ধকতা আছে কিনা<br />
+এছাড়াও প্রয়োজনে সারাদিনে একাধিকবার পারস্পরিক আলোচনার মাধ্যমে কাজকে এগিয়ে নেয়া হয়। যদি কারো কোন অসুবিধা/প্রতিবন্ধকতা থাকে  বা ব্যাকলগ বুঝতে অসুবিধা হয় তবে Scrum Master  এর জন্য আলাদা মিটিং আয়োজন করে থাকে।</li>
+<li><strong><strong>Sprint review: </strong></strong>এই ইভেন্টের মাধ্যমে টিম এবং স্টেকহোল্ডারা যে কাজ সম্পন্ন হয়েছে এবং তার ফলে আনুসঙ্গিক যে পরিবর্তন হয়েছে তা আলোচনা, পর্যালোচনা করে থাকে, এই ফলাফলের উপর ভিত্তি করে  ইভেন্টের সবাই মিলে ঠিক করে এর পরে কি করা উচিত। নতুন কাজের সম্ভাবনাকে স্থান দেয়ার জন্য ব্যাকলগে ও পরিবর্তন আসতে পারে।<br />
+এই ইভেন্টের সময়সীমা (timebox)  সাধারণত এক মাসের Sprint এর জন্য ৪ ঘণ্টা হয়ে থাকে। ছোট Sprint এর জন্য আনুপাতিক হারে কম সময় নিরধারন করা হয়। সব চেয়ে বড় কথা এটা একটা কাজের ইভেন্ট একে অর্থপূর্ণ করতে হবে তাই খেয়াল রাখতে হবে যেন শুধু মাত্র প্রেজেন্টেশন দিয়ে যেন শেষ না হয়।</li>
+<li><strong>Sprint Retrospective: </strong>এই ইভেন্টের উদ্দেশ্য হল- টিমের গুনগত মান ও কার্যকারিতা বাড়ানো। টিম এখানে নিজেদের মাঝে আলোচনা পর্যালোচনা করে তাদের বিগত Sprint এর অর্জন ও বর্জন গুলো, ভ্যালু অ্যাড করে এমন যা কিছু শিখেছে বা কি কি অসুবিধার সম্মুখীন হয়েছে এবং সে গুলো কি ভাবে সমাধান করেছে।<br />
+এই ইভেন্টের সময়সীমা (timebox)  সাধারণত এক মাসের Sprint এর জন্য ৩ ঘণ্টা হয়ে থাকে। ছোট Sprint এর জন্য আনুপাতিক হারে কম সময় নিরধারন করা হয়।</li>
+</ul>
+<p><strong>Scrum Artifacts: </strong>Scrum আর্টিফ্যাক্টগুলি এমন তথ্য যা একটি স্ক্রাম টিম এবং স্টেকহোল্ডাররা প্রোডাক্ট ডেভেলপ করার সময় যে সব ক্রিয়াকলাপ করে থেকে এবং প্রোজেক্ট চলাকালীন সম্পাদিত ক্রিয়াগুলির বিশদ বিবরণের জন্য ব্যবহার করে। স্ক্রাম আর্টিফ্যাক্টগুলি হল প্রোডাক্ট ব্যাকলগ, স্প্রিন্ট ব্যাকলগ এবং ইনক্রিমেন্ট।<br />
+একটি স্প্রিন্ট ব্যাকলগ &#8211;<br />
+<img decoding="async" class="aligncenter size-full wp-image-10991" src="/wp-content/uploads/2022/09/sprint-backlog.png" alt="sprint backlog ছোটদের Agile ও Scrum : মুরুব্বিদের জন্য নিষিদ্ধ" width="1631" height="552" srcset="/wp-content/uploads/2022/09/sprint-backlog.png 1631w, /wp-content/uploads/2022/09/sprint-backlog-1280x433.png 1280w, /wp-content/uploads/2022/09/sprint-backlog-980x332.png 980w, /wp-content/uploads/2022/09/sprint-backlog-480x162.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1631px, 100vw"><br />
+অনেক হইছে- <em>জানার কোন শেষ নাই, জানার চেষ্টা বৃথা তাই- যে বেশি জানে সে কম মানে !<br />
+</em>এরপরেও যারা মানার জন্য আরো জানতে চায় তারা আরও যা দেখতে পারে &#8211;<br />
+১) <a href="https://www.scrumalliance.org/" rel="nofollow noopener" target="_blank">ScrumAlliance</a><br />
+২) <a href="https://www.mountaingoatsoftware.com/agile/scrum" rel="nofollow noopener" target="_blank">Mountain Goat</a><br />
+৩) Agile Principles, Patterns, and Practices in C# By Robert C. Martin<br />
+৪) Scrum the art of doing twice the work in half the time By Jeff Sutherland<br />
+5) Agile Project Management with Scrum-Microsoft Press By Ken Schwaber</p>
+</div>
+<div class="wpb_text_column wpb_content_element dbd-mani-text">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+<p>&nbsp;</p>
+<div class="wpb_text_column wpb_content_element dbd-mani-text">
+<div class="wpb_wrapper">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/agile-scrum/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>SQL Server Database Source Control using Visual Studio: Git</title>
+		<link>/blog/sql-server-database-source-control-using-visual-studio-git/</link>
+					<comments>/blog/sql-server-database-source-control-using-visual-studio-git/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Mon, 22 Aug 2022 15:35:25 +0000</pubDate>
+				<category><![CDATA[Git]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[git]]></category>
+		<category><![CDATA[visual studio]]></category>
+		<guid isPermaLink="false">/?p=10213</guid>
+
+					<description><![CDATA[In this brief article, we will see how to setup SQL Server Database Source Control using Visual Studio step by step &#8212; 1. Create a new repository to GitHub 2. Clone the repository to local directory 3. Create a new Sql Server Database project inside the repository 4. Right click on the project -&#62; Import -&#62; [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span class="TextRun SCXW47672020 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW47672020 BCX0">In this brief </span></span><span class="TextRun SCXW47672020 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW47672020 BCX0">article, we will see how to setup SQL Server Database Source Control using Visual Studio step by step &#8212; </span></span></p>
+<p><span class="TextRun SCXW154446793 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW154446793 BCX0"><strong>1. Create a new repository to GitHub</strong><br />
+<img decoding="async" class="aligncenter size-full wp-image-10215" src="/wp-content/uploads/2022/08/1.-create-new-repo.png" alt="1. create new repo SQL Server Database Source Control using Visual Studio: Git" width="1957" height="1108" srcset="/wp-content/uploads/2022/08/1.-create-new-repo.png 1957w, /wp-content/uploads/2022/08/1.-create-new-repo-1280x725.png 1280w, /wp-content/uploads/2022/08/1.-create-new-repo-980x555.png 980w, /wp-content/uploads/2022/08/1.-create-new-repo-480x272.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1957px, 100vw"><strong><span class="TextRun SCXW64228351 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW64228351 BCX0">2. Clone the repository to local directory<br />
+</span></span>3. <span class="NormalTextRun SCXW148413887 BCX0">Create a new </span><span class="NormalTextRun SpellingErrorV2Themed SCXW148413887 BCX0">Sql</span><span class="NormalTextRun SCXW148413887 BCX0"> Server Database project inside the repository<br />
+<img decoding="async" class="aligncenter size-full wp-image-10233" src="/wp-content/uploads/2022/08/3.-select-sql-server-database-project-1.png" alt="3. select sql server database project 1 SQL Server Database Source Control using Visual Studio: Git" width="1917" height="1040" srcset="/wp-content/uploads/2022/08/3.-select-sql-server-database-project-1.png 1917w, /wp-content/uploads/2022/08/3.-select-sql-server-database-project-1-1280x694.png 1280w, /wp-content/uploads/2022/08/3.-select-sql-server-database-project-1-980x532.png 980w, /wp-content/uploads/2022/08/3.-select-sql-server-database-project-1-480x260.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1917px, 100vw"><br />
+4. <span class="NormalTextRun SCXW83752731 BCX0">Right click on the project -&gt; Import -&gt; Select Database or Data-tier Application(*.</span><span class="NormalTextRun SpellingErrorV2Themed SCXW83752731 BCX0">dacpac</span><span class="NormalTextRun SCXW83752731 BCX0">)</span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10217" src="/wp-content/uploads/2022/08/4.-import-database-data-tier.png" alt="4. import database data tier SQL Server Database Source Control using Visual Studio: Git" width="1920" height="1200" srcset="/wp-content/uploads/2022/08/4.-import-database-data-tier.png 1920w, /wp-content/uploads/2022/08/4.-import-database-data-tier-1280x800.png 1280w, /wp-content/uploads/2022/08/4.-import-database-data-tier-980x613.png 980w, /wp-content/uploads/2022/08/4.-import-database-data-tier-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><span class="NormalTextRun SCXW83752731 BCX0">For Data-tier Application(*.</span><span class="NormalTextRun SpellingErrorV2Themed SCXW83752731 BCX0">dacpac</span><span class="NormalTextRun SCXW83752731 BCX0">) option, Select/Browse the file then click on ’Start’.<br />
+<img decoding="async" class="aligncenter size-full wp-image-10218" src="/wp-content/uploads/2022/08/4.1.-import-data-tier.png" alt="4.1. import data tier SQL Server Database Source Control using Visual Studio: Git" width="1919" height="1047" srcset="/wp-content/uploads/2022/08/4.1.-import-data-tier.png 1919w, /wp-content/uploads/2022/08/4.1.-import-data-tier-1280x698.png 1280w, /wp-content/uploads/2022/08/4.1.-import-data-tier-980x535.png 980w, /wp-content/uploads/2022/08/4.1.-import-data-tier-480x262.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw">For Database option, Select Connection of the Source <span class="NormalTextRun SpellingErrorV2Themed SCXW83752731 BCX0">Sql</span> Server Database then click on ’Start’.<br />
+</span></span></strong><span class="NormalTextRun SCXW148413887 BCX0"><span class="NormalTextRun SCXW83752731 BCX0">[But this option is not available in Visual Studio Community Edition]<br />
+<img decoding="async" class="aligncenter size-full wp-image-10219" src="/wp-content/uploads/2022/08/4.2.-import-database.png" alt="4.2. import database SQL Server Database Source Control using Visual Studio: Git" width="1919" height="1040" srcset="/wp-content/uploads/2022/08/4.2.-import-database.png 1919w, /wp-content/uploads/2022/08/4.2.-import-database-1280x694.png 1280w, /wp-content/uploads/2022/08/4.2.-import-database-980x531.png 980w, /wp-content/uploads/2022/08/4.2.-import-database-480x260.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw"><br />
+<img decoding="async" class="aligncenter size-full wp-image-10220" src="/wp-content/uploads/2022/08/4.3.-finish.png" alt="4.3. finish SQL Server Database Source Control using Visual Studio: Git" width="1915" height="1041" srcset="/wp-content/uploads/2022/08/4.3.-finish.png 1915w, /wp-content/uploads/2022/08/4.3.-finish-1280x696.png 1280w, /wp-content/uploads/2022/08/4.3.-finish-980x533.png 980w, /wp-content/uploads/2022/08/4.3.-finish-480x261.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1915px, 100vw"><br />
+</span></span><strong><span class="NormalTextRun SCXW148413887 BCX0">5. <span class="NormalTextRun SCXW30582366 BCX0">Now update a Stored procedure (Add comment) from source </span><span class="NormalTextRun SpellingErrorV2Themed SCXW30582366 BCX0">Sql</span><span class="NormalTextRun SCXW30582366 BCX0"> Server Database as well as create a new table for testing purpose.<br />
+<img decoding="async" class="aligncenter size-full wp-image-10221" src="/wp-content/uploads/2022/08/5.-update-source-database.png" alt="5. update source database SQL Server Database Source Control using Visual Studio: Git" width="1914" height="1140" srcset="/wp-content/uploads/2022/08/5.-update-source-database.png 1914w, /wp-content/uploads/2022/08/5.-update-source-database-1280x762.png 1280w, /wp-content/uploads/2022/08/5.-update-source-database-980x584.png 980w, /wp-content/uploads/2022/08/5.-update-source-database-480x286.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1914px, 100vw"><br />
+6. <span class="NormalTextRun SCXW260703710 BCX0">To compare the Source Database and our target project, Right click on the project name the </span><span class="NormalTextRun ContextualSpellingAndGrammarErrorV2Themed SCXW260703710 BCX0">select  ‘</span><span class="NormalTextRun SCXW260703710 BCX0">Schema Compare’</span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10222" src="/wp-content/uploads/2022/08/6.-compare-schema.png" alt="6. compare schema SQL Server Database Source Control using Visual Studio: Git" width="1920" height="1200" srcset="/wp-content/uploads/2022/08/6.-compare-schema.png 1920w, /wp-content/uploads/2022/08/6.-compare-schema-1280x800.png 1280w, /wp-content/uploads/2022/08/6.-compare-schema-980x613.png 980w, /wp-content/uploads/2022/08/6.-compare-schema-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><br />
+7. <span class="TextRun SCXW133696771 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW133696771 BCX0">Select Source Database and Target Project then click on ‘Compare Button’</span></span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10223" src="/wp-content/uploads/2022/08/7.-compare.png" alt="7. compare SQL Server Database Source Control using Visual Studio: Git" width="1920" height="1200" srcset="/wp-content/uploads/2022/08/7.-compare.png 1920w, /wp-content/uploads/2022/08/7.-compare-1280x800.png 1280w, /wp-content/uploads/2022/08/7.-compare-980x613.png 980w, /wp-content/uploads/2022/08/7.-compare-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><br />
+8. <span class="TextRun SCXW202309690 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW202309690 BCX0">Check the changes</span></span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10224" src="/wp-content/uploads/2022/08/8.1.-check-changes.png" alt="8.1. check changes SQL Server Database Source Control using Visual Studio: Git" width="2255" height="1226" srcset="/wp-content/uploads/2022/08/8.1.-check-changes.png 2255w, /wp-content/uploads/2022/08/8.1.-check-changes-1280x696.png 1280w, /wp-content/uploads/2022/08/8.1.-check-changes-980x533.png 980w, /wp-content/uploads/2022/08/8.1.-check-changes-480x261.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2255px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-10225" src="/wp-content/uploads/2022/08/8.2.-check-changes.png" alt="8.2. check changes SQL Server Database Source Control using Visual Studio: Git" width="2260" height="1222" srcset="/wp-content/uploads/2022/08/8.2.-check-changes.png 2260w, /wp-content/uploads/2022/08/8.2.-check-changes-1280x692.png 1280w, /wp-content/uploads/2022/08/8.2.-check-changes-980x530.png 980w, /wp-content/uploads/2022/08/8.2.-check-changes-480x260.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2260px, 100vw"><br />
+9. <span class="TextRun SCXW183378634 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW183378634 BCX0">To update the Target Project/Source Control click on ‘Update’ </span></span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10226" src="/wp-content/uploads/2022/08/9.1.-update-target.png" alt="9.1. update target SQL Server Database Source Control using Visual Studio: Git" width="2257" height="1411" srcset="/wp-content/uploads/2022/08/9.1.-update-target.png 2257w, /wp-content/uploads/2022/08/9.1.-update-target-1280x800.png 1280w, /wp-content/uploads/2022/08/9.1.-update-target-980x613.png 980w, /wp-content/uploads/2022/08/9.1.-update-target-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2257px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-10227" src="/wp-content/uploads/2022/08/9.2.-update-target.png" alt="9.2. update target SQL Server Database Source Control using Visual Studio: Git" width="2242" height="1344" srcset="/wp-content/uploads/2022/08/9.2.-update-target.png 2242w, /wp-content/uploads/2022/08/9.2.-update-target-1280x767.png 1280w, /wp-content/uploads/2022/08/9.2.-update-target-980x587.png 980w, /wp-content/uploads/2022/08/9.2.-update-target-480x288.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2242px, 100vw"><br />
+10. <span class="NormalTextRun SCXW37175716 BCX0">Commit &amp; Push the </span><span class="NormalTextRun SCXW37175716 BCX0">changes.<br />
+<img decoding="async" class="aligncenter size-full wp-image-10228" src="/wp-content/uploads/2022/08/10.-final-updated-source-controll.png" alt="10. final updated source controll SQL Server Database Source Control using Visual Studio: Git" width="2257" height="1411" srcset="/wp-content/uploads/2022/08/10.-final-updated-source-controll.png 2257w, /wp-content/uploads/2022/08/10.-final-updated-source-controll-1280x800.png 1280w, /wp-content/uploads/2022/08/10.-final-updated-source-controll-980x613.png 980w, /wp-content/uploads/2022/08/10.-final-updated-source-controll-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2257px, 100vw"><br />
+<img decoding="async" class="aligncenter size-full wp-image-10236" src="/wp-content/uploads/2022/08/10.1.-final-updated-source-controll.png" alt="10.1. final updated source controll SQL Server Database Source Control using Visual Studio: Git" width="1844" height="980" srcset="/wp-content/uploads/2022/08/10.1.-final-updated-source-controll.png 1844w, /wp-content/uploads/2022/08/10.1.-final-updated-source-controll-1280x680.png 1280w, /wp-content/uploads/2022/08/10.1.-final-updated-source-controll-980x521.png 980w, /wp-content/uploads/2022/08/10.1.-final-updated-source-controll-480x255.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1844px, 100vw"><br />
+</span></span></span></strong></span></span>Thanks&#8230;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/sql-server-database-source-control-using-visual-studio-git/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>.NET6 API Documentation &#038; Example request with Swagger</title>
+		<link>/blog/net6-api-documentation-example-request-with-swagger/</link>
+					<comments>/blog/net6-api-documentation-example-request-with-swagger/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Sun, 26 Jun 2022 13:22:59 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[.NET6]]></category>
+		<category><![CDATA[api]]></category>
+		<category><![CDATA[documentation]]></category>
+		<category><![CDATA[swagger]]></category>
+		<guid isPermaLink="false">/?p=9534</guid>
+
+					<description><![CDATA[In this post,  Will try to show some basic of Swagger with .NET 6 as well as how to generate example request to make testing handy. Create a new Web API project with enabling the OpenAPI support. To add API information and description update builder.Services.AddSwaggerGen() like bellow example: using Microsoft.OpenApi.Models; builder.Services.AddSwaggerGen(c =&#62; { c.SwaggerDoc("v1", new [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>In this post,  Will try to show some basic of Swagger with .NET 6 as well as how to generate example request to make testing handy.</p>
+<p>Create a new Web API project with enabling the OpenAPI support.<br />
+<img decoding="async" class="aligncenter size-full wp-image-9539" src="/wp-content/uploads/2022/06/new-project.png" alt="new project .NET6 API Documentation &amp; Example request with Swagger" width="1017" height="673" srcset="/wp-content/uploads/2022/06/new-project.png 1017w, /wp-content/uploads/2022/06/new-project-980x649.png 980w, /wp-content/uploads/2022/06/new-project-480x318.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1017px, 100vw"></p>
+<p>To add API information and description update builder.Services.AddSwaggerGen() like bellow example:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using Microsoft.OpenApi.Models;
+
+builder.Services.AddSwaggerGen(c =&gt;
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "WeatherForecast",
+        Version = "v1",     
+        Description = "This is the API for managing WeatherForecast",
+        TermsOfService = new Uri("https://www.linkedin.com/in/khairultaher"),
+        Contact = new OpenApiContact
+        {
+            Name = "khairul Alam",
+            Email = "abc@gmail.com",
+            Url = new Uri("https://www.linkedin.com/in/khairultaher")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Use under LICX",
+            Url = new Uri("https://www.linkedin.com/in/khairultaher"),
+        }
+    });
+}</pre>
+<p>Run the app and see the API info and description:<br />
+<img decoding="async" class="aligncenter wp-image-9545" src="/wp-content/uploads/2022/06/api-info.png" alt="api info .NET6 API Documentation &amp; Example request with Swagger" width="1059" height="395" srcset="/wp-content/uploads/2022/06/api-info.png 1059w, /wp-content/uploads/2022/06/api-info-480x179.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 1059px, 100vw"></p>
+<p>To enable xml comment open .csporj file update propertygroup with these two item:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">&lt;PropertyGroup&gt;
+  ......
+  &lt;GenerateDocumentationFile&gt;True&lt;/GenerateDocumentationFile&gt;
+  &lt;NoWarn&gt;$(NoWarn);1591&lt;/NoWarn&gt;
+&lt;/PropertyGroup&gt;</pre>
+<p>Now configure swagger to use generated xml:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">builder.Services.AddSwaggerGen(c =&gt;
+{
+    ........
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});</pre>
+<p>Go to WeatherForecast controller and add comment on Create action like bellow example:<br />
+<strong>For POST/PUT:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">/// &lt;summary&gt;
+/// Add new WeatherForecast
+/// &lt;/summary&gt;
+/// &lt;param name="model"&gt;&lt;/param&gt;
+/// &lt;returns&gt;Return success/fail status&lt;/returns&gt;
+/// &lt;remarks&gt;
+/// **Sample request body:**
+///
+///     {
+///        "id": 1,
+///        "Date": "2022-06-24",
+///        "TemperatureC": 30,
+///        "Summary": "TemperatureC is 30 today",
+///     }
+///
+/// &lt;/remarks&gt;
+/// &lt;response code="200"&gt;Success&lt;/response&gt;
+/// &lt;response code="401"&gt;Failed/Unauthorized&lt;/response&gt;
+[HttpPost]
+[ProducesResponseType(typeof(WeatherForecast), 201)]
+[ProducesResponseType(400)]
+public async Task&lt;ActionResult&lt;WeatherForecast&gt;&gt; Create([FromBody] WeatherForecast model)
+{
+
+    WeatherForecast weatherForecast = new WeatherForecast()
+    {
+        Id = model.Id,
+        Date = model.Date,
+        TemperatureC =  model.TemperatureC,
+        Summary = model.Summary
+    };
+
+    return await Task.FromResult(weatherForecast);  
+}</pre>
+<p>By runnig the app we will see the information are adedd to swagger:<br />
+<img decoding="async" class="aligncenter wp-image-9548" src="/wp-content/uploads/2022/06/comment.png" alt="comment .NET6 API Documentation &amp; Example request with Swagger" width="1260" height="672" srcset="/wp-content/uploads/2022/06/comment.png 1260w, /wp-content/uploads/2022/06/comment-980x523.png 980w, /wp-content/uploads/2022/06/comment-480x256.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1260px, 100vw"></p>
+<p>Look into the example value, see that it show the default values. now we want here to add example value for testing. To do so add Swashbuckle.AspNetCore.Filters NuGet package.<br />
+update</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using Swashbuckle.AspNetCore.Filters;
+
+builder.Services.AddSwaggerGen(c =&gt;
+{
+   .........
+    c.ExampleFilters();
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+}
+builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());</pre>
+<p>Now add new class that will generate example value for the WeatherForecast class.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using Swashbuckle.AspNetCore.Filters;
+
+namespace SwaggerExample
+{
+
+    public class WeatherForecastRequestExample : IExamplesProvider&lt;WeatherForecast&gt;
+    {
+        public WeatherForecast GetExamples()
+        {
+            return new WeatherForecast()
+            {
+                Id = 1,
+                Date = DateTime.Now,
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = "test data"
+            };
+        }
+    }
+}
+</pre>
+<p>rebuild and run the the app again.</p>
+<p><img decoding="async" class="aligncenter size-full wp-image-9551" src="/wp-content/uploads/2022/06/example-values.png" alt="example values .NET6 API Documentation &amp; Example request with Swagger" width="1417" height="275" srcset="/wp-content/uploads/2022/06/example-values.png 1417w, /wp-content/uploads/2022/06/example-values-1280x248.png 1280w, /wp-content/uploads/2022/06/example-values-980x190.png 980w, /wp-content/uploads/2022/06/example-values-480x93.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1417px, 100vw"><br />
+<strong>For GET/DELETE request:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">/// &lt;summary&gt;
+/// Get WeatherForecast By Id
+/// &lt;/summary&gt;
+///&lt;param name="id" example="2"&gt;The product id&lt;/param&gt;
+/// &lt;returns&gt;Return success/fail status&lt;/returns&gt;
+/// &lt;remarks&gt;
+/// **Sample request body:**
+///
+///     {
+///        "id": 2
+///     }
+///
+/// &lt;/remarks&gt;
+/// &lt;response code="200"&gt;Success&lt;/response&gt;
+/// &lt;response code="401"&gt;Failed/Unauthorized&lt;/response&gt;
+
+[HttpGet]
+[ProducesResponseType(typeof(WeatherForecast), 200)]
+[ProducesResponseType(400)]
+public ActionResult&lt;WeatherForecast&gt; Get([FromQuery] int id)
+{
+    return Enumerable.Range(1, 5)
+        .Select(index =&gt; new WeatherForecast
+        {
+            Id = index,
+            Date = DateTime.Now.AddDays(index),
+            TemperatureC = Random.Shared.Next(-20, 55),
+            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+        }).Where(w =&gt; w.Id == id).FirstOrDefault()!;
+}</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-9556" src="/wp-content/uploads/2022/06/example-values-2.png" alt="example values 2 .NET6 API Documentation &amp; Example request with Swagger" width="1419" height="961" srcset="/wp-content/uploads/2022/06/example-values-2.png 1419w, /wp-content/uploads/2022/06/example-values-2-1280x867.png 1280w, /wp-content/uploads/2022/06/example-values-2-980x664.png 980w, /wp-content/uploads/2022/06/example-values-2-480x325.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1419px, 100vw"></p>
+<p><img decoding="async" class="aligncenter size-full wp-image-9552" src="/wp-content/uploads/2022/06/schema-information.png" alt="schema information .NET6 API Documentation &amp; Example request with Swagger" width="1415" height="532" srcset="/wp-content/uploads/2022/06/schema-information.png 1415w, /wp-content/uploads/2022/06/schema-information-1280x481.png 1280w, /wp-content/uploads/2022/06/schema-information-980x368.png 980w, /wp-content/uploads/2022/06/schema-information-480x180.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1415px, 100vw">Swagger shows all available schema information like above but if we don&#8217;t want to show them then just add DefaultModelsExpandDepth(-1)</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">app.UseSwagger();
+app.UseSwaggerUI(x =&gt;
+{
+    x.SwaggerEndpoint("/swagger/v1/swagger.json", "WeatherForecast: API");
+    x.DefaultModelsExpandDepth(-1);
+});</pre>
+<p><strong>Implement authorization:<br />
+</strong>Take advantage of authentication and authorization to secure your Swagger UI in .NET Core 6</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddSwaggerGen(c =&gt;
+{
+    .......
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme {
+                Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+    
+   ......
+});</pre>
+<p><strong><img decoding="async" class="aligncenter size-full wp-image-9568" src="/wp-content/uploads/2022/06/security.png" alt="security .NET6 API Documentation &amp; Example request with Swagger" width="1478" height="881" srcset="/wp-content/uploads/2022/06/security.png 1478w, /wp-content/uploads/2022/06/security-1280x763.png 1280w, /wp-content/uploads/2022/06/security-980x584.png 980w, /wp-content/uploads/2022/06/security-480x286.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1478px, 100vw"><br />
+Source: </strong><a href="https://github.com/Khairultaher/SwaggerExample" rel="nofollow noopener" target="_blank">https://github.com/Khairultaher/SwaggerExample</a></p>
+<p>Thanks&#8230;</p>
+<p>&nbsp;</p>
+<p><strong> </strong></p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/net6-api-documentation-example-request-with-swagger/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>মাইক্রোসার্ভিসের সিকিউরিটি  ও  সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity</title>
+		<link>/blog/identityserver4-asp-net-identity-single-signon-signout/</link>
+					<comments>/blog/identityserver4-asp-net-identity-single-signon-signout/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Sun, 29 May 2022 14:13:02 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[.NET6]]></category>
+		<category><![CDATA[ASP.NET Identity]]></category>
+		<category><![CDATA[IdentityServer4(OAuth2]]></category>
+		<category><![CDATA[OpenID)]]></category>
+		<guid isPermaLink="false">/?p=8635</guid>
+
+					<description><![CDATA[আজ আমরা দেখব IdentityServer4(OAuth2,OpenID), ASP.NET Identity -র মাধ্যমে কিভাবে মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO) সুবিধা ইমপ্লিমেন্ট করা যায়। প্রথমে আমরা কিছু বেসিক জেনে নেই- OAuth2: একটি ইন্ডাস্ট্রি স্ট্যান্ডার্ড অথোরাইজেশন প্রোটোকল, এটা সার্ভিস ব্যাবহারকারির অথোরাইজেশন নিয়ে কাজ করে, সিকিউরিটি সার্ভিস হতে এক্সেস টোকেন সংগ্রহ করে তা অন্য সার্ভিস বা APIs -র সাথে যোগাযোগ রক্ষা করে থাকে। [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>আজ আমরা দেখব IdentityServer4(OAuth2,OpenID), ASP.NET Identity -র মাধ্যমে কিভাবে মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO) সুবিধা ইমপ্লিমেন্ট করা যায়।<br />
+প্রথমে আমরা কিছু বেসিক জেনে নেই-</p>
+<p><strong>OAuth2:</strong> একটি ইন্ডাস্ট্রি স্ট্যান্ডার্ড অথোরাইজেশন প্রোটোকল, এটা সার্ভিস ব্যাবহারকারির অথোরাইজেশন নিয়ে কাজ করে, সিকিউরিটি সার্ভিস হতে এক্সেস টোকেন সংগ্রহ করে তা অন্য সার্ভিস বা APIs -র সাথে যোগাযোগ রক্ষা করে থাকে।<br />
+<strong>OpenID Connect:</strong> অথেন্টিকেশন প্রোটোকল যা মূলত OAuth2 এর এক্সটেনশন, যা ব্যাবহারকারির অথেন্টিকেশন নিয়ে কাজ করে ।<br />
+<strong>IdentityServer4:</strong> একটি ওপেন সোর্স ফ্রেমওয়ার্ক, যেখানে OAuth2, OpenID Connect একত্রে ব্যবহার করে মোবাইল, ওয়েব আপ্লিকেশনের সিকিউরিটি নিশ্চিত করা হয়। .NET আপ্লিকেশনে মিডিলওয়্যার হিসাবে খুব সহজে যুক্ত করা আর ব্যাবহার করা যায়। IdentityServer4 ব্যাবহারকারিদের নিয়ে কাজ করে না শুধু তাদের অথোরাইজেশন ও অথেন্টিকেশন নিয়ে কাজ করে যেমন &#8211; টোকেন এক্সেস, টোকেন এন্ডপয়েন্ট , ক্লায়েন্ট, স্কোপ ইত্যাদি।<br />
+<strong>ASP.NET Identity:</strong> এটি মাইক্রোসফটের ইউজার ম্যানেজমেন্ট লাইব্রেরী, ইউজারের বেসিক ইনফরমেশন, রোল, ক্লেইম ইত্যাদি নিয়ে কাজ করে ও সংরক্ষন করে থাকে। যেহেতু IdentityServer4 সরাসরি ইউজার নিয়ে কাজ করে না তাই IdentityServer4 এর ইউজার ইনফরমেশন ASP.NET Identity এর মাধ্যমে ব্যবহার করবো।</p>
+<p>এই এক্সাম্পলের তিনটি পার্ট- সিকিউরিটির জন্য IdentityServer, একটি API ডাটা প্রভাইড করে অন্যটি API ক্লায়েন্ট যে API হতে ডাটা সংগ্রহ করে ও প্রদর্শন করে ।<br />
+<img decoding="async" class="aligncenter size-full wp-image-8743" src="/wp-content/uploads/2022/05/solution-overview-1.png" alt="solution overview 1 মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="391" height="943" srcset="/wp-content/uploads/2022/05/solution-overview-1.png 391w, /wp-content/uploads/2022/05/solution-overview-1-124x300.png 124w" sizes="(max-width: 391px) 100vw, 391px"></p>
+<p>প্রথমে IdentityServer এর জন্য একটি ASP.NET Core Empty প্রোজেক্ট নেই এবং <a href="https://github.com/IdentityServer/IdentityServer4.Quickstart.UI" rel="nofollow noopener" target="_blank">IdentityServer4.Quickstart.UI</a> থেকে এই কমান্ড টি কপি করে নেই।<br />
+iex ((New-Object System.Net.WebClient).DownloadString(&#8216;https://raw.githubusercontent.com/IdentityServer/IdentityServer4.Quickstart.UI/main/getmain.ps1&#8217;))<br />
+তারপর প্রজেক্টের উপর রাইট ক্লিক করে Open in Terminal এ ক্লিক করে কপি করে কমান্ডটি পেস্ট করে রান করে দেই।<br />
+<img decoding="async" class="aligncenter wp-image-8745" src="/wp-content/uploads/2022/05/solution-overview-empty-temp.png" alt="solution overview empty temp মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1129" height="1072" srcset="/wp-content/uploads/2022/05/solution-overview-empty-temp.png 1129w, /wp-content/uploads/2022/05/solution-overview-empty-temp-980x930.png 980w, /wp-content/uploads/2022/05/solution-overview-empty-temp-480x455.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1129px, 100vw"></p>
+<p><img decoding="async" class="aligncenter wp-image-8746" src="/wp-content/uploads/2022/05/identity-server-ui.png" alt="identity server ui মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1148" height="620" srcset="/wp-content/uploads/2022/05/identity-server-ui-980x529.png 980w, /wp-content/uploads/2022/05/identity-server-ui-480x259.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1148px, 100vw"></p>
+<p>এবার বাকি দুটি API অ্যাড করে নেই যথাক্রমে- IdentityServer.API, IdentityServer.Client। প্রত্যেকের launchSettings.json ওপেন করে applicationUrl সেট করে নেই।<br />
+তারপর ধাপে ধাপে IdentityServer4 এর IdentityResource, ApiScope, Client সেটআপ এবং ConfigurationStore, OperationalStore, AspNetIdentity সার্ভিসে অ্যাড করতে হবে।<br />
+IdentityResource, ApiScope, Client সেটআপ:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">using IdentityServer4;
+using IdentityServer4.Models;
+using System.Collections.Generic;
+
+namespace IdentityServer
+{
+    public static class Config
+    {
+        public static IEnumerable&lt;IdentityResource&gt; IdentityResources =&gt;
+            new List&lt;IdentityResource&gt;
+            {
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
+            };
+
+
+        public static IEnumerable&lt;ApiScope&gt; ApiScopes =&gt;
+            new List&lt;ApiScope&gt;
+            {
+                new ApiScope("apiscope", "API")
+            };
+
+        public static IEnumerable&lt;Client&gt; Clients =&gt;
+            new List&lt;Client&gt;
+            {              
+                // interactive ASP.NET Core MVC client
+                new Client
+                {
+                    ClientId = "client1",
+                    ClientName = "MVC WEB API",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    ClientSecrets = { new Secret("secret".Sha256()) },
+                    
+                    //RequireClientSecret = false,                  
+                    //RequirePkce = false,
+                    //AllowRememberConsent = false,
+
+                    // where to redirect to after login
+                    RedirectUris = { "https://localhost:5002/signin-oidc" },
+
+                    // where to redirect to after logout
+                    PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+
+                    AllowedScopes = new List&lt;string&gt;
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "apiscope"
+                    }
+                },
+
+                // machine to machine client
+                new Client
+                {
+                    ClientId = "client2",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientSecrets = { new Secret("secret".Sha256()) },                  
+                    // scopes that client has access to
+                    AllowedScopes = { "apiscope" }
+                }
+            };
+    }
+}</pre>
+<p>&nbsp;</p>
+<p>ConfigurationStore, OperationalStore, AspNetIdentity সার্ভিস রেজিস্ট্রি:<br />
+<strong>IdentityServer Program.cs</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddIdentityServer()
+    .AddInMemoryClients(Config.Clients)
+    .AddInMemoryApiScopes(Config.ApiScopes)
+    .AddInMemoryIdentityResources(Config.IdentityResources)
+    .AddTestUsers(TestUsers.Users)
+    .AddDeveloperSigningCredential();</pre>
+<p><strong>IdentityServer.API Program.cs<br />
+</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">// accepts any access token issued by identity server
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(options =&gt;
+    {
+        options.Authority = "https://localhost:5001/";
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = false
+        };
+    });
+
+// adds an authorization policy to make sure the token is for scope 'apiscope'
+builder.Services.AddAuthorization(options =&gt;
+{
+    options.AddPolicy("apiscope", policy =&gt;
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("scope", "apiscope");
+    });
+});
+
+
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =&gt;
+{
+    endpoints.MapControllers()
+        .RequireAuthorization("apiscope");
+    //endpoints.MapControllers();
+});
+</pre>
+<p><strong>IdentityServer.Client Program.cs<br />
+</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddAuthentication(options =&gt;
+{
+    options.DefaultScheme = "Cookies";
+    options.DefaultChallengeScheme = "oidc";
+
+    //options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    //options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+})
+.AddCookie("Cookies")
+.AddOpenIdConnect("oidc", options =&gt;
+//    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+//.AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =&gt;
+{
+    options.Authority = "https://localhost:5001/";
+    options.RequireHttpsMetadata = false;
+
+    options.ClientId = "client1";
+    options.ClientSecret = "secret";
+    options.ResponseType = "code";
+    //options.ResponseType = "code id_token";
+
+    options.Scope.Add("apiscope");
+
+    options.SaveTokens = true;
+});
+
+
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =&gt;
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});</pre>
+<p>IdentityServer4 সাধারণত কনফিগারেশন গুলো মেমরিতে রাখে আর IdentityServer4.Quickstart.UI কমান্ড TestUsers.Users তৈরি করে যা আমাদের টেস্ট এ ব্যবহার করা হবে।<br />
+এখন আপ্লিকেশন রান করে আমরা নিন্মক্ত UI গুলো দেখতে পাব&#8211;<br />
+<img decoding="async" class="aligncenter size-full wp-image-8789" src="/wp-content/uploads/2022/05/identity-server-endpoints.png" alt="identity server endpoints মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1920" height="1042" srcset="/wp-content/uploads/2022/05/identity-server-endpoints.png 1920w, /wp-content/uploads/2022/05/identity-server-endpoints-1280x695.png 1280w, /wp-content/uploads/2022/05/identity-server-endpoints-980x532.png 980w, /wp-content/uploads/2022/05/identity-server-endpoints-480x261.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><br />
+<img decoding="async" class="aligncenter size-full wp-image-8752" src="/wp-content/uploads/2022/05/ui-before-login.png" alt="ui before login মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1918" height="1080" srcset="/wp-content/uploads/2022/05/ui-before-login.png 1918w, /wp-content/uploads/2022/05/ui-before-login-1280x721.png 1280w, /wp-content/uploads/2022/05/ui-before-login-980x552.png 980w, /wp-content/uploads/2022/05/ui-before-login-480x270.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw">ক্লায়েন্ট থেকে লগইন এর পর<br />
+<img decoding="async" class="aligncenter size-full wp-image-8753" src="/wp-content/uploads/2022/05/ui-after-login.png" alt="ui after login মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1916" height="1048" srcset="/wp-content/uploads/2022/05/ui-after-login.png 1916w, /wp-content/uploads/2022/05/ui-after-login-1280x700.png 1280w, /wp-content/uploads/2022/05/ui-after-login-980x536.png 980w, /wp-content/uploads/2022/05/ui-after-login-480x263.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1916px, 100vw">IdentityServer4 হতে লগআউট এর পর<br />
+<img decoding="async" class="aligncenter size-full wp-image-8754" src="/wp-content/uploads/2022/05/ui-after-logout.png" alt="ui after logout মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1919" height="1042" srcset="/wp-content/uploads/2022/05/ui-after-logout.png 1919w, /wp-content/uploads/2022/05/ui-after-logout-1280x695.png 1280w, /wp-content/uploads/2022/05/ui-after-logout-980x532.png 980w, /wp-content/uploads/2022/05/ui-after-logout-480x261.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw"></p>
+<p>এবার IdentityServer.API হতে ডাটা IdentityServer.Clent এ দেখাব, এর জন্য IdentityServer.Clent এর Weather একশন নিন্মরুপ হবে-</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public async Task&lt;IActionResult&gt; Weather()
+{
+    var client = new HttpClient();
+
+    var disco = await client.GetDiscoveryDocumentAsync("https://localhost:5001/");
+    if (disco.IsError)
+    {
+        Console.WriteLine(disco.Error);
+        return View();
+    }
+
+    // request token
+    var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+    {
+        Address = disco.TokenEndpoint,
+        ClientId = "client2",
+        ClientSecret = "secret",
+        Scope = "apiscope"
+    });
+
+    if (tokenResponse.IsError)
+    {
+        Console.WriteLine(tokenResponse.Error);
+        return View();
+    }
+
+    Console.WriteLine(tokenResponse.Json);
+    Console.WriteLine("\n\n");
+
+    // call api
+    var apiClient = new HttpClient();
+    apiClient.SetBearerToken(tokenResponse.AccessToken);
+
+    var response = await apiClient.GetAsync("https://localhost:5003/WeatherForecast");
+    if (!response.IsSuccessStatusCode)
+    {
+        Console.WriteLine(response.StatusCode);
+    }
+    else
+    {
+        var content = await response.Content.ReadAsStringAsync();
+        var movieList = JsonConvert.DeserializeObject&lt;List&lt;WeatherForecast&gt;&gt;(content);
+        Console.WriteLine(JArray.Parse(content));
+        return View(movieList);
+    }
+    return View();
+}</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-8757" src="/wp-content/uploads/2022/05/data-from-api-1.png" alt="data from api 1 মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1920" height="1040" srcset="/wp-content/uploads/2022/05/data-from-api-1.png 1920w, /wp-content/uploads/2022/05/data-from-api-1-1280x693.png 1280w, /wp-content/uploads/2022/05/data-from-api-1-980x531.png 980w, /wp-content/uploads/2022/05/data-from-api-1-480x260.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></p>
+<p>আমরা যদি IdentityServer4 এর কনফিগারেশন গুলো এবং Users কে আমাদের ডাটাবেসে রাখতে চাই তবে ConfigurationStore, OperationalStore, AspNetIdentity নিন্মরুপে রেজিস্টার করতে হবে এবং ডাটাবেসে মাইগ্রেসন করে সিড ডাটা হিসাবে অ্যাড করতে হবে-</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddDbContext&lt;ApplicationDbContext&gt;(options =&gt; options
+    .UseSqlServer(connectionString, sql =&gt; sql.MigrationsAssembly(migrationsAssembly)));
+
+
+builder.Services.AddIdentity&lt;ApplicationUser, IdentityRole&gt;()
+    .AddEntityFrameworkStores&lt;ApplicationDbContext&gt;()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddIdentityServer(options =&gt;
+{
+    options.Events.RaiseErrorEvents = true;
+    options.Events.RaiseInformationEvents = true;
+    options.Events.RaiseFailureEvents = true;
+    options.Events.RaiseSuccessEvents = true;
+
+    // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
+    options.EmitStaticAudienceClaim = true;
+    options.Authentication = new AuthenticationOptions()
+    {
+        CookieLifetime = TimeSpan.FromHours(10), // ID server cookie timeout set to 10 hours
+        CookieSlidingExpiration = true
+    };
+})
+.AddConfigurationStore(options =&gt;
+{
+    options.ConfigureDbContext = b =&gt; b.UseSqlServer(connectionString,
+                    sql =&gt; sql.MigrationsAssembly(migrationsAssembly));
+})
+.AddOperationalStore(options =&gt;
+{
+    options.ConfigureDbContext = b =&gt; b.UseSqlServer(connectionString,
+        sql =&gt; sql.MigrationsAssembly(migrationsAssembly));
+})
+.AddAspNetIdentity&lt;ApplicationUser&gt;()
+.AddDeveloperSigningCredential();
+
+
+//builder.Services.AddIdentityServer()
+//    .AddInMemoryClients(Config.Clients)
+//    .AddInMemoryApiScopes(Config.ApiScopes)
+//    .AddInMemoryIdentityResources(Config.IdentityResources)
+//    .AddTestUsers(TestUsers.Users)
+//    .AddDeveloperSigningCredential();
+// not recommended for production - you need to store your key material somewhere secure
+//builder.Services.AddDeveloperSigningCredential();
+
+
+builder.Services.AddAuthentication()
+    .AddGoogle(options =&gt;
+    {
+        options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+        // register your IdentityServer with Google at https://console.developers.google.com/
+        // enable the Google+ API
+        // set the redirect URI to https://localhost:5001/signin-google
+        options.ClientId = "copy client ID from Google here";
+        options.ClientSecret = "copy client secret from Google here";
+    });
+
+builder.Services.Configure&lt;IdentityOptions&gt;(options =&gt;
+{
+    // Default Lockout settings.
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = false;
+
+    // Default Password settings.
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 3;
+    options.Password.RequiredUniqueChars = 1;
+});
+
+//hosted services for seeding primary data
+builder.Services.AddHostedService&lt;DatabaseSeedingService&gt;();</pre>
+<p><strong>DatabaseSeedingService:<br />
+</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">using IdentityModel;
+using IdentityServer.Data;
+using IdentityServer.Models;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+using System.Security.Claims;
+
+namespace IdentityServer
+{
+    public class DatabaseSeedingService : IHostedService
+    {
+        private readonly IServiceProvider _serviceProvider;
+
+
+        public DatabaseSeedingService(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
+
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            await SeedInitialData(cancellationToken);
+        }
+
+        private async Task SeedInitialData(CancellationToken cancellationToken)
+        {
+            await SeedDefaultApplicationUserAsync();
+
+            // Initialize PersistedGrantDb &amp; ConfigurationDb
+            await SeedPersistedGrantDbConfigurationDbAsync();
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken) =&gt; Task.CompletedTask;
+
+        #region Internal functions
+        public async Task SeedDefaultApplicationUserAsync()
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService&lt;ApplicationDbContext&gt;();
+
+            context.Database.Migrate();
+
+            var userMgr = scope.ServiceProvider.GetRequiredService&lt;UserManager&lt;ApplicationUser&gt;&gt;();
+            var alice = await userMgr.FindByNameAsync("alice");
+            if (alice == null)
+            {
+                alice = new ApplicationUser
+                {
+                    UserName = "alice",
+                    Email = "AliceSmith@email.com",
+                    EmailConfirmed = true,
+                };
+                var result = userMgr.CreateAsync(alice, "alice").Result;
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.First().Description);
+                }
+
+                result = userMgr.AddClaimsAsync(alice, new Claim[]{
+                            new Claim(JwtClaimTypes.Name, "Alice Smith"),
+                            new Claim(JwtClaimTypes.GivenName, "Alice"),
+                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
+                            new Claim(JwtClaimTypes.WebSite, "http://alice.com/"),
+                        }).Result;
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.First().Description);
+                }
+                Log.Debug("alice created");
+            }
+            else
+            {
+                Log.Debug("alice already exists");
+            }
+
+            var bob = userMgr.FindByNameAsync("bob").Result;
+            if (bob == null)
+            {
+                bob = new ApplicationUser
+                {
+                    UserName = "bob",
+                    Email = "BobSmith@email.com",
+                    EmailConfirmed = true
+                };
+                var result = userMgr.CreateAsync(bob, "alice").Result;
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.First().Description);
+                }
+
+                result = userMgr.AddClaimsAsync(bob, new Claim[]{
+                            new Claim(JwtClaimTypes.Name, "Bob Smith"),
+                            new Claim(JwtClaimTypes.GivenName, "Bob"),
+                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
+                            new Claim(JwtClaimTypes.WebSite, "http://bob.com/"),
+                            new Claim("location", "somewhere")
+                        }).Result;
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.First().Description);
+                }
+                Log.Debug("bob created");
+            }
+            else
+            {
+                Log.Debug("bob already exists");
+            }
+        }
+
+        public async Task SeedPersistedGrantDbConfigurationDbAsync()
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService&lt;ConfigurationDbContext&gt;();
+            context.Database.Migrate();
+
+            if (!context.Clients.Any())
+            {
+                foreach (var client in Config.Clients)
+                {
+                    context.Clients.Add(client.ToEntity());
+                }
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.IdentityResources.Any())
+            {
+                foreach (var resource in Config.IdentityResources)
+                {
+                    context.IdentityResources.Add(resource.ToEntity());
+                }
+                context.SaveChanges();
+            }
+
+            if (!context.ApiScopes.Any())
+            {
+                foreach (var resource in Config.ApiScopes)
+                {
+                    context.ApiScopes.Add(resource.ToEntity());
+                }
+                context.SaveChanges();
+            }
+        }
+        #endregion
+    }
+}
+</pre>
+<p>&nbsp;</p>
+<p><strong> </strong></p>
+<p><strong>মাইগ্রেসন কমান্ড:<br />
+</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">Add-Migration InitialPersistedGrantDbMigration -c PersistedGrantDbContext -o Data/Migrations/IdentityServer/PersistedGrantDb
+Add-Migration InitialConfigurationDbMigration -c ConfigurationDbContext -o Data/Migrations/IdentityServer/ConfigurationDb
+Add-Migration initial -c ApplicationDbContext -o Data/Migrations/AspNetIdentity
+
+Update-Database -Context PersistedGrantDbContext
+Update-Database -Context ConfigurationDbContext
+Update-Database -Context ApplicationDbContext</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-8766" src="/wp-content/uploads/2022/05/database-3.png" alt="database 3 মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1126" height="1038" srcset="/wp-content/uploads/2022/05/database-3.png 1126w, /wp-content/uploads/2022/05/database-3-980x903.png 980w, /wp-content/uploads/2022/05/database-3-480x442.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1126px, 100vw"></p>
+<p>এরপর IdentityServer এর লগইন একশন কে আপডেট করতে হবে-</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task&lt;IActionResult&gt; Login(LoginInputModel model, string button)
+{
+    // check if we are in the context of an authorization request
+    var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+
+    // the user clicked the "cancel" button
+    if (button != "login")
+    {
+        if (context != null)
+        {
+            // if the user cancels, send a result back into IdentityServer as if they 
+            // denied the consent (even if this client does not require consent).
+            // this will send back an access denied OIDC error response to the client.
+            await _interaction.DenyAuthorizationAsync(context, AuthorizationError.AccessDenied);
+
+            // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+            if (context.IsNativeClient())
+            {
+                // The client is native, so this change in how to
+                // return the response is for better UX for the end user.
+                return this.LoadingPage("Redirect", model.ReturnUrl);
+            }
+
+            return Redirect(model.ReturnUrl);
+        }
+        else
+        {
+            // since we don't have a valid context, then we just go back to the home page
+            return Redirect("~/");
+        }
+    }
+
+    if (ModelState.IsValid)
+    {
+        // validate username/password against in-memory store
+        //if (_users.ValidateCredentials(model.Username, model.Password))
+        //{
+        //    var user = _users.FindByUsername(model.Username);
+        //    await _events.RaiseAsync(new UserLoginSuccessEvent(user.Username, user.SubjectId, user.Username, clientId: context?.Client.ClientId));
+
+        //    // only set explicit expiration here if user chooses "remember me". 
+        //    // otherwise we rely upon expiration configured in cookie middleware.
+        //    AuthenticationProperties props = null;
+        //    if (AccountOptions.AllowRememberLogin &amp;&amp; model.RememberLogin)
+        //    {
+        //        props = new AuthenticationProperties
+        //        {
+        //            IsPersistent = true,
+        //            ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration)
+        //        };
+        //    };
+
+        //    // issue authentication cookie with subject ID and username
+        //    var isuser = new IdentityServerUser(user.SubjectId)
+        //    {
+        //        DisplayName = user.Username
+        //    };
+
+        //    await HttpContext.SignInAsync(isuser, props);
+
+        //    if (context != null)
+        //    {
+        //        if (context.IsNativeClient())
+        //        {
+        //            // The client is native, so this change in how to
+        //            // return the response is for better UX for the end user.
+        //            return this.LoadingPage("Redirect", model.ReturnUrl);
+        //        }
+
+        //        // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+        //        return Redirect(model.ReturnUrl);
+        //    }
+
+        //    // request for a local page
+        //    if (Url.IsLocalUrl(model.ReturnUrl))
+        //    {
+        //        return Redirect(model.ReturnUrl);
+        //    }
+        //    else if (string.IsNullOrEmpty(model.ReturnUrl))
+        //    {
+        //        return Redirect("~/");
+        //    }
+        //    else
+        //    {
+        //        // user might have clicked on a malicious link - should be logged
+        //        throw new Exception("invalid return URL");
+        //    }
+        //}
+
+        // validate username/password against parsist store
+        var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
+        if (result.Succeeded)
+        {
+            var user = await _userManager.FindByNameAsync(model.Username);
+            await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client.ClientId));
+
+            if (context != null)
+            {
+                if (context.IsNativeClient())
+                {
+                    // The client is native, so this change in how to
+                    // return the response is for better UX for the end user.
+                    return this.LoadingPage("Redirect", model.ReturnUrl);
+                }
+
+                // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+                return Redirect(model.ReturnUrl);
+            }
+
+            // request for a local page
+            if (Url.IsLocalUrl(model.ReturnUrl))
+            {
+                return Redirect(model.ReturnUrl);
+            }
+            else if (string.IsNullOrEmpty(model.ReturnUrl))
+            {
+                return Redirect("~/");
+            }
+            else
+            {
+                // user might have clicked on a malicious link - should be logged
+                throw new Exception("invalid return URL");
+            }
+        }
+
+        await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.Client.ClientId));
+        ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
+    }
+
+    // something went wrong, show form with error
+    var vm = await BuildLoginViewModelAsync(model);
+    return View(vm);
+}</pre>
+<p>&nbsp;</p>
+<p>আশাকরি, মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO) এর জন্য কিভাবে IdentityServer4(OAuth2,OpenID), ASP.NET Identity অ্যাড/ব্যবহার করে তার কিছু ধারনা দিতে পেরেছি।<br />
+ধন্যবাদ।।</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/identityserver4-asp-net-identity-single-signon-signout/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ  .NET6, RabbitMQ, MassTransit</title>
+		<link>/blog/asynchronous-communication/</link>
+					<comments>/blog/asynchronous-communication/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Sat, 21 May 2022 11:09:54 +0000</pubDate>
+				<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[.NET6]]></category>
+		<category><![CDATA[MassTransit]]></category>
+		<category><![CDATA[microservices]]></category>
+		<category><![CDATA[RabbitMQ]]></category>
+		<guid isPermaLink="false">/?p=8500</guid>
+
+					<description><![CDATA[আজকে আমরা মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশন নিয়ে কিছু সাধারন আলোচনা করবো ( কেন, কি, কিভাবে)। আমরা জানি মাইক্রোসার্ভিসের সার্ভিস থেকে সার্ভিসের কমিউনিকেশন সাধারণত দুই ভাবে হয়ে থাকে। ১) সিনক্রোনাসঃ এ ক্ষেত্রে সাধারণত রিকোয়েস্ট রেস্পন্স ( http/grpc) প্যাটার্নে মাইক্রোসার্ভিস একে অপরের সাথে কমিউনিকেশন করে থাকে। যেখানে এক্সচেঞ্জের ধারাবাহিক সিকুয়েন্স থাকে যা অর্কেস্ট্রেশন জন্য সুবিধাজনক। তবে API গুলো [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>আজকে আমরা মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশন নিয়ে কিছু সাধারন আলোচনা করবো ( কেন, কি, কিভাবে)।</p>
+<p>আমরা জানি মাইক্রোসার্ভিসের সার্ভিস থেকে সার্ভিসের কমিউনিকেশন সাধারণত দুই ভাবে হয়ে থাকে।<br />
+১) সিনক্রোনাসঃ এ ক্ষেত্রে সাধারণত রিকোয়েস্ট রেস্পন্স ( http/grpc) প্যাটার্নে মাইক্রোসার্ভিস একে অপরের সাথে কমিউনিকেশন করে থাকে। যেখানে এক্সচেঞ্জের ধারাবাহিক সিকুয়েন্স থাকে যা অর্কেস্ট্রেশন জন্য সুবিধাজনক।<br />
+তবে API গুলো একে অনের সাথে End Point দ্বারা একে অন্যের সরাসরি নির্ভরশীল থাকে, কোন একটা API End Point পরিবর্তন হলে নির্ভরশীল মাইক্রোসারভিস এ নতুন করে API End Point সেট করতে হয়।</p>
+<p>২) অ্যাসিনক্রোনাসঃ এখানে মাইক্রোসার্ভিস একটা সেন্ট্রাল সিস্টেম এর মাধ্যমে মেসেজ বিনিময়ে ( Event Driven) কমিউনিকেশন করে থাকে। মাইক্রোসার্ভিস গুলো একে অন্যের সরাসরি নির্ভরশীল থাকে না যার কারনে<br />
+সার্ভিস গুলো স্বাধীন ভাবে ডেপলয় ও নিয়ন্ত্রন করা যায়।</p>
+<p>যে সেন্ট্রাল সিস্টেমের মাধ্যমে মেসেজ বিনিময়ে হয়ে থাকে তাকে Message Broker বলা হয়ে থাকে। আমরা একে একটা ডাকঘর/পোস্ট অফিস এর সাথে তুলনা করতে পারি- একটা ডাকঘরে বিভিন্ন অফিসের- সরকারি , বেসরকারি, বেক্তিগত চিঠিপত্র আসে আর ডাকঘর কর্তৃপক্ষ বিশেষ ঠিকানা দেখে চিঠি গুলো সঠিক ভাবে পৌঁছে দেয়। অনেক Message Broker আছে তার মধ্যে RabbitMQ, Kafka, ActiveMQ উল্লেখ যোগ্য, তাছাড়া ক্লাউড সার্ভিস প্রোভাইডাররা নিজস্ব Message Broker সার্ভিস দিয়ে থাকে।</p>
+<p>আমাদের উদাহরনে আমরা RabbitMQ ব্যবহার করবো আর RabbitMQ-র দুটি গুরুত্বপূর্ণ পার্ট হল-<br />
+১) Exchanges: এর কাজ মুলত মেসজ গ্রহন করা এবং সঠিক Queues এ বিতরন করা<br />
+২) Queues: Exchanges মাধ্যমে মেসজ গ্রহন করে এবং কনফিগারেশন অনুসারে সংরক্ষন করে থাকে।</p>
+<p>Exchanges আবার চার ধরনের হয়ে থাকে-<br />
+১) Fanout: মেসজ কে সরাসরি সকল Queue তে পৌঁছে দেয় যেসব Queue নির্দিষ্ট Exchange এ বাইন্ড করা আছে।<br />
+<img decoding="async" class="aligncenter wp-image-8505" src="/wp-content/uploads/2022/05/fanout-exchange.png" alt="fanout মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="772" height="339"><br />
+2) Direct: মেসজ কে সরাসরি সকল Queue তে পৌঁছে না দিয়ে বরং Routing Key বা Binding Key যাচাই করে বাইন্ড করা Queue তে পৌঁছে দেয়।<br />
+<img decoding="async" class="aligncenter wp-image-8504" src="/wp-content/uploads/2022/05/direct-exchange.png" alt="direct মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="757" height="292"><br />
+3) Topic: মেসজ কে সেই সব Queue তে পৌঁছে দেয় যাদের Routing Key বা Binding আংশিক বা সম্পূর্ণ মিলে যায়।<br />
+<img decoding="async" class="aligncenter wp-image-8507" src="/wp-content/uploads/2022/05/topic-exchange.png" alt="topic মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="849" height="365"><br />
+4) Headers: Header এর Key-Value কে Routing Key বা Binding এর সাথে যাচাই করে মেসজ কে Queue তে পৌঁছে দেয়।<br />
+<img decoding="async" class="aligncenter wp-image-8506" src="/wp-content/uploads/2022/05/header-exchange.png" alt="header মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="838" height="305"></p>
+<p>এখানে আমাদের দুটি সার্ভিস রয়েছে- WeatherForecast: একটা CRUD App যেখান থেকে তাপমাত্রার আপডেট RabbitMQ তে পাবলিশ করা হয় । অন্যটি WeatherForecast.Consumer: এটি RabbitMQ হতে মেসেজ কনজিউম/গ্রহন করে এবং ডিসপ্লে করে।<br />
+<img decoding="async" class="aligncenter size-full wp-image-8510" src="/wp-content/uploads/2022/05/services.png" alt="services মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="3286" height="1081" srcset="/wp-content/uploads/2022/05/services.png 3286w, /wp-content/uploads/2022/05/services-1280x421.png 1280w, /wp-content/uploads/2022/05/services-980x322.png 980w, /wp-content/uploads/2022/05/services-480x158.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 3286px, 100vw"></p>
+<p>এখানে আমাদের দুটি সার্ভিস রয়েছে- WeatherForecast: একটা CRUD App যেখান থেকে তাপমাত্রার আপডেট RabbitMQ তে পাবলিশ করা হয় । অন্যটি WeatherForecast.Consumer: এটি RabbitMQ হতে মেসেজ কনজিউম/গ্রহন করে এবং ডিসপ্লে করে।<br />
+RabbitMQ এর অ্যাবস্ট্র্যাক্ট হিসাবে MassTransit ব্যবহার করা হবে যাতে আমাদের সার্ভিস RabbitMQ এর সাথে loosely-coupled থাকে।</p>
+<p><strong>WeatherForecast  Publisher API:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using MassTransit;
+
+[HttpPost]
+[Authorize(policy: "Admin")]
+[ProducesResponseType(StatusCodes.Status200OK)]
+[ProducesDefaultResponseType]
+public async Task&lt;IActionResult&gt; Create([FromForm] CreateWeatherForecastCommand command)
+{
+    response.Data = await Mediator.Send(command);
+    response.Message = "Item Added successfully";
+
+    //Masstransit...
+    _publishEndpoint?.Publish(new WeatherForecastEvent(command.TemperatureC, command.Location, command.Summary, DateTime.UtcNow, EventBusEnums.CREATED.ToString()));
+
+    return Ok(response);
+}
+
+
+[HttpPut]
+[Authorize(policy: "Admin")]
+[ProducesResponseType(StatusCodes.Status200OK)]
+[ProducesDefaultResponseType]
+public async Task&lt;ActionResult&gt; Update([FromForm] UpdateWeatherForecastCommand command)
+{
+    response.Data = await Mediator.Send(command);
+    response.Message = "Item updated successfully";
+    
+    //Masstransit...
+    _publishEndpoint?.Publish(new WeatherForecastEvent(command.TemperatureC, command.Location, command.Summary, DateTime.UtcNow, EventBusEnums.UPDATED.ToString()));
+
+    return Ok(response);
+}</pre>
+<p><strong>Add MassTransit &amp; RabbitMq in Service Registry(WeatherForecast  Publisher AP):</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using MassTransit;
+
+#region MassTransit
+services.AddMassTransit(config =&gt;
+{
+config.UsingRabbitMq((ctx, cfg) =&gt;
+{
+cfg.Send&lt;WeatherForecastEvent&gt;(x =&gt;
+{
+});
+cfg.Message&lt;WeatherForecastEvent&gt;(x =&gt; x.SetEntityName(EventBusConstants.Exchages.WeatherForecastExchange));
+cfg.Publish&lt;WeatherForecastEvent&gt;(x =&gt; x.ExchangeType = ExchangeType.Fanout);
+});
+});</pre>
+<p><strong>WeatherForecast.Consumer Console App:<br />
+</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using EventBus.Common;
+using EventBus.Events;
+using MassTransit;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
+
+
+var busControl = Bus.Factory.CreateUsingRabbitMq(cfg =&gt;
+{
+    cfg.ReceiveEndpoint(EventBusConstants.Queues.WeatherForecastCreatedQueue, e =&gt;
+    {
+        // turns off default fanout settings
+        e.ConfigureConsumeTopology = false;
+        // a replicated queue to provide high availability and data safety. available in RMQ 3.8+
+        //e.SetQuorumQueue();
+        //e.SetQueueArgument("declare", "lazy");
+
+
+        e.Consumer&lt;WeatherForecastCreatedConsumer&gt;();
+        e.Bind(EventBusConstants.Exchages.WeatherForecastExchange, s =&gt;
+        {
+            //s.RoutingKey = EventBusEnums.CREATED.ToString();
+            //s.ExchangeType = ExchangeType.Direct;
+        });
+
+        e.PrefetchCount = 20;
+        e.UseMessageRetry(r =&gt; r.Interval(2, 100));
+
+    });
+
+    cfg.ReceiveEndpoint(EventBusConstants.Queues.WeatherForecastUpdatedQueue, e =&gt;
+    {
+        // turns off default fanout settings
+        e.ConfigureConsumeTopology = false;
+        // a replicated queue to provide high availability and data safety. available in RMQ 3.8+
+        //e.SetQuorumQueue();
+        //e.SetQueueArgument("declare", "lazy");
+
+        e.Consumer&lt;WeatherForecastUpdatedConsumer&gt;();
+        e.Bind("WeatherForecast-Exchange", s =&gt;
+        {
+            //s.RoutingKey = EventBusEnums.UPDATED.ToString();
+            //s.ExchangeType = ExchangeType.Direct;
+        });
+
+        e.PrefetchCount = 20;
+        e.UseMessageRetry(r =&gt; r.Interval(2, 100));
+
+    });
+});
+
+await busControl.StartAsync(new CancellationToken());
+
+try
+{
+    Console.WriteLine("Press enter to exit");
+
+    await Task.Run(() =&gt; Console.ReadLine());
+}
+finally
+{
+    await busControl.StopAsync();
+}
+
+class WeatherForecastCreatedConsumer : IConsumer&lt;WeatherForecastEvent&gt;
+{
+    public async Task Consume(ConsumeContext&lt;WeatherForecastEvent&gt; context)
+    {
+        await Task.Run(() =&gt;
+        {
+            var jsonMessage = JsonConvert.SerializeObject(context.Message);
+            Console.WriteLine($"New weather forecast for {context.Message.Location} is added: {jsonMessage}");
+        });
+    }
+}
+
+class WeatherForecastUpdatedConsumer : IConsumer&lt;WeatherForecastEvent&gt;
+{
+    public async Task Consume(ConsumeContext&lt;WeatherForecastEvent&gt; context)
+    {
+        await Task.Run(() =&gt;
+        {
+            var jsonMessage = JsonConvert.SerializeObject(context.Message);
+            Console.WriteLine($"Weather forecast for {context.Message.Location} is updated : {jsonMessage}");
+        });
+    }
+}
+</pre>
+<p>কনজিউমার সার্ভিসে দুটি কনজিউমার আছে &#8211;<br />
+WeatherForecastCreatedConsumer: WeatherForecastCreated-Queue থেকে মেসেজ গ্রহন করবে, যেখানে Queue টি &#8216;CREATED&#8217; নামের Binding/Routing Key দিয়ে WeatherForecast-Exchange বাইন্ড করা আছে।<br />
+WeatherForecastUpdatedConsumer: WeatherForecastUpdated-Queue থেকে মেসেজ গ্রহন করবে, যেখানে Queue টি &#8216;UPDATED&#8217; নামের Binding/Routing Key দিয়ে WeatherForecast-Exchange বাইন্ড করা আছে।</p>
+<p>এখন সার্ভিস দুটি রান করে ওয়েদার অ্যাড এবং আপডেট করিঃ<br />
+<img decoding="async" class="aligncenter size-full wp-image-8522" src="/wp-content/uploads/2022/05/fanout-example.png" alt="fanout মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="1880" height="999" srcset="/wp-content/uploads/2022/05/fanout-example.png 1880w, /wp-content/uploads/2022/05/fanout-example-1280x680.png 1280w, /wp-content/uploads/2022/05/fanout-example-980x521.png 980w, /wp-content/uploads/2022/05/fanout-example-480x255.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1880px, 100vw"></p>
+<p>একটা ওয়েদার ইনফরমেশন অ্যাড এবং আপডেট করা হয়ছে কিন্তু আমরা দেখছি যে , WeatherForecastCreatedConsumer ও WeatherForecastUpdatedConsumer দুটি কনজিউমারই একই মেসেজ প্রিন্ট করেছে এর কারন<br />
+Add MassTransit &amp; RabbitMq in Service Registry সেকশনে Binding/Routing Key কনফিগার করা হয়নি এবং এক্সচেঞ্জ টাইপ Fanout আছে।</p>
+<p>এবার আমরা এক্সচেঞ্জ টাইপ Direct -এ পরিবর্তন করে সার্ভিস আবার টেস্ট করি।<br />
+<strong>Publisher App:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">services.AddMassTransit(config =&gt;
+     {
+         config.UsingRabbitMq((ctx, cfg) =&gt;
+         {
+             cfg.Send&lt;WeatherForecastEvent&gt;(x =&gt;
+             {
+                 // use customeType for the routing/binding key
+                 x.UseRoutingKeyFormatter(context =&gt; context.Message.EventType?.ToString()); // route by provider (CREATE or UPDATE)
+
+                 // multiple conventions can be set, in this case also CorrelationId
+                 //x.UseCorrelationId(context =&gt; context.Message.TransactionId);
+             });
+             cfg.Message&lt;WeatherForecastEvent&gt;(x =&gt; x.SetEntityName(EventBusConstants.Exchages.WeatherForecastExchange));
+             cfg.Publish&lt;WeatherForecastEvent&gt;(x =&gt; x.ExchangeType = ExchangeType.Direct);
+         });
+     });</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">cfg.ReceiveEndpoint(EventBusConstants.Queues.WeatherForecastCreatedQueue, e =&gt;
+{
+    // turns off default fanout settings
+    e.ConfigureConsumeTopology = false;
+    // a replicated queue to provide high availability and data safety. available in RMQ 3.8+
+    //e.SetQuorumQueue();
+    //e.SetQueueArgument("declare", "lazy");
+
+
+    e.Consumer&lt;WeatherForecastCreatedConsumer&gt;();
+    e.Bind(EventBusConstants.Exchages.WeatherForecastExchange, s =&gt;
+    {
+        s.RoutingKey = EventBusEnums.CREATED.ToString();
+        s.ExchangeType = ExchangeType.Direct;
+    });
+
+    e.PrefetchCount = 20;
+    e.UseMessageRetry(r =&gt; r.Interval(2, 100));
+
+});
+
+cfg.ReceiveEndpoint(EventBusConstants.Queues.WeatherForecastUpdatedQueue, e =&gt;
+{
+    // turns off default fanout settings
+    e.ConfigureConsumeTopology = false;
+    // a replicated queue to provide high availability and data safety. available in RMQ 3.8+
+    //e.SetQuorumQueue();
+    //e.SetQueueArgument("declare", "lazy");
+
+    e.Consumer&lt;WeatherForecastUpdatedConsumer&gt;();
+    e.Bind("WeatherForecast-Exchange", s =&gt;
+    {
+        s.RoutingKey = EventBusEnums.UPDATED.ToString();
+        s.ExchangeType = ExchangeType.Direct;
+    });
+
+    e.PrefetchCount = 20;
+    e.UseMessageRetry(r =&gt; r.Interval(2, 100));
+
+});</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-8527" src="/wp-content/uploads/2022/05/direct-example.png" alt="direct মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="1878" height="998" srcset="/wp-content/uploads/2022/05/direct-example.png 1878w, /wp-content/uploads/2022/05/direct-example-1280x680.png 1280w, /wp-content/uploads/2022/05/direct-example-980x521.png 980w, /wp-content/uploads/2022/05/direct-example-480x255.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1878px, 100vw"></p>
+<p>এবার দেখতে পাচ্ছি, একটা ওয়েদার ইনফরমেশন আপডেট করায় শুধু WeatherForecastUpdatedConsumer মেসেজ প্রিন্ট করেছে কারন এবার আমরা Binding/Routing Key উল্লেখ করে দিয়েছি।</p>
+<p>আশাকরি, মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনে RabbitMQ, MassTransit কিভাবে কাজ করে তার কিছু ধারনা দিতে পেরেছি।<br />
+ধন্যবাদ।।</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/asynchronous-communication/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>কন্ডিশন (IF-ELSE) এর পরিবর্তে পলিমরফিজম ও ফ্যাক্টরি প্যাটার্নের ব্যবহার</title>
+		<link>/blog/if-else-%e0%a6%8f%e0%a6%b0-%e0%a6%aa%e0%a6%b0%e0%a6%bf%e0%a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a4%e0%a7%87-%e0%a6%aa%e0%a6%b2%e0%a6%bf%e0%a6%ae%e0%a6%b0%e0%a6%ab%e0%a6%bf%e0%a6%9c%e0%a6%ae/</link>
+					<comments>/blog/if-else-%e0%a6%8f%e0%a6%b0-%e0%a6%aa%e0%a6%b0%e0%a6%bf%e0%a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a4%e0%a7%87-%e0%a6%aa%e0%a6%b2%e0%a6%bf%e0%a6%ae%e0%a6%b0%e0%a6%ab%e0%a6%bf%e0%a6%9c%e0%a6%ae/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Mon, 21 Mar 2022 04:25:30 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=7774</guid>
+
+					<description><![CDATA[আমারা একটা ছোট কনসল অ্যাপ্লিকেশন এর মাধ্যমে  কন্ডিশন/ IF-ELSE এর পরিবর্তে পলিমরফিজম ও সিম্পল ফ্যাক্টরি প্যাটার্নের ব্যবহার (RIP) কিভাবে করা যায় তা দেখব। এখানে আমাদের একটা অ্যাপ্লিকেশন আছে যার কাজ ব্যাঙ্কের ডাটা মাইগ্রেশন করা, AbcBank এর জন্য আমরা এটা তৈরি করেছি যা শুধুমাত্র কাস্টমার  ইনফরমেশন মাইগ্রেট করতে পারে। public class AbcBank { public void PerformEtl() [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>আমারা একটা ছোট কনসল অ্যাপ্লিকেশন এর মাধ্যমে  কন্ডিশন/ IF-ELSE এর পরিবর্তে পলিমরফিজম ও সিম্পল ফ্যাক্টরি প্যাটার্নের ব্যবহার (RIP) কিভাবে করা যায় তা দেখব। এখানে আমাদের একটা অ্যাপ্লিকেশন আছে যার কাজ ব্যাঙ্কের ডাটা মাইগ্রেশন করা, AbcBank এর জন্য আমরা এটা তৈরি করেছি যা শুধুমাত্র কাস্টমার  ইনফরমেশন মাইগ্রেট করতে পারে।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class AbcBank 
+{
+    public void PerformEtl()
+    {
+        Console.WriteLine("Customer info migration is starting!");
+        /*some precess here */
+        Console.WriteLine("Customer info migration is done!");
+    }
+}</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">class Program
+{   
+    static async Task Main(string[] args)
+    {
+        await Task.Delay(100);
+
+        AbcBank bank = new AbcBank();
+        bank.PerformEtl();
+
+        Console.ReadLine();
+    }
+}
+</pre>
+<p>কিছু দিন পর অন্য একটি ব্যাংক PqrBank এই অ্যাপ্লিকেশন  প্রতি আগ্রহী হয় কিন্ত তাদের এই মাইগ্রেশন প্রক্রিয়াটা একটু ভিন্ন হবে, তারা কাস্টমার  ইনফরমেশনের সাথে সাথে  একাউন্ট ইনফরমেশন ও মাইগ্রেট  করবে। এই নতুন ইমপ্লিমেন্টেশনের জন্য আমরা আমাদের কোড গুলোকে আবার নতুন করে লিখি যেন ব্যাংক অনুযায়ী ETL  প্রক্রিয়া ভিন্ন হতে পারে এবং নতুন কোন ব্যাংক আগ্রহী হলে খুব সহজে সেখানে ইমপ্লিমেন্টে করতে পারি।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public abstract class BaseBank
+{
+    public abstract void PerformEtl();
+}</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class AbcBank : BaseBank
+{
+    public override void PerformEtl()
+    {
+        Console.WriteLine("Customer info migration is starting!");
+        /*some precess here */
+        Console.WriteLine("Customer info migration is done!");
+    }
+}</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class PqrBank : BaseBank
+{
+    public override void PerformEtl()
+    {
+        Console.WriteLine("Customer info migration is staring!");
+        /* some precess here */
+        Console.WriteLine("Customer info migration is done!");
+       
+        Console.WriteLine("Account info migration is staring!");
+        /*some precess here */
+        Console.WriteLine("Account info migration is done!");
+    }
+}</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">class Program
+{   
+    static async Task Main(string[] args)
+    {
+        await Task.Delay(100);
+
+        BaseBank bank = null; ;
+        if (AppConstants.Bank == Enums.Companies.AbcBank.ToString())
+        {
+            bank = new AbcBank();
+        } 
+        else if (AppConstants.Bank == Enums.Companies.PqrBank.ToString()) 
+        {
+            bank = new PqrBank();
+        }
+
+        bank.PerformEtl();
+
+        Console.ReadLine();
+    }
+}
+</pre>
+<p>এরপর ব্যাংক XyzBank এই অ্যাপ্লিকেশনের প্রতি আগ্রহী হয় যাদের মাইগ্রেশন প্রক্রিয়াটাও অন্যদের চেয়ে একটু ভিন্ন হবে। আমরা সহজেই একটা নতুন ক্লাস নিয়ে তাতে মাইগ্রেশন প্রক্রিয়াটা ইমপ্লিমেন্ট করে একটা ELSE-IF এর মাধ্যমে মাইন মেথডে অ্যাড করে দিতে পারি। যাতে অন্য ক্লাস গুলো বা তাদের মাইগ্রেশন প্রক্রিয়ায় কোন পরিবরতন না হয়।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class XyzBank : BaseBank
+{
+    public override void PerformEtl()
+    {
+        Console.WriteLine("Customer info migration is staring!");
+        /* some precess here */
+        Console.WriteLine("Customer info migration is done!");
+
+        Console.WriteLine("Account info migration is staring!");
+        /*some precess here */
+        Console.WriteLine("Account info migration is done!");
+
+        Console.WriteLine("Transaction info migration is staring!");
+        /*some precess here */
+        Console.WriteLine("Transaction info migration is done!");
+    }
+}</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">class Program
+{   
+    static async Task Main(string[] args)
+    {
+        await Task.Delay(100);
+
+        BaseBank bank = null; ;
+        if (AppConstants.Bank == Enums.Companies.AbcBank.ToString())
+        {
+            bank = new AbcBank();
+        } 
+        else if (AppConstants.Bank == Enums.Companies.PqrBank.ToString()) 
+        {
+            bank = new PqrBank();
+        }
+        else if (AppConstants.Bank == Enums.Companies.XyzBank.ToString())
+        {
+            bank = new XyzBank();
+        }
+
+        bank.PerformEtl();
+
+        Console.ReadLine();
+    }
+
+}</pre>
+<p>আপাত দৃষ্টিতে মনে হচ্ছে, এই পর্যন্ত সব কিছু ঠিকঠাকই আছে! কিন্তু যদি আমার ভাল করে লক্ষ্য করি তাহলে দেখতে পারি যে IF বা ELSE-IF এর সংখ্যা বেড়েই যাছে , তাছাড়া মেইন ফাংশন SOLID এর Single-responsibility principle কে মানতে পারছে না, PerformEtl কে কল করা ছাড়াও তাকে  কন্ডিশন অনুসারে ব্যাংক অবজেক্ট তৈরি করতে হচ্ছে ।</p>
+<p>এখন আমারা যেটা করতে পারি তাহল অবজেক্ট  তৈরির কাজটা অন্য একটা class দেয়া যার মাধ্যমে কনফিগারেশন অনুযায়ী কাঙ্ক্ষিত অবজেক্টকে পেতে পারি , এর জন্য আমরা সিম্পল ফ্যাক্টরি প্যাটার্ন  ব্যবহার করব।  ফ্যাক্টরি প্যাটার্ন হল একটি ডিজাইন প্যাটার্ন যেটি ক্রিয়েশনাল প্যাটার্ন এর অন্তর্গত।  Gang of Four এর সংজ্ঞা অনুসারে  ফ্যাক্টরি প্যাটার্ন মুলত দুই প্রকারঃ Factory Method ও Abstract Factory। এই উদাহরনে আমরা সিম্পল ফ্যাক্টরির প্যাটার্ন  ব্যবহার করব যা পরবর্তীতে Factory Method ও Abstract Factory  বুঝতে সাহায্য করবে।</p>
+<p>ফ্যাক্টরি ক্লাসঃ</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">// Simple Factory pattern
+public static class BankFactory
+{
+    public static Dictionary&lt;string, BaseBank&gt; banks 
+        = new Dictionary&lt;string, BaseBank&gt;();
+
+    static BankFactory()
+    {
+        //banks.Add(Enums.Companies.AbcBank.ToString(), new AbcBank());
+        //banks.Add(Enums.Companies.PqrBank.ToString(), new PqrBank());
+        //banks.Add(Enums.Companies.XyzBank.ToString(), new XyzBank());
+    }
+    public static BaseBank Create(string name)
+    {
+        // Lazy Loading pattern
+        if (!banks.Any())
+        {
+            banks.Add(Enums.Companies.AbcBank.ToString(), new AbcBank());
+            banks.Add(Enums.Companies.PqrBank.ToString(), new PqrBank());
+            banks.Add(Enums.Companies.XyzBank.ToString(), new XyzBank());
+        }
+        // RIP(replace if with polymorphism) pattern
+        return banks[name];
+    }
+
+    public static BaseBank Create2(string name)
+    {
+
+        var collection = new ServiceCollection();
+        collection.AddTransient&lt;BaseBank, AbcBank&gt;();
+        collection.AddScoped&lt;BaseBank, PqrBank&gt;();
+        collection.AddScoped&lt;BaseBank, XyzBank&gt;();
+        
+        var serviceProvider = collection.BuildServiceProvider();
+        var bank = serviceProvider.GetServices&lt;BaseBank&gt;()
+                  .FirstOrDefault(w=&gt; w.GetType().Name == name);
+
+        return bank;
+    }
+
+}</pre>
+<p>মেইন মেথডঃ</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">class Program
+{
+    
+    static async Task Main(string[] args)
+    {
+        await Task.Delay(100);
+
+        BaseBank bank = BankFactory.Create(AppConstants.Bank);
+        bank.PerformEtl();
+
+        Console.ReadLine();
+    }
+}</pre>
+<p>এখন কনফিগারেশন অনুযায়ী ব্যাংক অবজেক্ট তৈরি করবে ফ্যাক্টরি আর মেইন মেথড শুধু মাত্র PerformEtl কে কল করে দেবে আর Runtime polymorphism  বা Method overriding এর মাধ্যমে ব্যাংক অনুযায়ী PerformEtl কাজ করবে।  Create2 মেথডে ডিপেন্ডেন্সি ইনজেকশন এর মাধ্যমে কি ভাবে করা যায় তা দেখানো হয়েছে এটাও একটা বিকল্প হতে পারে।</p>
+<p>আর বাঙ্কের লিস্টটাকে কন্সট্রাক্টর এ পপুলেট না করে Create মেথডে করা হয়েছে তার মানে যখন Create মেথড কে কল করা হবে ঠিক তখনি বাঙ্কের লিস্টটা  পপুলেট  হবে যদি এর আগে পপুলেট  না হয়ে থাকে, একে  Lazy loading বা Lazy initialization বলা হয়ে থাকে।</p>
+<div id="attachment_7794" style="width: 1930px" class="wp-caption aligncenter"><img aria-describedby="caption-attachment-7794" decoding="async" class="size-full wp-image-7794" src="/wp-content/uploads/2022/03/কন্ডিশন-IF-ELSE-এর-পরিবর্তে-পলিমরফিজম-ও-ফ্যাক্টরি-প্যাটার্নের-ব্যবহার-২.png" alt="কন্ডিশন IF ELSE এর পরিবর্তে পলিমরফিজম ও ফ্যাক্টরি প্যাটার্নের ব্যবহার ২ কন্ডিশন (IF-ELSE) এর পরিবর্তে পলিমরফিজম ও ফ্যাক্টরি প্যাটার্নের ব্যবহার" width="1920" height="990" srcset="/wp-content/uploads/2022/03/কন্ডিশন-IF-ELSE-এর-পরিবর্তে-পলিমরফিজম-ও-ফ্যাক্টরি-প্যাটার্নের-ব্যবহার-২.png 1920w, /wp-content/uploads/2022/03/কন্ডিশন-IF-ELSE-এর-পরিবর্তে-পলিমরফিজম-ও-ফ্যাক্টরি-প্যাটার্নের-ব্যবহার-২-300x155.png 300w, /wp-content/uploads/2022/03/কন্ডিশন-IF-ELSE-এর-পরিবর্তে-পলিমরফিজম-ও-ফ্যাক্টরি-প্যাটার্নের-ব্যবহার-২-1024x528.png 1024w, /wp-content/uploads/2022/03/কন্ডিশন-IF-ELSE-এর-পরিবর্তে-পলিমরফিজম-ও-ফ্যাক্টরি-প্যাটার্নের-ব্যবহার-২-768x396.png 768w, /wp-content/uploads/2022/03/কন্ডিশন-IF-ELSE-এর-পরিবর্তে-পলিমরফিজম-ও-ফ্যাক্টরি-প্যাটার্নের-ব্যবহার-২-1536x792.png 1536w, /wp-content/uploads/2022/03/কন্ডিশন-IF-ELSE-এর-পরিবর্তে-পলিমরফিজম-ও-ফ্যাক্টরি-প্যাটার্নের-ব্যবহার-২-1080x557.png 1080w, /wp-content/uploads/2022/03/কন্ডিশন-IF-ELSE-এর-পরিবর্তে-পলিমরফিজম-ও-ফ্যাক্টরি-প্যাটার্নের-ব্যবহার-২-1280x660.png 1280w, /wp-content/uploads/2022/03/কন্ডিশন-IF-ELSE-এর-পরিবর্তে-পলিমরফিজম-ও-ফ্যাক্টরি-প্যাটার্নের-ব্যবহার-২-980x505.png 980w, /wp-content/uploads/2022/03/কন্ডিশন-IF-ELSE-এর-পরিবর্তে-পলিমরফিজম-ও-ফ্যাক্টরি-প্যাটার্নের-ব্যবহার-২-480x248.png 480w" sizes="(max-width: 1920px) 100vw, 1920px"><p id="caption-attachment-7794" class="wp-caption-text">কন্ডিশন (IF-ELSE) এর পরিবর্তে পলিমরফিজম ও ফ্যাক্টরি প্যাটার্নের ব্যবহার ২</p></div>
+<p>আবার নতুন একটা ব্যাংক ইউজার হিসাবে আসলে আমরা তার জন্য নতুন একটা class লিখব যেটি BaseBank কে ইমপ্লিমেন্ট করবে আর তাকে ফ্যাক্টরির ডিকশনারীতে অ্যাড করে দেব অথবা যদি  Create2 মেথড ব্যবহার করি তবে সার্ভিস কালেকশনে অ্যাড করে দেব  মেইন মেথড বা অন্যান্য class  এ আর কোন পরিবর্তনের দরকার হবে না। এখন যদি কোন ব্যাঙ্কের PerformEtl মেথডে পরিবরতন আনতে হয় আমারা শুধু সে ব্যাঙ্কের class/method  হতে পরিবর্তন করতে পারব, এই পরিবর্তন অন্য কোন ব্যাঙ্কের PerformEtl এ প্রভাব ফেলবে না এবং আপ্লিকেশনটি  Loosely coupled এবং Highly cohesive হবে। আশা করি কিভাবে ধাপে ধাপে Design Patterns ও Principles ইমপ্লিমেন্ট করতে হয় তার কিছুটা ধারনা আমরা পেয়েছি।<br />
+সোর্স কোড: <a href="https://github.com/Khairultaher/ConsoleRestEF/tree/main/EtlTool" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">github.com/Khairultaher</span></a></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/if-else-%e0%a6%8f%e0%a6%b0-%e0%a6%aa%e0%a6%b0%e0%a6%bf%e0%a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a4%e0%a7%87-%e0%a6%aa%e0%a6%b2%e0%a6%bf%e0%a6%ae%e0%a6%b0%e0%a6%ab%e0%a6%bf%e0%a6%9c%e0%a6%ae/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

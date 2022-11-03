@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>abdul.mukit &#8211; Vivasoft</title>
+	<atom:link href="/author/abdul-mukit/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Thu, 13 Oct 2022 06:52:27 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>abdul.mukit &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Guideline for switching to GoLang from other Programming Languages</title>
+		<link>/blog/guideline-for-switching-to-golang-from-other-programming-languages/</link>
+		
+		<dc:creator><![CDATA[abdul.mukit]]></dc:creator>
+		<pubDate>Thu, 13 Oct 2022 06:49:29 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=12197</guid>
+
+					<description><![CDATA[Not just Golang, but for learning any programming language, one should be aware of basic concepts like data types, variables, branching, looping, functions, etc. If you are familiar with the C language, learning Golang will be very easy. The syntax of Golang is somewhat similar to the C language. However, switching from other programming languages [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span style="font-weight: 400;">Not just Golang, but for learning any programming language, one should be aware of basic concepts like data types, variables, branching, looping, functions, etc.</span></p>
+<p><span style="font-weight: 400;">If you are familiar with the C language, learning Golang will be very easy. The syntax of Golang is somewhat similar to the C language. However, switching from other programming languages is also more accessible and more interesting.</span></p>
+<p><span style="font-weight: 400;">As a beginner, you should cover the following topics to learn GoLang:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Basic syntax and data structure </span><a href="https://go.dev/ref/spec" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">go syntax</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Learn the basics of Go </span><a href="https://go.dev/tour/welcome/1" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Tour to Go</span></a>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Understand basic data types</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Build something using control structures</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Understand the pointer and its scope</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Get practice with functions</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Get practice with array, slice, maps, and type conversion</span></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Understand Interface and its usage  </span><a href="http://jordanorelli.com/post/32665860244/how-to-use-interfaces-in-go" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">interface in golang</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Error handling (Go doesn’t have exceptions, you have to handle errors in a different way) </span><a href="https://medium.com/gett-engineering/error-handling-in-go-53b8a7112d04" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Handling errors in golang</span></a><span style="font-weight: 400;"> </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Goroutine and  channel for concurrency </span></li>
+</ul>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><a href="/blog/concurrency-in-go-goroutine-and-channels/"><span style="font-weight: 400;">concurrency in go</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://gist.github.com/rushilgupta/228dfdf379121cb9426d5e90d34c5b96" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">dive into go concurrency</span></a></li>
+</ul>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Understand Go’s design patterns </span><span style="font-weight: 400;"><br />
+</span><span style="font-weight: 400;">      &#8211;  </span><a href="https://github.com/tmrts/go-patterns" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">go patterns</span><span style="font-weight: 400;"><br />
+</span></a><span style="font-weight: 400;">      &#8211;  </span><a href="/blog/dive-to-clean-architecture/"><span style="font-weight: 400;">go clean architecture</span></a><span style="font-weight: 400;"> </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Learn testing with Go </span><a href="https://go.dev/doc/tutorial/add-a-test" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Write test in Go</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Web frameworks and routers (at least one)</span></li>
+</ul>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><a href="https://echo.labstack.com/guide/" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Echo</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://github.com/gin-gonic/gin#quick-start" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Gin</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://github.com/gorilla/mux" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Mux</span></a></li>
+</ul>
+<p><span style="font-weight: 400;">Knowledge of log frameworks can be useful </span><a href="https://pkg.go.dev/log" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">log framework</span></a></p>
+<p><b>Recommended Books for GoLang:</b></p>
+<ol>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">The Go Programming Language (Alan A. A. Donovan and Brian Kernighan)</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Learning Go (Jon Bodner)</span></li>
+</ol>
+<p><b>Some useful resources/tutorials:</b></p>
+<ol>
+<li style="font-weight: 400;" aria-level="1"><a href="https://go.dev/tour/welcome/1" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">https://go.dev/tour/welcome/1</span></a><span style="font-weight: 400;"> </span></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://gobyexample.com/" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">https://gobyexample.com/</span></a><span style="font-weight: 400;"> </span></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://golangbot.com/" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">https://golangbot.com/</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://www.golang-book.com/books/intro" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">https://www.golang-book.com/books/intro</span></a></li>
+</ol>
+<ul>
+<li style="list-style-type: none;"></li>
+</ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

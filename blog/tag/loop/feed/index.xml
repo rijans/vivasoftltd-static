@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>loop &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/loop/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Fri, 24 Sep 2021 05:11:24 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>loop &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Getting TestCase Based I/O Without Any Loop In Golang</title>
+		<link>/blog/getting-testcase-based-i-o-without-any-loop-in-golang/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Tue, 16 Mar 2021 12:26:10 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[interview]]></category>
+		<category><![CDATA[loop]]></category>
+		<category><![CDATA[no]]></category>
+		<category><![CDATA[recursion]]></category>
+		<guid isPermaLink="false">/?p=2431</guid>
+
+					<description><![CDATA[Sometimes interview questions come with some twist like Solve this problem without using any loops So today I will explain how to solve general input/output (i/o) with test cases problem where special rule defines as saying &#8220;Do not use any Loop statement&#8221;. We&#8217;re going to solve this in Golang. When this type of problem was [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Sometimes interview questions come with some twist like</p>
+<h3>Solve this problem without using any loops</h3>
+<p>So today I will explain how to solve general input/output (i/o) with test cases problem where special rule defines as saying &#8220;Do not use any <strong>Loop</strong> statement&#8221;. We&#8217;re going to solve this in Golang. When this type of problem was asked by the interviewer, the first thing that came to our mind(especially those who didn&#8217;t solve lots of problem-solving in his/her school/university life). The problem statement is given below that we will try to solve the problem without using any loop.</p>
+<blockquote>
+<h4>Note: This problem can be solved differently or different recursive implementation can be applied too.</h4>
+</blockquote>
+<h2>Problem Statement</h2>
+<p>&#8211; We want you to calculate the sum of squares of given integers, excluding any negatives.<br />
+&#8211; The first line of the input will be an integer N (1 &lt;= N &lt;= 100), indicating the number of test cases to follow.<br />
+&#8211; Each of the test cases will consist of a line with an integer X (0 &lt; X &lt;= 100), followed by another line consisting of X number of space-separated integers Y<sub>n</sub>(-100 &lt;= Y<sub>n</sub>&lt;= 100).<br />
+&#8211; For each test case, calculate the sum of squares of the integers, excluding any negatives, and print the calculated sum in the output.</p>
+<p>Note 1: Do not put blank lines between test case solutions.<br />
+Note 2: Take input from standard input and output to standard output.</p>
+<h3>Rules</h3>
+<p>&#8211; Do not use any <strong>Loop</strong> statement<br />
+&#8211; You may only use standard library packages<br />
+&#8211; There should be no output until all the input has been received.</p>
+<h2>Solution</h2>
+<h3>Defining Main &amp; standard library packages</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package main
+
+import "fmt"</pre>
+<h3>Defining a global variable for storing results</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">var result []int</pre>
+<h3>Defining main function</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    var testCaseNum int
+    fmt.Scanln(&amp;testCaseNum)
+
+    nTestCase(0, testCaseNum)
+}</pre>
+<h3>Recursively taking inputs using ReadN</h3>
+<blockquote><p>Note: The function will finish when the test case and index value become equal and we&#8217;re printing the result array recursively using <strong>PrintN</strong> as Golang doesn&#8217;t have any built-in functions which print array without any loop (to my knowledge at least).</p></blockquote>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func nTestCase(idx int, testCase int) {
+    if idx == testCase {
+        PrintN(result, 0)
+        return
+    }
+    var n int
+    fmt.Scanln(&amp;n)
+    
+    all := make([]int, n)
+    ReadN(all, 0, n)  // reading array elements
+
+    result = append(result, sumOfSquare(all, 0, n))
+
+    nTestCase(idx + 1, testCase)
+}</pre>
+<h3>Calculating sum of squares of given integers, excluding any negatives.</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func sumOfSquare(values []int, idx int, arrayLen int) int {
+    if idx == arrayLen {
+        return 0
+    }
+
+    if values[idx] &gt; 0 {  // ignoring negative numbers in the array
+        return values[idx] * values[idx] + sumOfSquare(values, idx + 1, arrayLen)
+    }
+    return sumOfSquare(values, idx + 1, arrayLen)
+}</pre>
+<h3>Reading integer array inputs recursively</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func ReadN(all []int, idx, n int) {
+    if n == 0 {
+        return
+    }
+    if m, err := fmt.Scan(&amp;all[idx]); m != 1 {
+        panic(err)
+    }
+    ReadN(all, idx+1, n-1)
+}</pre>
+<h3>Outputting result integer array recursively</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func PrintN(values []int, idx int) {
+    if len(values) == idx {
+        return
+    }
+    fmt.Println(values[idx])
+
+    PrintN(values, idx + 1)
+}</pre>
+<p>In conclusion, When we saw this type of problem for the first time, we thought it&#8217;s easy problem until we read the line <strong>Do not use any Loop statement</strong> in your solution and the problem becomes hard for newbie or not too much experience on problem-solving.</p>
+<h2>You can read our other blog posts <a href="/blog/" target="_blank" rel="noopener">Here</a></h2>
+<p>So now we all know how to tackle this type of problem. Stay tuned for our next blog post. Thank you.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Implementation of Floyd’s Cycle-Finding Algorithm in Golang</title>
+		<link>/blog/implementation-of-floyds-cycle-finding-algorithm-in-golang/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Tue, 16 Mar 2021 11:55:23 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[algorithm]]></category>
+		<category><![CDATA[datastructure]]></category>
+		<category><![CDATA[goland]]></category>
+		<category><![CDATA[in]]></category>
+		<category><![CDATA[linkedlist]]></category>
+		<category><![CDATA[loop]]></category>
+		<guid isPermaLink="false">/?p=2426</guid>
+
+					<description><![CDATA[What is a loop in a linked list A very common operation in a linked list is to traverse throughout the LinkedList. But when no null value is reached as traversing throughout the linked list, we call this as loops in a linked list. So to detect whether a LinkedList has a loop or not, [&#8230;]]]></description>
+										<content:encoded><![CDATA[<h2>What is a loop in a linked list</h2>
+<p>A very common operation in a linked list is to traverse throughout the LinkedList. But when no null value is reached as traversing throughout the linked list, we call this as loops in a linked list. So to detect whether a LinkedList has a loop or not, we can use Floyd’s Cycle-Finding Algorithm also known as a slow-fast pointer or hear tortoise algorithm.</p>
+<p>We are implementing Floyd’s Cycle-Finding Algorithm to find loops in a linked list</p>
+<h2>Linked List</h2>
+<h3>Node &amp; Linked list struct</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">type Node struct {
+    data interface{}
+    next *Node
+}
+
+type LinkedList struct {
+    head *Node
+}</pre>
+<h3>Push to a Linked List</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func (ll *LinkedList) Push(data interface{}) {
+    list := &amp;Node{
+        data: data,
+    }
+    list.next = ll.head
+    if ll.head != nil {
+        ll.head = list
+    }
+    ll.head = list
+
+    l := ll.head
+    for l.next != nil {
+        l = l.next
+    }
+}</pre>
+<h3>Display the Linked list</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func (ll *LinkedList) Display() {
+    list := ll.head
+    for list != nil {
+        fmt.Printf("%+v -&gt; ", list.data)
+        list = list.next
+    }
+    fmt.Println()
+}</pre>
+<h3>Detect loops in LinkedList using Floyd’s Cycle-Finding Algorithm</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func (ll *LinkedList) DetectLoop() bool {
+    slowPtr := ll.head
+    fastPtr := ll.head
+
+    for slowPtr != nil &amp;&amp; fastPtr != nil &amp;&amp; fastPtr.next != nil {
+        slowPtr = slowPtr.next
+        fastPtr = fastPtr.next.next
+        if slowPtr == fastPtr {
+            return true
+        }
+    }
+    return false
+}</pre>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/implementation-of-floyds-cycle-finding-algorithm-in-golang" target="_blank" rel="noopener nofollow">Personal Blog</a></p>
+<h3>Main function</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    link := LinkedList{}
+    link.Push(1)
+    link.Push(2)
+    link.Push(3)
+    link.Push(4)
+    link.Push(5)
+
+    // creating a loop in the above linked list
+    link.head.next.next.next.next.next = link.head  // comment this then for no loop
+
+    if link.DetectLoop() {
+        fmt.Println("found loop")
+    } else {
+        fmt.Println("no loop")
+    }
+}
+
+// output
+found loop</pre>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

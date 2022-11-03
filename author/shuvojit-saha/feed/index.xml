@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>shuvojit.saha &#8211; Vivasoft</title>
+	<atom:link href="/author/shuvojit-saha/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Wed, 10 Aug 2022 07:12:54 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>shuvojit.saha &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Dive to Clean Architecture</title>
+		<link>/blog/dive-to-clean-architecture/</link>
+					<comments>/blog/dive-to-clean-architecture/#respond</comments>
+		
+		<dc:creator><![CDATA[shuvojit.saha]]></dc:creator>
+		<pubDate>Wed, 10 Aug 2022 07:12:54 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<guid isPermaLink="false">/?p=9961</guid>
+
+					<description><![CDATA[In this article, I’ll try to share my knowledge and concept of Clean Architecture and how to apply it properly in systems. What is Good Design? Software is well designed if the measure of effort required to fulfill the demands of the customers is low and stays low throughout the lifetime of the system. The [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p class="code-line" dir="auto" data-line="2">In this article, I’ll try to share my knowledge and concept of Clean Architecture and how to apply it properly in systems.</p>
+<h3 id="table-of-contents" class="code-line" dir="auto" data-line="4">What is Good Design?</h3>
+<p class="code-line" dir="auto" data-line="26">Software is well designed if the measure of effort required to fulfill the demands of the customers is low and stays low throughout the lifetime of the system. The effort refers to the human resources who are dedicated to up and running the required system. If the efforts grow with each release, the design is bad.</p>
+<div style="width: 710px" class="wp-caption alignnone"><img decoding="async" id="image-hash-867940001" class="loading" src="https://miro.medium.com/max/700/1*BQ7VHKeKbq5toq4uwRc8YA.png" alt="Figure-1: Productivity by - release " width="700" height="449" data-src="https://miro.medium.com/max/700/1*BQ7VHKeKbq5toq4uwRc8YA.png" /><p class="wp-caption-text">Productivity by &#8211; release</p></div>
+<p class="code-line" dir="auto" data-line="32">The figure depicts the signature of a mess in a system to the developers. Productivity of the developers was at pick during the first release but their productivity degraded with each release. Most modern developers have a misconception: “We can clean it up later; we just have to get to market fast!”. Writing messy codes makes them go fast in short term but just slows them in the long run. According to Uncle Bob, the simple truth of software development:</p>
+<p class="code-line" dir="auto" data-line="34"><em><strong>The only way to go fast, is to go well.</strong></em></p>
+<h3 id="what-is-architecture" class="code-line" dir="auto" data-line="36">What is Architecture?</h3>
+<p class="code-line" dir="auto" data-line="38"><em><strong>“The architecture of a software system is the shape given to that system by those who build it. The form of that shape is in the division of that system into components, the arrangement of those components, and the ways in which those components communicate with each other.” &#8211; </strong>e</em>xcerpt from <strong>Clean Architecture: A Craftsman&#8217;s Guide to Software Structure and Design (Robert C. Martin Series)</strong></p>
+<p class="code-line" dir="auto" data-line="41">Every software system incorporates two types of value: behavior and structure. The second of them is the greatest of the two because it is the value that makes software <em>soft</em>. The software was invented to easily change the behavior of machines. But that flexibility depends critically on the shape of the system, the arrangement of its components, and the way those components are interconnected. The primary purpose of a well-shaped architecture is to support the life cycle of the system. Good architecture makes the system easy to understand, easy to develop, easy to deploy, and easy to maintain. Moreover, it is to leave as many options as possible, for as long as possible. The main objective is to minimize the lifetime cost of the system and maximize programmer productivity.</p>
+<p class="code-line" dir="auto" data-line="43">Good architecture must support</p>
+<ul class="code-line" dir="auto" data-line="45">
+<li class="code-line" dir="auto" data-line="45"><strong>Use Cases</strong> &#8211; t<em>he intent of the system is the first priority of the architecture. The most important thing a good architecture can do to support behavior is to clarify and expose that behavior so that the intent of the system is visible at the architectural level.</em></li>
+<li class="code-line" dir="auto" data-line="46"><strong>Operation</strong> &#8211; <em>a good architecture of a system makes the operation including use cases, features, and the required behaviors of the system readily apparent to the developers. Architecture should reveal operation which simplifies the understanding of the system, and therefore, greatly aids in development and maintenance.</em></li>
+<li class="code-line" dir="auto" data-line="47"><strong>Maintenance</strong> &#8211; <em>The primary cost of maintenance is in spelunking and risk. Spelunking is the cost of digging through the existing software, trying to determine the best place and the best strategy to add a new feature or to repair a defect. While making such changes, the likelihood of creating inadvertent defects is always there, adding to the cost of risk. A carefully thought-through architecture vastly mitigates these costs by separating the system into components, and isolating those components through stable interfaces, it is possible to illuminate the pathways for future features and greatly reduce the risk of accidental breakage.</em></li>
+<li class="code-line" dir="auto" data-line="48"><strong>Development</strong> &#8211; <em>A system that must be developed by an organization with many teams and many concerns must have an architecture that facilitates independent actions by those teams so that the teams do not interfere with each other during development. This is accomplished by properly partitioning the system into well-isolated, independently developable components. Those components can then be allocated to teams that can work independently of each other.</em></li>
+<li class="code-line" dir="auto" data-line="49"><strong>Deployment</strong> &#8211; <em>A good architecture helps the system to be immediately deployable after build. A goal of a software architecture should be to make a system that can be easily deployed with a single action. This is achieved through the proper partitioning and isolation of the components of the system, including those master components that tie the whole system together and ensure that each component is properly started, integrated, and supervised.</em></li>
+<li class="code-line" dir="auto" data-line="50"><strong>Leaving Options Open</strong> &#8211; <em>A good architecture makes the system easy to change, in all the ways that it must change, by leaving options open. Balancing all of these concerns with a component structure that mutually satisfies them all is pretty hard in reality. However, some principles are relatively inexpensive to implement and can help to balance them by partitioning the systems into well-isolated components that allow us to leave as many options open as possible, for as long as possible.</em></li>
+</ul>
+<h3 id="what-is-clean-architecture" class="code-line" dir="auto" data-line="52">What is Clean Architecture?</h3>
+<p class="code-line" dir="auto" data-line="54">In 2012 Robert C. Martin proposed the architectural pattern in his famous book &#8211; <a title="https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/" href="https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/" data-href="https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/" data- rel="nofollow noopener" target="_blank"><em><strong>“Clean Architecture: A Craftsman&#8217;s Guide to Software Structure and Design”</strong></em></a> by thinking about isolated, maintainable, testable, scalable, evolutive, and well-written code. Though there are a whole range of architectures e.g. <a title="https://alistair.cockburn.us/hexagonal-architecture/" href="https://alistair.cockburn.us/hexagonal-architecture/" data-href="https://alistair.cockburn.us/hexagonal-architecture/" data- rel="nofollow noopener" target="_blank">Hexagonal Architecture</a>, <a title="https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/" href="https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/" data-href="https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/" data- rel="nofollow noopener" target="_blank">Onion Architecture</a>, <a title="https://www.artima.com/articles/the-dci-architecture-a-new-vision-of-object-oriented-programming" href="https://www.artima.com/articles/the-dci-architecture-a-new-vision-of-object-oriented-programming" data-href="https://www.artima.com/articles/the-dci-architecture-a-new-vision-of-object-oriented-programming" data- rel="nofollow noopener" target="_blank">DCI</a>, <a title="https://vaclavkosar.com/software/Boundary-Control-Entity-Architecture-The-Pattern-to-Structure-Your-Classes" href="https://vaclavkosar.com/software/Boundary-Control-Entity-Architecture-The-Pattern-to-Structure-Your-Classes" data-href="https://vaclavkosar.com/software/Boundary-Control-Entity-Architecture-The-Pattern-to-Structure-Your-Classes" data- rel="nofollow noopener" target="_blank">BCE</a>, etc. having variations in their details, they have a similar objective which is the <a title="https://en.wikipedia.org/wiki/Separation_of_concerns" href="https://en.wikipedia.org/wiki/Separation_of_concerns" data-href="https://en.wikipedia.org/wiki/Separation_of_concerns" data- rel="nofollow noopener" target="_blank">Separation of concerns</a>. They all achieve this separation by dividing the software into layers. Each has at least one layer of business rules and another layer for user and system interfaces. Uncle Bob presented his architecture together with this diagram:</p>
+<div style="width: 782px" class="wp-caption alignnone"><img decoding="async" id="image-hash--967721664" class="loading" src="https://blog.cleancoder.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg" alt="Figure-2: Clean Architecture - promoted by Robert C. Martin (Uncle Bob)" width="772" height="567" data-src="https://blog.cleancoder.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg" /><p class="wp-caption-text">Clean Architecture &#8211; promoted by Robert C. Martin (Uncle Bob)</p></div>
+<p class="code-line" dir="auto" data-line="60">The key points of this architecture are &#8211;</p>
+<ul class="code-line" dir="auto" data-line="62">
+<li class="code-line" dir="auto" data-line="62">It is really about the <strong>s<em>eparation of Concerns.</em></strong></li>
+<li class="code-line" dir="auto" data-line="63">Should be <strong>i<em>ndependent of frameworks</em>.</strong> This allows you to use frameworks as tools rather than forcing you to cram your system into their limited constraints.</li>
+<li class="code-line" dir="auto" data-line="64">Every layer should be <strong>testable.</strong> The business rules can be tested without the UI, database, web server, or any other external element.</li>
+<li class="code-line" dir="auto" data-line="65">Should be <strong>independent of UI.</strong> The UI can change easily, without changing the rest of the system. A web UI could be replaced with a console UI, for example, without changing the business rules.</li>
+<li class="code-line" dir="auto" data-line="66">Should be <strong>independent of the database</strong>. You can swap out Oracle or SQL Server for Mongo, BigTable, CouchDB, or something else. Your business rules are not bound to the database.</li>
+<li class="code-line" dir="auto" data-line="67">Should be <strong>independent of any external agency</strong>. The innermost circle is the highest level. Inner circles are policies and other circles are mechanisms. <strong>Inner circles cannot depend on outer circles. Also, outer circles cannot influence inner circles.</strong></li>
+</ul>
+<h4 id="principles-of-clean-architecture" class="code-line" dir="auto" data-line="69">Principles of clean architecture</h4>
+<p class="code-line" dir="auto" data-line="71">Some of the following principles are shared with <em><strong><a title="https://blog.cleancoder.com/uncle-bob/2020/10/18/Solid-Relevance.html" href="https://blog.cleancoder.com/uncle-bob/2020/10/18/Solid-Relevance.html" data-href="https://blog.cleancoder.com/uncle-bob/2020/10/18/Solid-Relevance.html" data- rel="nofollow noopener" target="_blank">SOLID</a></strong></em> principles defined by Uncle Bob and other popular strategies. The following definitions are just summaries, so I suggest you go through the book for a better understanding.</p>
+<p class="code-line" dir="auto" data-line="73">Let’s explore each</p>
+<ul class="code-line" dir="auto" data-line="75">
+<li class="code-line" dir="auto" data-line="75"><strong>Common Closure Principle</strong> &#8211; It prompts to gather into components those classes that are likely to change for the same reasons. If two classes are so tightly bound, either physically or conceptually, that they always change together, then they belong in the same component. This minimizes the workload related to releasing, revalidating, and redeploying the software. This is the Single Responsibility Principle(SRP) restated for components.</li>
+<li class="code-line" dir="auto" data-line="76"><strong>Common Reuse Principle</strong> &#8211; It helps us to decide which classes and modules should be placed into a component. It states that classes and modules that tend to be reused together belong in the same component. When one component uses another, it creates a dependency between each other. Perhaps the using component uses only one class within the used component, they still don’t weaken the dependency though. The using dependency still depends on the used component. It is also related to the <strong>Interface Segregation Principle</strong>.</li>
+<li class="code-line" dir="auto" data-line="77"><strong>Dependency Inversion Principle</strong> &#8211; The rule states that outer layers (implementation details) can refer to inner layers (abstractions), but not the other way around. The inner layers should instead depend on interfaces. This provides a clear separation between ports, adapters, and application logic. Clean Architecture emphasizes this principle.</li>
+</ul>
+<h4 id="the-dependency-rule" class="code-line" dir="auto" data-line="79">The Dependency Rule</h4>
+<p class="code-line" dir="auto" data-line="81">The concentric circles represent different areas of software. In general, the further in you go, the higher level the software becomes. The outer circles are mechanisms. The inner circles are policies.</p>
+<p class="code-line" dir="auto" data-line="83">The overriding rule that makes this architecture work is the <em><strong>Dependency Rule:</strong></em></p>
+<p class="code-line" dir="auto" data-line="85"><em><strong>“Source code dependencies must point only inward, toward higher-level policies.”</strong></em></p>
+<div style="width: 1410px" class="wp-caption aligncenter"><img decoding="async" id="image-hash-1044373688" class="loading" src="https://miro.medium.com/max/1400/0*00xx3fNwcNgsI1eV.png" alt="https://miro.medium.com/max/1400/0*00xx3fNwcNgsI1eV.png" width="1400" height="465" data-src="https://miro.medium.com/max/1400/0*00xx3fNwcNgsI1eV.png" /><p class="wp-caption-text">Dependency Rule</p></div>
+<p class="code-line" dir="auto" data-line="89"><strong>What does it mean?</strong></p>
+<p class="code-line" dir="auto" data-line="91">Nothing in an inner circle can know anything at all about something in an outer circle. In particular, the name of something declared in an outer circle must not be mentioned by the code in an inner circle. That includes functions, classes, variables, or any other named software entity. i.e. <strong>Elements located in the Entities circle</strong> (the enterprise business rules) <strong>should not refer to any elements outside of it</strong> (such as application business rules, interface adapters, frameworks, and drivers).</p>
+<p class="code-line" dir="auto" data-line="93">As well as data formats used in an outer circle should not be used by an inner circle, especially if those formats are generated by a framework in an outer circle. The Clean architecture doesn’t want anything in an outer circle to impact the inner circles.</p>
+<p class="code-line" dir="auto" data-line="95"><img decoding="async" class="aligncenter wp-image-9958 size-full" src="/wp-content/uploads/2022/08/images.png" alt="images Dive to Clean Architecture" width="497" height="101" srcset="/wp-content/uploads/2022/08/images.png 497w, /wp-content/uploads/2022/08/images-480x98.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 497px, 100vw"></p>
+<p class="code-line" dir="auto" data-line="97">Let&#8217;s discuss each of these layers</p>
+<h4 id="entities" class="code-line" dir="auto" data-line="99">Entities</h4>
+<ul class="code-line" dir="auto" data-line="101">
+<li class="code-line" dir="auto" data-line="101">Encapsulate enterprise-wide critical business rules
+<ul class="code-line" dir="auto" data-line="102">
+<li class="code-line" dir="auto" data-line="102">can be
+<ul class="code-line" dir="auto" data-line="103">
+<li class="code-line" dir="auto" data-line="103">an object with methods</li>
+<li class="code-line" dir="auto" data-line="104">a set of data structures and functions</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="code-line" dir="auto" data-line="105">Could be used in many different applications in the enterprise</li>
+<li class="code-line" dir="auto" data-line="106">Are the most general and high-level rules and the least likely to change when the external layer changes</li>
+</ul>
+<h4 id="use-cases" class="code-line" dir="auto" data-line="108">Use Cases</h4>
+<ul class="code-line" dir="auto" data-line="110">
+<li class="code-line" dir="auto" data-line="110">Encapsulate and implements application-specific business rules</li>
+<li class="code-line" dir="auto" data-line="111">Orchestrate the flow of data to and from the entities and direct entities to use the critical business rules to achieve the goals of the use case</li>
+<li class="code-line" dir="auto" data-line="112">Could not expect changes to affect the entities</li>
+<li class="code-line" dir="auto" data-line="113">Could not be affected by changes in an external layer such as database, web, UI as well</li>
+<li class="code-line" dir="auto" data-line="114">Could be changed only if the operation of the application changes</li>
+</ul>
+<p class="code-line" dir="auto" data-line="116"><img decoding="async" id="image-hash-599026463" class="loading aligncenter" src="https://www.utm.mx/~caff/doc/OpenUPWeb/openup/guidances/guidelines/resources/user_login_ucm.JPG" alt="https://www.utm.mx/~caff/doc/OpenUPWeb/openup/guidances/guidelines/resources/user_login_ucm.JPG" width="472" height="142" data-src="https://www.utm.mx/~caff/doc/OpenUPWeb/openup/guidances/guidelines/resources/user_login_ucm.JPG" /></p>
+<h4 id="interface-adapters" class="code-line" dir="auto" data-line="118">Interface Adapters</h4>
+<ul class="code-line" dir="auto" data-line="120">
+<li class="code-line" dir="auto" data-line="120">Set of adapters
+<ul class="code-line" dir="auto" data-line="121">
+<li class="code-line" dir="auto" data-line="121">Convert data from the format most convenient for the use cases and entities</li>
+<li class="code-line" dir="auto" data-line="122">To the format most convenient for an external agency such as the database or the web</li>
+</ul>
+</li>
+<li class="code-line" dir="auto" data-line="123">Wholly contain the MVC architecture &#8211; the presenter, views, and controllers</li>
+</ul>
+<h4 id="frameworks-and-drivers" class="code-line" dir="auto" data-line="125">Frameworks and Drivers</h4>
+<ul class="code-line" dir="auto" data-line="127">
+<li class="code-line" dir="auto" data-line="127">Framework and tools such as
+<ul class="code-line" dir="auto" data-line="128">
+<li class="code-line" dir="auto" data-line="128">Database</li>
+<li class="code-line" dir="auto" data-line="129">Web framework</li>
+</ul>
+</li>
+<li class="code-line" dir="auto" data-line="130">Glue code that communicates to the next circle inward</li>
+<li class="code-line" dir="auto" data-line="131">This layer contains all the details
+<ul class="code-line" dir="auto" data-line="132">
+<li class="code-line" dir="auto" data-line="132">Keep these things on the outside where they do little harm</li>
+</ul>
+</li>
+</ul>
+<h4 id="only-four-layers" class="code-line" dir="auto" data-line="134">Only four layers?</h4>
+<p class="code-line" dir="auto" data-line="136">There is no limit to keeping the architecture only to four layers. There are some cases you need more than just these four layers. However, the dependency rule always applies. <em>Note the flow of control: It begins in the controller, moves through the use case, and then winds up executing in the presenter. Note also the source code dependencies: Each points inward toward the use cases</em>. As you move inward, the level of abstraction and policy increases. The outermost circle consists of low-level concrete details. As you move inward, the software grows more abstract and encapsulates higher-level policies. The innermost circle is the most general and highest level.</p>
+<h3 id="clean-architecture-with-golang" class="code-line" dir="auto" data-line="138">Clean Architecture With Golang</h3>
+<p class="code-line" dir="auto" data-line="140">Golang lends itself nicely to clean architecture. The interface/implementation pattern of Golang makes the dependency injection super easy. By defining small and clear interfaces and then implementing them in separate packages, the implementation details will end up nicely decoupled from core logic. It is quite simple to test each layer with popular library <a title="https://github.com/stretchr/testify" href="https://github.com/stretchr/testify" data-href="https://github.com/stretchr/testify" data- rel="nofollow noopener" target="_blank"><strong>testify</strong></a> and <a title="https://github.com/vektra/mockery" href="https://github.com/vektra/mockery" data-href="https://github.com/vektra/mockery" data- rel="nofollow noopener" target="_blank"><strong>mockery</strong></a> as well.</p>
+<p class="code-line" dir="auto" data-line="142">Let&#8217;s discuss clean architecture implementation in Golang with a simple authentication management service named <em><strong><a title="https://github.com/ParthoShuvo/auth-system" href="https://github.com/ParthoShuvo/auth-system" data-href="https://github.com/ParthoShuvo/auth-system" data- rel="nofollow noopener" target="_blank">AuthService</a></strong></em>. Hopefully, starting with this service will help you start as you mean to go on!</p>
+<h4 id="quick-start" class="code-line" dir="auto" data-line="144">Quick Start</h4>
+<p class="code-line" dir="auto" data-line="146">Once checking out the template, use the provided Makefile which includes a couple of targets for building, running, and tearing down the service.</p>
+<ul class="code-line" dir="auto" data-line="148">
+<li class="code-line" dir="auto" data-line="148"><em>Run with Docker (starts MySQL, Redis, Mailhog)</em>
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">make compose-up</pre>
+</li>
+</ul>
+<ul>
+<li dir="auto" data-line="160"><em><em>Tear-down the service</em></em>
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">make compose-down</pre>
+</li>
+</ul>
+<h4 id="project-structure" class="code-line" dir="auto" data-line="160">Project Structure</h4>
+<p class="code-line" dir="auto" data-line="162">Full details are included in the project&#8217;s <em><a title="https://github.com/ParthoShuvo/auth-system/tree/master/authsvc" href="https://github.com/ParthoShuvo/auth-system/tree/master/authsvc" data-href="https://github.com/ParthoShuvo/auth-system/tree/master/authsvc" data- rel="nofollow noopener" target="_blank"><strong>README</strong></a></em>, but some areas of particular interest include:</p>
+<blockquote class="code-line" dir="auto" data-line="164">
+<p class="code-line" dir="auto" data-line="164"><em><strong>authsvc/authsvc.go</strong></em></p>
+</blockquote>
+<p class="code-line" dir="auto" data-line="167">The entry point of the service performs object initialization and dependency injection starts the server and waits until it’s time to gracefully terminate.</p>
+<blockquote class="code-line" dir="auto" data-line="169">
+<p class="code-line" dir="auto" data-line="169"><em><strong>authsvc/cfg/config.go</strong></em></p>
+</blockquote>
+<p class="code-line" dir="auto" data-line="172">Configuration and logger initialization, before control is passed to <em><strong>main in authsvc/authsvc.go.</strong></em></p>
+<p class="code-line" dir="auto" data-line="174">Now that we have the project structure as below:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">├── cache                &lt;- cache database repository module (Redis)
+│   ├── auth.go          &lt;- refresh token store
+│   └── tokendb.go       &lt;- connection setup and managing connection instance
+├── cfg                  &lt;- project configuration module related on authsvc.json
+│   ├── config.go        
+├── db                   &lt;- database repository module (MySQL)
+│   ├── authdb.go        &lt;- authdb connection setup and managing connection instance
+│   └── permission.go    &lt;- Permission store
+│   └── role.go          &lt;- Role store
+│   └── permission.go    &lt;- User store
+├── email                &lt;- SMTP email client module
+│   ├── emailclient.go   &lt;- Use for sending new mail
+├── log4u                &lt;- logging module; much like log4j has
+│   ├── log4u.go
+├── render               &lt;- HTTP response renderer module
+│   └── jsonrenderer.go  &lt;- HTTP JSON response definition
+│   └── renderer.go      &lt;- Renderer interface
+├── resource             &lt;- REST API endpoints's (resource) request handler
+│   └── auth.go          &lt;- Request handlers for auth resource e.g. /auth
+│   └── common.go        &lt;- resource utility
+│   └── errors.go        &lt;- HTTP request ERROR responses
+│   └── home.go          &lt;- / endpoint request handler
+│   └── protect.go       &lt;- Route protector
+│   └── token.go         &lt;- Request handlers for token resource e.g. /auth/token
+└── route                &lt;- Route builder module
+│   └── routebuilder.go
+├── table                &lt;- Database entity/tables
+│   └── permission       &lt;- Permission table module consists of its definition and related DB operations
+│       └── table.go     
+│   └── role             &lt;- Role table module consists of its definition and related DB operations
+|       └── table.go
+│   └── user             &lt;- User table module consists of its definition and related DB operations
+|       └── table.go
+└── token                &lt;- token service module
+│   └── service.go
+│   └── token.go
+└── uc                   &lt;- Use cases
+│   └── adm              &lt;- Admin related use cases
+│       └── handler.go     
+│   └── permission       &lt;- Permission related use cases
+|       └── handler.go
+│   └── role             &lt;- Role related use cases
+|       └── handler.go
+│   └── token            &lt;- Token related use cases
+|       └── handler.go
+│   └── user             &lt;- User related use cases
+|       └── handler.go
+│   └── common.go        &lt;- Use case utilities
+└── validator            &lt;- validator module with custom validators's tag e.g. `validPwd`
+│   └── validator.go
+└── authsvc.go           &lt;- entry point of the service
+└── authsvc.json         &lt;- service config
+└── go.mod               &lt;- list dependent packages
+└── go.sum               &lt;- list checksum of downloaded go modules and their dependencies
+└── version.go           &lt;- project versioning</pre>
+<p class="code-line" dir="auto" data-line="174">Here, layer-to-package directory mapping</p>
+<table class="code-line" dir="auto" data-line="236">
+<thead class="code-line" dir="auto" data-line="236">
+<tr class="code-line" dir="auto" data-line="236">
+<th>Layer</th>
+<th>Package Directory</th>
+</tr>
+</thead>
+<tbody class="code-line" dir="auto" data-line="238">
+<tr class="code-line" dir="auto" data-line="238">
+<td>Entities</td>
+<td>token, table</td>
+</tr>
+<tr class="code-line" dir="auto" data-line="239">
+<td>Use Cases</td>
+<td>adm, permission, role, token, user under uc directory</td>
+</tr>
+<tr class="code-line" dir="auto" data-line="240">
+<td>Interface Adapters</td>
+<td>resource, render</td>
+</tr>
+<tr class="code-line" dir="auto" data-line="241">
+<td>Frameworks and Drivers</td>
+<td>route, repository e.g. db, cache, email</td>
+</tr>
+</tbody>
+</table>
+<div class="code-line" dir="auto" data-line="243"></div>
+<blockquote>
+<aside>???? <strong>Note</strong>: The project structure may vary depending on the project or team basis. In our team, we have a different project structure of clean architecture implementation but the separation of concern between each layer remains the same as per the philosophy. So don’t follow anything blindly, though you can take inspiration from the above structure or others. However, the rule of thumb is to create a boilerplate structure of clean architecture as per team and project requirements with a specific language and reuse the template for developing new services.</p>
+<div class="code-line" dir="auto" data-line="246"></div>
+</aside>
+</blockquote>
+<h4 id="dependency-injection" class="code-line" dir="auto" data-line="248">Dependency Injection</h4>
+<p class="code-line" dir="auto" data-line="250">With the <em><strong>Dependency Inversion Principle, </strong></em>we’ll make use of dependency injection to enable a weak coupling between components and minimize direction dependencies.</p>
+<ul class="code-line" dir="auto" data-line="252">
+<li class="code-line" dir="auto" data-line="252">The <strong>Entities</strong> hold core business logic and know nothing about other layers. <em>table</em>, <em>token</em>, etc. packages are the entities in the AuthService.</li>
+<li class="code-line" dir="auto" data-line="253">The <em><strong>UseCases</strong></em> can import entities but knows nothing about outer layers. <em>user/handler</em> in uc directory depends on entity e.g. <strong>table</strong> struct. It has no idea whether it’s being called by an HTTP request or CLI command.</li>
+<li class="code-line" dir="auto" data-line="254"><em><strong>Controllers</strong></em> (e.g. <em>resource package) can import usecase packages. They are the entry points to the application that often execute application services or commands.</em></li>
+<li class="code-line" dir="auto" data-line="255"><strong><a title="https://github.com/gorilla/mux" href="https://github.com/gorilla/mux" data-href="https://github.com/gorilla/mux" data- rel="nofollow noopener" target="_blank">gorilla-mux</a> </strong><em>route</em>, <em>db</em> (MySQL), <em>cache</em> (Redis), <em>SMTP</em> (Mailhog) will operate on types found in <em><strong>UseCases</strong></em> and <em><strong>Entities</strong></em> layers.</li>
+</ul>
+<div id="attachment_9974" style="width: 863px" class="wp-caption aligncenter"><img aria-describedby="caption-attachment-9974" decoding="async" class="wp-image-9974 size-full" src="/wp-content/uploads/2022/08/clean-architecture-1.png" alt="Clear architecture in AuthService" width="853" height="586" srcset="/wp-content/uploads/2022/08/clean-architecture-1.png 853w, /wp-content/uploads/2022/08/clean-architecture-1-480x330.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 853px, 100vw" /><p id="caption-attachment-9974" class="wp-caption-text">Clear architecture in AuthService</p></div>
+<p class="code-line" dir="auto" data-line="261">To practice DIP in Golang, it’s best to understand Golang’s idea of <a title="https://medium.com/@cep21/preemptive-interface-anti-pattern-in-go-54c18ac0668a" href="https://medium.com/@cep21/preemptive-interface-anti-pattern-in-go-54c18ac0668a" data-href="https://medium.com/@cep21/preemptive-interface-anti-pattern-in-go-54c18ac0668a" data- rel="nofollow noopener" target="_blank"><em><strong>“Accepts interfaces and return structs”</strong></em></a>.</p>
+<p class="code-line" dir="auto" data-line="263">Here is an example of DIP implementation in Golang where the <em>Permission</em> Table depends on the <em>Store</em> interface and <em>db</em> struct implements the store interface. By making it interface-dependent in this way, you can write code that is resistant to changes and easy to write tests.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package permission
+
+type Permission struct {
+ ID          int    `json:"id"`
+ Name        string `json:"name"`
+ Description string `json:"description"`
+}
+
+type Store interface {
+ ReadUserPermissions(string) ([]*Permission, error)
+}
+
+type Table struct {
+ store Store
+}
+
+func NewTable(s Store) *Table {
+ return &amp;Table{s}
+}
+
+func (t *Table) ReadUserPermissions(login string) ([]*Permission, error) {
+ return t.store.ReadUserPermissions(login)
+}</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package db
+
+import (
+ "database/sql"
+
+ "github.com/parthoshuvo/authsvc/table/permission"
+)
+
+// ReadUserPermissions fetches all authorized permissions for a user.
+func (ad *AuthDB) ReadUserPermissions(login string) ([]*permission.Permission, error) {
+ return ad.readPermissions(func() (*sql.Rows, error) {
+  return ad.db.Query("call sp_read_user_permission(?)", login)
+ })
+}
+
+func (ad *AuthDB) readPermissions(dbReader func() (*sql.Rows, error)) ([]*permission.Permission, error) {
+ perms := make([]*permission.Permission, 0, 10)
+ rows, err := dbReader()
+ if err == sql.ErrNoRows {
+  return perms, nil
+ }
+ if err != nil {
+  return perms, err
+ }
+ defer rows.Close()
+ for rows.Next() {
+  var perm permission.Permission
+  if err := rows.Scan(
+   &amp;perm.ID,
+   &amp;perm.Name,
+   &amp;perm.Description,
+  ); err != nil {
+   return perms, err
+  }
+  perms = append(perms, &amp;perm)
+ }
+ return perms, nil
+}</pre>
+<p class="code-line" dir="auto" data-line="332">Let’s look at the user login use case diagram to understand how the outer layers use the inner layer as a dependency. One thing to note is that the outer layer’s dependencies only point inward towards the inner layers.</p>
+<div id="attachment_9976" style="width: 1191px" class="wp-caption aligncenter"><img aria-describedby="caption-attachment-9976" decoding="async" class="wp-image-9976 size-full" src="/wp-content/uploads/2022/08/user-login-usecase.png" alt="User Login Use Case Diagram" width="1181" height="767" srcset="/wp-content/uploads/2022/08/user-login-usecase.png 1181w, /wp-content/uploads/2022/08/user-login-usecase-980x636.png 980w, /wp-content/uploads/2022/08/user-login-usecase-480x312.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1181px, 100vw" /><p id="caption-attachment-9976" class="wp-caption-text">User Login Use Case Diagram</p></div>
+<div class="code-line" dir="auto" data-line="338"></div>
+<blockquote>
+<aside>???? <strong>Note:</strong> Accepting interfaces gives your API the greatest flexibility and returning structs allows the people reading your code to quickly navigate to the correct function. Interfaces are an abstraction and abstraction is sometimes useful. However, **unnecessary abstraction creates unnecessary complications.** Don’t overcomplicate code until it’s needed.</p>
+<div class="code-line" dir="auto" data-line="341"></div>
+</aside>
+</blockquote>
+<h3 id="pros--cons" class="code-line" dir="auto" data-line="343">Pros &amp; Cons</h3>
+<table class="code-line" dir="auto" data-line="345">
+<thead class="code-line" dir="auto" data-line="345">
+<tr class="code-line" dir="auto" data-line="345">
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody class="code-line" dir="auto" data-line="347">
+<tr class="code-line" dir="auto" data-line="347">
+<td>The architecture leans on top of a domain model</td>
+<td>The learning curve of the architecture is not straightforward. People tend to mess up splitting responsibilities between layers which sometimes causes problems in the domain layer.</td>
+</tr>
+<tr class="code-line" dir="auto" data-line="348">
+<td>The application logic depends on nothing. However, everything depends on it. That implies directed coupling.</td>
+<td>It sometimes causes indirection with the interfaces.</td>
+</tr>
+<tr class="code-line" dir="auto" data-line="349">
+<td>It is flexible to swap out any of the outer layers without impacting the inner layers’ logic.</td>
+<td>It potentially takes time to implement</td>
+</tr>
+<tr class="code-line" dir="auto" data-line="350">
+<td>The architecture allows intrinsic testability. As the core part of the application does not depend on anything from the outer layer, it can be easily and quickly tested in isolation.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="summary" class="code-line" dir="auto" data-line="352">Summary</h3>
+<p class="code-line" dir="auto" data-line="354">Like all architectural concepts, Clean Architecture is a framework that you have to choose to adhere to throughout the life cycle of a piece of software. By complying with these rules is not difficult, and it will save you a lot of headaches going forward. However, It won’t physically prevent you from writing poor code. By separating the software into layers and leaning on the <em><strong>Dependency Rule</strong></em>, you will create a system that is intrinsically testable, with all the benefits that imply. Last but not least &#8211; <em><strong>A good architect pretends that the decision has not been made, and shapes the system in such a way that those decisions can still be deferred for as long as possible</strong></em>.</p>
+<p class="code-line" dir="auto" data-line="356">I hope the readers will find the benefits I highlighted in this article ????????.</p>
+<h3 id="good-reads" class="code-line" dir="auto" data-line="358">Good Reads</h3>
+<ul class="code-line" dir="auto" data-line="360">
+<li class="code-line" dir="auto" data-line="360"><strong>Robert C. Martin’s</strong>
+<ul class="code-line" dir="auto" data-line="361">
+<li class="code-line" dir="auto" data-line="361"><em><strong><a title="https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164" href="https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164" data-href="https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164" data- rel="nofollow noopener" target="_blank">Clean Architecture: A Craftsman&#8217;s Guide to Software Structure and Design</a></strong></em></li>
+<li class="code-line" dir="auto" data-line="362"><em><a title="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" data-href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" data- rel="nofollow noopener" target="_blank"><strong>The Clean Code Blog</strong></a></em></li>
+<li class="code-line" dir="auto" data-line="363"><a title="https://www.amazon.com/Software-Development-Principles-Patterns-Practices/dp/0135974445" href="https://www.amazon.com/Software-Development-Principles-Patterns-Practices/dp/0135974445" data-href="https://www.amazon.com/Software-Development-Principles-Patterns-Practices/dp/0135974445" data- rel="nofollow noopener" target="_blank"><em><strong>Agile Software Development, Principles, Patterns, and Practices 1st Edition</strong></em></a></li>
+<li class="code-line" dir="auto" data-line="364"><em><strong><a title="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882" href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882" data-href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882" data- rel="nofollow noopener" target="_blank">Clean Code: A Handbook of Agile Software Craftsmanship</a></strong></em></li>
+</ul>
+</li>
+<li class="code-line" dir="auto" data-line="365"><a title="https://dave.cheney.net/2016/08/20/solid-go-design" href="https://dave.cheney.net/2016/08/20/solid-go-design" data-href="https://dave.cheney.net/2016/08/20/solid-go-design" data- rel="nofollow noopener" target="_blank"><em><strong>Solid Go Design</strong></em></a> &#8211; <em>Dave Cheney</em></li>
+<li class="code-line" dir="auto" data-line="366"><a title="https://cloud.google.com/apis/design/resources" href="https://cloud.google.com/apis/design/resources" data-href="https://cloud.google.com/apis/design/resources" data- rel="nofollow noopener" target="_blank"><em><strong>Resource Oriented Design</strong></em></a></li>
+</ul>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/dive-to-clean-architecture/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

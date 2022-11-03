@@ -1,0 +1,1020 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>api &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/api/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Fri, 12 Aug 2022 08:31:37 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>api &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>API vs SDK: What&#8217;re the differences?</title>
+		<link>/blog/api-vs-sdk-whatre-the-differences/</link>
+					<comments>/blog/api-vs-sdk-whatre-the-differences/#respond</comments>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Thu, 11 Aug 2022 11:23:55 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[api]]></category>
+		<category><![CDATA[differences]]></category>
+		<category><![CDATA[Http]]></category>
+		<category><![CDATA[Representational State Transfer]]></category>
+		<category><![CDATA[sdk]]></category>
+		<category><![CDATA[Software Development Kit]]></category>
+		<guid isPermaLink="false">/?p=10005</guid>
+
+					<description><![CDATA[]]></description>
+										<content:encoded><![CDATA[<div class="et_pb_section et_pb_section_0 et_section_regular" >
+				
+				
+				
+				
+				
+				
+				<div class="et_pb_row et_pb_row_0">
+				<div class="et_pb_column et_pb_column_4_4 et_pb_column_0  et_pb_css_mix_blend_mode_passthrough et-last-child">
+				
+				
+				
+				
+				<div class="et_pb_module et_pb_text et_pb_text_0  et_pb_text_align_left et_pb_bg_layout_light">
+				
+				
+				
+				
+				<div class="et_pb_text_inner"><p class="maps-to-line">As beginner software engineers, we always start with a good understanding of the basics. Like other beginners in any field, we sometimes get confused by technical terminologies. What is an API and what is an SDK?</p>
+<p class="maps-to-line">Every programmer needs to understand how APIs and SDKs work together with their respective systems. APIs and SDKs are more technical aspects of computer programming that are often used in tandem – but have distinct differences, as well.</p>
+<h2 id="exploring-api-vs-sdk-whats-the-difference" class="maps-to-line">Exploring API vs SDK: What&#8217;re the differences</h2>
+<p class="maps-to-line">The terms API and SDK are often used interchangeably, especially when we want to download prebuilt software from a website. But, we shouldn&#8217;t confuse them with each other. Let&#8217;s compare API and SDK to make sure what each one does – and how you should relate to them in your software development environment.</p>
+<p class="maps-to-line">Let&#8217;s say we&#8217;re developing a mobile app for a client or trying out some fun ideas to showcase, the idea is for this mobile app to allow a client to take a picture of a plant and the app will communicate with the visual recognition service which is running on the cloud. The idea is for the service to return the plant&#8217;s name and bring up short descriptions like what genre the plant belongs to, what the scientific name the plant has, etc.</p>
+<blockquote class="maps-to-line">
+<p>Now the question arises how do we do this communication between the mobile app and the cloud-based service?</p>
+</blockquote>
+<p class="maps-to-line">Hmmm&#8230; Well, that&#8217;s where APIs and SDKs come in.<br />Let&#8217;s start with APIs first.</p>
+<blockquote class="maps-to-line">
+<p>API is a technology that allows two programs to communicate with each other.</p>
+</blockquote>
+<p class="maps-to-line">So, first of all, APIs are all about communication. So there are a set of definitions and protocols that are always used for apps or services to talk to other apps or services how to give the example of the plant recognition system above. So basically we can think of them as a bridge between our app and other services. We want to talk to in our case the cloud-based recognition service.</p>
+<p class="maps-to-line">We talk a lot about API. What it stands for anyways.</p>
+<blockquote class="maps-to-line">
+<p>API &#8211; Application Programming Interface</p>
+</blockquote>
+<p class="maps-to-line">Now we need to understand what are some of the aspects of APIs that makes them useful.</p>
+<ol>
+<li class="maps-to-line"><strong>Communication</strong> &#8211; So communicating between service to another service or an app to another app or an app to the backend server, etc.</li>
+<li class="maps-to-line"><strong>Abstraction</strong> &#8211; What this means is, inside the recognition service there would be lots of code probably thousands of lines of code running up but we as mobile app developers don&#8217;t want to have to worry about how the recognition service will figure out those plant information or which function call will give the correct results, other metadata, etc. This complicated logic will be abstracted away by the API. Which simplifies the process for the app developer.</li>
+<li class="maps-to-line"><strong>Standardized</strong> &#8211; This means that there are industry-defined standards for how to define an API. There&#8217;re a few formats that are popular for APIs like SOAP, REST, GraphQL, or RPC.</li>
+</ol>
+<h2 id="we-will-focus-on-rest-for-api-which-stands-for" class="maps-to-line">We will focus on REST for API which stands for</h2>
+<blockquote class="maps-to-line">
+<p>REST &#8211; Representational State Transfer</p>
+</blockquote>
+<p class="maps-to-line">If we want to talk about REST then we have to establish some of the building blocks of APIs first to understand REST.</p>
+<p class="maps-to-line">First, we have to be able to send a request to the server or a specific service in our case recognition service. So, for a REST API call <code class="inline-code">request</code> we need to have some blocks.</p>
+<ol>
+<li class="maps-to-line"><strong>Operation</strong> &#8211; This could be HTTP methods like POST, GET, PUT, PATCH, etc. In our case, we&#8217;ll use POST as we want to send an image file to the recognition service.</li>
+<li class="maps-to-line"><strong>Parameters</strong> &#8211; Although this is Optional. In our case, the file name of the plant pictures is like <code class="inline-code">plant.jpg</code> as a multi-part form of data.</li>
+<li class="maps-to-line"><strong>Endpoint</strong> &#8211; This part will be exposed by the recognition service where we need to send the file like <code class="inline-code">https://littlegiants.io/analize</code></li>
+<li class="maps-to-line"><strong>Headers</strong> &#8211; This is a special part of a REST API request which might have things like an API key or some authentication data.</li>
+</ol>
+<p class="maps-to-line">The above four points act as a request in an API call.</p>
+<p class="maps-to-line">So Now the question is what will be the response of the API call?</p>
+<p class="maps-to-line">Typically it&#8217;s some form of raw data, maybe JSON(Which Stands for Javascript Object Notation) or maybe XML(Extended Markup language), etc. In JSON it might look like below</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">{
+    "type": "iris",
+    "plant_name": "Iris Setosa"
+}</pre>
+<p class="maps-to-line">So, we understand the building blocks of what an API is, but the question arises, As a developer, how do we call an API from our code? In our case, As a mobile app developer, we don&#8217;t want to set up the request with all the above building blocks of operations, parameters, and endpoints and deal with raw JSON objects, right?</p>
+<blockquote class="maps-to-line">
+<h2 id="thats-where-sdks-come-in-and-shine">That&#8217;s where SDKs come in and shine.</h2>
+</blockquote>
+<h2 id="what-is-sdk" class="maps-to-line">What is SDK?</h2>
+<div class="joplin-editable">
+<blockquote>
+<pre class="hljs">SDK - Software Development Kit</pre>
+</blockquote>
+</div>
+<p class="maps-to-line">So, we can easily think of SDK as a toolbox of tools or code that calls the APIs for us. Awesome, right? So, we may be specialized in one programming language over the other. Hmm&#8230; there are SDKs in a variety of languages. So there&#8217;s maybe an SDK in Java, Python, Golang, etc. Whichever language is our specialty there&#8217;s probably an SDK for us to use which is exposed by the recognition service developers or some open source community.</p>
+<p class="maps-to-line">Back to our example, What might an SDK look like in that example?<br />In the Mobile app, we&#8217;ll use the SDK tool which is provided by recognition service developers or some open source community. Since it&#8217;s a mobile app we&#8217;ll use the Flutter SDK. In the flutter SDK, rather than having to configure our request manually with all these building blocks of an API as we explains above, you might call just a method, that may be called, <code class="inline-code">analizePlantImage</code> and that will call those various API building blocks like the Operations, Parameters, Endpoints and request the API from our code. In response, we&#8217;ll get a response but it won&#8217;t be necessarily a JSON object, but it might be some code or some model.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="dart">import 'package:reconize/plant.dart';
+
+Plant plant = await plant.analizePlantImage("plant.jpg");
+
+print(plant.toJson());</pre>
+<p class="maps-to-line">In the <code class="inline-code">analizePlantImage</code> method we need to pass the pant file name binary file <code class="inline-code">plant.jpg</code>, the SDK will set the required parameters for the API call and send the request to the recognition service and in response, we can go ahead and set a label in our mobile app from that response object via the SDK and we&#8217;re able to see plant name after analyzed.</p>
+<p class="maps-to-line">So, hopefully, This kind of summarizes what an API and an SDK are. What&#8217;re they used for and how they truly fundamental tools in our serverless cloud app development?</p>
+<div class="joplin-editable">
+<pre class="hljs"><code></code></pre>
+</div></div>
+			</div>
+			</div>
+				
+				
+				
+				
+			</div>
+				
+				
+			</div>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/api-vs-sdk-whatre-the-differences/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>What is REST API?</title>
+		<link>/blog/what-is-rest-api/</link>
+					<comments>/blog/what-is-rest-api/#respond</comments>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Wed, 10 Aug 2022 06:42:37 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Personal]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[api]]></category>
+		<category><![CDATA[Basics]]></category>
+		<category><![CDATA[Http]]></category>
+		<category><![CDATA[microservices]]></category>
+		<category><![CDATA[REST]]></category>
+		<guid isPermaLink="false">/?p=9944</guid>
+
+					<description><![CDATA[Let&#8217;s go through an example to understand what a REST API is. Let&#8217;s say that we work for a cloud kitchen and we want to build a web application that can give you how much stock particular items suppose ice cream flavors are available and the worker working on the physical location of the kitchen [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p class="maps-to-line">Let&#8217;s go through an example to understand what a REST API is. Let&#8217;s say that we work for a cloud kitchen and we want to build a web application that can give you how much stock particular items suppose ice cream flavors are available and the worker working on the physical location of the kitchen makes updates to those flavors. So the question arises how do we do this?</p>
+<blockquote class="maps-to-line">
+<h3 id="the-answer-will-be-with-a-rest-api">The answer will be with a REST API.</h3>
+</blockquote>
+<p class="maps-to-line">Most of the application today uses 3-tier architecture. Some complex systems can even have an n-tier architecture which we called <code class="inline-code">microservices</code>, which will be explained in another post in the future.<br />
+So In 3-tier architecture&#8230;</p>
+<ul>
+<li class="maps-to-line">Backend (Application tier)</li>
+<li class="maps-to-line">Frontend (Presentation tier)</li>
+<li class="maps-to-line">Database (Data tier)</li>
+</ul>
+<p class="maps-to-line">So we have our frontend app or web page communicate with a cloud-based backend server via a REST API. We use the term REST API whenever our Frontend app communicates with our Backend server. So Let&#8217;s jump into what exactly a REST API is.</p>
+<h3 id="what-does-rest-stand-for" class="maps-to-line">What does <code class="inline-code">REST</code> stand for?</h3>
+<blockquote class="maps-to-line"><p>REST &#8211; Representational State Transfer.</p></blockquote>
+<p class="maps-to-line">This is a type of web communications protocol that allows browsers to access data from a server using the HTTP or HTTPS protocols. RESTful architecture is an approach to designing and building software systems such as websites, mobile applications, and web services that use HTTP methods to manipulate resources residing on the server. RESTful APIs are becoming more popular because they are lightweight, easy to use and consume, and easy to read and understand. They allow for easier integration with front-end developers&#8217; code. A RESTful API can be accessed via different devices such as computers and smartphones by using a library or framework known as a client library.</p>
+<p class="maps-to-line">It&#8217;s a standardized software architecture style which is a specific type of API that&#8217;s an industry known and used.</p>
+<p class="maps-to-line">The first thing that we have to know about REST API is, that they&#8217;re all about communications. So this is how our frontend application communicates with our backend server. Sometimes we also heard RESTFUL Web service, which means is when a service that uses REST APIs to communicate. Let&#8217;s go through some of the benefits of REST API</p>
+<ol>
+<li class="maps-to-line"><strong>Simple/Standardized</strong> &#8211; approach to communication. We don&#8217;t have to worry about how to format our data or how to format each request coming to our system.</li>
+<li class="maps-to-line"><strong>Scale</strong> &#8211; As our service grows in complexity, we can make modifications to handle a large number of requests</li>
+<li class="maps-to-line"><strong>Stateless</strong> &#8211; we don&#8217;t have to worry about what data is in which state they&#8217;re in and keep track of that across client and server.</li>
+<li class="maps-to-line"><strong>High Performance</strong> &#8211; even though our service gets more complex the performance remains very high.</li>
+<li class="maps-to-line"><strong>Cache</strong> &#8211; It supports caching too.</li>
+</ol>
+<p class="maps-to-line">Let&#8217;s back to our example again, for the cloud kitchen shop, a REST API would look like the below&#8230;</p>
+<p class="maps-to-line">We have an endpoint that might look something like this: <code class="inline-code">https://api.littlegiants.io/v1/items</code><br />
+So <code class="inline-code">api.littlegiants.io</code> is our DNS(Domain Name Server) for our backend application and the <code class="inline-code">api</code> part signifies it&#8217;s an API subdomain and <code class="inline-code">v1</code> means it&#8217;s the version one of that API and <code class="inline-code">items</code> represents a <code class="inline-code">resource</code>. So, this signifies that we&#8217;re working with the <code class="inline-code">items</code> resource in this REST API.</p>
+<p class="maps-to-line">In our example, we can build some blocks to define REST API.</p>
+<p class="maps-to-line">First, we have to be able to send a request to the server or a specific service in our case cloud kitchen service. So, for a REST API call <code class="inline-code">request</code> we need to have some blocks.</p>
+<p class="maps-to-line">Lets break <code class="inline-code">Request</code> &amp; <code class="inline-code">Response</code> apart a little bit. Let&#8217;s say <code class="inline-code">Request</code> as a big black box.<br />
+First things first, let&#8217;s define the type of things that we might want to do with a REST API. What actions or verbs would we want to use when working with one?<br />
+As a developer, we have all heard of <code class="inline-code">CRUD</code> &#8211; what does <code class="inline-code">CRUD</code> stands for?</p>
+<ul>
+<li class="maps-to-line">Create</li>
+<li class="maps-to-line">Read</li>
+<li class="maps-to-line">Update</li>
+<li class="maps-to-line">Delete</li>
+</ul>
+<p class="maps-to-line">So what&#8217;ll be the equivalent of <code class="inline-code">Create</code> in an HTTP method? Well, it&#8217;s <code class="inline-code">POST</code>. How about <code class="inline-code">Read</code> &#8211; it&#8217;s <code class="inline-code">GET</code>. An update would be <code class="inline-code">PUT</code>, Also Note if you want a partial update we use <code class="inline-code">PATCH</code> and for <code class="inline-code">DELETE</code> we use <code class="inline-code">DELETE</code> HTTP methods.</p>
+<p class="maps-to-line">The <code class="inline-code">Request</code> itself has some blocks which will be explained below&#8230;</p>
+<ol>
+<li class="maps-to-line"><strong>Operation</strong> &#8211; This could be HTTP methods like POST, GET, PUT, PATCH, etc. In our case, we&#8217;ll use PATCH to update the item stock in our application.</li>
+<li class="maps-to-line"><strong>Parameters/Body</strong> &#8211; Although this is Optional. In our case, we send a JSON object as a body stating the current stock of the item in our system.</li>
+<li class="maps-to-line"><strong>Endpoint</strong> &#8211; This part will be exposed by the cloud kitchen service where we need to send the resource&#8217;s current state to the endpoint. <code class="inline-code">https://api.littlegiants.io/v1/items</code></li>
+<li class="maps-to-line"><strong>Headers</strong> &#8211; This is a special part of a REST API request which might have things like an API key or some authentication data.</li>
+</ol>
+<p class="maps-to-line">The above four points act as a request in a REST API call.</p>
+<p class="maps-to-line">So now the question is what will be the response of the REST API call? Typically it&#8217;s some form of raw data, maybe JSON(Which Stands for Javascript Object Notation) or maybe XML(Extended Markup language), etc. In JSON it might look like below</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="json">{
+    "message": "items updated"
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">Let&#8217;s look at a few different scenarios that might happen with our cloud kitchen shop. So let&#8217;s say that we want to display what&#8217;s products we&#8217;re selling in the shop. For that, we have to get the items we have in the shop. From the <code class="inline-code">Request</code> point of view how it looks like?<br />
+Well, we have the <code class="inline-code">GET</code> HTTP method as the operation, the endpoint is <code class="inline-code">https://api.littlegiants.io/v1/items</code>, Also parameters can be set to get a single item in the endpoint, headers are some <code class="inline-code">Authorization: Bearer access_token</code> for authenticated endpoints.<br />
+In response, we&#8217;ll get a list of item resources.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">{
+    [
+        {
+            "item_id": 1,
+            "name": "Burger",
+            "price": 10,
+            "stock": 5
+        },
+        {
+            "item_id": 2,
+            "name": "Sandwitch",
+            "price": 8,
+            "stock": 3
+        }
+    ]
+}</pre>
+<p class="maps-to-line">So we get some items like burgers, sandwiches, etc. In our shop let&#8217;s say a Sandwich is so popular that it runs out for the day and the store is scrambling and they want to update the stock of that item. So let&#8217;s say they want to update the Sandwich stock so that they can sell Sandwich.<br />
+Well, we have the <code class="inline-code">PUT</code> HTTP method as the operation, the endpoint is <code class="inline-code">https://api.littlegiants.io/v1/items/2</code>, Also parameters 2 represent the Sandwich item in the endpoint also in the body we add the latest stock value as json,</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">{
+    "name": "Sandwitch",
+    "price": 8,
+    "stock": 10
+}</pre>
+<p class="maps-to-line">headers are some <code class="inline-code">Authorization: Bearer access_token</code> for authenticated endpoints.</p>
+<p class="maps-to-line">Let&#8217;s say we want to add a new item in the store like <code class="inline-code">Ice cream</code>. Well, we have the <code class="inline-code">POST</code> HTTP method as the operation, the endpoint is <code class="inline-code">https://api.littlegiants.io/v1/items</code>, As body, we add the latest item value as json,</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="json">{
+    "name": "Ice Cream",
+    "price": 4,
+    "stock": 10
+}</pre>
+</div>
+<p class="maps-to-line">headers are some <code class="inline-code">Authorization: Bearer access_token</code> for authenticated endpoints.<br />
+In response, we see a response like below</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="json">{
+    "item_id": 3
+    "name": "Ice Cream",
+    "price": 4,
+    "stock": 10
+}</pre>
+</div>
+<p class="maps-to-line">Let&#8217;s say some item is not selling at all in the shop so the store owner decided to remove it from the store. Well, we have the <code class="inline-code">DELETE</code> HTTP method as the operation, the endpoint is <code class="inline-code">https://api.littlegiants.io/v1/items/3</code>, Also parameters 3 represent the item in the endpoint, headers are some <code class="inline-code">Authorization: Bearer access_token</code> for authenticated endpoints.</p>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/what-is-rest-api" rel="nofollow noopener" target="_blank">[Personal blog]</a></p>
+<blockquote>
+<h4>You can read my other blog-posts <a href="https://rezwanul-haque.hashnode.dev/" rel="nofollow noopener" target="_blank">[Here]</a></h4>
+</blockquote>
+<p class="maps-to-line">In Conclusion, We&#8217;re hoping that this clarifies what exactly is a REST API. What are some of the benefits? What&#8217;s a real-world example look like and how are the REST APIs fundamental to cloud-based application development?</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/what-is-rest-api/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>API Versioning in ASP.NET Core</title>
+		<link>/blog/api-versioning-in-asp-net-core/</link>
+					<comments>/blog/api-versioning-in-asp-net-core/#respond</comments>
+		
+		<dc:creator><![CDATA[Md. Arfizur Rahman]]></dc:creator>
+		<pubDate>Mon, 25 Jul 2022 16:41:09 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[api]]></category>
+		<category><![CDATA[csharp]]></category>
+		<category><![CDATA[dotnet]]></category>
+		<guid isPermaLink="false">/?p=9777</guid>
+
+					<description><![CDATA[In this article, we&#8217;ll discuss API versioning and implement it in ASP.NET Core 6 step by step. Source code for this article is available on github We will cover the following: API Versioning &#8211; What &#38; Why? When to Version API Query Parameter Versioning URI Versioning Custom HTTP Header Versioning Content Negotiation Versioning (Media Versioning) Combining [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p class="my-4 text-lg">In this article, we&#8217;ll discuss API versioning and implement it in ASP.NET Core 6 step by step.</p>
+<blockquote><p>Source code for this article is available on <a href="https://github.com/arfizurrahman/blog/tree/main/aspnetcore-webapi/VersioningAPI" rel="nofollow noopener" target="_blank">github</a></p></blockquote>
+<h3>We will cover the following:</h3>
+<ul>
+<li>API Versioning &#8211; What &amp; Why?</li>
+<li>When to Version API</li>
+<li>Query Parameter Versioning</li>
+<li>URI Versioning</li>
+<li>Custom HTTP Header Versioning</li>
+<li>Content Negotiation Versioning (Media Versioning)</li>
+<li>Combining Multiple Approaches</li>
+<li>Deprecating Versions</li>
+<li>Using Conventions</li>
+<li>Summary</li>
+</ul>
+<h2 class="font-semibold text-2xl sm:text-3xl my-5 font-sans">API Versioning &#8211; What &amp; Why?</h2>
+<p class="my-4 text-lg">Our knowledge and experience grow with our project, so we can better identify the required changes to improve our API. Also, requirements change over time; thus, our API must evolve. We may need to implement breaking changes to evolve our API, but those changes should not affect our API consumers. Our API should be stable, consistent, well documented, and appropriately managed.</p>
+<p class="my-4 text-lg">API versioning is the practice of smoothly managing changes to an API without breaking the client applications that consume the API. Versioning allows clients to continue using the existing REST API and only migrate their applications to the newer API versions when they are ready.</p>
+<h3 class="font-semibold text-xl sm:text-2xl my-5 font-sans">When to Version API</h3>
+<p class="my-4 text-lg">As our API evolves, we make changes that can be breaking and non-breaking. When we introduce breaking changes, it is crucial to up-version our API. The following are a few examples of breaking change:</p>
+<ul class="list-disc ml-7">
+<li class="text-lg">Removing or renaming an allowed parameter, request field or, a response field</li>
+<li class="text-lg">Removing or renaming an endpoint</li>
+<li class="text-lg">Adding a required field or making a field required on the request</li>
+<li class="text-lg">Changing the type of request field or response field</li>
+<li class="text-lg">Changing the existing permission definitions</li>
+<li class="text-lg">Adding new validations</li>
+</ul>
+<p class="my-4 text-lg">When we introduce non-breaking changes, this does not require a change in the major version number, but we must keep track of the minor versions of APIs. The following are a few examples of non-breaking changes:</p>
+<ul class="list-disc ml-7">
+<li class="text-lg">Adding new endpoints</li>
+<li class="text-lg">Adding new fields in responses</li>
+<li class="text-lg">Adding optional request fields or parameters</li>
+<li class="text-lg">Adding new required request fields that have default values</li>
+<li class="text-lg">Adding an optional request header</li>
+</ul>
+<h2 class="font-semibold text-2xl sm:text-3xl my-5 font-sans">Different Ways of Versioning API</h2>
+<p class="my-4 text-lg">There are several ways to version an API.</p>
+<ul class="list-disc ml-7">
+<li class="text-lg">Query Parameter Versioning</li>
+<li class="text-lg">URI Versioning</li>
+<li class="text-lg">Custom HTTP Header Versioning</li>
+<li class="text-lg">Content Negotiation Versioning (Media Versioning)</li>
+</ul>
+<p class="my-4 text-lg">Also, we can combine multiple ways of versioning. We will explore all these ways in the upcoming sections.</p>
+<h3 class="font-semibold text-xl sm:text-2xl my-5 font-sans">Tools Required</h3>
+<ul class="list-disc ml-7">
+<li class="text-lg"><a class="text-blue-600 dark:text-blue-500 break-all" href="https://visualstudio.microsoft.com/downloads/" target="_blank" rel="noopener nofollow">Visual Studio 2022</a></li>
+</ul>
+<p class="my-4 text-lg">Or,</p>
+<ul class="list-disc ml-7">
+<li class="text-lg"><a class="text-blue-600 dark:text-blue-500 break-all" href="https://code.visualstudio.com/" target="_blank" rel="noopener nofollow">Visual Studio Code</a></li>
+<li class="text-lg"><a class="text-blue-600 dark:text-blue-500 break-all" href="https://dotnet.microsoft.com/download" target="_blank" rel="noopener nofollow">.Net 6 SDK</a></li>
+</ul>
+<p>&nbsp;</p>
+<h2 class="font-semibold text-2xl sm:text-3xl my-5 font-sans">Let&#8217;s Get Started</h2>
+<p class="my-4 text-lg">Let&#8217;s start by creating a new .NET 6 API project. We can use .NET CLI or Visual Studio 2022.</p>
+<p class="my-4 text-lg"><strong>Using .NET CLI:</strong></p>
+<p class="my-4 text-lg"><code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">dotnet new webapi -n &quot;VersioningAPI&quot;</code></p>
+<p><strong>Using Visual Studio 2022:</strong> In the &#8220;Create a new project&#8221; window select <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">ASP.NET Core Web API</code> and follow the below images.</p>
+<p><img decoding="async" class="wp-image-9778 aligncenter" src="/wp-content/uploads/2022/07/1.-Create-new-project-1024x594.png" alt="1. Create new project API Versioning in ASP.NET Core" width="481" height="279"></p>
+<p><img decoding="async" class="wp-image-9779 aligncenter" src="/wp-content/uploads/2022/07/2.-Configure-new-project-1024x681.png" alt="2. Configure new project API Versioning in ASP.NET Core" width="477" height="317"></p>
+<p><img decoding="async" class="wp-image-9780 aligncenter" src="/wp-content/uploads/2022/07/3.-Additional-info-1024x693.png" alt="3. Additional info API Versioning in ASP.NET Core" width="477" height="323"></p>
+<p class="my-4 text-lg">After creating the project, let&#8217;s remove the <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">WeatherForecast.cs</code> class and the <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">WeatherForecastController.cs</code> controller as we&#8217;re not going to use those.</p>
+<p class="my-4 text-lg">Now the project structure looks like this:</p>
+<p><img decoding="async" class=" wp-image-9787 aligncenter" src="/wp-content/uploads/2022/07/api_versioning_starting_project_structure.png" alt="api versioning starting project structure API Versioning in ASP.NET Core" width="214" height="182"></p>
+<p>Now let’s add some dummy data, create a class called <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">Data</code> and add the following code:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class Data
+{
+      public static readonly List&lt;Book&gt; Books = new List&lt;Book&gt;()
+        {
+            new Book()
+            {
+                Id = 1,
+                Title = "Concurrency in C# Cookbook",
+                Author = "Stephen Cleary"
+            },
+            new Book()
+            {
+                Id = 2,
+                Title = "Designing Data-Intensive Applications",
+                Author = "Martin Kleppmann"
+            }
+        };
+ }</pre>
+<p class="my-4 text-lg">In this &#8216;Data&#8217; class, we&#8217;ve added a list of books we&#8217;ll use as the data source for the different versions of API.</p>
+<p class="my-4 text-lg">Now let&#8217;s create a new folder called &#8220;Models&#8221; in the root folder, and inside the &#8220;Models&#8221; folder, add a new class called <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">User</code>.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class Book
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public string Author { get; set; }
+}</pre>
+<p>Inside the Controllers folder, we&#8217;ll create a controller called <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">BooksController</code> and add a <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">GetBooks</code> action like the following:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">[Route("api/[controller]")]
+[ApiController]
+public class BooksController : ControllerBase
+{
+    [HttpGet]
+    public IActionResult GetBooks()
+    {
+        var books = Data.Books;
+        return Ok(books);
+    }
+}</pre>
+<p class="my-4 text-lg">Let&#8217;s run the project and send a get request to the following endpoint:</p>
+<blockquote class="border-l-4 my-8 pl-4 italic border-gray-300">
+<p class="my-4 text-lg"><a class="text-blue-600 dark:text-blue-500 break-all" href="https://localhost:7076/api/books" target="_blank" rel="noopener nofollow">https://localhost:7076/api/books</a></p>
+</blockquote>
+<p class="my-4 text-lg">Response:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">[
+    {
+        "id": 1,
+        "title": "Concurrency in C# Cookbook",
+        "author": "Stephen Cleary"
+    },
+    {
+        "id": 2,
+        "title": "Designing Data-Intensive Applications",
+        "author": "Martin Kleppmann"
+    }
+]</pre>
+<p class="my-4 text-lg">Now that we&#8217;ve hooked up everything nicely and the data is ready for testing let&#8217;s install the required versioning package.</p>
+<p class="my-4 text-lg"><strong>Install Required NuGet Package:</strong></p>
+<p class="my-4 text-lg">We&#8217;ll use the <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">Microsoft.Aspnetcore.Mvc.Versioning</code> NuGet package to implement API versioning.</p>
+<p><img decoding="async" class="wp-image-9781 aligncenter" src="/wp-content/uploads/2022/07/4.-Package.png" alt="4. Package API Versioning in ASP.NET Core" width="464" height="59"></p>
+<p class="my-4 text-lg">We can install it using .NET CLI by executing the following command from our project’s directory:</p>
+<blockquote class="border-l-4 my-8 pl-4 italic border-gray-300">
+<p class="my-4 text-lg">dotnet add package Microsoft.AspNetCore.Mvc.Versioning</p>
+</blockquote>
+<p class="my-4 text-lg">Or by using the Package Manager Console in Visual Studio:</p>
+<blockquote class="border-l-4 my-8 pl-4 italic border-gray-300">
+<p class="my-4 text-lg">PM&gt; Install-Package Microsoft.AspNetCore.Mvc.Versioning</p>
+</blockquote>
+<p>After installing the package, we’ll need to add the versioning service to ASP.NET Core’s dependency injection container. Open the Program.cs file and add the following:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">// Add services to the container.
+builder.Services.AddApiVersioning();
+// ...</pre>
+<p class="my-4 text-lg">After adding the service let&#8217;s again send a get request to the following endpoint:</p>
+<blockquote class="border-l-4 my-8 pl-4 italic border-gray-300">
+<p class="my-4 text-lg"><a class="text-blue-600 dark:text-blue-500 break-all" href="https://localhost:7076/api/books" target="_blank" rel="noopener nofollow">https://localhost:7076/api/books</a></p>
+</blockquote>
+<p class="my-4 text-lg">This time we get an error (400 Bad Request) response:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">{
+    "error": {
+        "code": "ApiVersionUnspecified",
+        "message": "An API version is required, but was not specified.",
+        "innerError": null
+    }
+}</pre>
+<p class="my-4 text-lg">The message is pretty straightforward. As we&#8217;ve enabled versioning, we&#8217;ll need to specify a version when sending the request, but we didn&#8217;t set it. We&#8217;ll get this working in the next section using query string versioning.</p>
+<h3 class="font-semibold text-xl sm:text-2xl my-5 font-sans">Query Parameter Versioning</h3>
+<p class="my-4 text-lg">We can fix the above error by specifying <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">api-version=1.0</code> as a query param. This way of versioning is called Query Parameter Versioning, and this is the default versioning scheme. Let’s set the version like the following:</p>
+<blockquote class="border-l-4 my-8 pl-4 italic border-gray-300">
+<p class="my-4 text-lg"><a class="text-blue-600 dark:text-blue-500 break-all" href="https://localhost:7076/api/books?api-version=1.0" target="_blank" rel="noopener nofollow">https://localhost:7076/api/books?api-version=1.0</a></p>
+</blockquote>
+<p class="my-4 text-lg">Now, this endpoint will work, but in a real-world app, we&#8217;ll have many other endpoints and have to append this version to all of those, which isn&#8217;t a great developer experience. Also, this change will break the clients&#8217; applications as their implementation doesn&#8217;t include the version. To prevent this, we can specify a default version. So, if clients do not set a version in their request, we assume they prefer to use v1.0.</p>
+<p class="my-4 text-lg">We can pass the <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">ApiVersioningOptions</code> type to our versioning service, which we can use to specify a default version. In <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">Program.cs</code> let&#8217;s update <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">AddApiVersioning</code> to the following:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddApiVersioning(options =&gt;
+    {
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+    });</pre>
+<p class="my-4 text-lg">Now if consumers send a request to the <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">https://localhost:7076/api/books</code> they are sending the request to the default version.</p>
+<h4 class="font-semibold text-lg sm:text-xl my-5 font-sans">Add Multiple Versions for Single Endpoint</h4>
+<p class="my-4 text-lg">We can add multiple versions to the same controller and use [MapToApiVersion] attribute to map Actions to the different versions of endpoints like this:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[ApiVersion("2.0")]
+[ApiController]
+public class BooksController : ControllerBase
+{
+    [MapToApiVersion("1.0")]
+    [HttpGet]
+    public IActionResult GetBooks()
+    {
+        var books = Data.Books;
+        return Ok(books);
+    }
+
+    [MapToApiVersion("2.0")]
+    [HttpGet]
+    public IActionResult GetBooksV2()
+    {
+        var books = Data.Books.Select(x =&gt; x.Title);
+        return Ok(books);
+    }
+}</pre>
+<p>Now if we send a get request to <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">https://localhost:7076/api/books</code> or <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">https://localhost:7076/api/books?api-version=1.0</code> version 1.0 will be executed and we get the following response:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">[
+    {
+        "id": 1,
+        "title": "Concurrency in C# Cookbook",
+        "author": "Stephen Cleary"
+    },
+    {
+        "id": 2,
+        "title": "Designing Data-Intensive Applications",
+        "author": "Martin Kleppmann"
+    }
+]</pre>
+<p>And if we send a get request to <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">https://localhost:7076/api/books?api-version=2.0</code> version 2.0 will be executed and we get the following response:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">[
+    "Concurrency in C# Cookbook",
+    "Designing Data-Intensive Applications"
+]</pre>
+<p class="my-4 text-lg">So everything is working as expected.</p>
+<p class="my-4 text-lg">We can also create separate controllers for individual versions.</p>
+<p class="my-4 text-lg">Let’s first create some folders to organize the controllers of different API versions better. We’ll create two folders called “v1” and “v2” inside the “Controllers” folder. Then we’ll move the <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">BooksController.cs</code> to the “v1” folder and will add <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">.v1</code> to the namespace. The folder structure should now look like the following:</p>
+<p><img decoding="async" class=" wp-image-9784 aligncenter" src="/wp-content/uploads/2022/07/api_versioning_end_project_structure.png" alt="api versioning end project structure API Versioning in ASP.NET Core" width="221" height="279" srcset="/wp-content/uploads/2022/07/api_versioning_end_project_structure.png 348w, /wp-content/uploads/2022/07/api_versioning_end_project_structure-238x300.png 238w" sizes="(max-width: 221px) 100vw, 221px"></p>
+<p>Now let&#8217;s remove v2.0 related code from &#8220;v1/BooksController.cs&#8221; and it should looks like this:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[ApiController]
+public class BooksController : ControllerBase
+{
+    [HttpGet]
+    public IActionResult GetBooks()
+    {
+        var books = Data.Books;
+        return Ok(books);
+    }
+}</pre>
+<p>Next, create another controller called <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">BooksController</code> inside the &#8220;v2&#8221; folder and add the following code:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">[Route("api/[controller]")]
+[ApiVersion("2.0")]
+[ApiController]
+public class BooksController : ControllerBase
+{
+    [HttpGet]
+    public IActionResult GetBooksV2()
+    {
+        var books = Data.Books.Select(x =&gt; x.Title);
+        return Ok(books);
+    }
+}</pre>
+<p class="my-4 text-lg">Now, if we again send a get request to <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">https://localhost:7076/api/books?api-version=1.0</code> and <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">https://localhost:7076/api/books?api-version=2.0</code>, everything should work as before.</p>
+<p class="my-4 text-lg">We should let our consumers know we&#8217;re supporting multiple versions. We can do this by adding <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">ReportApiVersions=true</code> inside <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">AddApiVersioning</code> like this:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddApiVersioning(options =&gt;
+    {
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+        options.ReportApiVersions = true;
+    });</pre>
+<p>Now if we send a request ASP.NET Core returns an <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">api-supported-versions</code> response header with all the versions the endpoint supports.</p>
+<p><img decoding="async" class="wp-image-9786 aligncenter" src="/wp-content/uploads/2022/07/api_versioning_report_versioning.png" alt="api versioning report versioning API Versioning in ASP.NET Core" width="433" height="208"></p>
+<p class="my-4 text-lg">As mentioned earlier, query string versioning is the default versioning scheme. This method allows clients to migrate to the new versions when they’re ready. And if no version is specified, clients can rely on the default version.</p>
+<h3 class="font-semibold text-xl sm:text-2xl my-5 font-sans">URI Versioning</h3>
+<p class="my-4 text-lg">URI versioning is the most common and cleaner method. We can easily read which API version are we targeting right from the URI. Here&#8217;s an example:</p>
+<ul class="list-disc ml-7">
+<li class="text-lg"><a class="text-blue-600 dark:text-blue-500 break-all" href="http://localhost:7076/api/2.0/books" target="_blank" rel="noopener nofollow">https://localhost:7076/api/2.0/books</a></li>
+</ul>
+<p class="my-4 text-lg">We can easily implement it by modifying the route in our controller:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">[ApiVersion("2.0")]
+[Route("api/{version:apiVersion}/[controller]")]
+[ApiController]
+public class BooksController : ControllerBase
+{
+    [HttpGet]
+    public IActionResult GetBooksV2()
+    {
+        var books = Data.Books.Select(x =&gt; x.Title);
+        return Ok(books);
+    }
+}</pre>
+<p>Now, we can test it. If we send a get request to <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">https://localhost:7076/api/2.0/books</code> we get the following response:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">[
+    "Concurrency in C# Cookbook",
+    "Designing Data-Intensive Applications"
+]</pre>
+<p class="my-4 text-lg">One thing to mention, we can’t use the query parameter scheme to call the version 2.0 controller anymore. We can use it for version 1.0, however. Also, as we didn’t configure URI versioning for version 1.0, we can still access it using the normal URL <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">https://localhost:7076/api/books</code></p>
+<h3 class="font-semibold text-xl sm:text-2xl my-5 font-sans">Custom HTTP Header Versioning</h3>
+<p class="my-4 text-lg">If we don’t want to change the URI of the API, we can send the version in the HTTP Header. To enable this, we have to modify our configuration:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddApiVersioning(options =&gt;
+    {
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+        options.ReportApiVersions = true;
+        options.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
+    });</pre>
+<p>And revert the Route change in our version 2.0 controller:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">[ApiVersion("2.0")]
+[Route("api/[controller]")]
+[ApiController]
+public class BooksController : ControllerBase
+{
+//...</pre>
+<p><img decoding="async" class="wp-image-9782 aligncenter" src="/wp-content/uploads/2022/07/api_versioning_custom_header_versioning.png" alt="api versioning custom header versioning API Versioning in ASP.NET Core" width="479" height="357"></p>
+<p>If we use query string versioning, by default ASP.NET core accepts <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">api-version</code> as query parameter if specified. If we want to support different a parameter name, we can use a <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">QueryStringApiVersionReader</code> class instead:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">// ...
+options.ApiVersionReader = new QueryStringApiVersionReader("x-api-version");
+// ...</pre>
+<p class="my-4 text-lg">With this, If we send a request to <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">https://localhost:7076/api/books?x-api-version=2.0</code> it will execute version 2.0.</p>
+<h3 class="font-semibold text-xl sm:text-2xl my-5 font-sans">Content Negotiation Versioning (Media Versioning)</h3>
+<p class="my-4 text-lg">Similar to custom header versioning, we don’t need to modify the URI in this approach. We only change the Accept header values. In this case, the scheme preserves our URIs between versions.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">// ...
+options.ApiVersionReader = new MediaTypeApiVersionReader("version");
+</pre>
+<p><strong>// &#8230;</strong></p>
+<p><img decoding="async" class=" wp-image-9785 aligncenter" src="/wp-content/uploads/2022/07/api_versioning_media_versioning.png" alt="api versioning media versioning API Versioning in ASP.NET Core" width="413" height="310"></p>
+<h3 class="font-semibold text-xl sm:text-2xl my-5 font-sans">Combining Multiple Approaches</h3>
+<p class="my-4 text-lg">We’re not bound to use only one approach of versioning. We can give consumers multiple ways to choose. ApiVersionReader has a Combine method that we can use to specify multiple readers. Let’s say we want to support the query parameter versioning, the accept header, and the custom header versioning. We can update the versioning service as follows:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddApiVersioning(options =&gt;
+    {
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+        options.ReportApiVersions = true;
+        options.ApiVersionReader = ApiVersionReader.Combine(
+            new MediaTypeApiVersionReader("version"),
+            new HeaderApiVersionReader("x-api-version"),
+            new QueryStringApiVersionReader("x-api-version")
+        );
+    });</pre>
+<h3 class="font-semibold text-xl sm:text-2xl my-5 font-sans">Deprecating Versions</h3>
+<p class="my-4 text-lg">If we want to deprecate an API version without deleting it, we can use the Deprecated property as follows:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">[ApiVersion("2.0", Deprecated = true)]
+ [Route("api/[controller]")]
+ [ApiController]
+ public class BooksController : ControllerBase
+ {
+...</pre>
+<p>Now, if we send a get request, ASP.NET core provides a <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">api-deprecated-versions</code> response header with the deprecated versions. We&#8217;ll still be able to work with that API but marked it as deprecated.</p>
+<p><img decoding="async" class=" wp-image-9783 aligncenter" src="/wp-content/uploads/2022/07/api_versioning_depricate_version.png" alt="api versioning depricate version API Versioning in ASP.NET Core" width="496" height="178" srcset="/wp-content/uploads/2022/07/api_versioning_depricate_version.png 496w, /wp-content/uploads/2022/07/api_versioning_depricate_version-480x172.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 496px, 100vw"></p>
+<h3 class="font-semibold text-xl sm:text-2xl my-5 font-sans">Using Conventions</h3>
+<p class="my-4 text-lg">Instead of adding the [ApiVersion] attribute to the controllers, we can assign these versions to different controllers in the configuration instead.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddApiVersioning(options =&gt;
+    {
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+        options.ReportApiVersions = true;
+        options.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
+        options.Conventions.Controller&lt;VersioningAPI.Controllers.v1.BooksController&gt;()
+            .HasApiVersion(new ApiVersion(1, 0));
+        options.Conventions.Controller&lt;VersioningAPI.Controllers.v2.BooksController&gt;()
+            .HasDeprecatedApiVersion(new ApiVersion(2, 0));
+
+    });</pre>
+<p class="my-4 text-lg">This approach is helpful when we have many versions of a single controller. Now we can remove the [ApiVersion] attribute from the controllers.</p>
+<h3 class="font-semibold text-xl sm:text-2xl my-5 font-sans">Summary</h3>
+<p class="my-4 text-lg">In this article we&#8217;ve learned:</p>
+<ul class="list-disc ml-7">
+<li class="text-lg">What is API Versioning and why it is required</li>
+<li class="text-lg">When to Version API</li>
+<li class="text-lg">How to implement different ways of API Versioning in .NET 6</li>
+<li class="text-lg">How to deprecate an API Version</li>
+</ul>
+<p class="my-4 text-lg">Although we have covered quite enough to version our APIs, there are many more features than <code class="undefined bg-gray-700 bg-opacity-10 dark:bg-opacity-100 text-sm py-0.5 px-1 rounded">Microsoft.AspNetCore.Mvc.Versioning</code> package provides. To learn more, check out the library’s documentation <a class="text-blue-600 dark:text-blue-500 break-all" href="https://github.com/dotnet/aspnet-api-versioning/wiki" target="_blank" rel="noopener nofollow">here</a>,</p>
+<p class="my-4 text-lg">Thanks!</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/api-versioning-in-asp-net-core/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>.NET6 API Documentation &#038; Example request with Swagger</title>
+		<link>/blog/net6-api-documentation-example-request-with-swagger/</link>
+					<comments>/blog/net6-api-documentation-example-request-with-swagger/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Sun, 26 Jun 2022 13:22:59 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[.NET6]]></category>
+		<category><![CDATA[api]]></category>
+		<category><![CDATA[documentation]]></category>
+		<category><![CDATA[swagger]]></category>
+		<guid isPermaLink="false">/?p=9534</guid>
+
+					<description><![CDATA[In this post,  Will try to show some basic of Swagger with .NET 6 as well as how to generate example request to make testing handy. Create a new Web API project with enabling the OpenAPI support. To add API information and description update builder.Services.AddSwaggerGen() like bellow example: using Microsoft.OpenApi.Models; builder.Services.AddSwaggerGen(c =&#62; { c.SwaggerDoc("v1", new [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>In this post,  Will try to show some basic of Swagger with .NET 6 as well as how to generate example request to make testing handy.</p>
+<p>Create a new Web API project with enabling the OpenAPI support.<br />
+<img decoding="async" class="aligncenter size-full wp-image-9539" src="/wp-content/uploads/2022/06/new-project.png" alt="new project .NET6 API Documentation &amp; Example request with Swagger" width="1017" height="673" srcset="/wp-content/uploads/2022/06/new-project.png 1017w, /wp-content/uploads/2022/06/new-project-980x649.png 980w, /wp-content/uploads/2022/06/new-project-480x318.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1017px, 100vw"></p>
+<p>To add API information and description update builder.Services.AddSwaggerGen() like bellow example:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using Microsoft.OpenApi.Models;
+
+builder.Services.AddSwaggerGen(c =&gt;
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "WeatherForecast",
+        Version = "v1",     
+        Description = "This is the API for managing WeatherForecast",
+        TermsOfService = new Uri("https://www.linkedin.com/in/khairultaher"),
+        Contact = new OpenApiContact
+        {
+            Name = "khairul Alam",
+            Email = "abc@gmail.com",
+            Url = new Uri("https://www.linkedin.com/in/khairultaher")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Use under LICX",
+            Url = new Uri("https://www.linkedin.com/in/khairultaher"),
+        }
+    });
+}</pre>
+<p>Run the app and see the API info and description:<br />
+<img decoding="async" class="aligncenter wp-image-9545" src="/wp-content/uploads/2022/06/api-info.png" alt="api info .NET6 API Documentation &amp; Example request with Swagger" width="1059" height="395" srcset="/wp-content/uploads/2022/06/api-info.png 1059w, /wp-content/uploads/2022/06/api-info-480x179.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 1059px, 100vw"></p>
+<p>To enable xml comment open .csporj file update propertygroup with these two item:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">&lt;PropertyGroup&gt;
+  ......
+  &lt;GenerateDocumentationFile&gt;True&lt;/GenerateDocumentationFile&gt;
+  &lt;NoWarn&gt;$(NoWarn);1591&lt;/NoWarn&gt;
+&lt;/PropertyGroup&gt;</pre>
+<p>Now configure swagger to use generated xml:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">builder.Services.AddSwaggerGen(c =&gt;
+{
+    ........
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});</pre>
+<p>Go to WeatherForecast controller and add comment on Create action like bellow example:<br />
+<strong>For POST/PUT:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">/// &lt;summary&gt;
+/// Add new WeatherForecast
+/// &lt;/summary&gt;
+/// &lt;param name="model"&gt;&lt;/param&gt;
+/// &lt;returns&gt;Return success/fail status&lt;/returns&gt;
+/// &lt;remarks&gt;
+/// **Sample request body:**
+///
+///     {
+///        "id": 1,
+///        "Date": "2022-06-24",
+///        "TemperatureC": 30,
+///        "Summary": "TemperatureC is 30 today",
+///     }
+///
+/// &lt;/remarks&gt;
+/// &lt;response code="200"&gt;Success&lt;/response&gt;
+/// &lt;response code="401"&gt;Failed/Unauthorized&lt;/response&gt;
+[HttpPost]
+[ProducesResponseType(typeof(WeatherForecast), 201)]
+[ProducesResponseType(400)]
+public async Task&lt;ActionResult&lt;WeatherForecast&gt;&gt; Create([FromBody] WeatherForecast model)
+{
+
+    WeatherForecast weatherForecast = new WeatherForecast()
+    {
+        Id = model.Id,
+        Date = model.Date,
+        TemperatureC =  model.TemperatureC,
+        Summary = model.Summary
+    };
+
+    return await Task.FromResult(weatherForecast);  
+}</pre>
+<p>By runnig the app we will see the information are adedd to swagger:<br />
+<img decoding="async" class="aligncenter wp-image-9548" src="/wp-content/uploads/2022/06/comment.png" alt="comment .NET6 API Documentation &amp; Example request with Swagger" width="1260" height="672" srcset="/wp-content/uploads/2022/06/comment.png 1260w, /wp-content/uploads/2022/06/comment-980x523.png 980w, /wp-content/uploads/2022/06/comment-480x256.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1260px, 100vw"></p>
+<p>Look into the example value, see that it show the default values. now we want here to add example value for testing. To do so add Swashbuckle.AspNetCore.Filters NuGet package.<br />
+update</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using Swashbuckle.AspNetCore.Filters;
+
+builder.Services.AddSwaggerGen(c =&gt;
+{
+   .........
+    c.ExampleFilters();
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+}
+builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());</pre>
+<p>Now add new class that will generate example value for the WeatherForecast class.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using Swashbuckle.AspNetCore.Filters;
+
+namespace SwaggerExample
+{
+
+    public class WeatherForecastRequestExample : IExamplesProvider&lt;WeatherForecast&gt;
+    {
+        public WeatherForecast GetExamples()
+        {
+            return new WeatherForecast()
+            {
+                Id = 1,
+                Date = DateTime.Now,
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = "test data"
+            };
+        }
+    }
+}
+</pre>
+<p>rebuild and run the the app again.</p>
+<p><img decoding="async" class="aligncenter size-full wp-image-9551" src="/wp-content/uploads/2022/06/example-values.png" alt="example values .NET6 API Documentation &amp; Example request with Swagger" width="1417" height="275" srcset="/wp-content/uploads/2022/06/example-values.png 1417w, /wp-content/uploads/2022/06/example-values-1280x248.png 1280w, /wp-content/uploads/2022/06/example-values-980x190.png 980w, /wp-content/uploads/2022/06/example-values-480x93.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1417px, 100vw"><br />
+<strong>For GET/DELETE request:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">/// &lt;summary&gt;
+/// Get WeatherForecast By Id
+/// &lt;/summary&gt;
+///&lt;param name="id" example="2"&gt;The product id&lt;/param&gt;
+/// &lt;returns&gt;Return success/fail status&lt;/returns&gt;
+/// &lt;remarks&gt;
+/// **Sample request body:**
+///
+///     {
+///        "id": 2
+///     }
+///
+/// &lt;/remarks&gt;
+/// &lt;response code="200"&gt;Success&lt;/response&gt;
+/// &lt;response code="401"&gt;Failed/Unauthorized&lt;/response&gt;
+
+[HttpGet]
+[ProducesResponseType(typeof(WeatherForecast), 200)]
+[ProducesResponseType(400)]
+public ActionResult&lt;WeatherForecast&gt; Get([FromQuery] int id)
+{
+    return Enumerable.Range(1, 5)
+        .Select(index =&gt; new WeatherForecast
+        {
+            Id = index,
+            Date = DateTime.Now.AddDays(index),
+            TemperatureC = Random.Shared.Next(-20, 55),
+            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+        }).Where(w =&gt; w.Id == id).FirstOrDefault()!;
+}</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-9556" src="/wp-content/uploads/2022/06/example-values-2.png" alt="example values 2 .NET6 API Documentation &amp; Example request with Swagger" width="1419" height="961" srcset="/wp-content/uploads/2022/06/example-values-2.png 1419w, /wp-content/uploads/2022/06/example-values-2-1280x867.png 1280w, /wp-content/uploads/2022/06/example-values-2-980x664.png 980w, /wp-content/uploads/2022/06/example-values-2-480x325.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1419px, 100vw"></p>
+<p><img decoding="async" class="aligncenter size-full wp-image-9552" src="/wp-content/uploads/2022/06/schema-information.png" alt="schema information .NET6 API Documentation &amp; Example request with Swagger" width="1415" height="532" srcset="/wp-content/uploads/2022/06/schema-information.png 1415w, /wp-content/uploads/2022/06/schema-information-1280x481.png 1280w, /wp-content/uploads/2022/06/schema-information-980x368.png 980w, /wp-content/uploads/2022/06/schema-information-480x180.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1415px, 100vw">Swagger shows all available schema information like above but if we don&#8217;t want to show them then just add DefaultModelsExpandDepth(-1)</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">app.UseSwagger();
+app.UseSwaggerUI(x =&gt;
+{
+    x.SwaggerEndpoint("/swagger/v1/swagger.json", "WeatherForecast: API");
+    x.DefaultModelsExpandDepth(-1);
+});</pre>
+<p><strong>Implement authorization:<br />
+</strong>Take advantage of authentication and authorization to secure your Swagger UI in .NET Core 6</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddSwaggerGen(c =&gt;
+{
+    .......
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme {
+                Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+    
+   ......
+});</pre>
+<p><strong><img decoding="async" class="aligncenter size-full wp-image-9568" src="/wp-content/uploads/2022/06/security.png" alt="security .NET6 API Documentation &amp; Example request with Swagger" width="1478" height="881" srcset="/wp-content/uploads/2022/06/security.png 1478w, /wp-content/uploads/2022/06/security-1280x763.png 1280w, /wp-content/uploads/2022/06/security-980x584.png 980w, /wp-content/uploads/2022/06/security-480x286.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1478px, 100vw"><br />
+Source: </strong><a href="https://github.com/Khairultaher/SwaggerExample" rel="nofollow noopener" target="_blank">https://github.com/Khairultaher/SwaggerExample</a></p>
+<p>Thanks&#8230;</p>
+<p>&nbsp;</p>
+<p><strong> </strong></p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/net6-api-documentation-example-request-with-swagger/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Adding Health Checks And SSL Certificate in Kong Db-Less Mode</title>
+		<link>/blog/adding-health-checks-and-ssl-certificate-in-kong-db-less-mode/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Thu, 29 Jul 2021 20:03:19 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[api]]></category>
+		<category><![CDATA[gateway]]></category>
+		<category><![CDATA[health-check]]></category>
+		<category><![CDATA[kong]]></category>
+		<category><![CDATA[SSL certificate]]></category>
+		<guid isPermaLink="false">/?p=2623</guid>
+
+					<description><![CDATA[Recently I was working on an open-source project on my current company where all requests come to the API gateway service then the gateway redirects the request to the appropriate service based on the URL pattern. Those who work with Gateway services know there are many of them out there to choose from, e.g. Amazon [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Recently I was working on an open-source project on my current company where all requests come to the API gateway service then the gateway redirects the request to the appropriate service based on the URL pattern.</p>
+<p>Those who work with Gateway services know there are many of them out there to choose from, e.g. Amazon API Gateway, Apigee Edge, Postman, Kong, etc. Kong is one of the most popular ones out there and in our project, we&#8217;re also using Kong as an API gateway.</p>
+<p>I&#8217;m new to Kong, Our code base uses Lua programming language to write custom kong plugins.</p>
+<h2>What is KONG?</h2>
+<p>Kong is Orchestration Microservice API Gateway. Kong provides a flexible abstraction layer that securely manages communication between clients and microservices via API. Also known as an API Gateway, API Middleware, or in some cases Service Mesh. It is available as an open-source project in 2015, its core values are high performance and extensibility.</p>
+<blockquote><p>Kong is a Lua application running in Nginx and made possible by the lua-nginx-module.</p></blockquote>
+<p>We usually use PostgreSQL or Cassandra depending on our need to store kong configuration. Around 2019, Kong introduces a new mode of writing configuration called Db-Less mode where we use YAML or YML to define kong configuration. which is really good as we don&#8217;t need to manage a separate database application.</p>
+<blockquote>
+<h4>Note: Kong uses rest API-based endpoints to put data in DB mode but in Db-less mode, most of the admin API is read-only so we have to rely on Docs or example to write YML configuration.</h4>
+</blockquote>
+<p>This is where the problem starts as Konghq docs don&#8217;t show enough examples or details about how to write the YML configuration. Konghq docs show lots of theoretical details about the feature but the lack of examples makes a newbie like me write YML configuration hard. I spend hours and hours writing just a single YML object which can be a lot easier if konghq docs provide a simple example to write the configuration.</p>
+<p>There&#8217;s another way we solve the problem that I later learned, which is using <code>decK</code>, A command-line tool to manage kong configuration. Another way we can also use DB mode to add all the configurations then export all the configurations to YML.</p>
+<p>Still, I think, As Db-Less mode is a kong feature, so docs can be updated in the future to make this easier for a newbie like me.</p>
+<blockquote><p>As I was working on a gateway service that is already written in Db-less mode, I have to convert the whole configuration to DB mode then export it, which is not an option for me.</p></blockquote>
+<h2>The Problem</h2>
+<h3>Background</h3>
+<blockquote><p>We deployed the app using the <code>AWS ECS</code> service which details I&#8217;ll share in a separate blog post.</p>
+<p>As a deployment strategy, we decide to deploy the services in private and attach an SRV record to each service only the Gateway service will be exposed to the public as we&#8217;re using Kong as a load balancer.</p></blockquote>
+<p>After deploying the services and we&#8217;re testing if working fine but as we trying to scale down the services we observing the logs and we notice that traffic was sent to an upstream service which was terminating because of the manual scale down we triggered.</p>
+<p>After some time we found out we can add Healthcheck to the upstream host so that kong can redirect the request only to healthy targets.</p>
+<h3>Question</h3>
+<p>How we can do this in Db-Less mode?</p>
+<p>As I explain earlier, Konghq docs are not good for this scenario at least for now. I&#8217;ll provide a complete example in this post so If anyone faces the same problem as me. It&#8217;s really hard for me to add the two features in the Db-less mode YML configuration. after hours of searching on the internet and asking in the forum, I was able to add the feature in the configuration.</p>
+<h3>Healthcheck Details:</h3>
+<p>The objective of the health checks functionality is to dynamically mark targets as healthy or unhealthy, for a given Kong node.</p>
+<p>Kong provides 2 types of health check.</p>
+<ul>
+<li>Active</li>
+<li>Passive</li>
+</ul>
+<p><strong>Active</strong> checks, where a specific HTTP or HTTPS endpoint in the target is periodically requested and the health of the target is determined based on its response;</p>
+<p><strong>Passive</strong> checks (also known as circuit breakers), where Kong analyzes the ongoing traffic being proxied and determines the health of targets based on their behavior responding to requests.</p>
+<p>Details about Active and Passive health check which was taken from <a href="https://docs.konghq.com/gateway-oss/2.5.x/health-checks-circuit-breakers/" rel="nofollow noopener" target="_blank">konghq docs</a></p>
+<blockquote><p><strong>Active health checks</strong><br />
+as the name implies, actively probe targets for their health. When active health checks are enabled in an upstream entity, Kong will periodically issue HTTP or HTTPS requests to a configured path at each target of the upstream. This allows Kong to automatically enable and disable targets in the balancer based on the probe results.<br />
+The periodicity of active health checks can be configured separately for when a target is healthy or unhealthy. If the interval value for either is set to zero, the checking is disabled at the corresponding scenario. When both are zero, active health checks are disabled altogether.<br />
+<strong><em>Note</em></strong>: Active health checks currently only support HTTP/HTTPS targets. They do not apply to Upstreams assigned to Services with the protocol attribute set to &#8220;tcp&#8221; or &#8220;tls&#8221;.</p>
+<p><strong>Passive health checks (circuit breakers)</strong><br />
+Passive health checks, also known as circuit breakers, are checks performed based on the requests being proxied by Kong (HTTP/HTTPS/TCP), with no additional traffic being generated. When a target becomes unresponsive, the passive health checker will detect that and mark the target as unhealthy. The ring-balancer will start skipping this target, so no more traffic will be routed to it.<br />
+Once the problem with a target is solved and it is ready to receive traffic again, the Kong administrator can manually inform the health checker that the target should be enabled again, via an Admin API endpoint:</p>
+<pre></pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="shell">$ curl -i -X POST http://localhost:8001/upstreams/my_upstream/targets/10.1.2.3:1234/healthy HTTP/1.1 204 No Content</pre>
+<pre></pre>
+<p>&nbsp;</p>
+<p>This command will broadcast a cluster-wide message to propagate the “healthy” status to the whole Kong cluster. This will cause Kong nodes to reset the health counters of the health checkers running in all workers of the Kong node, allowing the ring-balancer to route traffic to the target again.<br />
+Passive health checks have the advantage of not producing extra traffic, but they are unable to automatically mark a target as healthy again: the “circuit is broken”, and the target needs to be re-enabled again by the system administrator.</p></blockquote>
+<p>&nbsp;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic"># kong.yml -&gt; upstreams object
+upstreams:
+  # Auth service 
+  - algorithm: round-robin
+    name: ${AUTH_URL}
+    healthchecks:
+      threshold: 2
+      active:
+        unhealthy:
+          http_statuses: ${UPSTREAM_ACTIVE_UNHEALTHY_HTTP_STATUSES}
+          timeouts: ${UPSTREAM_ACTIVE_UNHEALTHY_TIMEOUTS_COUNT}
+          http_failures: ${UPSTREAM_PASSIVE_UNHEALTHY_TCP_FAILURES_COUNT}
+          interval: ${UPSTREAM_UNHEALTHY_REFRESH_INTERVAL}
+        type: ${UPSTREAM_HEALTHCHECK_URL_PROTOCOL}
+        http_path: ${UPSTREAM_HEALTHCHECK_URL}
+        timeout: ${UPSTREAM_HEALTHCHECK_TIMEOUT}
+        healthy:
+          successes: ${UPSTREAM_ACTIVE_HEALTHY_SUCCESS_COUNT}
+          interval: ${UPSTREAM_HEALTHY_REFRESH_INTERVAL}
+          http_statuses: ${UPSTREAM_HEALTHY_HTTP_STATUSES}
+        https_verify_certificate: false
+        concurrency: ${UPSTREAM_ACTIVE_CONCURRENT_REQUEST}
+      passive:
+        unhealthy:
+          http_failures: ${UPSTREAM_PASSIVE_UNHEALTHY_HTTP_FAILURES_COUNT}
+          http_statuses: ${UPSTREAM_PASSIVE_UNHEALTHY_HTTP_STATUSES}
+          tcp_failures: ${UPSTREAM_PASSIVE_UNHEALTHY_TCP_FAILURES_COUNT}
+          timeouts: ${UPSTREAM_PASSIVE_UNHEALTHY_TIMEOUT_COUNT}
+        healthy:
+          http_statuses: ${UPSTREAM_HEALTHY_HTTP_STATUSES}
+          successes: ${UPSTREAM_PASSIVE_HEALTHY_SUCCESS_COUNT}
+        type: ${UPSTREAM_HEALTHCHECK_URL_PROTOCOL}
+    slots: 10000</pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Let&#8217;s talk about variables in detail to understand what those mean. Also<br />
+what I&#8217;m about to discuss here, can be found in kong docs <a href="https://docs.konghq.com/gateway-oss/2.5.x/admin-api/#add-upstream" rel="nofollow noopener" target="_blank">here</a></p>
+<p><code>name</code> : implies the service hostname</p>
+<p><code>algorithm</code>: which algorithm to use when load-balancing. we using <code>round-robin</code> which is the default value, other options are <code>consistent-hashing</code>, <code>least-connections</code>. Default set to <code>round-robin</code>.<br />
+let&#8217;s explore the health checks object.</p>
+<p><code>threshold</code>: The minimum percentage of the upstream’s targets’ weight that must be available for the whole upstream to be considered healthy. Default: 0</p>
+<p><code>slots</code>: The number of slots in the load balancer algorithm. If the algorithm is set to round-robin, this setting determines the maximum number of time slots. what this means is several time slots are created into a ring balancer and based on weight distributed on the time slots (~10000 default value). Then a pointer is incremented to find a peer to use.</p>
+<p><code>active</code> object has 2 nested objects healthy and unhealthy. This configuration will be used by kong to trigger health check events which will be executed by workers. let&#8217;s explore that.</p>
+<p><code>active.type</code>: Default set to <code>http</code>. Whether to perform active health checks using HTTP or HTTPS. other supported types are <code>tcp</code>, <code>https</code>, <code>grpc</code>, <code>grpcs</code> but currently <code>tcp</code> will not work for active health check.</p>
+<p><code>active.http_path</code>: Default set to <code>/</code>. Service health API path</p>
+<p><code>active.timeout</code>: Default set to 1. Socket timeout for active health checks (in seconds).</p>
+<p><code>active.concurrency</code>: Number of targets to check concurrently in active health checks. Default set to 10.</p>
+<p><code>healthchecks.active.https_verify_certificate</code>: where to verify the SSL certificate of the target. Default set to <code>true</code>.</p>
+<p><code>active.healthy.http_statuses</code> &amp; <code>active.unhealthy.http_statuses</code> both refer to an array of status codes that will be used to determine if the target is healthy or unhealthy.</p>
+<p><code>active.healthy.interval</code> &amp; <code>active.unhealthy.interval</code> refer to time which will be used to refresh the targets&#8217; healthy statuses. setting to 0 will disable the health check.</p>
+<p><code>http_failures</code>, <code>timeouts</code>, <code>tcp_failures</code> all variables refer to the count which will be used to verify if the target is healthy or not. It&#8217;s like a threshold value.</p>
+<p><code>successes</code> refer to the successes count.</p>
+<p>In the above, we define the upstream object but to work, the upstream object needs targets. which can be defined in the health checks or separately. we will define separately like below</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic"># kong.yml -&gt; 
+targets object 
+targets: - upstream: ${AUTH_URL} 
+target: ${AUTH_URL}:80 weight: 1</pre>
+<p>&nbsp;</p>
+<p><code>targets</code> is an array of values that will attach to the upstreams name property. This is what we defined in the <code>targets.upstream</code>.</p>
+<p><code>targets.target</code> refers to the ip:port address combination of the target. if the target is an SRV record just put an SRV record.</p>
+<p><code>targets.weight</code> refer to the weight of the target.</p>
+<p>Another problem arises when we try to add the SSL certificate in the <code>certificates</code> object in <code>kong.yml</code></p>
+<pre><code></code></pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic"># kong.yml
+certificates:
+  - cert: # public key
+    key: # private key
+    snis:
+      - name: "" # domain name or wildcard domain name *.example.com</pre>
+<pre><code></code></pre>
+<p>&nbsp;</p>
+<pre><code></code></pre>
+<p><code>certificates</code> object looks like the above but <code>cert</code> &amp; <code>key</code> value needs to be defined as multiline</p>
+<pre><code> </code></pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">certificates:
+  - cert: |-
+      -----BEGIN CERTIFICATE-----
+      -----END CERTIFICATE-----
+    key: |-
+      -----BEGIN PRIVATE KEY-----
+      -----END PRIVATE KEY-----
+    snis:
+      - name: "*.example.com"</pre>
+<pre><code> </code></pre>
+<p>&nbsp;</p>
+<pre><code></code></pre>
+<p>As this is not documented in the konghq docs. so anyone who tries to add the certificate will get an invalid certificate error.</p>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/adding-health-checks-and-ssl-certificate-in-kong-db-less-mode" rel="nofollow noopener" target="_blank"> Personal blog</a></p>
+<p>You can read our other official blog-posts <a href="/blog">Here</a></p>
+<p><strong>In conclusion</strong>, Kong is a great and popular API gateway. The DB-less mode can be really helpful if anyone doesn&#8217;t want to maintain a DB instance. But lack of documentation about the Db-less mode may lead to frustration.<br />
+Maintaining up-to-date docs is hard I know because I&#8217;m a developer too so I can tell, Hopefully in the future kong will eventually add proper documentation about Db-less mode.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

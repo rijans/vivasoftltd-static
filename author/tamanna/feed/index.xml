@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Kanij Fatema &#8211; Vivasoft</title>
+	<atom:link href="/author/tamanna/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Mon, 26 Sep 2022 12:01:11 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>Kanij Fatema &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>5 Tips to Improve Performance of C# / .NET Application</title>
+		<link>/blog/5-tips-to-improve-performance-of-c-net-application/</link>
+		
+		<dc:creator><![CDATA[Kanij Fatema]]></dc:creator>
+		<pubDate>Tue, 20 Sep 2022 13:19:32 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[.NET]]></category>
+		<category><![CDATA[C#]]></category>
+		<category><![CDATA[Performance Improvement]]></category>
+		<category><![CDATA[Tips]]></category>
+		<guid isPermaLink="false">/?p=11853</guid>
+
+					<description><![CDATA[1. Use Async/Await Asynchronous Programming helps improve the overall efficiency while dealing with functions that can take some time to finish computing. During such function executions, the complete application may seem to be frozen to the end-user. This results in a bad user experience. In such cases, we use async methods to free the main [&#8230;]]]></description>
+										<content:encoded><![CDATA[<h2 id="1.-Use-Async/Await" data-renderer-start-pos="1"></h2>
+<h2 data-renderer-start-pos="1">1. Use Async/Await</h2>
+<p>Asynchronous Programming helps improve the overall efficiency while dealing with functions that can take some time to finish computing. During such function executions, the complete application may seem to be frozen to the end-user. This results in a bad user experience. In such cases, we use async methods to free the main thread.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public async Task GetEmployee(int empId)
+{
+       var employee = await new EmployeeService().GetAsync(empId);
+
+        if (employee != null)
+        {
+            var employeeInfo = new
+            {
+                id = employee.Id,
+                code = employee.Code,
+                text = employee.FullName
+            };
+            return Json(employeeInfo);
+        }
+        else
+        {
+            return Json(new { });
+        }
+    }</pre>
+<p data-renderer-start-pos="823">ASP.NET Core apps should be designed to process many requests simultaneously. Asynchronous APIs allow a small pool of threads to handle thousands of concurrent requests by not waiting on blocking calls. Rather than waiting on a long-running synchronous task to complete, the thread can work on another request.</p>
+<p data-renderer-start-pos="1135">A common performance problem in ASP.NET Core apps is blocking calls that could be asynchronous. Many synchronous blocking calls lead to <a class="css-tgpl01" title="https://docs.microsoft.com/en-us/archive/blogs/vancem/diagnosing-net-core-threadpool-starvation-with-perfview-why-my-service-is-not-saturating-all-cores-or-seems-to-stall" href="https://docs.microsoft.com/en-us/archive/blogs/vancem/diagnosing-net-core-threadpool-starvation-with-perfview-why-my-service-is-not-saturating-all-cores-or-seems-to-stall" data-renderer-mark="true" rel="nofollow noopener" target="_blank">Thread Pool starvation</a> and degraded response times.</p>
+<h2 data-renderer-start-pos="1324"></h2>
+<h2 id="2.-Caching-large-objects-that-are-frequently-used" data-renderer-start-pos="1324">2. Caching large objects that are frequently used</h2>
+<p data-renderer-start-pos="1324">Generally, we don’t need to worry about memory release or allocation as the .NET Core garbage collector manages the allocation and release of memory automatically. But cleaning up unreferenced objects takes CPU time, so developers should minimize allocating objects. Garbage collection is especially expensive on large objects (&gt; 85 K bytes). Large objects are stored on the large object heap and require a full (generation 2) garbage collection to clean up. Unlike generation 0 and generation 1 collections, a generation 2 collection requires a temporary suspension of app execution. Frequent allocation and de-allocation of large objects can cause inconsistent performance. In this case, caching large objects prevents expensive allocations. caching frequently accessed data retrieved from a database or remote service if slightly out-of-date data is acceptable. Depending on the scenario, use a MemoryCache or a DistributedCache such as Redis.</p>
+<p data-renderer-start-pos="2326">Besides, do not allocate many, short-lived large objects on frequently used methods.</p>
+<p data-renderer-start-pos="2412"><a class="css-tgpl01" title="https://docs.microsoft.com/en-us/aspnet/core/performance/caching/response?view=aspnetcore-6.0" href="https://docs.microsoft.com/en-us/aspnet/core/performance/caching/response?view=aspnetcore-6.0" data-renderer-mark="true" rel="nofollow noopener" target="_blank">Response caching</a> is also a way of improving performance which reduces the number of requests a client or proxy makes to a web server. Response caching also reduces the amount of work the web server performs to generate a response.</p>
+<h2 data-renderer-start-pos="2645"></h2>
+<h2 id="3.-Use-Pagination-to-return-large-collections" data-renderer-start-pos="2645">3. Use Pagination to return large collections</h2>
+<p data-renderer-start-pos="2645">A webpage shouldn&#8217;t load large amounts of data all at once. When returning a collection of objects, consider whether it could lead to performance issues. Determine if the design could produce the following poor outcomes:</p>
+<ul class="ak-ul" data-indent-level="1">
+<li>
+<p data-renderer-start-pos="2917">High CPU or high memory consumption</p>
+</li>
+<li>
+<p data-renderer-start-pos="2956">Thread pool starvation</p>
+</li>
+<li>
+<p data-renderer-start-pos="2982">Slow response times</p>
+</li>
+<li>
+<p data-renderer-start-pos="3005">Frequent garbage collection</p>
+</li>
+</ul>
+<p data-renderer-start-pos="3036">Do add pagination to mitigate the preceding scenarios.</p>
+<h2 data-renderer-start-pos="3092"></h2>
+<h2 id="4.-Use-AsNoTracking()-while-reading-only" data-renderer-start-pos="3092">4. Use AsNoTracking() while reading only</h2>
+<p data-renderer-start-pos="3092">By default, queries that return entity types are tracked in Entity Framework Core. When we load records from a database via LINQ-to-Entities queries, we will be processing them and update them back to the database. For this purpose, entities are tracked.</p>
+<p data-renderer-start-pos="3392">Do use no-tracking queries when accessing data for read-only purposes. EF Core can return the results of no-tracking queries more efficiently. When we are performing only read operations, we won’t make any updates back to the database, but entities will assume that we are going to make updates back to the database and will process them accordingly. So, we can use <strong data-renderer-mark="true">AsNoTracking()</strong> to restrict entities from assuming and processing, thus reducing the amount of memory that entities will track.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var blogs = context.Blogs
+    .AsNoTracking()
+    .ToList();</pre>
+<p>You can also change the default tracking behavior at the context instance level:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+var blogs = context.Blogs.ToList();</pre>
+<h2 data-renderer-start-pos="4150"></h2>
+<h2 id="5.-Review-your-data-access-and-I/O" data-renderer-start-pos="4150">5. Review your data access and I/O</h2>
+<p data-renderer-start-pos="4150">Data access and I/O are one of the most important factors for optimizing performance. If your system performs slow, review your I/O operations with the following criteria:</p>
+<ul class="ak-ul" data-indent-level="1">
+<li>
+<p data-renderer-start-pos="4361">Ensure all data access APIs are asynchronous.</p>
+</li>
+<li>
+<p data-renderer-start-pos="4410">Do not retrieve more data than is necessary. Write queries to return just the data that&#8217;s necessary for the current HTTP request.</p>
+</li>
+<li>
+<p data-renderer-start-pos="4543">Minimize network round trips. The goal is to retrieve the required data in a single call rather than several calls.</p>
+</li>
+<li>
+<p data-renderer-start-pos="4662">Do filter and aggregate LINQ queries (with <code class="code css-1xivnph" data-renderer-mark="true">.Where</code>, <code class="code css-1xivnph" data-renderer-mark="true">.Select</code>, or <code class="code css-1xivnph" data-renderer-mark="true">.Sum</code> statements, for example) so that the filtering is performed by the database.</p>
+</li>
+<li>
+<p data-renderer-start-pos="4810">Query caching and parameterization</p>
+<ul class="ak-ul" data-indent-level="2">
+<li>
+<p data-renderer-start-pos="4849">When EF receives a LINQ query tree for execution, it must first &#8220;compile&#8221; that tree, e.g. produces SQL from it. Because this task is a heavy process, EF caches queries by the query tree shape, so that queries with the same structure reuse internally-cached compilation outputs. This caching ensures that executing the same LINQ query multiple times is very fast, even if parameter values differ.</p>
+<p data-renderer-start-pos="5246">Consider the following two queries:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var post1 = context.Posts.FirstOrDefault(p =&gt; p.Title == "post1");
+var post2 = context.Posts.FirstOrDefault(p =&gt; p.Title == "post2");
+</pre>
+<p>Since the expression trees contain different constants, the expression tree differs and each of these queries will be compiled separately by EF Core. In addition, each query produces a slightly different SQL command:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">SELECT TOP(1) [b].[Id], [b].[Name]
+FROM [Blogs] AS [b]
+WHERE [b].[Name] = N'blog1'
+
+SELECT TOP(1) [b].[Id], [b].[Name]
+FROM [Blogs] AS [b]
+WHERE [b].[Name] = N'blog2'
+</pre>
+<p data-renderer-start-pos="5806">Because the SQL differs, your database server will likely also need to produce a query plan for both queries, rather than reusing the same plan.</p>
+<p data-renderer-start-pos="5952">A small modification to your queries can change things considerably:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var postTitle = "post1";
+var post1 = context.Posts.FirstOrDefault(p =&gt; p.Title == postTitle);
+postTitle = "post2";
+var post2 = context.Posts.FirstOrDefault(p =&gt; p.Title == postTitle);
+</pre>
+<p>Since the blog name is now <em data-renderer-mark="true">parameterized</em>, both queries have the same tree shape, and EF only needs to be compiled once. The SQL produced is also parameterized, allowing the database to reuse the same query plan:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">SELECT TOP(1) [b].[Id], [b].[Name]
+FROM [Blogs] AS [b]
+WHERE [b].[Name] = @__blogName_0
+</pre>
+<p>Note that there is no need to parameterize every query: it&#8217;s perfectly fine to have some queries with constants, and indeed, databases (and EF) can sometimes perform certain optimization around constants which aren&#8217;t possible when the query is parameterized.</li>
+</ul>
+</li>
+<li>
+<p data-renderer-start-pos="6775">Do not use projection queries on collections, which can result in executing &#8220;N + 1&#8221; SQL queries.</p>
+<p data-renderer-start-pos="6873">As an example, the following query normally gets translated into one query for Customers, plus N (where &#8220;N&#8221; is the number of customers returned) separate queries for Orders:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var query = context.Customers.Select(
+    c =&gt; c.Orders.Where(o =&gt; o.Amount  &gt; 100).Select(o =&gt; o.Amount));
+</pre>
+<p>You can optimize it by including <code class="code css-1xivnph" data-renderer-mark="true">ToList()</code> in the right place, you indicate that buffering is appropriate for the Orders:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var query = context.Customers.Select(
+    c =&gt; c.Orders.Where(o =&gt; o.Amount  &gt; 100).Select(o =&gt; o.Amount).ToList());
+</pre>
+<p>Note that this query will be translated to only two SQL queries: One for Customers and the next one for Orders.</p>
+<p data-renderer-start-pos="7048">
+</li>
+</ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>10 Coding Best Practices and Tips by Vivasoft Developers</title>
+		<link>/blog/10-coding-best-practices-and-tips-by-vivasoft-developers/</link>
+		
+		<dc:creator><![CDATA[Kanij Fatema]]></dc:creator>
+		<pubDate>Tue, 20 Sep 2022 10:04:58 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[.NET]]></category>
+		<category><![CDATA[Best Practices]]></category>
+		<category><![CDATA[C#]]></category>
+		<category><![CDATA[Tips]]></category>
+		<guid isPermaLink="false">/?p=11791</guid>
+
+					<description><![CDATA[Writing clean code offers better performance and faster development. Sometimes “quick and dirty” code may save time during development but there is a strong likelihood it will cost you time later fixing the bugs. Writing clean code is a matter of habit which is easier to maintain and easier to spot bugs in a long [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Writing clean code offers better performance and faster development. Sometimes “quick and dirty” code may save time during development but there is a strong likelihood it will cost you time later fixing the bugs. Writing clean code is a matter of habit which is easier to maintain and easier to spot bugs in a long run. Here some tips have been described on how we can write more readable and cleaner code and some new features we can adopt.</p>
+<h4 data-renderer-start-pos="444"></h4>
+<h4 id="1.-Keep-your-functions/method-simple" data-renderer-start-pos="444">1. Keep your functions/method simple</h4>
+<p data-renderer-start-pos="444">Avoid writing long functions. The simpler your class is, your code is more readable and cleaner. If any function is required to write a hundred lines of business logic, break it down into smaller functions and name it appropriately describing the steps best way.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">Product PurchaseProduct(int id)
+{
+    var product = GetProduct(id);
+    UpdateInventory(product);
+    SendPurchaseNotification();
+    return null;
+}
+
+Product UpdateInventory(Product product){
+    if (product.Quantity &gt; 0)
+        {
+            product.Quantity--;
+            return product;
+        }
+}</pre>
+<h4 data-renderer-start-pos="1054"></h4>
+<h4 id="2.-Pay-attention-to-readability-and-meaningful-method/property-name" data-renderer-start-pos="1054">2. Pay attention to readability and meaningful method/property name</h4>
+<ul>
+<li>Use variable names that are easy to remember</li>
+</ul>
+<p style="text-align: left;"><strong data-renderer-mark="true">Bad way</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var yyyymmdstr = DateTime.Now.ToString("YYYY/MM/DD");</pre>
+<p><strong>Good Way </strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var currentDate = DateTime.Now.ToString("YYYY/MM/DD");</pre>
+<ul class="ak-ul" data-indent-level="1">
+<li>
+<p data-renderer-start-pos="1313">Use searchable names</p>
+</li>
+</ul>
+<p data-renderer-start-pos="1313"><strong data-renderer-mark="true">Bad way</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">// In the future we will not remember what 86400000 means.
+
+clearBacklog(backlog, 86400000);</pre>
+<p><strong data-renderer-mark="true">Good way:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">// Declare constants with a searchable name
+var MILLISECONDS_PER_DAY = 60 * 60 * 24 * 1000; //86400000;
+
+clearBacklog(backlog, MILLISECONDS_PER_DAY);</pre>
+<ul>
+<li>Use camel case notation for local variables and arguments</li>
+</ul>
+<p style="padding-left: 40px;"><strong data-renderer-mark="true">Bad Practice</strong></p>
+<pre style="padding-left: 40px;"><code class="language-cs">int RandomInteger;string FirstName;
+</code></pre>
+<p style="padding-left: 40px;"><strong data-renderer-mark="true">Good Practice</strong></p>
+<pre style="padding-left: 40px;"><code class="language-cs">int randomInteger;string firstName;</code></pre>
+<ul>
+<li data-renderer-start-pos="1779">Add comments whenever necessary and only when the situation demands. For example, when a particular method is too complex and requires an in-depth explanation. Maintaining comments will become a task as well. So use comments wisely.</li>
+</ul>
+<h4 data-renderer-start-pos="2015"></h4>
+<h4 id="3.-Don't-repeat-yourself" data-renderer-start-pos="2015">3. Don&#8217;t repeat yourself</h4>
+<p data-renderer-start-pos="2041">This error is very common because we unconsciously repeat names or words. This bad practice in the long run makes you have a very dirty code since there will be many things that will be repeated. Let&#8217;s get down to practice:</p>
+<p data-renderer-start-pos="2266"><strong data-renderer-mark="true">Bad way:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">Employee employee = new(){
+   employeeName = "ABC",
+   employeeCode = "EMP0001",
+   employeeMobileNo = "018xxxxxxxx"
+};
+
+void UpdateMobileNo(Employee employee, string number){
+     employee.employeeMobileNo = number;
+}
+</pre>
+<p><strong data-renderer-mark="true">Good way:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">Employee employee = new(){
+   name = "ABC",
+   code = "EMP0001",
+   mobileNo = "018xxxxxxxx"
+};
+
+void UpdateMobileNo(Employee employee, string number){
+     employee.MobileNo = number;
+}</pre>
+<h4 data-renderer-start-pos="2696"></h4>
+<h4 id="4.-Follow-the-‘early-return’-principle" data-renderer-start-pos="2696">4. Follow the ‘early return’ principle</h4>
+<p>Return early is the way of writing functions or methods so that the invalid cases validate first and return as early as possible. The expected positive result is returned at the end of the function after some required validations. It works as a guard of the functions for invalid cases.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">Product PurchaseProduct(int id)
+{
+    var product = GetProduct(id);
+
+    if (product.Quantity &gt; 0)
+    {
+        product.Quantity--;
+
+        return product;
+    }
+
+    SendOutOfStockNotification(product);
+
+    return null;
+}</pre>
+<h4 data-renderer-start-pos="3251"></h4>
+<h4 id="5.--Simple-way-of-using-the-If/else-statement" data-renderer-start-pos="3251">5. Simple way of using the If/else statement</h4>
+<p>We often write a validation case that has to return a <code class="code css-1xivnph" data-renderer-mark="true">bool</code> value from a function:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">bool IsInStock(Product product){    
+  if (product.Quantity &gt; 0)    
+  {        
+    return true;    
+  }    
+  else    
+  {        
+    return false;    
+  }
+}</pre>
+<p>Although this approach is mostly fine, we have to ask ourselves if we even need an if-statement in the first place. Since we already have a logical expression inside the if-statement, we can simplify the method by simply returning the value of that logical expression:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">bool IsInStock(Product product)
+{
+    return product.Quantity &gt; 0;
+}</pre>
+<p>For achieving the same result we can do it more simplistic way:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">bool IsInStock(Product product) =&gt; product.Quantity &gt; 0;</pre>
+<p><code class="language-cs"></code></p>
+<p>Besides, we often need to validate the case for value/object is null or not. We usually do it the following way :</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var employee = GetEmployee();
+
+if (employee== null)
+{
+    return new Employee();
+}
+return employee;
+
+</pre>
+<p>You can do this in a more simplistic way by using the Null-Coalescing operator:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var employee = GetEmployee() ?? new Employee();
+return employee;</pre>
+<p>Another scenario :</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">if (Employee!= null &amp;&amp; Employee.Name == null)  
+{ 
+     Console.WriteLine("No Employee name provided");  
+}</pre>
+<p>Use the null propagation operator instead:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">Console.WriteLine(Employee?.Name ?? "No Employee name provided");</pre>
+<h4 data-renderer-start-pos="4618"></h4>
+<h4 id="6.-Simplify-Switch-Statement" data-renderer-start-pos="4618">6. Simplify Switch Statement</h4>
+<p>We generally write a switch statement in this way. There is no issue with it but C# 8.0 version introduces a more simplistic way of writing of switch statement which is more clean and readable.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public static int DayId(this DateTime date)
+{
+    var dn = date.ToString("dddd");
+    switch (dn)
+    {
+        case "Saturday":
+            return 1;
+        case "Sunday":
+            return 2;
+        case "Monday":
+            return 3;
+        case "Tuesday":
+            return 4;
+        case "Wednesday":
+            return 5;
+        case "Thursday":
+            return 6;
+        case "Friday":
+            return 7;
+    }
+
+    return 0;
+}</pre>
+<p>C# 8.0 version simplifies the switch statement this way:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public static int DayId(this DateTime date)
+       {
+           var dn = date.ToString("dddd");
+           return dn switch
+           {
+               "Saturday" =&gt; 1,
+               "Sunday" =&gt; 2,
+               "Monday" =&gt; 3,
+               "Tuesday" =&gt; 4,
+               "Wednesday" =&gt; 5,
+               "Thursday" =&gt; 6,
+               "Friday" =&gt; 7,
+               _ =&gt; 0
+           };
+       }
+</pre>
+<p>Pattern Matching Expression</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public enum Hand
+    {
+        Rock, Paper, Scissors
+    }
+
+    public class RockPaperScissors
+    {
+        public Option&lt;Hand&gt; Round(Hand first, Hand second)
+            =&gt; (first, second) switch
+            {
+                (Hand.Rock, Hand.Paper) =&gt; "Paper Wins!",
+                (Hand.Rock, Hand.Scissors) =&gt; "Rock Wins!",
+                (Hand.Paper, Hand.Rock) =&gt; "Paper Wins!",
+                (Hand.Paper, Hand.Scissors) =&gt; "Scissors Wins!",
+                (Hand.Scissors, Hand.Rock) =&gt; "Rock Wins!",
+                (Hand.Scissors, Hand.Paper) =&gt; "Scissors Wins!",
+                (_, _) =&gt; "Tie!" // to be interpreted as a tie
+            };
+    }</pre>
+<h4 data-renderer-start-pos="6462"></h4>
+<h4 id="7.-Minimize-exceptions" data-renderer-start-pos="6462">7. Minimize exceptions</h4>
+<ul class="ak-ul" data-indent-level="1">
+<li>
+<p data-renderer-start-pos="6488">Throwing <strong data-renderer-mark="true">Exceptions</strong> as normal behavior is bad practice. While adding <code class="code css-1xivnph" data-renderer-mark="true">try/catch</code> is cheap, actually throwing an exception is expensive. Therefore, include logic in the method to detect and handle conditions that would cause an exception. For example, checking if something can be parsed by calling <code class="code css-1xivnph" data-renderer-mark="true">int.Parse()</code> and catching an exception, should be avoided. Instead, we can use <code class="code css-1xivnph" data-renderer-mark="true">int.TryParse()</code> which returns <code class="code css-1xivnph" data-renderer-mark="true">false</code> if parsing is impossible.</p>
+</li>
+<li>
+<p data-renderer-start-pos="6926">‘throw ex’ causes to loss of the stack trace data. The stack trace of the exception gets rewritten to the line of code where we explicitly rethrow it. This means that we lose all of the valuable information about what caused the exception in the first place. This can make debugging the code very hard. Just use ‘throw’. Besides, use try/catch only if you need to catch the exception and need to handle it as well.</p>
+</li>
+</ul>
+<div class="fabric-editor-block-mark fabric-editor-indentation-mark" data-level="1">
+<p style="padding-left: 40px;" data-renderer-start-pos="7346"><strong data-renderer-mark="true">Bad Practice:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">try
+{
+    // Do something..
+}
+catch (Exception ex)
+{
+    throw ex;
+}</pre>
+<p style="padding-left: 40px;"><strong data-renderer-mark="true">Good Practice</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">try{    
+  // Do something..
+}
+catch (Exception ex){
+    throw;
+}</pre>
+<h4 data-renderer-start-pos="7518"></h4>
+<h4 id="8.-Use-FirstOrDefault()-instead-of-First()" data-renderer-start-pos="7518">8. Use FirstOrDefault() instead of First()</h4>
+<p>FirstOrDefault() works same as First() but there is a significant advantage over First(). First() returns the first element from a sequence, but if there is no record in the collection which matches input criteria then it throws an exception immediately whereas FirstOrDefault() can handle null values and it does not throw an exception.</p>
+<p><img decoding="async" class="aligncenter wp-image-11813 size-full" src="/wp-content/uploads/2022/09/maxresdefault-2-e1663667480467.jpg" alt="maxresdefault 2 e1663667480467 10 Coding Best Practices and Tips by Vivasoft Developers" width="1270" height="486" srcset="/wp-content/uploads/2022/09/maxresdefault-2-e1663667480467-980x486.jpg 980w, /wp-content/uploads/2022/09/maxresdefault-2-e1663667480467-480x270.jpg 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1270px, 100vw"></p>
+<p>Same scenario goes for Single or SingleOrDefault , Last() and LastOrDefault().</p>
+<h4 data-renderer-start-pos="7986"></h4>
+<h4 id="9.-Use-the-using-statement" data-renderer-start-pos="7986">9. Use the <strong data-renderer-mark="true">using </strong>statement</h4>
+<p data-renderer-start-pos="8014"><strong data-renderer-mark="true">using </strong>keywords in C# plays a vital role in improving performance in Garbage Collection.</p>
+<p data-renderer-start-pos="8103">The using statement ensures that Dispose() is called even if an exception occurs when you are creating objects and calling methods, properties, and so on. Dispose() is a method that is present in the IDisposable interface that helps to implement custom Garbage Collection. In other words, if you are doing some database operation (Insert, Update, Delete) but somehow an exception occurs, then here the using statement closes the connection automatically. There’s no need to call the connection Close() method explicitly.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public async Task&lt;IEnumerable&lt;Company&gt;&gt; GetCompanies()
+{
+    var query = "SELECT * FROM Companies";
+
+    using (var connection = _context.CreateConnection())
+    {
+        var companies = await connection.QueryAsync&lt;Company&gt;(query);
+        return companies.ToList();
+    }
+}</pre>
+<p>The using declaration, which was introduced in C# 8.0, doesn&#8217;t require braces:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public async Task&lt;IEnumerable&lt;Company&gt;&gt; GetCompanies()
+{
+    var query = "SELECT * FROM Companies";
+
+    using var connection = _context.CreateConnection();
+    var companies = await connection.QueryAsync&lt;Company&gt;(query);
+    return companies.ToList();
+}</pre>
+<h4 data-renderer-start-pos="9238"></h4>
+<h4 id="10.-Default-Interface-Method" data-renderer-start-pos="9238">10. Default Interface Method</h4>
+<p data-renderer-start-pos="9268">Before C# 8.0 interfaces only contain the declaration of the members (methods, properties, events, and indexers), but from C# 8.0 it is allowed to add members as well as their implementation to the interface. Now you are allowed to add a method with their implementation to the interface without breaking the existing implementation of the interface, such type of method is known as default interface methods (also known as the virtual extension methods).</p>
+<p data-renderer-start-pos="9725">The main benefit of the Default method is that it allows us to add new functionality to the interfaces of our libraries and ensure backward compatibility with code written for older versions of those interfaces. For a better understanding, please have a look at the below example.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">using System;
+namespace Csharp8Features
+{
+    interface IDefaultInterfaceMethod
+    {
+        public void DefaultMethod()
+        {
+            Console.WriteLine("I am a default method in the interface!");
+        }
+    }
+    class AnyClass : IDefaultInterfaceMethod
+    {
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            IDefaultInterfaceMethod anyClass = new AnyClass();
+            anyClass.DefaultMethod();
+            Console.ReadKey();
+        }
+    }
+}</pre>
+<p>&nbsp;</p>
+</div>
+<pre style="padding-left: 40px;"><code class="language-cs"></code></pre>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

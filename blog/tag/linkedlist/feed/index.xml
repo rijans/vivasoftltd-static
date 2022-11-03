@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>linkedlist &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/linkedlist/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Fri, 24 Sep 2021 05:10:54 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>linkedlist &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Implementation of Floyd’s Cycle-Finding Algorithm in Golang</title>
+		<link>/blog/implementation-of-floyds-cycle-finding-algorithm-in-golang/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Tue, 16 Mar 2021 11:55:23 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[algorithm]]></category>
+		<category><![CDATA[datastructure]]></category>
+		<category><![CDATA[goland]]></category>
+		<category><![CDATA[in]]></category>
+		<category><![CDATA[linkedlist]]></category>
+		<category><![CDATA[loop]]></category>
+		<guid isPermaLink="false">/?p=2426</guid>
+
+					<description><![CDATA[What is a loop in a linked list A very common operation in a linked list is to traverse throughout the LinkedList. But when no null value is reached as traversing throughout the linked list, we call this as loops in a linked list. So to detect whether a LinkedList has a loop or not, [&#8230;]]]></description>
+										<content:encoded><![CDATA[<h2>What is a loop in a linked list</h2>
+<p>A very common operation in a linked list is to traverse throughout the LinkedList. But when no null value is reached as traversing throughout the linked list, we call this as loops in a linked list. So to detect whether a LinkedList has a loop or not, we can use Floyd’s Cycle-Finding Algorithm also known as a slow-fast pointer or hear tortoise algorithm.</p>
+<p>We are implementing Floyd’s Cycle-Finding Algorithm to find loops in a linked list</p>
+<h2>Linked List</h2>
+<h3>Node &amp; Linked list struct</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">type Node struct {
+    data interface{}
+    next *Node
+}
+
+type LinkedList struct {
+    head *Node
+}</pre>
+<h3>Push to a Linked List</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func (ll *LinkedList) Push(data interface{}) {
+    list := &amp;Node{
+        data: data,
+    }
+    list.next = ll.head
+    if ll.head != nil {
+        ll.head = list
+    }
+    ll.head = list
+
+    l := ll.head
+    for l.next != nil {
+        l = l.next
+    }
+}</pre>
+<h3>Display the Linked list</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func (ll *LinkedList) Display() {
+    list := ll.head
+    for list != nil {
+        fmt.Printf("%+v -&gt; ", list.data)
+        list = list.next
+    }
+    fmt.Println()
+}</pre>
+<h3>Detect loops in LinkedList using Floyd’s Cycle-Finding Algorithm</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func (ll *LinkedList) DetectLoop() bool {
+    slowPtr := ll.head
+    fastPtr := ll.head
+
+    for slowPtr != nil &amp;&amp; fastPtr != nil &amp;&amp; fastPtr.next != nil {
+        slowPtr = slowPtr.next
+        fastPtr = fastPtr.next.next
+        if slowPtr == fastPtr {
+            return true
+        }
+    }
+    return false
+}</pre>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/implementation-of-floyds-cycle-finding-algorithm-in-golang" target="_blank" rel="noopener nofollow">Personal Blog</a></p>
+<h3>Main function</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    link := LinkedList{}
+    link.Push(1)
+    link.Push(2)
+    link.Push(3)
+    link.Push(4)
+    link.Push(5)
+
+    // creating a loop in the above linked list
+    link.head.next.next.next.next.next = link.head  // comment this then for no loop
+
+    if link.DetectLoop() {
+        fmt.Println("found loop")
+    } else {
+        fmt.Println("no loop")
+    }
+}
+
+// output
+found loop</pre>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Reverse a linked list using Golang</title>
+		<link>/blog/reverse-a-linked-list-using-golang/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Tue, 16 Mar 2021 11:46:13 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[datastructure]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[linkedlist]]></category>
+		<category><![CDATA[reverse]]></category>
+		<guid isPermaLink="false">/?p=2417</guid>
+
+					<description><![CDATA[As we start coding and slowly learning about Data Structures(DS), we come across a very famous linear data structure which is known as a linked list. Linked lists and their related questions are quite popular in interviewers who love problem-solving. What is a Linked List? A linked list is a common linear data structure. its [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>As we start coding and slowly learning about Data Structures(DS), we come across a very famous linear data structure which is known as a linked list. Linked lists and their related questions are quite popular in interviewers who love problem-solving.</p>
+<h2>What is a Linked List?</h2>
+<p>A linked list is a common linear data structure. its elements are also known as **Node** are not stored at a contiguous location. The nodes are linked using pointers. Linked lists are popular as their size is not fixed like an array. Linked list&#8217;s each node contains a value and a pointer to the next node. The head pointer points to the first node, and the last node of the list points to null. When the linked list is empty, the head pointer points to null.</p>
+<p>Types of Linked Lists:<br />
+1. Singly Linked List (Uni-directional)<br />
+2. Doubly Linked List (Bi-directional)<br />
+3. Circular Linked List</p>
+<p>I&#8217;ll write about linked list types in a different post as this post about reversing a linked list.</p>
+<h2>Pros:</h2>
+<ol>
+<li>Dynamically increase in size</li>
+<li>Easy to insertion/deletion</li>
+</ol>
+<h2>Cons:</h2>
+<ol>
+<li>Accessing a random node is not allowed.</li>
+<li>Additional memory space needs for each node in a linked list.</li>
+<li>Not cache friendly.</li>
+</ol>
+<h2>Linked List</h2>
+<h2>Node for a linked list</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">type Node struct {
+    prev *Node
+    next *Node
+    key interface{}
+}
+
+type LinkedList struct {
+    head *Node
+    tail *Node
+}</pre>
+<h3>Push method for a Linked List</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func (ll *LinkedList) Push(key interface{}) {
+    list := &amp;Node{
+        next: ll.head,
+        key: key,
+    }
+    if ll.head != nil {
+        ll.head.prev = list
+    }
+    ll.head = list
+    
+    l := ll.head
+    for ll.next != nil {
+        l = l.next
+    }
+    ll.tail = l
+}</pre>
+<pre></pre>
+<h3>Display a Linked list</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func (ll *LinkedList) Display() {
+    list := ll.head
+    for list != nil {
+        fmt.Printf("%+v -&gt;", list.key)
+        list = list.next
+    }
+    fmt.Println()
+}
+
+// normal display function
+func Display(list *Node) {
+    for list != nil {
+        fmt.Printf("%v -&gt;", list.key)
+        list = list.next
+    }
+    fmt.Println()
+}</pre>
+<h3>Reverse a Linked list</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func (ll *LinkedList) Reverse() {
+    currentNode := ll.head
+    var next *Node
+    var previousNode *Node
+    ll.tail = ll.head
+
+    for currentNode != nil {
+        next, currentNode.next = currentNode.next, previousNode
+        previousNode, currentNode = currentNode, next
+    }
+    ll.head = previousNode
+    Display(ll.head)
+}</pre>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/reverse-a-linked-list-using-golang" rel="nofollow noopener" target="_blank">Personal Blog</a></p>
+<h3>Main function</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    link := LinkedList{}
+    link.Push(9)
+    link.Push(12)
+    link.Push(15)
+    link.Push(8)
+    link.Push(1)
+    link.Push(3)
+
+    fmt.Println("==============================")
+    fmt.Printf("Head: %v\n", link.head.key)
+    fmt.Printf("Tail: %v\n", link.tail.key)
+    link.Display()
+    fmt.Println("==============================")
+    link.Reverse()
+    fmt.Printf("head: %v\n", link.head.key)
+    fmt.Printf("tail: %v\n", link.tail.key)
+    fmt.Println("==============================")
+}
+
+// output
+==============================
+Head: 3
+Tail: 9
+3 -&gt; 1 -&gt; 8 -&gt; 15 -&gt; 12 -&gt; 9 -&gt; 
+==============================
+9 -&gt; 12 -&gt; 15 -&gt; 8 -&gt; 1 -&gt; 3 -&gt; 
+head: 9
+tail: 3
+==============================</pre>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

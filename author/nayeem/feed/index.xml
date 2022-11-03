@@ -1,0 +1,629 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Nayeem Iqubal &#8211; Vivasoft</title>
+	<atom:link href="/author/nayeem/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Tue, 23 Nov 2021 06:38:10 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>Nayeem Iqubal &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>DocuSign Connect/Webhook Setup</title>
+		<link>/blog/docusign-connect-webhook-setup/</link>
+					<comments>/blog/docusign-connect-webhook-setup/#respond</comments>
+		
+		<dc:creator><![CDATA[Nayeem Iqubal]]></dc:creator>
+		<pubDate>Thu, 30 Sep 2021 12:06:43 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=2963</guid>
+
+					<description><![CDATA[]]></description>
+										<content:encoded><![CDATA[<div class="et_pb_section et_pb_section_0 et_section_regular" >
+				
+				
+				
+				
+				
+				
+				<div class="et_pb_row et_pb_row_0">
+				<div class="et_pb_column et_pb_column_4_4 et_pb_column_0  et_pb_css_mix_blend_mode_passthrough et-last-child">
+				
+				
+				
+				
+				<div class="et_pb_module et_pb_text et_pb_text_0  et_pb_text_align_left et_pb_bg_layout_light">
+				
+				
+				
+				
+				<div class="et_pb_text_inner"><span style="font-weight: 400">DocuSign is an online platform where people can send a document to others for signature electronically. Sometimes our application needs to know the status of a document (Envelope Status) and based on that we may want to do something in our integration. DocuSign Connect feature enables us to do that job. It basically sends a request to an URL with payload (Data as Json or XML format) which contains information about signers status and overall document status. Here I will try to show you how to setup one. </span></p>
+<p><span style="font-weight: 400">At First We need a Developer Account. After logged in to your account go to </span><b>My Apps and Keys</b><span style="font-weight: 400"> Page. Here You will see your Apps and Integration lists .</span></p>
+<p><img decoding="async" class="alignnone wp-image-2965" src="/wp-content/uploads/2021/09/1-300x167.png" alt="1 DocuSign Connect/Webhook Setup" width="374" height="208"></p>
+<p><span style="font-weight: 400">To go to DocuSign Connect Page navigate the left sidebar and find </span><b>Connect </b><span style="font-weight: 400">Under </span><b>Integrations </b><span style="font-weight: 400">Section</span><b>.</b></p>
+<p><img decoding="async" class="alignnone size-medium wp-image-2966" src="/wp-content/uploads/2021/09/2-248x300.png" alt="2 DocuSign Connect/Webhook Setup" width="248" height="300"></p>
+<p><span style="font-weight: 400">If you go there for the first time it will say Enable Connect click the Button to enable DocuSign Connect You can Disable/Enable it anytime as  there is no configurations it will show you an empty list of configurations. Select ADD CONFIGURATION from top right it will show you a form.</span></p>
+<p><img decoding="async" class="alignnone size-medium wp-image-2967" src="/wp-content/uploads/2021/09/3-300x131.png" alt="3 DocuSign Connect/Webhook Setup" width="300" height="131"></p>
+<p><span style="font-weight: 400">Only Name and URL to Publish field is required. There are many additional options play around with them later. For Data Format Select Rest version it will send payload as json format. JSON is a popular way to send Data now a days. Put your Application URL in the URL to Publish field where you will handle this notification. Mark All Envelope Events, Recipient Events and Include Data to receive all types of information in the payload. Thats All setup is Done. </span></p>
+<p><span style="font-weight: 400">Now It&#8217;s time for test it. Send a document to a Test Signer from their Manage section. Go to Manage Page.</span></p>
+<p><img decoding="async" class="alignnone size-medium wp-image-2968" src="/wp-content/uploads/2021/09/4-300x138.png" alt="4 DocuSign Connect/Webhook Setup" width="300" height="138"></p>
+<p><span style="font-weight: 400">Click on “NEW” button and select “Send an Envelope” It will display a form where we can upload and send it to some people for sign. After Send successfully It will send a notification to the Webhook URL that a document is sent to the recipients. How we verify that ? They have a Dashboard to see the logs. Go to the Connect Page and Click on the Logs.</span></p>
+<p><img decoding="async" class="alignnone size-medium wp-image-2969" src="/wp-content/uploads/2021/09/5-300x64.png" alt="5 DocuSign Connect/Webhook Setup" width="300" height="64"></p>
+<p><span style="font-weight: 400">Here you will see the list of requests made to the Webhook URL and their payload and how your application responds. In the real world Sending documents will be done programmatically by using their E Signature API.</span></p>
+<p>&nbsp;</div>
+			</div>
+			</div>
+				
+				
+				
+				
+			</div>
+				
+				
+			</div>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/docusign-connect-webhook-setup/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Working with DocuSign, Authorization and Sending Document for Signature</title>
+		<link>/blog/working-with-docusign-authorization-and-sending-document-for-signature/</link>
+		
+		<dc:creator><![CDATA[Nayeem Iqubal]]></dc:creator>
+		<pubDate>Mon, 22 Mar 2021 18:40:21 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=2508</guid>
+
+					<description><![CDATA[DocuSign is a well known platform where users can send their document for signing via email or your app. I will try to show you how DocuSign authorize an user and how can we send a document to users for signing electronically and we will do that programmatically. To use DocuSign at first we need [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>DocuSign is a well known platform where users can send their document for signing via email or your app. I will try to show you how DocuSign authorize an user and how can we send a document to users for signing electronically and we will do that programmatically.</p>
+<p>To use DocuSign at first we need a free developer account. Go <a href="https://developers.docusign.com/" rel="nofollow noopener" target="_blank">there</a> and select <strong>Developer Account </strong>button in the top left then <strong>Create Account</strong>. Log into this account. After login you need to create an app for your integration. Go to <strong>My Apps and Keys </strong>there you will see your Integrations. Click ADD APP &amp; INTEGRATION KEY button. Give a name and select Authorization Code Grant for User Application. In secret keys generate one and save them somewhere because you won&#8217;t be able to see it again. In Redirect URLs Add one which will be needed when we make URLs for authorization. An Integration key will be generated for your app we need this later.</p>
+<p>We will use Authorization Code Grant to authorize users. Authorization process has 2 steps first we need to obtain Authorization Code and 2nd using that Authorization Code we need to obtain access token using rest api call.</p>
+<p>To get Authorization Code we need to generate a url where we need to redirect ours users to that url. There user will login to their DocuSign Account and grant access to our app. After user authorizes our app user will be redirected to our whitelisted redirect url with a Authorization Code. Below is the URL format.</p>
+<p>&nbsp;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">https://account-d.docusign.com/oauth/auth?response_type=code&amp;scope=signature&amp;client_id=7c2b8d7e-xxxx-xxxx-xxxx-cda8a50dd73f&amp;state=a39fh23hnf23&amp;redirect_uri=http://example.com/callback/</pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>client_id is the integration key and redirect_uri is the url where DocuSign will redirect users with a Authorization Code. After Redirected URL will contain a parameter called code. We need this code to generate access token.</p>
+<p>To Get Access Token we need to call a rest api and we need to set header. The authorization header will contain integration key and secret key separated by a colon and converted it to base64 with prefixed by a word <strong>Basic</strong>. We can generate this base64 easily by using browser console. In Console write this and enter</p>
+<p>&nbsp;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic"> 
+btoa('INTEGRATION_KEY:SECRET_KEY')
+</pre>
+<p>&nbsp;</p>
+<p>it will show the base64 of the string. set this string in the Authorization Header. This is a POST method so I am using curl to request this endpoint.</p>
+<p>&nbsp;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="powershell">curl --header "Authorization: Basic BASE64_OF_YOUR_INTEGRATION_AND_SECRET_KEY"
+--data "grant_type=authorization_code&amp;code=AUTHORIZATION_CODE_FROM_DOCUSIGN" 
+--request POST https://account-d.docusign.com/oauth/token</pre>
+<p>&nbsp;</p>
+<p>The response of this request will have access_token, refresh_token and expires_in . We need this access token to make every DocuSign API Call.</p>
+<p>I am using C# as an example for how to send a document for signing. We need to add a C# library to make DocuSign api call. Search and install eSignature API via  Nuget Package Manager Which is made by DocuSign. First we need to make an envelope here is the Code example to  make an Envelope.</p>
+<p>&nbsp;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">private EnvelopeDefinition MakeEnvelope(string signerEmail, string signerName, string ccEmail, string ccName)
+{
+    string doc2DocxBytes = Convert.ToBase64String(System.IO.File.ReadAllBytes(Config.docDocx));
+    string doc3PdfBytes = Convert.ToBase64String(System.IO.File.ReadAllBytes(Config.docPdf)); 
+    // Create the envelope definition
+    EnvelopeDefinition env = new EnvelopeDefinition();
+    env.EmailSubject = "Please sign this document set";
+    Document doc1 = new Document();
+    string b64 = Convert.ToBase64String(document1(signerEmail, signerName, ccEmail, ccName));
+    doc1.DocumentBase64 = b64;
+    doc1.Name = "Order acknowledgement"; // can be different from actual file name
+    doc1.FileExtension = "html"; // Source data format. Signed docs are always pdf.
+    doc1.DocumentId = "1"; // a label used to reference the doc
+    Document doc2 = new Document {
+        DocumentBase64 = doc2DocxBytes,
+        Name = "Battle Plan", // can be different from actual file name
+        FileExtension = "docx",
+        DocumentId = "2"
+    };
+
+    Document doc3 = new Document
+    {
+        DocumentBase64 = doc3PdfBytes,
+        Name = "Lorem Ipsum", // can be different from actual file name
+        FileExtension = "pdf",
+        DocumentId = "3"
+    };
+
+
+    // The order in the docs array determines the order in the envelope
+    env.Documents =  new List&lt;Document&gt; { doc1, doc2, doc3};
+
+    // create a signer recipient to sign the document, identified by name and email
+    // We're setting the parameters via the object creation
+    Signer signer1 = new Signer {
+        Email = signerEmail,
+        Name = signerName,
+        RecipientId = "1",
+        RoutingOrder = "1"
+    };
+
+    // routingOrder (lower means earlier) determines the order of deliveries
+    // to the recipients. Parallel routing order is supported by using the
+    // same integer as the order for two or more recipients.
+
+    // create a cc recipient to receive a copy of the documents, identified by name and email
+    // We're setting the parameters via setters
+    CarbonCopy cc1 = new CarbonCopy
+    {
+        Email = ccEmail,
+        Name = ccName,
+        RecipientId = "2",
+        RoutingOrder = "2"
+    };
+
+    // Create signHere fields (also known as tabs) on the documents,
+    // We're using anchor (autoPlace) positioning
+    //
+    // The DocuSign platform searches throughout your envelope's
+    // documents for matching anchor strings. So the
+    // signHere2 tab will be used in both document 2 and 3 since they
+    // use the same anchor string for their "signer 1" tabs.
+    SignHere signHere1 = new SignHere
+    {
+        AnchorString = "**signature_1**",
+        AnchorUnits = "pixels",
+        AnchorYOffset = "10",
+        AnchorXOffset = "20"
+    };
+
+    SignHere signHere2 = new SignHere
+    {
+        AnchorString = "/sn1/",
+        AnchorUnits = "pixels",
+        AnchorYOffset = "10",
+        AnchorXOffset = "20"
+    };
+    
+
+    // Tabs are set per recipient / signer
+    Tabs signer1Tabs = new Tabs {
+        SignHereTabs = new List&lt;SignHere&gt; { signHere1, signHere2}
+    };
+    
+    signer1.Tabs = signer1Tabs;
+
+    // Add the recipients to the envelope object
+    Recipients recipients = new Recipients
+    {
+        Signers = new List&lt;Signer&gt; { signer1 },
+        CarbonCopies = new List&lt;CarbonCopy&gt; { cc1 }
+    };
+    
+    env.Recipients = recipients;
+
+    // Request that the envelope be sent by setting |status| to "sent".
+    // To request that the envelope be created as a draft, set to "created"
+    env.Status = RequestItemsService.Status;
+
+    return env;
+}
+
+// The HTML of the first document in the envelope used by our example is defined here
+private byte[] document1(string signerEmail, string signerName, string ccEmail, string ccName)
+{
+    return Encoding.UTF8.GetBytes(
+    " &lt;!DOCTYPE html&gt;\n" +
+        "    &lt;html&gt;\n" +
+        "        &lt;head&gt;\n" +
+        "          &lt;meta charset=\"UTF-8\"&gt;\n" +
+        "        &lt;/head&gt;\n" +
+        "        &lt;body style=\"font-family:sans-serif;margin-left:2em;\"&gt;\n" +
+        "        &lt;h1 style=\"font-family: 'Trebuchet MS', Helvetica, sans-serif;\n" +
+        "            color: darkblue;margin-bottom: 0;\"&gt;World Wide Corp&lt;/h1&gt;\n" +
+        "        &lt;h2 style=\"font-family: 'Trebuchet MS', Helvetica, sans-serif;\n" +
+        "          margin-top: 0px;margin-bottom: 3.5em;font-size: 1em;\n" +
+        "          color: darkblue;\"&gt;Order Processing Division&lt;/h2&gt;\n" +
+        "        &lt;h4&gt;Ordered by " + signerName + "&lt;/h4&gt;\n" +
+        "        &lt;p style=\"margin-top:0em; margin-bottom:0em;\"&gt;Email: " + signerEmail + "&lt;/p&gt;\n" +
+        "        &lt;p style=\"margin-top:0em; margin-bottom:0em;\"&gt;Copy to: " + ccName + ", " + ccEmail + "&lt;/p&gt;\n" +
+        "        &lt;p style=\"margin-top:3em;\"&gt;\n" +
+        "  Candy bonbon pastry jujubes lollipop wafer biscuit biscuit. Topping brownie sesame snaps sweet roll pie. Croissant danish biscuit soufflé caramels jujubes jelly. Dragée danish caramels lemon drops dragée. Gummi bears cupcake biscuit tiramisu sugar plum pastry. Dragée gummies applicake pudding liquorice. Donut jujubes oat cake jelly-o. Dessert bear claw chocolate cake gummies lollipop sugar plum ice cream gummies cheesecake.\n" +
+        "        &lt;/p&gt;\n" +
+        "        &lt;!-- Note the anchor tag for the signature field is in white. --&gt;\n" +
+        "        &lt;h3 style=\"margin-top:3em;\"&gt;Agreed: &lt;span style=\"color:white;\"&gt;**signature_1**/&lt;/span&gt;&lt;/h3&gt;\n" +
+        "        &lt;/body&gt;\n" +
+        "    &lt;/html&gt;"
+        );
+}</pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>And this is the code for sending this envelope to DocuSign.</p>
+<p>&nbsp;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">public EnvelopeSummary SendEnvelope(string signerEmail, string signerName, string ccEmail, string ccName)
+        {
+            var accessToken = ACCESS_TOKEN;
+            var basePath = BASE_PATH + "/restapi";
+            var accountId = ACCOUNT_ID;
+
+            EnvelopeDefinition env = MakeEnvelope(signerEmail, signerName, ccEmail, ccName);
+            var apiClient = new ApiClient(basePath);
+            apiClient.Configuration.DefaultHeader.Add("Authorization", "Bearer " + accessToken);
+            var envelopesApi = new EnvelopesApi(apiClient);
+            EnvelopeSummary results = envelopesApi.CreateEnvelope(accountId, env);
+            RequestItemsService.EnvelopeId = results.EnvelopeId;
+            return results;
+        }</pre>
+<p>ACCESS_TOKEN is the token we got from the authorization step. BASE_PATH will be <strong>https://demo.docusign.net/</strong> as this is for development purpose and you will find it in the admin dashboard (My Apps and Keys) Page. ACCOUNT_ID is the API Account Id which is also in the dashboard.  If our SendEnvelope method is called successfully , Signers will be notified via email that he/she has a document to Sign. Go through their <a href="https://developers.docusign.com/docs/esign-rest-api/how-to/" rel="nofollow noopener" target="_blank">official doc</a> if you want to dive deeply to know other features also.</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>How to use Event Aggregator in Aurelia</title>
+		<link>/blog/how-to-use-event-aggregator-in-aurelia/</link>
+		
+		<dc:creator><![CDATA[Nayeem Iqubal]]></dc:creator>
+		<pubDate>Fri, 19 Mar 2021 16:40:20 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=2499</guid>
+
+					<description><![CDATA[In a frontend Application we sometimes need to send some message or notify other components to update UI based on some data. We can achieve this using Event Aggregator in Aurelia. I will try to show you how it works. We need to use Dependency Injection here. This is a way to create a singleton [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>In a frontend Application we sometimes need to send some message or notify other components to update UI based on some data. We can achieve this using Event Aggregator in Aurelia. I will try to show you how it works. We need to use Dependency Injection here. This is a way to create a singleton object instance of a class (service methods or utils) in constructor and use it inside that class.</p>
+<p>To simply demonstrate Event Aggregator I am creating 2 components (Custom Elements) Message and Form. Message is just display a message property and Form component has one text area and a button. We want to pass whatever user enters in the textbox when user clicks on the button. See how the codes will look like for these 2 components.</p>
+<p>Message.js</p>
+<p>&nbsp;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">import { inject } from "aurelia-framework";
+import { EventAggregator } from "aurelia-event-aggregator";
+
+@inject(EventAggregator)
+export class Message {
+  message = "Default Text";
+
+  constructor(eventAggregator) {
+    this.eventAggregator = eventAggregator;
+    this.eventAggregator.subscribe("UpdateMessage", (payload) =&gt; {
+      this.message = payload;
+    });
+  }
+}</pre>
+<p>Message.html</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">&lt;template&gt;
+  &lt;div&gt;
+    ${message}
+  &lt;/div&gt;
+&lt;/template&gt;</pre>
+<p>To use dependency injector we need to use inject annotation which is from aurelia-framework. We need to tell in the inject method which classes we will use to initialize. Those class instances will be passed in the constructor. We are using EventAggregator from aurelia-event-aggregator.In eventAggregator object we have subscribe method which takes 2 parameters 1st one is channel name as string (I used &#8220;UpdateMessage&#8221;) and 2nd one is a function. If it publishes any messages in the same channel this function will be called.</p>
+<p>Form.js</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">import { inject } from "aurelia-framework";
+import { EventAggregator } from "aurelia-event-aggregator";
+
+@inject(EventAggregator)
+export class Form {
+  message = "";
+
+  constructor(eventAggregator) {
+    this.eventAggregator = eventAggregator;
+  }
+  send = () =&gt; {
+    this.eventAggregator.publish("UpdateMessage", this.message);
+  };
+}</pre>
+<p>Form.html</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">&lt;template&gt;
+  &lt;div&gt;
+    &lt;input value.bind="message"/&gt;
+    &lt;button click.delegate="send()"&gt;Send&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</pre>
+<p>Here we publish the message property of Form class to the UpdateMessage channel. publish method takes 1st parameter for Channel Name and 2nd parameter is for payload data which will be passed to the function of subscribe method.</p>
+<p>Sometimes we need to refresh some components data based on some user actions. That&#8217;s how  components can communicate with each other.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Custom Elements and Compose View in Aurelia</title>
+		<link>/blog/custom-elements-and-compose-view-in-aurelia/</link>
+		
+		<dc:creator><![CDATA[Nayeem Iqubal]]></dc:creator>
+		<pubDate>Thu, 18 Mar 2021 16:58:07 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=2476</guid>
+
+					<description><![CDATA[Custom elements are useful when we have large page content and we need to break the pages into small pieces of components which can be reusable in the other pages also. To create a custom element we just need to create a view template and optionally a view model for it. Using a custom element [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Custom elements are useful when we have large page content and we need to break the pages into small pieces of components which can be reusable in the other pages also. To create a custom element we just need to create a view template and optionally a view model for it. Using a custom element to a page or another element is to just require it in that page and add a custom html tag for this.</p>
+<p>Say we have a page that displays users information users personal info, his address and the blog posts which was posted by them. If we put all the information in a single component it will look like similar as below</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;template&gt;
+  &lt;div&gt;
+    Users Personal Information
+  &lt;/div&gt;
+  &lt;div&gt;
+    Users Contact Information
+  &lt;/div&gt;
+  &lt;div&gt;
+    Blog Posts
+    &lt;ul&gt;
+      &lt;li&gt;Post 1&lt;/li&gt;
+      &lt;li&gt;Post 2&lt;/li&gt;
+      &lt;li&gt;Post 3&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</pre>
+<p>&nbsp;</p>
+<p>Here its not a large amount of code but definitely it will be very large in real scenarios. There we can refactor this code and break these into 3 components like PersonalInfo, ContactInfo, UserBlogPost then it will look clean and easy to understand and it will be highly maintainable. Basically as a frontend developer you will deal with hundreds of components and composing them. It is conventional to put the reusable pieces of components in a separate folder called components/partials you can use whatever names you like. So I am creating these custom elements in components folder  as like below.</p>
+<p>PersonalInfo.html</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;template&gt;
+  &lt;div&gt;
+    Users Personal Information
+  &lt;/div&gt;
+&lt;/template&gt;</pre>
+<p>ContactInfo.html</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;template&gt;
+  &lt;div&gt;
+    Users Contact Information
+  &lt;/div&gt;
+&lt;/template&gt;</pre>
+<p>UserBlogPost.html</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;template&gt;
+  &lt;div&gt;
+    Blog Posts
+    &lt;ul&gt;
+      &lt;li&gt;Post 1&lt;/li&gt;
+      &lt;li&gt;Post 2&lt;/li&gt;
+      &lt;li&gt;Post 3&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</pre>
+<p>Create 3 view models for each of these also PersonalInfo.js , ContactInfo.js and UserBlogPost.js.Make a class with the same file name (its optional though but its good to have a view model also). Now we will include them in our main user details page. I am using app.html file for these. See how our app.html look like</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;template&gt;
+  &lt;require from="./components/PersonalInfo"&gt;&lt;/require&gt;
+  &lt;require from="./components/ContactInfo"&gt;&lt;/require&gt;
+  &lt;require from="./components/UserBlogPost"&gt;&lt;/require&gt;
+  &lt;personal-info&gt;&lt;/personal-info&gt;
+  &lt;contact-info&gt;&lt;/contact-info&gt;
+  &lt;user-blog-post&gt;&lt;/user-blog-post&gt;
+&lt;/template&gt;</pre>
+<p>If you run it you will see the exact same result but our code now looks clean and we can easily reuse them into other pages also. Now see how we require and placed it in the template. we need to require it and specify its relative path don&#8217;t need to specify the extension. After requiring it we need to tell where to place it by html tag (hyphened version of the file name). That&#8217;s it you now know about custom elements.</p>
+<p>Another way to use it by using &lt;compose&gt; attribute. Using compose attribute code will look like these for our app.html file</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;template&gt;
+  &lt;compose view-model="./components/PersonalInfo"&gt;&lt;/compose&gt;
+  &lt;compose view-model="./components/ContactInfo"&gt;&lt;/compose&gt;
+  &lt;compose view-model="./components/UserBlogPost"&gt;&lt;/compose&gt;
+&lt;/template&gt;</pre>
+<p>Output will be the same. Compose is good when you want to render dynamic element based on some criteria. You can put a variable in the view-model attribute and change the path of the component from parent View Model. That is a difference between compose and custom element.</p>
+<p>Now I will show you how you can pass a variable to the child component. Say we have user object with firstName and lastName in our app.js (Parent Component). We want to pass its value to the PersonalInfo component (Child Component). To make it work we need to declare a variable in  PersonalInfo.js and make it bindable properties. see how it do that</p>
+<p>PersonalInfo.js</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">import { bindable } from "aurelia-framework";
+export class PersonalInfo {
+  @bindable user;
+}</pre>
+<p>And In the child component view template we will display the firstName and lastName info.</p>
+<p>PersonalInfo..html</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;template&gt;
+  &lt;div&gt;
+    ${user.firstName }
+    ${user.lastName }
+  &lt;/div&gt;
+&lt;/template&gt;</pre>
+<p>Now to pass user object from parent model we need to add an attribute in the html tag for custom element. so the code will be</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;template&gt;
+  &lt;require from="./components/PersonalInfo"&gt;&lt;/require&gt;
+  &lt;require from="./components/ContactInfo"&gt;&lt;/require&gt;
+  &lt;require from="./components/UserBlogPost"&gt;&lt;/require&gt;
+  &lt;personal-info user.bind="user"&gt;&lt;/personal-info&gt;
+  &lt;contact-info&gt;&lt;/contact-info&gt;
+  &lt;user-blog-post&gt;&lt;/user-blog-post&gt;
+&lt;/template&gt;</pre>
+<p>See user.bind here user is the child component property name (it will be hyphened version of the name) and you have to specify which parent property it will pass as value. You can also bind a function like this way. To know more about custom elements go through their official <a href="https://aurelia.io/docs/templating/custom-elements" rel="nofollow noopener" target="_blank">docs</a> .</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Configuring Aurelia Router and Its Basics</title>
+		<link>/blog/configuring-aurelia-router-and-its-basics/</link>
+		
+		<dc:creator><![CDATA[Nayeem Iqubal]]></dc:creator>
+		<pubDate>Wed, 17 Mar 2021 12:33:28 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=2452</guid>
+
+					<description><![CDATA[Routing is necessary for users to navigate through the whole web site. To make SPA project routing in frontend is must. Configure aurelia router in a aurelia project is pretty easy. First Create a fresh project using aurelia-cli. Check out this post how to do that. To configure router we need to add configureRouter method in [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p id="65c1" class="hd he fm hf b hg hh hi hj hk hl hm hn ho hp hq hr hs ht hu hv hw dc dv" data-selectable-paragraph="">Routing is necessary for users to navigate through the whole web site. To make SPA project routing in frontend is must. Configure aurelia router in a aurelia project is pretty easy. First Create a fresh project using aurelia-cli. Check out this <a href="/getting-started-with-aurelia/">post</a> how to do that.</p>
+<p id="88c2" class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">To configure router we need to add configureRouter method in app.js file. See this code below.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">export class App {
+  configureRouter(config, router) {
+    this.router = router;
+    config.title = "Aurelia Router";
+    config.map([
+     {
+       route: ["", "home"],
+       name: "home",
+       moduleId: PLATFORM.moduleName("home")
+     },
+     {
+       route: "user/:id",
+       name: "user",
+       moduleId: PLATFORM.moduleName("user")
+     },     {
+       route: "about",
+       name: "about",
+       moduleId: PLATFORM.moduleName("about")
+     },
+     {
+       route: "contact",
+       name: "contact",
+       moduleId: PLATFORM.moduleName("contact")
+     },
+    ]);
+  }
+}</pre>
+<p class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">We will create 4 pages Home, User , Ab<span id="rmm">o</span>ut and Contact Page. For each page there will be 2 files with the same name one will be .js and the other will be .html. So we need 8 files for these 4 pages. File contents will be as follows</p>
+<p id="a4e1" class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">home.js</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">export class Home {}</pre>
+<p class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">home.html</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;code class="language-markup"&gt;
+&lt;template&gt;
+  &lt;h1&gt;Home Page&lt;/h1&gt;
+&lt;/template&gt;</pre>
+<p class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">user.js</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">export class User {
+  userId = '';
+  activate(data){
+    this.userId = data.id;
+  }
+}</pre>
+<p class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">Here we define active method which will be called and data object will contain route parameters value as an object.</p>
+<p id="2c34" class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">user.html</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">&lt;template&gt;
+  &lt;h1&gt;User Page&lt;/h1&gt;
+  &lt;p&gt;User ID ${userId}&lt;/p&gt;
+&lt;/template&gt;</pre>
+<p class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">about.js</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">export class About {}</pre>
+<p class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">about.html</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;template&gt;
+  &lt;h1&gt;User Page&lt;/h1&gt;
+  &lt;p&gt;User ID ${userId}&lt;/p&gt;
+&lt;/template&gt;</pre>
+<p class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">contact.js</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">export class Contact {}</pre>
+<p class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">contact.html</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">&lt;template&gt;
+  &lt;h1&gt;Contact Page&lt;/h1&gt;
+&lt;/template&gt;</pre>
+<p class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">You will see we are mapping routes by using config.map . This accepts an array of route object which registers url and the page it will display. <strong>route</strong> is the url pattern and we can specify route parameter also by using :param in the pattern, <strong>name</strong> is the route name, <strong>moduleId</strong> is the component/page name.</p>
+<p id="0279" class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">config.title is just setting the value of html title tag and a router instance is passed in the function parameter which is setting the router variable which will be used to redirect and change url programmatically and for other stuff.</p>
+<p id="e5f4" class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">Now only one thing left we need to tell in app.html where our page will be displayed. there is a &lt;router-view&gt; tag for this. So Our app.html file will look like this.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;template&gt;
+   &lt;ul&gt;
+    &lt;li&gt;&lt;a href="/"&gt;Home&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#about"&gt;About&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#contact"&gt;Contact&lt;/a&gt;&lt;/li&gt;
+   &lt;/ul&gt;
+   &lt;router-view&gt;&lt;/router-view&gt;
+&lt;/template&gt;</pre>
+<p class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">router-view will be replaced by actual page based on the url. Now If you run the project you will see something like this. We put some links in the li tag so user can navigate by clicking. You will notice there is a # tag in the url which tells aurelia that match url pattern after # and render view accordingly.</p>
+<p><img decoding="async" class="wp-image-2453 aligncenter" src="/wp-content/uploads/2021/03/home-300x192.png" alt="home Configuring Aurelia Router and Its Basics" width="400" height="256"></p>
+<article>
+<div>
+<section class="dc fh fi cx fj">
+<div class="n p">
+<div class="aj ak al am an fk ap w">
+<p id="9b48" class="hd he fm hf b hg hy hh hi hj hz hk hl hm ia hn ho hp ib hq hr hs ic ht hu hw dc dv" data-selectable-paragraph="">If you click on the links (Home, About, Contact), corresponding page will be displayed and if you go to <a class="bq hx" href="http://localhost:8080/#user/34234" rel="noopener nofollow" target="_blank">http://localhost:8080/#user/</a>1 it will display user page with the route parameter value which was passed with url.</p>
+<p data-selectable-paragraph="">Check out my next <a href="/?p=2476&amp;preview=true">post</a> about Custom Elements</p>
+</div>
+</div>
+</section>
+</div>
+</article>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Getting Started with Aurelia</title>
+		<link>/blog/getting-started-with-aurelia/</link>
+		
+		<dc:creator><![CDATA[Nayeem Iqubal]]></dc:creator>
+		<pubDate>Wed, 17 Mar 2021 11:57:48 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=2442</guid>
+
+					<description><![CDATA[In VivaSoft Limited We have some Clients who want to develop their project using aurelia in the frontend. So recently I have learned Aurelia to work with a Client. It is similar with Angular and VueJS. Here I will try to show you how to start a project with aurelia and its basic structure. Aurelia [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>In VivaSoft Limited We have some Clients who want to develop their project using aurelia in the frontend. So recently I have learned Aurelia to work with a Client. It is similar with Angular and VueJS. Here I will try to show you how to start a project with aurelia and its basic structure.</p>
+<p>Aurelia is a Javascript Frontend Framework. It is very simple to understand and learn. As It is a frontend framework its purpose is to render UI in the browser. We can easily make SPA Web Applications using Aurelia.</p>
+<p>Before l<span id="rmm">e</span>arning it you must know JS as it is a JS framework and You should know Modern ES Syntax (ES6). You must know HTML and CSS very well also as it deals with Web UI.</p>
+<p id="f10b" class="hw hx fm hy b hz ia ib ic id ie if ig ih ii ij ik il im in io ip iq ir is it dc dv" data-selectable-paragraph="">You need to have NodeJS installed in your Machine as Aurelia uses NPM as Dependency Manager. NPM will be installed with NodeJS.</p>
+<p id="4a55" class="hw hx fm hy b hz ia ib ic id ie if ig ih ii ij ik il im in io ip iq ir is it dc dv" data-selectable-paragraph="">After Installing NodeJS run the following command in your cmd/bash terminal to install Aurelia CLI tool.</p>
+<p style="text-align: center;" data-selectable-paragraph=""><strong class="je cp">npm install -g aurelia-cli</strong></p>
+<p data-selectable-paragraph="">Using aurelia-ali we can create a basic project with all the things we need to develop a project with Aurelia. To create a project go to the folder where you want to create your project and run `<strong class="hy cp">au new` </strong>command<strong class="hy cp"> </strong>in your terminal. Give a name to your project and enter then a couple of options will appear select Default Setup. When it asks for “if you would like to install your new project’s dependencies” Select Yes to install Dependencies. Wait for a few seconds until this process finishes. After Successfully created go to the project folder and run `<strong class="hy cp">npm start` </strong>. it will start the project and You will see a Hello World! Page at <a class="bq ji" href="http://localhost:8080/" rel="noopener nofollow" target="_blank">http://localhost:8080/</a> in your Browser.</p>
+<p data-selectable-paragraph="">Now open the project folder in your Code Editor (I prefer VS Code for JS Development). If you see the Project Folder Structure you will see a src folder basically all our codes will be there. There you will see an app.js and app.html file which is rendering Hello World! Page. In Aurelia every page will have 2 files one will be a .js file and the other will be a .html file with the same name. HTML file will contain the html and css code related to this page which will be used for styling and UI layout and js will contain a Class with properties and methods which will be used for event handling and show dynamic content based on properties. JS file is called View Model and HTML file is called View.</p>
+<p id="591b" class="hw hx fm hy b hz ia ib ic id ie if ig ih ii ij ik il im in io ip iq ir is it dc dv" data-selectable-paragraph="">In the view file there will be a &lt;template&gt; tag basically all your html will be wrapped by this tag. To show a value of a JS property in the View use ${PROPERTY_NAME}. In our generated project you will see ${message}. Message property is the property defined in our App Class (View Model) and the value of this property will be displayed in the browser. We can use any js expression here. ${ANY_EXPRESSION}</p>
+<p id="9a58" class="hw hx fm hy b hz ia ib ic id ie if ig ih ii ij ik il im in io ip iq ir is it dc dv" data-selectable-paragraph="">I will try to show you some basic things in Aurelia like data binding and event handling by doing a TODO Application. I will use app.js and app.html for now. I have created 3 properties and 2 methods. Here is the code below for our App Class.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">export class App {
+  constructor() {
+   this.heading = ‘Todos’;
+   this.tasks = [];
+   this.description = ‘’;
+  }
+  addTask() {
+   if (this.description) {
+    this.tasks.push({
+     description: this.description,
+     done: false
+    });
+    this.description = ‘’;
+   }
+  }
+  removeTask(task) {
+   let index = this.tasks.indexOf(task);
+   if (index !== -1) {
+    this.task.splice(index, 1);
+   }
+  }
+}</pre>
+<p class="hw hx fm hy b hz ia ib ic id ie if ig ih ii ij ik il im in io ip iq ir is it dc dv" data-selectable-paragraph="">You can see that the first method will add a new task to our tasks property and the second one will remove a task which the user wants to delete. To capture which value user types for description we will use description property. Heading property will be used to show the Header text.</p>
+<p id="1205" class="hw hx fm hy b hz ia ib ic id ie if ig ih ii ij ik il im in io ip iq ir is it dc dv" data-selectable-paragraph="">Our View file will look like this.</p>
+<p data-selectable-paragraph="">
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;template&gt;
+  &lt;h1&gt;${heading}&lt;/h1&gt;
+  &lt;form submit.trigger=”addTask()”&gt;
+   &lt;input type=”text” value.bind=”description”&gt;
+   &lt;button type=”submit” disabled.bind=”!description”&gt;
+     Add   Task
+   &lt;/button&gt;
+  &lt;/form&gt;
+&lt;/template&gt;
+</pre>
+<p class="hw hx fm hy b hz ia ib ic id ie if ig ih ii ij ik il im in io ip iq ir is it dc dv" data-selectable-paragraph="">I am using h1 tag to show the heading. I have created a form to get input from the user. You can see that input tag has value.bind property and the value is description. Basically thats how we tell aurelia that the description property will be used to store the value from user. This is called 2 way data binding because if we change description from js file it will display that value and If user changes input from browser the value will be changed also. For button disabled.bind will enable/disable this button based on description property. In form tag submit.trigger is binded with addTask method. When user submits this form addTask method will be called. There are many types of html properties in aurelia check out their doc (<strong class="hy cp"><em class="jo">https://aurelia.io/</em></strong>)to know all the available properties and their behavior.</p>
+<p class="hw hx fm hy b hz ia ib ic id ie if ig ih ii ij ik il im in io ip iq ir is it dc dv" data-selectable-paragraph="">Now we need to show the list of tasks in a ul tag. We will loop through tasks array using repeat.for. This will repeat the li tag and display the values of a single task. See the code below.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;template&gt;
+  &lt;h1&gt;${heading}&lt;/h1&gt;
+  &lt;form submit.trigger=”addTask()”&gt;
+   &lt;input type=”text” value.bind=”description”&gt;
+   &lt;button type=”submit” disabled.bind=”!description”&gt;
+     Add Task
+   &lt;/button&gt;
+  &lt;/form&gt;
+  &lt;ul&gt;
+    &lt;li repeat.for=”task of tasks”&gt;
+      &lt;input type=”checkbox” checked.bind=”task.done”&gt;
+      &lt;span css=”text-decoration: ${task.done ? ‘line-through’ : ‘none’}”&gt;
+        ${task.description}
+      &lt;/span&gt;
+      &lt;button click.trigger=”removeTask(task)”&gt;Remove&lt;/button&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/template&gt;
+</pre>
+<p class="hw hx fm hy b hz ia ib ic id ie if ig ih ii ij ik il im in io ip iq ir is it dc dv" data-selectable-paragraph="">click.trigger is used to handle click event and checked.bind is check/uncheck the check box based on done property of a task. If you run this project a form will be displayed in the browser. If user submits form after writing something in the text box a new task will be created and will be displayed in a list. User can delete a task by clicking remove button. And User can check/uncheck a particular task.</p>
+<p id="f4d5" class="hw hx fm hy b hz ia ib ic id ie if ig ih ii ij ik il im in io ip iq ir is it dc dv" data-selectable-paragraph="">I will try to show you How to use Custom Element (Components) , Aurelia Router, Event Aggregator in later posts. Check out next <a href="/configuring-aurelia-router-and-its-basics/">post</a> about Aurelia Router.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

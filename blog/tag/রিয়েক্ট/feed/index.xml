@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>রিয়েক্ট &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/%E0%A6%B0%E0%A6%BF%E0%A7%9F%E0%A7%87%E0%A6%95%E0%A7%8D%E0%A6%9F/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Thu, 30 Dec 2021 10:48:47 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>রিয়েক্ট &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>রিয়েক্ট কি এবং কেন?</title>
+		<link>/blog/what-is-reactjs-and-why-we-should-use-reactjs/</link>
+					<comments>/blog/what-is-reactjs-and-why-we-should-use-reactjs/#respond</comments>
+		
+		<dc:creator><![CDATA[Saroar Shahan]]></dc:creator>
+		<pubDate>Thu, 31 Dec 2020 20:14:47 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[ReactJS]]></category>
+		<category><![CDATA[রিয়েক্ট]]></category>
+		<guid isPermaLink="false">/?p=2323</guid>
+
+					<description><![CDATA[এই আর্টিকেলে আমরা জানার চেষ্টা করবো রিয়েক্ট কি এবং কেন আমাদের রিয়েক্ট ব্যবহার করা উচিত। তবে, মুল লেখায় যাওয়ার আগে কিছু কথা। এটি মূলত একটি সিরিজ হবে যেখানে রিয়েক্ট উপর একদম বেসিক থেকে লেখা হবে। কিন্তু এই সিরিজে জাভাস্ক্রিপ্ট নিয়ে কোন প্রকার আলোচনা করা হবে না। তাই যাদের জাভাস্ক্রিপ্টের বেসিক সম্পর্কে ধারণা নেই তাদেরকে বলবো [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>এই আর্টিকেলে আমরা জানার চেষ্টা করবো রিয়েক্ট কি এবং কেন আমাদের রিয়েক্ট ব্যবহার করা উচিত। তবে, মুল লেখায় যাওয়ার আগে কিছু কথা। এটি মূলত একটি সিরিজ হবে যেখানে রিয়েক্ট উপর একদম বেসিক থেকে লেখা হবে। কিন্তু এই সিরিজে জাভাস্ক্রিপ্ট নিয়ে কোন প্রকার আলোচনা করা হবে না। তাই যাদের জাভাস্ক্রিপ্টের বেসিক সম্পর্কে ধারণা নেই তাদেরকে বলবো আগে বেসিকটা শিখে তারপর এই লেখাটা কন্টিনিউ করতে।</p>
+<h2>রিয়েক্ট কি?</h2>
+<p>রিয়েক্ট হচ্ছে সম্পূর্ণ ওপেন-সোর্স জাভাস্ক্রিপ্টের একটি লাইব্রেরী যা ইউজার ইন্টারফেস তৈরি করার জন্যে ব্যবহার করা হয়। বিশেষ করে সিঙ্গেল পেইজ অ্যাপ্লিকেশন ও ওয়েব এবং মোবাইলের ভিউ লেয়ার তৈরি করতে ব্যহার করা হয়। এটি ডিক্লেয়ারেটিভ এবং কম্পোনেন্ট-বেইসড একটি ইউআই লাইব্রেরী। যা ২০১১ সালে ফেইসবুক তাদের নিউজফিডে ডেপ্লয় করে এবং ২০১২ সালে ইন্সটাগ্রামে ব্যবহার করা হয়।</p>
+<h2>রিয়েক্টের ফিচারগুলি কি কি?</h2>
+<p>রিয়েক্টের কিছু গুরুত্বপূর্ণ ফিচার নিচে দেওয়া হল। ফিচারগুলোর উপর সামনে বিস্তারিত লেখা আসবে। &#8211; জেএসএক্স</p>
+<ul>
+<li>ডিক্লেয়ারেটিভ</li>
+<li>কম্পোনেন্টস</li>
+<li>ওয়ান-ওয়ে ডাটা বাইন্ডিং</li>
+<li>ভার্চুয়াল ডম</li>
+<li>স্ট্যাট-ম্যানেজমেন্ট</li>
+</ul>
+<h2>রিয়েক্ট কেন?</h2>
+<p>এখন, আমাদের সামনে আসল প্রশ্ন আমাদের কেন রিয়েক্ট ব্যবহার করা উচিত। যেখানে বেশ কিছু ওপেন-সোর্স ফ্ল্যাটফর্ম আছে ফ্রন্ট-এন্ড ডেভেলপমেন্ট জীবন সহজ করার জন্যে। যেমন- অ্যাঙ্গুলার, ভিউ ইত্যাদি। নিচে কিছুর পয়েন্ট উল্লেখ্য করছি কেন আমাদে রিয়েক্ট ব্যবহার করা উচিত। &#8211; সিমপ্লিসিটি</p>
+<ul>
+<li>ইজি -টু-লার্ন</li>
+<li>ন্যাটিভ অ্যাপ্রোচ</li>
+<li>ডাটা বাইন্ডিং</li>
+<li>পার্ফরমেন্স</li>
+<li>এসইও ফ্রেন্ডলি</li>
+<li>টেস্টাবিলিটি</li>
+</ul>
+<h2>রিয়েক্ট শিখতে কি কি জানা লাগবে?</h2>
+<ul>
+<li>জাভাস্ক্রিপ্টের বেসিক সম্পর্কে পরিষ্কার ধারণা থাকা লাগবে</li>
+<li>যেকোনো একটি টেক্সট এডিটর বা আইডিই থাকা লাগবে</li>
+<li>নোড জেএস ইন্সটল করা থাকা লাগবে</li>
+<li>ইয়ার্ন বা এনপিএম ইন্সটল থাকা লাগবে <em>(আমি ব্যক্তিগতভাবে ইয়ার্ন ব্যবহার করি)</em></li>
+</ul>
+<p>আজকের জন্যে এখানেই শেষ করছি। আগামী পর্ব থেকে আমরা রিয়েক্ট শিখা শুরু করবো ইনশাআল্লা।</p>
+<h4><a title="এখানে ক্লিক" href="https://shahansdiary.com/what-is-reactjs-and-why-we-should-use-reactjs/" rel="nofollow noopener" target="_blank">এখানে ক্লিক</a> করে লেখকের ব্যক্তিগত ব্লগেও পড়তে পারবেন</h4>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/what-is-reactjs-and-why-we-should-use-reactjs/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

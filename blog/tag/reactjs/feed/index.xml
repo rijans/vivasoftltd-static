@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>ReactJS &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/reactjs/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Tue, 09 Aug 2022 15:56:50 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>ReactJS &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>ESC/POS printing by bridging (React Js + Flutter)</title>
+		<link>/blog/esc-pos-printing-by-bridging-react-js-flutter/</link>
+					<comments>/blog/esc-pos-printing-by-bridging-react-js-flutter/#respond</comments>
+		
+		<dc:creator><![CDATA[Tahsin Siad]]></dc:creator>
+		<pubDate>Mon, 08 Aug 2022 12:53:46 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[escpos-printing]]></category>
+		<category><![CDATA[javascript]]></category>
+		<category><![CDATA[ReactJS]]></category>
+		<guid isPermaLink="false">/?p=9756</guid>
+
+					<description><![CDATA[In this blog, we will discuss the implementation of pos printing in react js app and communicate with flutter app to print the receipt. Here there are two parts. Sending buffer data from reactjs Receiving buffer data from flutter app and sending it to pos printer. Before diving into details, first of all we have [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>In this blog, we will discuss the implementation of pos printing in react js app and communicate with flutter app to print the receipt. Here there are two parts.</p>
+<ul>
+<li aria-level="1">Sending buffer data from reactjs</li>
+<li aria-level="1">Receiving buffer data from flutter app and sending it to pos printer.</li>
+</ul>
+<p>Before diving into details, first of all we have to know what is pos printing, how it works. A short explanation is given below. If you want to know more, please google it.</p>
+<h3><strong>POS printing/receipt printing</strong></h3>
+<p>In restaurant/super shop we might see that the seller gives us a receipt after the successful bill payment using a pos printer. Some well known pos printer manufacturer companies are Sunmi, rongta, xprinter, star printer etc. There are 3 types of pos printers. They are thermal, inkjet and dot matrix. In our case, we have used a thermal printer. Receipts are printed by direct contact between the thermal head and thermal paper with the use of heat. Therefore, no ink is required.</p>
+<h3><strong>Sending buffer data from react js</strong></h3>
+<p>While we started thinking about the integration of pos printing in our system, we faced some challenges.</p>
+<ul>
+<li aria-level="1">Order api response</li>
+<li aria-level="1">Receipt Template</li>
+<li aria-level="1">Communication between flutter app and react js web app</li>
+<li aria-level="1">Printing setup (USB/Bluetooth)</li>
+</ul>
+<h4><strong>Order api response</strong></h4>
+<p>We know that flutter has complete pos printing libraries but why need to implement this from react js app. The answer is our system deals with multiple providers, different providers provide different responses while sending api responses. So, we need to process it from frontend to view those api responses. Another thing is displaying the whole website into  webview. For this, flutter app has limited access to get the order response from the backend. Thus, we overcame the first problem.</p>
+<h4><strong>Receipt Template</strong></h4>
+<p>The main challenge was making the template. Initially, we thought of making a template using html and css. Because it is developer friendly and easy to maintain. But, pos printer doesn’t support html. It only understands the <a href="https://aures-support.com/DATA/drivers/Imprimantes/Commande%20ESCPOS.pdf" rel="nofollow noopener" target="_blank">esc/pos command</a>. So, we had to change our decision. There are a lot of libraries for generating templates using the esc/pos command. But, coping up with our api response was a little bit tough as there were nested level addons list. Then, we found <a href="https://www.npmjs.com/package/@tillpos/xml-escpos-helper" rel="nofollow noopener" target="_blank">xml-escpose-helper</a> library which provided a xml layout, converted the xml into esc/pos command using xml parser and generated our desired buffer data. It supports all the basic things you need like raw text, qr code, bar code, image, new line, paper cut etc. Here, we have also used another npm library called <a href="https://www.npmjs.com/package/table" rel="nofollow noopener" target="_blank">table</a> which generates a string table like github readme table. It is very helpful to display the tabular format data easily.</p>
+<p><img decoding="async" class="alignnone size-large wp-image-9767" src="/wp-content/uploads/2022/07/escpos-156-1024x410.png" alt="escpos 156 ESC/POS printing by bridging (React Js + Flutter)" width="1024" height="410" srcset="/wp-content/uploads/2022/07/escpos-156-980x392.png 980w, /wp-content/uploads/2022/07/escpos-156-480x192.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1024px, 100vw"></p>
+<h5><strong>Procedure</strong></h5>
+<p><b>STEPS 1: Template Data as object </b></p>
+<p>First, we need to make an object for populating the xml template. Keep in mind that the object key must be the same as the key used in the xml template.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">const templateData = {
+      orderDate: 'Oct 27, 2022, 12:00',
+      userName: 'Tahsin Ahmed Khan',
+      providerName: 'Test',
+      shortId: `#TS-1234`,
+      qrCode,
+      qrCodeLabel,
+      brandTemplateTable,
+      cartTemplateTable,
+      pricesTemplateTable,
+      totalTemplateTable,
+      logo: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAQAAAC0NkA6AAA223pUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjapZ1pkiY3zqT`
+}</pre>
+<p><b>STEPS 2: Xml template</b></p>
+<p>The key which is used in object must be the key of the template. Here, the key must be surrounded by two curly braces like <i>{{key}}. </i>Keep in mind that extra space causes problems while generating buffer. Please make sure to avoid it.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">export const cartXmlTemplate = (qrCodeContent, qrCodeLabel) =&gt; `
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;document&gt; 
+    &lt;text-line&gt;Order Date: {{orderDate}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;text-line size="1:1"&gt;{{userName}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;text-line size="1:1"&gt;{{providerName}} {{shortId}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;text-line&gt;{{brandTemplateTable}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;bold&gt;
+      &lt;text-line&gt;{{cartTemplateTable}}&lt;/text-line&gt;
+    &lt;/bold&gt;
+    &lt;text-line&gt;{{pricesTemplateTable}}&lt;/text-line&gt;
+    &lt;bold&gt;
+      &lt;text-line&gt;{{totalTemplateTable}}&lt;/text-line&gt;
+    &lt;/bold&gt;
+    &lt;line-feed /&gt;
+    ${qrCodeLabel ? `&lt;align mode="center"&gt; &lt;text-line&gt; {{qrCodeLabel}} &lt;/text-line&gt;&lt;/align&gt; &lt;line-feed /&gt;` : ``}
+    ${
+      qrCodeContent
+        ? `&lt;align mode="center"&gt;
+        &lt;image density="d24"&gt;
+        {{qrCode}}
+      &lt;/image&gt;
+      &lt;/align&gt; 
+    &lt;line-feed /&gt;`
+        : `&lt;line-feed /&gt;`
+    }
+    &lt;align mode="center"&gt;
+      &lt;small&gt;
+        &lt;text-line&gt;Powered by&lt;/text-line&gt;
+      &lt;/small&gt;
+      &lt;image density="d24"&gt;
+        {{logo}}
+      &lt;/image&gt;
+      &lt;small&gt;
+        &lt;text-line&gt;Company name&lt;/text-line&gt;
+      &lt;/small&gt;
+    &lt;/align&gt;
+    &lt;line-feed /&gt;
+    &lt;paper-cut/&gt;
+  &lt;/document&gt;`;
+</pre>
+<p><b>STEPS 3: Generating buffer from template data and xml</b></p>
+<p>A method called <code class="language-javascript">getBufferFromTemplate</code> takes 2 parameters. First parameter is xml, the second is template data as an object.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">const buffer = EscPos.getBufferFromTemplate(
+      cartXmlTemplate(qrCodeContent, qrCodeLabel),
+      templateData,
+    );</pre>
+<p>We faced some problems while trying to make a template. They were–</p>
+<ul>
+<li aria-level="1">Some characters aren’t supported by pos printers like Peso (Philippines currency). Because, it depends on its code page. In computing, a <a href="https://en.wikipedia.org/wiki/Code_page" rel="nofollow noopener" target="_blank">code page</a> is a character encoding and as such it is a specific association of a set of printable characters and control characters with unique numbers. Some renowned code pages are PC437（Standard Europe), Katakana, PC850（Multilingual, PC860（Portuguese), PC863 (Canadian), PC865（Nordic) etc. It varies from printer to printer.</li>
+<li aria-level="1">Most of the printers support bar code but some of them don’t support qr code. We also faced this problem. We overcame this problem using <a href="https://www.npmjs.com/package/@cheprasov/qrcode" rel="nofollow noopener" target="_blank">@cheprasov/qrcode</a>. It converts the qrcode as image and image is supported by pos printer.</li>
+</ul>
+<p>Summarising the whole process is like this –</p>
+<blockquote><p><b><i>Template Data as object -&gt; Syncing with xml template -&gt; Generate buffer using data and xml template -&gt; Send it to flutter app -&gt; Ready to Print</i></b></p></blockquote>
+<h3><strong>Communication between flutter app and react js web app</strong></h3>
+<p>The problem is quite simple. We took the help of <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage" rel="nofollow noopener" target="_blank">postMessage</a> which solved our second problem. After making the buffer data from order api response, we sent it to the flutter end using postMessage.</p>
+<h3><strong>Receiving buffer and Printing Receipt<br />
+</strong></h3>
+<p>Currently we are providing support for USB. The set up and printing process was done from the flutter end. So, please go to this <a href="/esc-pos-printing-with-flutter">link</a> to see the details.</p>
+<h3><strong>Final Output</strong></h3>
+<p><img decoding="async" class="alignnone size-large wp-image-9757" src="/wp-content/uploads/2022/07/IMG_20220725_172224-768x1024.jpg" alt="IMG 20220725 172224 ESC/POS printing by bridging (React Js + Flutter)" width="768" height="1024"></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/esc-pos-printing-by-bridging-react-js-flutter/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Understanding Redux: Centralizing Application State in React</title>
+		<link>/blog/understanding-redux/</link>
+					<comments>/blog/understanding-redux/#respond</comments>
+		
+		<dc:creator><![CDATA[Mehedi Zamadar]]></dc:creator>
+		<pubDate>Thu, 04 Aug 2022 06:11:03 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Learn Redux]]></category>
+		<category><![CDATA[React]]></category>
+		<category><![CDATA[ReactJS]]></category>
+		<category><![CDATA[Redux]]></category>
+		<category><![CDATA[Redux Tutorial]]></category>
+		<category><![CDATA[Redux Workflow]]></category>
+		<category><![CDATA[State Management]]></category>
+		<guid isPermaLink="false">/?p=9827</guid>
+
+					<description><![CDATA[Why do we even need Redux for? The answer is to manage state of our application. State management in React can be a very tricky thing, especially when we need to pass data from a root element to a heavily nested element. As React has a one-way data flow, that means we can only pass [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span style="font-weight: 400;">Why do we even need Redux for? The answer is to manage state of our application. State management in React can be a very tricky thing, especially when we need to pass data from a root element to a heavily nested element. As React has a one-way data flow, that means we can only pass data in one direction, we can only pass data from parent to child component. That’s why a lot of times we pass data to a component that it doesn’t even need. </span></p>
+<p><img decoding="async" class="aligncenter wp-image-9832" src="/wp-content/uploads/2022/08/data-flow.png" alt="props drilling" width="517" height="334" /></p>
+<p>&nbsp;</p>
+<p>Here, If the parent component has some data that <strong>ChildC</strong> needs, we need to pass the data to <strong>ChildA</strong> and then <strong>ChildB</strong>, and then from <strong>ChildB</strong> to <strong>ChildC</strong>. Here, <strong>ChildA</strong> and <strong>ChildB</strong> are simply used as a medium.</p>
+<p>Personally, I have faced this issue since the day I started to code in React. This is completely fine in some cases, but in others, it adds redundancy to our application. Every component that consumes or uses these providers is re-rendered whenever there is a state change.</p>
+<p>So, how do we solve this issue? There are many ways to do it, like lifting state up, Context API, Redux, etc. But the solution I found most comfortable for me is Redux. In this article, we will learn about Redux in a simplified way.</p>
+<p>When it comes to learning front-end development, few tools cause more headaches than Redux. It is arguably one of the trickiest parts for sure. It may seem intimidating at first but, like most tricky parts of web development, It gets a lot easier with practice. For most learners, It may take some time to figure out. Be prepared to give it a bit of thought haha!</p>
+<p>&nbsp;</p>
+<h2><strong>What is Redux?</strong></h2>
+<p>Redux is a state container. It is probably the most popular global state management library for react by far.<br />
+It is most commonly paired with React, where it takes control of states away from React components and stores them in a place called a ‘store’.</p>
+<p><img decoding="async" class="aligncenter wp-image-9834 " src="/wp-content/uploads/2022/08/1_2r3KY9vBtUBXXEQMl0Iiog.png" alt="1 2r3KY9vBtUBXXEQMl0Iiog Understanding Redux: Centralizing Application State in React" width="563" height="375"></p>
+<p>So, It becomes very easy to access any state from any component in the application, as all the states are stored in a global store. It has a lot of boilerplate code and seems overworking for just increasing/decreasing a value.</p>
+<p>Before jumping right into the code, let’s just see the workflow of Redux, though it might not make any sense to you now.</p>
+<p><img decoding="async" class="aligncenter wp-image-9835 " src="/wp-content/uploads/2022/08/redux-workflow.png" alt="redux workflow Understanding Redux: Centralizing Application State in React" width="403" height="322"></p>
+<p>I mean it kind of looks scary right? Let’s look into a more simplified version of it first.</p>
+<p><img decoding="async" class="aligncenter wp-image-9836 " src="/wp-content/uploads/2022/08/redux-simplified.jpg" alt="redux simplified Understanding Redux: Centralizing Application State in React" width="432" height="292"></p>
+<p>We have a State which is a value we have (suppose, 0 initially). If we want to change the value we need to invoke an action. Like, If we want to change the value we need to increment it or decrement it in some way. That is called action. After invoking the action, we see the changed value in our browser, which is called View.</p>
+<p>The basic concept of Redux is it, precisely!</p>
+<p>Alright, now let’s learn more about the whole workflow of Redux. Let’s get back to the previous photo.</p>
+<p><strong>Store</strong>: An object where the application state lives. It is the singular point of states. The store brings everything together.</p>
+<p><strong>Action</strong>: The actual action we want to take place, for example, “add one”. An object that contains the type of the action (event) and a payload that is optional.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="wp-image-9842 aligncenter" src="/wp-content/uploads/2022/08/action-object.png" alt="action object Understanding Redux: Centralizing Application State in React" width="467" height="214"></p>
+<p>&nbsp;</p>
+<p>What we are seeing above is an Action. But we normally use Action Creator which returns an Action. It is useful to create dynamic actions. An action creator looks like this:</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9841 " src="/wp-content/uploads/2022/08/action-new.png" alt="action new Understanding Redux: Centralizing Application State in React" width="713" height="218"></p>
+<p>&nbsp;</p>
+<p><strong>Reducer</strong>: Reducer specifies how the application’s state should change in response to each action. For example, our new state should be one integer higher than our old state.</p>
+<p>It is a function that takes two arguments (currentState, action) and, depending on the action type (e.g., add or remove), will make a new state with the new changes and return the new state.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9843 " src="/wp-content/uploads/2022/08/reducer.png" alt="reducer Understanding Redux: Centralizing Application State in React" width="507" height="379"></p>
+<p>&nbsp;</p>
+<p>I mean we learned the definition of Redux workflow elements. But let’s put it into practice. That’s how we actually learn right?</p>
+<p>We will build a counter using Redux. I know it is pretty common but our main purpose in this article is to understand Redux workflow. Let’s dive into that.</p>
+<p>&nbsp;</p>
+<h2><strong>Step 1: Install Redux</strong></h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">npm install redux react-redux
+
+</pre>
+<p>&nbsp;</p>
+<h2><strong>Step 2: Create Store and Reducer</strong></h2>
+<p>We know that we need to configure the store for Redux, that’s where all the states will be stored. Although it’s actually up to you how you want to configure it. But I like it this way.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9847 " src="/wp-content/uploads/2022/08/storrre.png" alt="storrre Understanding Redux: Centralizing Application State in React" width="541" height="202"></p>
+<p>&nbsp;</p>
+<p>Like the code above, we will create a store by using the <strong>createStore</strong> method from redux and then export it. Now you might be wondering what is the <strong>reducer</strong> inside the <strong>createStore</strong> method!</p>
+<p>Let’s create it. In this <strong>INITIAL_STATE</strong> object below, we will initialize our state. As we want to increment/decrement a value, that’s why we initialized a count variable with 0 as the value.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9846 " src="/wp-content/uploads/2022/08/reducer-primarily.png" alt="reducer primarily Understanding Redux: Centralizing Application State in React" width="603" height="269"></p>
+<p>&nbsp;</p>
+<p>Now, reducer will be a function that takes the state object we initialized and actions that will modify the state as parameters. In the switch case, we will be adding those actions and their consequences later. But let’s create those actions first.</p>
+<p>&nbsp;</p>
+<h2><strong>Step 3: Creating Actions</strong></h2>
+<p>As I mentioned above, that Action is an object that contains the type of the action and a payload which is optional. Let’s create a file named actions. Here we don’t need any payload, because we are not sending any value to the store, we are only increasing/decreasing a value.</p>
+<p>We wrapped the action inside action creators. Here is the <strong>incrementCounter</strong> action creator.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9848 " src="/wp-content/uploads/2022/08/action-new-1.png" alt="action new 1 Understanding Redux: Centralizing Application State in React" width="621" height="190"></p>
+<p>&nbsp;</p>
+<p>Here is the <strong>decrementCounter</strong> action creator.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9849 " src="/wp-content/uploads/2022/08/decrement-action.png" alt="decrement action Understanding Redux: Centralizing Application State in React" width="619" height="190"></p>
+<p>&nbsp;</p>
+<p>Our whole actions file will look like this below &#8211;</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9853 " src="/wp-content/uploads/2022/08/whole-actions.png" alt="whole actions Understanding Redux: Centralizing Application State in React" width="556" height="286"></p>
+<p>&nbsp;</p>
+<p>Now we have created actions, we will be editing the <strong>Reducer</strong> to implement modifications when our action is dispatched or invoked.</p>
+<p>Let’s modify the Reducer. In the switch case, for “<strong>INCREMENT</strong>” action, we will increase the count value by 1, and for “<strong>DECREMENT</strong>” action, we will decrease the count value by 1. Like this picture below:</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9854 " src="/wp-content/uploads/2022/08/MOD-REDUCER.png" alt="MOD REDUCER Understanding Redux: Centralizing Application State in React" width="584" height="380"></p>
+<p>&nbsp;</p>
+<p>Creating action, reducer and store is completed. Now, we need to wrap our store in index.js file with our App component like this.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9855 " src="/wp-content/uploads/2022/08/index-store.png" alt="index store Understanding Redux: Centralizing Application State in React" width="617" height="402"></p>
+<p>&nbsp;</p>
+<p>Redux setup is completed, Now we need to connect our UI with it.</p>
+<p>&nbsp;</p>
+<h2><strong>Step 4: Connecting State &amp; Actions with UI/Component</strong></h2>
+<p>The final part is to see our state and invoke action from the UI to see the updated value.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9856 " src="/wp-content/uploads/2022/08/ui.png" alt="ui Understanding Redux: Centralizing Application State in React" width="685" height="633"></p>
+<p>&nbsp;</p>
+<p>here, we import the connect function from the react-redux library, we also import our <strong>increaseCounter</strong> and <strong>decreaseCounter</strong> actions.</p>
+<p>The connect function is a <strong>Higher Order Component (HOC),</strong> it basically takes a component and adds some more props to it, and then returns the same component with newly added props. If you need to know more about concepts like these, you can check out our <a href="/javascript-bootcamp" target="_blank" rel="noopener">JavaScript Bootcamp</a>.</p>
+<p>Check the last line of the file where we export the component, we can see that <strong>connect</strong> is being used here as follows,</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9857 " src="/wp-content/uploads/2022/08/last-line-ui.png" alt="last line ui Understanding Redux: Centralizing Application State in React" width="650" height="141"></p>
+<p>&nbsp;</p>
+<p><strong>connect</strong> takes two functions as arguments which are <strong>mapStateToProps</strong> and <strong>mapDispatchToProps</strong>.</p>
+<p>Now let&#8217;s see what these two functions do,</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9858 " src="/wp-content/uploads/2022/08/mapstate-dispacth.png" alt="mapstate dispacth Understanding Redux: Centralizing Application State in React" width="659" height="309"></p>
+<p>&nbsp;</p>
+<p><strong>mapStateToProps</strong> function as the name suggests maps the redux state to the props of the component it is declared in. So this basically adds whatever state you return from this function to your component. In our counter example, I have returned count from the redux state and hence now I can access count from props inside my component.</p>
+<p><strong>mapDispatchToProps</strong> function does a very similar thing, but instead of adding state to props, it adds our actions to props! Whatever actions we return from this function are added to our component. And as you can see that in our example I have returned two actions i.e <strong>increaseCounter</strong> and <strong>decreaseCounter</strong>, hence we are able to access them from our props and then I release our actions on the respective button click.</p>
+<p>Well, now we have a fully functional redux app. If we click on “+” it will increase a number and “-” will decrease a number.<br />
+I hope this article was helpful for you to understand Redux. We will be diving in depth on Redux in another article, like how we can reduce all these boilerplates by using <a href="https://redux-toolkit.js.org/introduction/getting-started" target="_blank" rel="noopener nofollow"><strong>Redux-Toolkit</strong></a> and others. But for now, I think that will be it, I hope this article added some value. adios!</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/understanding-redux/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>রিয়েক্ট কি এবং কেন?</title>
+		<link>/blog/what-is-reactjs-and-why-we-should-use-reactjs/</link>
+					<comments>/blog/what-is-reactjs-and-why-we-should-use-reactjs/#respond</comments>
+		
+		<dc:creator><![CDATA[Saroar Shahan]]></dc:creator>
+		<pubDate>Thu, 31 Dec 2020 20:14:47 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[ReactJS]]></category>
+		<category><![CDATA[রিয়েক্ট]]></category>
+		<guid isPermaLink="false">/?p=2323</guid>
+
+					<description><![CDATA[এই আর্টিকেলে আমরা জানার চেষ্টা করবো রিয়েক্ট কি এবং কেন আমাদের রিয়েক্ট ব্যবহার করা উচিত। তবে, মুল লেখায় যাওয়ার আগে কিছু কথা। এটি মূলত একটি সিরিজ হবে যেখানে রিয়েক্ট উপর একদম বেসিক থেকে লেখা হবে। কিন্তু এই সিরিজে জাভাস্ক্রিপ্ট নিয়ে কোন প্রকার আলোচনা করা হবে না। তাই যাদের জাভাস্ক্রিপ্টের বেসিক সম্পর্কে ধারণা নেই তাদেরকে বলবো [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>এই আর্টিকেলে আমরা জানার চেষ্টা করবো রিয়েক্ট কি এবং কেন আমাদের রিয়েক্ট ব্যবহার করা উচিত। তবে, মুল লেখায় যাওয়ার আগে কিছু কথা। এটি মূলত একটি সিরিজ হবে যেখানে রিয়েক্ট উপর একদম বেসিক থেকে লেখা হবে। কিন্তু এই সিরিজে জাভাস্ক্রিপ্ট নিয়ে কোন প্রকার আলোচনা করা হবে না। তাই যাদের জাভাস্ক্রিপ্টের বেসিক সম্পর্কে ধারণা নেই তাদেরকে বলবো আগে বেসিকটা শিখে তারপর এই লেখাটা কন্টিনিউ করতে।</p>
+<h2>রিয়েক্ট কি?</h2>
+<p>রিয়েক্ট হচ্ছে সম্পূর্ণ ওপেন-সোর্স জাভাস্ক্রিপ্টের একটি লাইব্রেরী যা ইউজার ইন্টারফেস তৈরি করার জন্যে ব্যবহার করা হয়। বিশেষ করে সিঙ্গেল পেইজ অ্যাপ্লিকেশন ও ওয়েব এবং মোবাইলের ভিউ লেয়ার তৈরি করতে ব্যহার করা হয়। এটি ডিক্লেয়ারেটিভ এবং কম্পোনেন্ট-বেইসড একটি ইউআই লাইব্রেরী। যা ২০১১ সালে ফেইসবুক তাদের নিউজফিডে ডেপ্লয় করে এবং ২০১২ সালে ইন্সটাগ্রামে ব্যবহার করা হয়।</p>
+<h2>রিয়েক্টের ফিচারগুলি কি কি?</h2>
+<p>রিয়েক্টের কিছু গুরুত্বপূর্ণ ফিচার নিচে দেওয়া হল। ফিচারগুলোর উপর সামনে বিস্তারিত লেখা আসবে। &#8211; জেএসএক্স</p>
+<ul>
+<li>ডিক্লেয়ারেটিভ</li>
+<li>কম্পোনেন্টস</li>
+<li>ওয়ান-ওয়ে ডাটা বাইন্ডিং</li>
+<li>ভার্চুয়াল ডম</li>
+<li>স্ট্যাট-ম্যানেজমেন্ট</li>
+</ul>
+<h2>রিয়েক্ট কেন?</h2>
+<p>এখন, আমাদের সামনে আসল প্রশ্ন আমাদের কেন রিয়েক্ট ব্যবহার করা উচিত। যেখানে বেশ কিছু ওপেন-সোর্স ফ্ল্যাটফর্ম আছে ফ্রন্ট-এন্ড ডেভেলপমেন্ট জীবন সহজ করার জন্যে। যেমন- অ্যাঙ্গুলার, ভিউ ইত্যাদি। নিচে কিছুর পয়েন্ট উল্লেখ্য করছি কেন আমাদে রিয়েক্ট ব্যবহার করা উচিত। &#8211; সিমপ্লিসিটি</p>
+<ul>
+<li>ইজি -টু-লার্ন</li>
+<li>ন্যাটিভ অ্যাপ্রোচ</li>
+<li>ডাটা বাইন্ডিং</li>
+<li>পার্ফরমেন্স</li>
+<li>এসইও ফ্রেন্ডলি</li>
+<li>টেস্টাবিলিটি</li>
+</ul>
+<h2>রিয়েক্ট শিখতে কি কি জানা লাগবে?</h2>
+<ul>
+<li>জাভাস্ক্রিপ্টের বেসিক সম্পর্কে পরিষ্কার ধারণা থাকা লাগবে</li>
+<li>যেকোনো একটি টেক্সট এডিটর বা আইডিই থাকা লাগবে</li>
+<li>নোড জেএস ইন্সটল করা থাকা লাগবে</li>
+<li>ইয়ার্ন বা এনপিএম ইন্সটল থাকা লাগবে <em>(আমি ব্যক্তিগতভাবে ইয়ার্ন ব্যবহার করি)</em></li>
+</ul>
+<p>আজকের জন্যে এখানেই শেষ করছি। আগামী পর্ব থেকে আমরা রিয়েক্ট শিখা শুরু করবো ইনশাআল্লা।</p>
+<h4><a title="এখানে ক্লিক" href="https://shahansdiary.com/what-is-reactjs-and-why-we-should-use-reactjs/" rel="nofollow noopener" target="_blank">এখানে ক্লিক</a> করে লেখকের ব্যক্তিগত ব্লগেও পড়তে পারবেন</h4>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/what-is-reactjs-and-why-we-should-use-reactjs/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

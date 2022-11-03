@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>version &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/version/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Fri, 24 Sep 2021 05:07:43 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>version &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Installing Multiple Version of Golang using GoEnv</title>
+		<link>/blog/installing-multiple-version-of-golang-using-goenv/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Mon, 18 Jan 2021 12:45:09 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[go]]></category>
+		<category><![CDATA[goenv]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[multiple]]></category>
+		<category><![CDATA[version]]></category>
+		<guid isPermaLink="false">/?p=2353</guid>
+
+					<description><![CDATA[Often we need a different version of go according to specific projects. There are different options we have like we can use Docker for our specific project&#8217;s need(we can talk about that in a different blog post). There are several other options but in this blog, we will talk about goenv. Prerequisites: git We&#8217;re using [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Often we need a different version of <strong>go</strong> according to specific projects. There are different options we have like we can use Docker for our specific project&#8217;s need(we can talk about that in a different blog post). There are several other options but in this blog, we will talk about <code>goenv</code>.</p>
+<blockquote>
+<h2>Prerequisites: git</h2>
+</blockquote>
+<p>We&#8217;re using Ubuntu 20.04 so below instruction will work in ubuntu. On Mac too. Not sure about windows.</p>
+<p>Official Installation Guide <a href="https://github.com/syndbg/goenv/blob/master/INSTALL.md" rel="nofollow noopener" target="_blank">GOENV Install guide</a></p>
+<h1>Goto github</h1>
+<pre><code>git clone https://github.com/syndbg/goenv.git ~/.goenv</code></pre>
+<blockquote>
+<p>if this particular git code syntax you(readers) are not familiar with we will explain it, it just cloning the repo and place it on <code>.goenv</code> folder on the <code>home//</code> directory.</p>
+</blockquote>
+<h1>Define environment variable GOENV_ROOT</h1>
+<pre><code>echo &#039;export GOENV_ROOT=&quot;$HOME/.goenv&quot;&#039; &gt;&gt; ~/.bashrc
+echo &#039;export PATH=&quot;$GOENV_ROOT/bin:$PATH&quot;&#039; &gt;&gt; ~/.bashrc</code></pre>
+<blockquote>
+<p>for <code>zsh/oh-my-zsh</code> users, use zshrc or respective config files according to your terminal settings. </p>
+</blockquote>
+<h1>Add goenv init to your shell</h1>
+<pre><code>echo &#039;eval &quot;$(goenv init -)&quot;&#039; &gt;&gt; ~/.bashrc</code></pre>
+<blockquote>
+<p>If you want goenv to manage GOPATH and GOROOT (recommended), add GOPATH and GOROOT to your shell after eval &quot;$(goenv init -)&quot;</p>
+</blockquote>
+<pre><code>echo &#039;export PATH=&quot;$GOROOT/bin:$PATH&quot;&#039; &gt;&gt; ~/.bashrc
+
+echo &#039;export GOPATH=&quot;$HOME/&lt;workspaces_path&gt;/go&quot;&#039; &gt;&gt; ~/.bashrc</code></pre>
+<blockquote>
+<p>GOPATH Folder Structure<br />
+<img decoding="async" src="/wp-content/uploads/2021/01/gopath_folder_structure-300x249.png" alt="gopath_folder_structure" /></p>
+</blockquote>
+<h1>Restart your shell so the path changes take effect.</h1>
+<pre><code>exec $SHELL</code></pre>
+<h1>Install Go versions into $GOENV_ROOT/versions</h1>
+<pre><code>goenv install &lt;version_number&gt;
+
+# check all version which can be installed
+goenv install -l
+
+# Example
+goenv install 1.15.6</code></pre>
+<h1>To upgrade to a specific release of goenv</h1>
+<pre><code>cd $(goenv root)
+git pull</code></pre>
+<h1>Uninstalling goenv</h1>
+<pre><code>rm -rf goenv root</code></pre>
+<h1>Disable goenv</h1>
+<blockquote>
+<p>To disable goenv managing your Go versions, simply remove the goenv init line from your shell startup configuration. This will remove goenv shims directory from PATH, and future invocations like goenv will execute the system Go version, as before goenv.</p>
+</blockquote>
+<h1>Uninstalling Go Versions</h1>
+<pre><code>goenv uninstall</code></pre>
+<h1>Run this command after you install a new version of Go to activate</h1>
+<pre><code>goenv rehash</code></pre>
+<p>If you like you can read the same article in my personal <a href="https://gist.github.com/Rezwanul-Haque/4c533b048a8e628487439ecb1b933604" rel="nofollow noopener" target="_blank">github gist</a></p>
+<h1>How to use a specified version of Go (Globally or Locally)</h1>
+<pre><code># global
+goenv global 1.15.6
+
+# Local
+goenv local 1.15.6</code></pre>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

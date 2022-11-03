@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Jidul Islam &#8211; Vivasoft</title>
+	<atom:link href="/author/jidul/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Fri, 30 Sep 2022 11:56:19 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>Jidul Islam &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Elasticsearch কি এবং কেন?</title>
+		<link>/blog/elasticsearch/</link>
+		
+		<dc:creator><![CDATA[Jidul Islam]]></dc:creator>
+		<pubDate>Fri, 30 Sep 2022 10:06:37 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Data]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=12161</guid>
+
+					<description><![CDATA[আমরা যারা সফটওয়্যার ইঞ্জিনিয়ার বা যারা টেকনোলোজি নিয়ে কাজ করি বা যে যাই নিয়ে আছি না কেন, সবাই আমরা একটা কথায় একমত হব যে, প্রতিটা টেকনোলজি কোন না কোন নির্দিষ্ট সমস্যাকে সমাধান করতে এসেছে, সেইটা প্রোগ্রামিং লেঙ্গুয়েজে থেকে শুরু করে ডাটাবেস, ফ্রেমেওয়ার্ক কিংবা লাইব্রেরি (প্রোগ্রামিং ল্যাঙ্গুয়েজে এর) পর্যন্ত, তা না হলে টেকনোলজির এত বিস্তার কখনোই [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span style="font-weight: 400;">আমরা যারা সফটওয়্যার ইঞ্জিনিয়ার বা যারা টেকনোলোজি নিয়ে কাজ করি বা যে যাই নিয়ে আছি না কেন, সবাই আমরা একটা কথায় একমত হব যে, প্রতিটা টেকনোলজি কোন না কোন নির্দিষ্ট সমস্যাকে সমাধান করতে এসেছে, সেইটা প্রোগ্রামিং লেঙ্গুয়েজে থেকে শুরু করে ডাটাবেস, ফ্রেমেওয়ার্ক কিংবা লাইব্রেরি (প্রোগ্রামিং ল্যাঙ্গুয়েজে এর) পর্যন্ত, তা না হলে টেকনোলজির এত বিস্তার কখনোই হতো না।</span><span style="font-weight: 400;"> </span></p>
+<h2><b>Elasticsearch কি</b></h2>
+<p><span style="font-weight: 400;">এটি একটি NoSQL ডাটাবেস যেটা বিশেষ ভাবে distributed search  এবং aggregation ইঞ্জিন হিসাবে ব্যবহার এর জন্য বানানো হয়েছে। Elasticsearch এ স্ট্রাকচার্ড এবং আনস্ট্রাকচার্ড ডাটা ইন্সার্ট করা যায় এবং তার ভিত্তিতে রেজাল্ট পাওয়া যায়। আমরা সবাই NoSQL ডাটাবেস হিসাবে MongoDB এর কথা জানি কিন্তু MongoDB সাধারণ ভাবে (general purpose) NoSQL কে ব্যবহার করার জন্য বানানো হয়েছে। Elasticsearch এর রেজাল্ট কিন্তু </span><b>প্রায়</b><span style="font-weight: 400;"> রিয়েল টাইম।</span></p>
+<h2><b>কেন প্রয়োজন </b></h2>
+<p><span style="font-weight: 400;">আগে একটা কেইস বলি তারপর </span><b>কেন প্রয়োজন</b><span style="font-weight: 400;"> সেইটা নিয়ে বলবো, কথা দিলাম।  আমরা যখন একটা সফটওয়্যার বানায়, তখন আমাদের সফটওয়্যার খুব ভালো ভাবে চলে, আচরণ ও ভালো করে কিন্তু আস্তে আস্তে যখন সফটওয়্যার এর বয়স ও দায়িত্ব বাড়তে থাকে (ডাটা ভলিউম, read  এবং write concurrency) তখন আর আগের মতো ভালো আচরণ করে না, স্লো হয়ে যায়, ল্যাটেন্সি বেড়ে যায়। ফলাফলে end user নাখোশ। এইটা হয় </span><i><span style="font-weight: 400;">বেশিরভাগ সময় </span></i><span style="font-weight: 400;"> ঠিকঠাক ইনডেক্সিং না করা, রেপ্লিকেশনের অভাব, পচা কোয়েরি (N + ১) লেখা এবং সর্বোপরি না বুঝে ডাটাবেস সিলেক্ট করা </span><i><span style="font-weight: 400;">(কোথায় কত ইঞ্চির পেরেক মারা লাগবে তা জানা জরুরি)</span></i><span style="font-weight: 400;">। </span></p>
+<p><span style="font-weight: 400;">তারপর খুব সাধারণ ভাবে প্রায় সময় আমরা দোষ দেয় প্রোগ্রামিং ল্যাঙ্গুয়েজকে, ভাবি, ইশ একটা রকেট মার্কা ল্যাংগুজে দিয়ে লিখলে আজ এই দিন দেখা লাগতো না। </span><b>বেশির ভাগ সময় সময় সফটওয়্যার (ডাটা পারসিস্ট করে এমন) এর bottleneck থাকে হল ডাটাবেস</b><span style="font-weight: 400;"> </span></p>
+<p><span style="font-weight: 400;">এইবার আসি মূল গল্পে, </span><b>কেন প্রয়োজন</b><span style="font-weight: 400;">, </span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">আপনি একটা ইকমার্স সফটওয়্যার বানাচ্ছেন যেইখানে হেভি সার্চ অপারেশন আছে, প্রোডাক্ট এর সংখ্যা ১০ লাখ বা তার ও বেশি। আপনাকে কিওয়ার্ড ধরে ধরে প্রথমে সাজেশন দেখতে হবে তারপর রেজাল্ট এবং ফিল্টার ও থাকতে পারে। রেস্পন্স টাইম থাকতে হবে ৩০০ মিলিসেকেন্ড এর কাছাকাছি। </span></li>
+<li><span style="font-weight: 400;">আপনি একটা রিয়েল এস্টেট সফটওয়্যার বানাচ্ছেন বাংলাদেশ এর জন্য যেইখানে geolocation এর উপর সার্চ হবে। ধরুন বনানী লিখে সার্চ দেয়ার পর বনানী এরিয়ার ভিতর এ যত বাসা ভাড়া দেয়া হবে তার একটা লিস্ট আসবে। মানে বনানীর পলিগন দিয়ে সার্চ। </span></li>
+<li><span style="font-weight: 400;">আপনার কাছে প্রচুর পরিমানে ডাটা আছে যেখানে ফুল টেক্সট সার্চ দরকার, উদহারণ হিসাবে ব্লগ টাইপের কনটেন্ট যেখানে সেন্টেন্স দিয়ে সার্চ করে কন্টেন্ট গুলা ফিল্টার করতে চাচ্ছেন</span></li>
+<li><span style="font-weight: 400;">আপনি দেশের জাতীয় ডাটাবেস থেকে একটা ডেমোগ্রাফিক aggregetion চাচ্ছেন, যেমন &#8211; বয়স, জেন্ডার, চাকরি, বেকার এর সংখ্যা ইত্যাদি এর রিপোর্ট। ডেটা ভলিউম বুজতেই পারছেন, প্রায় ১৮ কোটি এর উপর </span></li>
+</ul>
+<p><span style="font-weight: 400;">আমি শুধু কিছু আইডিয়া দেয়ার চেষ্টা করলাম কেইস গুলা বলে, এছাড়া আরো অনেক কিছু থাকতে পারে, এইটা আপনাদের বিবেচনা। </span></p>
+<h2><b>কিছু মৌলিক জ্ঞান</b><span style="font-weight: 400;"> </span></h2>
+<p><span style="font-weight: 400;">Elasticsearch এর কথা যখনি বলছি তখন অনেকে হয়তো SQL এর সাথে তুলুনা করতে পারেন। বুঝার সুবিধার্তে SQL এর সাথে তুলুনা করলে Elasticsearch এর কোনটাকে আমরা কি বলতে পারি এবং কি কি পার্থক্য আছে, সেইগুলা নিয়ে কথা হবে। </span></p>
+<p><span style="font-weight: 400;">চলুন শুরু করি &#8211; </span></p>
+<table>
+<tbody>
+<tr>
+<td>SQL</td>
+<td>Elasticsearch</td>
+<td>পার্থক্য</td>
+</tr>
+<tr>
+<td>column</td>
+<td>field</td>
+<td>SQL এ field এর যে data type দিব, আমাদেরকে সেইটাই ব্যবহার করতে হবে কিন্তু elasticsearch এ আমরা  একই datatype এর একাধিক (list) data রাখতে পারি</td>
+</tr>
+<tr>
+<td>row</td>
+<td>document</td>
+<td>SQL এর row বেশ কড়া (strict), schema তে যা আছে তাতেই ডাটা ঢুকাতে হবে, যতটা আছে, ঠিক ততটা কিন্তু elasticsearch এই দিক দিয়ে ফ্লেক্সিবল (যদিও তার schema আগে বলে দেয়া যায়), রানটাইমে column ও বাড়ানো যায়</td>
+</tr>
+<tr>
+<td>table</td>
+<td>index</td>
+<td>দুইটায় একই জিনিস, মানে যার উপর query হবে</td>
+</tr>
+<tr>
+<td>schema</td>
+<td>implicit</td>
+<td>SQL এ schema হল একটা boundary (দুস্টুমি চলবে না), elasticsearch schemaless হলেও predefined mapping করা যায় (বিস্তারিত পরে বলবো) যদিও পরবর্তীতে field এর সংখ্যা runtime এ বাড়ানো যায়</td>
+</tr>
+<tr>
+<td>database</td>
+<td>cluster</td>
+<td>SQL এ অনেক গুলা table একটা database এ encapsulate থাকে, elasticsearch এ database কন্সেপ্টটা নাই কিন্তু এইখানে indices গুলা একটা cluster এর মধ্যে থাকে। মানে, এইখানে SQL এর মতো আলাদা database তৈরি করা যায় না।</td>
+</tr>
+</tbody>
+</table>
+<h3><b>Mapping</b></h3>
+<p><span style="font-weight: 400;">Elasticsearch এ</span> <span style="font-weight: 400;">mapping</span> <span style="font-weight: 400;">হলো, index (table) এর মধ্যে field গুলাকে কিভাবে রাখা হবে / store হবে, কিভাবে index হবে তার একটা process. সহজ কথা হলো &#8211; একটা schema define করে দেয়া কোন field এর data type কেমন হবে এবং indexable হবে কিনা। যেমন &#8211; name, email, age, gender তিনটা ফিল্ড আছে</span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">PUT /users
+
+{
+
+  "mappings": {
+
+    "properties": {
+
+      "name":   { "type": "text"  }
+
+      "email":  { "type": "keyword"  },  
+
+      "age":    { "type": "integer" }, 
+
+      "gender":    { "type": "keyword", "index": false, },     
+
+    }
+
+  }
+
+}</pre>
+<p>&nbsp;</p>
+<p><span style="font-weight: 400;">তারপর যখন data ঢুকানো হবে তখন mapping অনুযায়ী data persist হবে। elasticsearch এ by default সব কিছু index থাকে, যদি কোন ফিল্ড এর index দরকার না হয় তখন mapping এর সময় index কে false করে দেয়া যায়। </span></p>
+<p><span style="font-weight: 400;">Mapping দুই ধরণের হতে পারে </span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Dynamic mapping </span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">যদি field এর নাম এবং data type যদি run time এ সেট হয়, predefined না থাকে তাহলে dynamic mapping ভালো একটা চয়েজ </span></li>
+</ul>
+</li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Explicit mapping </span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">এই mapping টাতে অনেক বেশি কন্ট্রোল পাওয়া যায়, যেহেতু predefined থাকে field এর নাম এবং data type</span></li>
+</ul>
+</li>
+</ul>
+<h3><b>Field এর data type</b></h3>
+<p><span style="font-weight: 400;">কিছু কমন data type নিয়ে কথা বলবো, যেগুলা প্রায় সব সময় লাগে </span></p>
+<ul>
+<li><b>text</b><span style="font-weight: 400;"> &#8211; যখন একটা বড় content রাখতে হয় এবং পরে full text search করার প্রয়োজন হয়, তখন এটি ব্যবহার করা হয় সাধারণত</span></li>
+<li style="font-weight: 400;" aria-level="1"><b>keyword</b><span style="font-weight: 400;"> &#8211; exact match করবে এই ধরণের কেইস এ keyword ব্যবহার করা হয়</span></li>
+<li style="font-weight: 400;" aria-level="1"><b>numeric</b><span style="font-weight: 400;">  &#8211; এইখানে integer, long, short, double, float এবং আরো কিছু ধরণের value রাখা যায় </span></li>
+<li style="font-weight: 400;" aria-level="1"><b>date</b><span style="font-weight: 400;"> &#8211; এইখানে বিভিন্ন format এ date রাখা যায় &#8211; date, date-time, </span><span style="font-weight: 400;">milliseconds-since-the-epoch ইত্যাদি </span></li>
+<li style="font-weight: 400;" aria-level="1"><b>boolean</b><span style="font-weight: 400;"> &#8211; true, “true”, false, “false”</span></li>
+<li style="font-weight: 400;" aria-level="1"><b>object</b><span style="font-weight: 400;"> &#8211; field এ inner object হিসাবে data রাখার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="1"><b>geo_point</b><span style="font-weight: 400;"> &#8211; এই field এ latitude এবং longitude রাখা যায়</span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">একটা boundary এর ভিতরে geopoint খুঁজে পাওয়ার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">central point থেকে নির্দিষ্ট দুরুত্বে (radius এ) অন্য coordinate গুলা খুঁজে বের করার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">polygon দিয়ে search করার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">geographically কোন aggregated data পাওয়ার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">distance এর ভিত্তিতে sort করার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">multipolygon দিয়ে search করে data পাওয়ার জন্য </span></li>
+</ul>
+</li>
+<li style="font-weight: 400;" aria-level="1"><b>geo_shape</b><span style="font-weight: 400;">  &#8211; যে কোন latitude এবং longitude এর shape store করার জন্য এটি ব্যবহার করা যায়, যেমন &#8211; polygon, multipolygon অথবা যে কোন ধরণের shape, যা দিয়ে পরবর্তীতে geo_point এর উপর search operation চালিয়ে data পাওয়া যায়</span></li>
+</ul>
+<p><span style="font-weight: 400;">আরো অনেক ধরনের data type আছে, দয়া করে নিজ দায়িত্বে দেখে নিবেন elasticsearch documentation এ</span></p>
+<h3><b>DSL query</b></h3>
+<p><span style="font-weight: 400;"> </span><span style="font-weight: 400;">DSL (Domain specific language) হল JSON based query language. DSL query দুইটা context এর উপর রান করে &#8211; </span><b><i>query</i></b><span style="font-weight: 400;">, </span><b><i>filter</i></b></p>
+<ul>
+<li><span style="font-weight: 400;">Query context: এই context টার মূল লক্ষ্য হল, একটা query এর response কতটা match করবে এবং relevant হবে। document এ _score নামে একটা meta field থাকে, যেখানে একটা number থাকে, যেই document এর </span><i><span style="font-weight: 400;">_score</span></i><span style="font-weight: 400;"> যত বেশি সেইটা ততটা match করেছে এবং সেইটা সবচেয়ে relevant</span></li>
+<li><span style="font-weight: 400;">Filter context: এই context মূলত কোন কিছু filter করে আনার জন্য, match করতে ও পারে আবার না ও পারে। এই context এর কোন _score নেই এবং এটি ব্যবহার করা হয় structure data filter করার জন্য। filter context frequent call হলে, elasticsearch তা cache করে রাখে performance বাড়ানোর জন্য। </span></li>
+</ul>
+<p><span style="font-weight: 400;">Query এবং filter context এর একটি উদাহরণ &#8211;</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">title ফিল্ড এ Database নামের একটা word (text data type) থাকবে </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">content field এ Elasticsearch নামের একটা word (text data type) থাকবে</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">status field এ published নামের একটা exact word (keyword data type) থাকবে</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">published_date এ একটা date (date data type) থাকবে </span></li>
+</ul>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET posts/_search
+
+{
+
+  "query": { 
+
+    "bool": { 
+
+      "must": [
+
+        { "match": { "title":   "Database" }},
+
+        { "match": { "content":   "Elasticsearch" }}
+
+      ],
+
+      "filter": [ 
+
+        { "term":  { "status": "published" }},
+
+        { "range": { "publish_date": { "gte": "2015-01-01" }}}
+
+      ]
+
+    }
+
+  }
+
+}</pre>
+<p>&nbsp;</p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">এইখানে query parameter টা query context কে বুজাচ্ছে </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">bool এবং match ব্যবহার করা হচ্ছে query context এ যাতে কতটা ভালো ভাবে match হয়েছে তার উপর ভিত্তি করে  _score আসে</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">filter parameter দিয়ে filter context বুঝানো হচ্ছে, term এবং range query দিয়ে docuent filter করে আনা হচ্ছে, এতে query context এর _score এর কোন সমস্যা হবে না। </span></li>
+</ul>
+<h3><b>Compound queries</b></h3>
+<p><span style="font-weight: 400;">এক বা একাধিক leaf queries অথবা compound query এর সমন্বয়ে compound query তৈরী হয়। সহজ ভাষায় বলতে গেলে bool, boosting অথবা এই ধরণের আরো কিছু scope এ যখন কোন query কে group করা হয়। </span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Bool &#8211; document গুলা query তে match করে আসবে কি আসবে না তার একটা boolean combination. bool এর ভিতর must, must_not, should, filter ব্যবহার করা হয়</span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">must &#8211; যেই clause গুলা match করতেই হবে, সেইগুলা must দিয়ে ব্যবহার করা যায় </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">must_not &#8211; যেই clause গুলা ম্যাচ করবে না,  সেইগুলা must_not এ রাখা হয়</span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">should &#8211; যখন কোন additional value দিয়ে match এর relevency বাড়িয়ে _score বাড়ানো হয় তখন should ব্যবহার করা হয়  </span></li>
+</ul>
+</li>
+</ul>
+<h3><b>Match query</b></h3>
+<p><span style="font-weight: 400;">যখন word / sentence দিয়ে কোন content search করার প্রয়োজন হয় তখন match query দিয়ে full text search করা যায়। field এর data type text হতে হবে </span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET posts/_search
+
+{
+
+  "query": {
+
+    "match": {
+
+      "body": {
+
+        "query": "elasticsearch is fast"
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<p>&nbsp;</p>
+<p><span style="font-weight: 400;">Match query বিভিন্ন ভাবে করা যায়, documentation বিস্তারিত বলা আছে, আমি শুধু প্রাথমিক ধারণা দিয়েছি</span></p>
+<h3><b>Term query</b></h3>
+<p><span style="font-weight: 400;">যখন exact match প্রয়োজন হয় তখন term query করা হয়, এই ক্ষেত্রে field এর data type keyword হতে হবে</span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET posts/_search
+
+{
+
+  "query": {
+
+    "match": {
+
+      "body": {
+
+        "query": "elasticsearch is fast"
+
+      }
+
+    },
+
+    "term": {
+
+      "is_published": {
+
+        "value": true
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h3><b>Range query</b></h3>
+<p><span style="font-weight: 400;">যখন কোন range এর ভিতরে search করার প্রয়োজন হয় তখন এই query ব্যবহার করা যায়, যেমন &#8211; numeric value অথবা date এর range</span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET populations/_search
+
+{
+
+  "query": {
+
+    "range": {
+
+      "age": {
+
+        "gte": 10,
+
+        "lte": 20
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h3><b>Geo distance query</b></h3>
+<p><span style="font-weight: 400;">কোন geo_point থেকে নির্দিষ্ট radius এ geolocation based search করার জন্য এই query ব্যবহার করা হয়ে থাকে। </span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET /locations/_search
+
+{
+
+  "query": {
+
+    "bool": {
+
+      "must": {
+
+        "match_all": {}
+
+      },
+
+      "filter": {
+
+        "geo_distance": {
+
+          "distance": "20km",
+
+          "pin.location": {
+
+            "lat": 40,
+
+            "lon": -70
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h3><b>Geo shape query</b></h3>
+<p><span style="font-weight: 400;">কোন geo_point এর উপর polygon অথবা multipolygon দিয়ে search করে documents পাওয়ার জন্য geo_shape কোয়েরি করা হয়। ধরা যাক, বনানী এলাকার ভিতরে সব হসপিটাল এর documents লাগবে (হসপিটাল এর geo_point গুলা আগে থেকে ingest করা আছে), তখন বনানী এলাকার multipolygon দিয়ে search করলে সব গুলা documents পাওয়া সম্ভব। </span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET /hospitals/_search
+
+{
+
+  "query": {
+
+    "bool": {
+
+      "must": {
+
+        "match_all": {}
+
+      },
+
+      "filter": {
+
+        "geo_shape": {
+
+          "location": {
+
+            "shape": {
+
+              "type": "multipolygon",
+
+              "coordinates": [ [ 13.0, 53.0 ], [ 14.0, 52.0 ] ]
+
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h2><b>শেষের কথা</b></h2>
+<p><span style="font-weight: 400;">আমি চেষ্টা করেছি সহজ ভাবে বলার এবং শক্ত কথা গুলা এড়িয়ে যাওয়ার, elasticsearch বেশ বড় একটা বিষয়, এর মধ্যে আরো অনেক কিছু আছে, আমি শুধু কিছু প্রাথমিক আলোচনা করার চেষ্টা করেছি। আমার আলোচনার বাহিরে আরো অনেক বিষয় আছে যেমন &#8211; </span><b>aggregation</b><span style="font-weight: 400;"> (মেট্রিক্স দেখানোর জন্য অনেক কাজের একটা জিনিস), </span><b>kibana</b><span style="font-weight: 400;"> (data visualization এর জন্য), </span><b>logstash</b><span style="font-weight: 400;"> (data migration এর কাজে লাগে) এবং আরো অনেক কিছু, যা নিয়ে আলোচনা করা হয় নাই। নিজ গুনে দেখে নেয়ার জন্য অনুরুধ করা হলো।</span></p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,770 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>React &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/react/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Tue, 09 Aug 2022 15:56:50 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>React &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Understanding Redux: Centralizing Application State in React</title>
+		<link>/blog/understanding-redux/</link>
+					<comments>/blog/understanding-redux/#respond</comments>
+		
+		<dc:creator><![CDATA[Mehedi Zamadar]]></dc:creator>
+		<pubDate>Thu, 04 Aug 2022 06:11:03 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Learn Redux]]></category>
+		<category><![CDATA[React]]></category>
+		<category><![CDATA[ReactJS]]></category>
+		<category><![CDATA[Redux]]></category>
+		<category><![CDATA[Redux Tutorial]]></category>
+		<category><![CDATA[Redux Workflow]]></category>
+		<category><![CDATA[State Management]]></category>
+		<guid isPermaLink="false">/?p=9827</guid>
+
+					<description><![CDATA[Why do we even need Redux for? The answer is to manage state of our application. State management in React can be a very tricky thing, especially when we need to pass data from a root element to a heavily nested element. As React has a one-way data flow, that means we can only pass [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span style="font-weight: 400;">Why do we even need Redux for? The answer is to manage state of our application. State management in React can be a very tricky thing, especially when we need to pass data from a root element to a heavily nested element. As React has a one-way data flow, that means we can only pass data in one direction, we can only pass data from parent to child component. That’s why a lot of times we pass data to a component that it doesn’t even need. </span></p>
+<p><img decoding="async" class="aligncenter wp-image-9832" src="/wp-content/uploads/2022/08/data-flow.png" alt="props drilling" width="517" height="334" /></p>
+<p>&nbsp;</p>
+<p>Here, If the parent component has some data that <strong>ChildC</strong> needs, we need to pass the data to <strong>ChildA</strong> and then <strong>ChildB</strong>, and then from <strong>ChildB</strong> to <strong>ChildC</strong>. Here, <strong>ChildA</strong> and <strong>ChildB</strong> are simply used as a medium.</p>
+<p>Personally, I have faced this issue since the day I started to code in React. This is completely fine in some cases, but in others, it adds redundancy to our application. Every component that consumes or uses these providers is re-rendered whenever there is a state change.</p>
+<p>So, how do we solve this issue? There are many ways to do it, like lifting state up, Context API, Redux, etc. But the solution I found most comfortable for me is Redux. In this article, we will learn about Redux in a simplified way.</p>
+<p>When it comes to learning front-end development, few tools cause more headaches than Redux. It is arguably one of the trickiest parts for sure. It may seem intimidating at first but, like most tricky parts of web development, It gets a lot easier with practice. For most learners, It may take some time to figure out. Be prepared to give it a bit of thought haha!</p>
+<p>&nbsp;</p>
+<h2><strong>What is Redux?</strong></h2>
+<p>Redux is a state container. It is probably the most popular global state management library for react by far.<br />
+It is most commonly paired with React, where it takes control of states away from React components and stores them in a place called a ‘store’.</p>
+<p><img decoding="async" class="aligncenter wp-image-9834 " src="/wp-content/uploads/2022/08/1_2r3KY9vBtUBXXEQMl0Iiog.png" alt="1 2r3KY9vBtUBXXEQMl0Iiog Understanding Redux: Centralizing Application State in React" width="563" height="375"></p>
+<p>So, It becomes very easy to access any state from any component in the application, as all the states are stored in a global store. It has a lot of boilerplate code and seems overworking for just increasing/decreasing a value.</p>
+<p>Before jumping right into the code, let’s just see the workflow of Redux, though it might not make any sense to you now.</p>
+<p><img decoding="async" class="aligncenter wp-image-9835 " src="/wp-content/uploads/2022/08/redux-workflow.png" alt="redux workflow Understanding Redux: Centralizing Application State in React" width="403" height="322"></p>
+<p>I mean it kind of looks scary right? Let’s look into a more simplified version of it first.</p>
+<p><img decoding="async" class="aligncenter wp-image-9836 " src="/wp-content/uploads/2022/08/redux-simplified.jpg" alt="redux simplified Understanding Redux: Centralizing Application State in React" width="432" height="292"></p>
+<p>We have a State which is a value we have (suppose, 0 initially). If we want to change the value we need to invoke an action. Like, If we want to change the value we need to increment it or decrement it in some way. That is called action. After invoking the action, we see the changed value in our browser, which is called View.</p>
+<p>The basic concept of Redux is it, precisely!</p>
+<p>Alright, now let’s learn more about the whole workflow of Redux. Let’s get back to the previous photo.</p>
+<p><strong>Store</strong>: An object where the application state lives. It is the singular point of states. The store brings everything together.</p>
+<p><strong>Action</strong>: The actual action we want to take place, for example, “add one”. An object that contains the type of the action (event) and a payload that is optional.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="wp-image-9842 aligncenter" src="/wp-content/uploads/2022/08/action-object.png" alt="action object Understanding Redux: Centralizing Application State in React" width="467" height="214"></p>
+<p>&nbsp;</p>
+<p>What we are seeing above is an Action. But we normally use Action Creator which returns an Action. It is useful to create dynamic actions. An action creator looks like this:</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9841 " src="/wp-content/uploads/2022/08/action-new.png" alt="action new Understanding Redux: Centralizing Application State in React" width="713" height="218"></p>
+<p>&nbsp;</p>
+<p><strong>Reducer</strong>: Reducer specifies how the application’s state should change in response to each action. For example, our new state should be one integer higher than our old state.</p>
+<p>It is a function that takes two arguments (currentState, action) and, depending on the action type (e.g., add or remove), will make a new state with the new changes and return the new state.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9843 " src="/wp-content/uploads/2022/08/reducer.png" alt="reducer Understanding Redux: Centralizing Application State in React" width="507" height="379"></p>
+<p>&nbsp;</p>
+<p>I mean we learned the definition of Redux workflow elements. But let’s put it into practice. That’s how we actually learn right?</p>
+<p>We will build a counter using Redux. I know it is pretty common but our main purpose in this article is to understand Redux workflow. Let’s dive into that.</p>
+<p>&nbsp;</p>
+<h2><strong>Step 1: Install Redux</strong></h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">npm install redux react-redux
+
+</pre>
+<p>&nbsp;</p>
+<h2><strong>Step 2: Create Store and Reducer</strong></h2>
+<p>We know that we need to configure the store for Redux, that’s where all the states will be stored. Although it’s actually up to you how you want to configure it. But I like it this way.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9847 " src="/wp-content/uploads/2022/08/storrre.png" alt="storrre Understanding Redux: Centralizing Application State in React" width="541" height="202"></p>
+<p>&nbsp;</p>
+<p>Like the code above, we will create a store by using the <strong>createStore</strong> method from redux and then export it. Now you might be wondering what is the <strong>reducer</strong> inside the <strong>createStore</strong> method!</p>
+<p>Let’s create it. In this <strong>INITIAL_STATE</strong> object below, we will initialize our state. As we want to increment/decrement a value, that’s why we initialized a count variable with 0 as the value.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9846 " src="/wp-content/uploads/2022/08/reducer-primarily.png" alt="reducer primarily Understanding Redux: Centralizing Application State in React" width="603" height="269"></p>
+<p>&nbsp;</p>
+<p>Now, reducer will be a function that takes the state object we initialized and actions that will modify the state as parameters. In the switch case, we will be adding those actions and their consequences later. But let’s create those actions first.</p>
+<p>&nbsp;</p>
+<h2><strong>Step 3: Creating Actions</strong></h2>
+<p>As I mentioned above, that Action is an object that contains the type of the action and a payload which is optional. Let’s create a file named actions. Here we don’t need any payload, because we are not sending any value to the store, we are only increasing/decreasing a value.</p>
+<p>We wrapped the action inside action creators. Here is the <strong>incrementCounter</strong> action creator.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9848 " src="/wp-content/uploads/2022/08/action-new-1.png" alt="action new 1 Understanding Redux: Centralizing Application State in React" width="621" height="190"></p>
+<p>&nbsp;</p>
+<p>Here is the <strong>decrementCounter</strong> action creator.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9849 " src="/wp-content/uploads/2022/08/decrement-action.png" alt="decrement action Understanding Redux: Centralizing Application State in React" width="619" height="190"></p>
+<p>&nbsp;</p>
+<p>Our whole actions file will look like this below &#8211;</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9853 " src="/wp-content/uploads/2022/08/whole-actions.png" alt="whole actions Understanding Redux: Centralizing Application State in React" width="556" height="286"></p>
+<p>&nbsp;</p>
+<p>Now we have created actions, we will be editing the <strong>Reducer</strong> to implement modifications when our action is dispatched or invoked.</p>
+<p>Let’s modify the Reducer. In the switch case, for “<strong>INCREMENT</strong>” action, we will increase the count value by 1, and for “<strong>DECREMENT</strong>” action, we will decrease the count value by 1. Like this picture below:</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9854 " src="/wp-content/uploads/2022/08/MOD-REDUCER.png" alt="MOD REDUCER Understanding Redux: Centralizing Application State in React" width="584" height="380"></p>
+<p>&nbsp;</p>
+<p>Creating action, reducer and store is completed. Now, we need to wrap our store in index.js file with our App component like this.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9855 " src="/wp-content/uploads/2022/08/index-store.png" alt="index store Understanding Redux: Centralizing Application State in React" width="617" height="402"></p>
+<p>&nbsp;</p>
+<p>Redux setup is completed, Now we need to connect our UI with it.</p>
+<p>&nbsp;</p>
+<h2><strong>Step 4: Connecting State &amp; Actions with UI/Component</strong></h2>
+<p>The final part is to see our state and invoke action from the UI to see the updated value.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9856 " src="/wp-content/uploads/2022/08/ui.png" alt="ui Understanding Redux: Centralizing Application State in React" width="685" height="633"></p>
+<p>&nbsp;</p>
+<p>here, we import the connect function from the react-redux library, we also import our <strong>increaseCounter</strong> and <strong>decreaseCounter</strong> actions.</p>
+<p>The connect function is a <strong>Higher Order Component (HOC),</strong> it basically takes a component and adds some more props to it, and then returns the same component with newly added props. If you need to know more about concepts like these, you can check out our <a href="/javascript-bootcamp" target="_blank" rel="noopener">JavaScript Bootcamp</a>.</p>
+<p>Check the last line of the file where we export the component, we can see that <strong>connect</strong> is being used here as follows,</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9857 " src="/wp-content/uploads/2022/08/last-line-ui.png" alt="last line ui Understanding Redux: Centralizing Application State in React" width="650" height="141"></p>
+<p>&nbsp;</p>
+<p><strong>connect</strong> takes two functions as arguments which are <strong>mapStateToProps</strong> and <strong>mapDispatchToProps</strong>.</p>
+<p>Now let&#8217;s see what these two functions do,</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter wp-image-9858 " src="/wp-content/uploads/2022/08/mapstate-dispacth.png" alt="mapstate dispacth Understanding Redux: Centralizing Application State in React" width="659" height="309"></p>
+<p>&nbsp;</p>
+<p><strong>mapStateToProps</strong> function as the name suggests maps the redux state to the props of the component it is declared in. So this basically adds whatever state you return from this function to your component. In our counter example, I have returned count from the redux state and hence now I can access count from props inside my component.</p>
+<p><strong>mapDispatchToProps</strong> function does a very similar thing, but instead of adding state to props, it adds our actions to props! Whatever actions we return from this function are added to our component. And as you can see that in our example I have returned two actions i.e <strong>increaseCounter</strong> and <strong>decreaseCounter</strong>, hence we are able to access them from our props and then I release our actions on the respective button click.</p>
+<p>Well, now we have a fully functional redux app. If we click on “+” it will increase a number and “-” will decrease a number.<br />
+I hope this article was helpful for you to understand Redux. We will be diving in depth on Redux in another article, like how we can reduce all these boilerplates by using <a href="https://redux-toolkit.js.org/introduction/getting-started" target="_blank" rel="noopener nofollow"><strong>Redux-Toolkit</strong></a> and others. But for now, I think that will be it, I hope this article added some value. adios!</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/understanding-redux/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>React: Form Validation (having nested schema) with Formik, Yup, and Material-UI</title>
+		<link>/blog/react-form-validation-with-formik-yup-and-material-ui/</link>
+		
+		<dc:creator><![CDATA[Md. Arfizur Rahman]]></dc:creator>
+		<pubDate>Wed, 16 Jun 2021 16:29:39 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Form-validation]]></category>
+		<category><![CDATA[Formik]]></category>
+		<category><![CDATA[Material-Ui]]></category>
+		<category><![CDATA[React]]></category>
+		<category><![CDATA[Yup]]></category>
+		<guid isPermaLink="false">/?p=2564</guid>
+
+					<description><![CDATA[Nowadays forms are crucial in any application. Building forms are pretty simple but adding validation to them may become a bit of a challenge. It gets even trickier when..]]></description>
+										<content:encoded><![CDATA[<p>Nowadays forms are crucial in any application. Building forms are pretty simple but adding validation to them may become a bit of a challenge. It gets even trickier when our forms have a complex structure, like binding the form fields to nested object properties and validating them. You’ll see shortly what I meant by that. The official React documentation doesn&#8217;t give you that much on how to handle <a title="forms" href="https://reactjs.org/docs/forms.html" rel="nofollow noopener" target="_blank">forms</a>. Well, I think this is ok since forms may have so many underlying business logic when it comes to validation. And React is only concerned about the UI not about the heavy business logic.</p>
+<p>So, the background of this post is that a few days ago I was trying to validate a form and I struggled with it a bit as it contains nested schema. So I decided to write a blog for anyone having the same issues. I&#8217;ve used <a title="Material-UI" href="https://material-ui.com/" rel="nofollow noopener" target="_blank">Material-UI</a> <code>TextField</code> for building the form and used Formik and Yup for validating it. Now I’ll discuss the terms I’ve mentioned (Formik, Yup, Material-UI).</p>
+<p><strong>Formik</strong> is a small library that helps us with managing states, handling validations and error messages, and handling form submission, etc. You can learn more on <a href="https://formik.org/" rel="nofollow noopener" target="_blank">https://formik.org/</a>.</p>
+<p><strong>Yup</strong> is a schema builder that helps us to create a clean validation object, which then can be provided to the validationSchema property of Formik. You can learn more on <a href="https://github.com/jquense/yup" rel="nofollow noopener" target="_blank">https://github.com/jquense/yup</a>.</p>
+<p><strong>Material-UI</strong> provides well-designed input fields and form structure. You can learn about all the form elements and much more on <a href="https://material-ui.com/" rel="nofollow noopener" target="_blank">https://material-ui.com/</a>.</p>
+<h4>Install the required packages:</h4>
+<p>Let’s get started by installing the required packages using the following command:</p>
+<blockquote><p>npm install @material-ui formik yup</p></blockquote>
+<h3>Building the form</h3>
+<p>We&#8217;ll build the form based on the following object;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">const initialValues = {
+    name: '',
+    age: '',
+    email: '',
+    phone: '',
+    social: {
+      facebook: '',
+      linkedin: ''
+    },
+    password: '',
+    confirmPassword: ''
+};</pre>
+<p>As you can see in this object <code>initialValues</code> there&#8217;s a nested object social with two properties, this is the nested object that I&#8217;ve mentioned earlier. Now let&#8217;s create the form.</p>
+<p>We&#8217;ll import some Material-UI components which are optional and we’re only using these for a well-designed UI.</p>
+<blockquote><p>import clsx from ‘clsx’;<br />
+import PropTypes from ‘prop-types’;<br />
+import { makeStyles } from ‘@material-ui/styles’;<br />
+import { Card, CardHeader, CardContent, CardActions, Divider, Grid, TextField, Button } from ‘@material-ui/core’;</p></blockquote>
+<p>Here&#8217;s the full code of the form:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">import React from 'react';
+import clsx from 'clsx';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/styles';
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Divider,
+  Grid,
+  TextField,
+  Button
+} from '@material-ui/core';
+
+const useStyles = makeStyles((theme) =&gt; ({
+  root: {
+    padding: 0,
+    height: '100%'
+  },
+  actions: {
+    justifyContent: 'flex-end',
+    padding: theme.spacing(2)
+  }
+}));
+
+const SignUpForm = () =&gt; {
+  const classes = useStyles();
+  const initialValues = {
+    name: '',
+    age: '',
+    email: '',
+    phone: '',
+    social: {
+      facebook: '',
+      linkedin: ''
+    },
+    password: '',
+    confirmPassword: ''
+  };
+
+  return (</pre>
+<form autocomplete="off"><button type="submit"> Save </button></form>
+<p>&nbsp;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">  );
+};
+
+SignUpForm.propTypes = {
+  className: PropTypes.string
+};
+
+export default SignUpForm;</pre>
+<p>The form looks like the following:</p>
+<p><img decoding="async" src="/wp-content/uploads/2021/06/react-formik-blog-form-design.jpg" alt="react formik blog form design React: Form Validation (having nested schema) with Formik, Yup, and Material-UI"></p>
+<h3>Adding validations to the form</h3>
+<p>Our goal is to prevent users from submitting an invalid form. We&#8217;ll use different validation criteria as you&#8217;ll see shortly in the Yup validation schema. We&#8217;ll make the button disabled and enable it once all the validation criteria are met.</p>
+<p>Let&#8217;s import the libraries required for the validation.</p>
+<blockquote><p>import * as Yup from ‘yup’;<br />
+import { Formik, getIn } from ‘formik’;</p></blockquote>
+<p>Let&#8217;s have a look at the yup validation schema object:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">const initialValues = {
+    name: '',
+    age: '',
+    email: '',
+    phone: '',
+    social: {
+      facebook: '',
+      linkedin: ''
+    },
+    password: '',
+    confirmPassword: ''
+};</pre>
+<p>You&#8217;ll notice that the nested object social holds another Yup schema.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">social: Yup.object().shape({
+    facebook: Yup.string().required('Facebook username is required'),
+    linkedin: Yup.string().required('LinkedIn username is required')
+}),</pre>
+<p>Now, let’s bring everything together, then we’ll discuss it.</p>
+<p>&nbsp;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">import React from 'react';
+import clsx from 'clsx';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/styles';
+import * as Yup from 'yup';
+import { Formik, getIn } from 'formik';
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Divider,
+  Grid,
+  TextField,
+  Button
+} from '@material-ui/core';
+
+const useStyles = makeStyles((theme) =&gt; ({
+  root: {
+    padding: 0,
+    height: '100%'
+  },
+  actions: {
+    justifyContent: 'flex-end',
+    padding: theme.spacing(2)
+  }
+}));
+
+const SignUpForm = () =&gt; {
+  const classes = useStyles();
+
+  const initialValues = {
+    name: '',
+    age: '',
+    email: '',
+    phone: '',
+    social: {
+      facebook: '',
+      linkedin: ''
+    },
+    password: '',
+    confirmPassword: ''
+  };
+
+  return (
+    &lt;Card className={clsx(classes.root)}&gt;
+      &lt;CardHeader title="Sign Up" /&gt;
+      &lt;Divider /&gt;
+
+      &lt;Formik
+        initialValues={{
+          ...initialValues
+        }}
+        validationSchema={Yup.object().shape({
+          name: Yup.string().required('Name is required'),
+          age: Yup.number()
+            .required('Age is required')
+            .min(13, 'You must be at least 13 years old'),
+          email: Yup.string()
+            .email('Please enter a valid email')
+            .required('Email is required'),
+          phone: Yup.string().required('Phone is required'),
+          social: Yup.object().shape({
+            facebook: Yup.string().required('Facebook username is required'),
+            linkedin: Yup.string().required('LinkedIn username is required')
+          }),
+          password: Yup.string()
+            .required('Please enter your password')
+            .matches(
+              /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&amp;])[A-Za-z\d@$!%*#?&amp;]{8,}$/,
+              'Password must contain 8 characters, one uppercase, one lowercase, one number and one special case Character'
+            ),
+          confirmPassword: Yup.string()
+            .required('Please enter the password again')
+            .oneOf([Yup.ref('password'), null], "Passwords didn't match")
+        })}
+        onSubmit={(values) =&gt; {
+          console.log(values);
+        }}&gt;
+        {({
+          errors,
+          handleBlur,
+          handleChange,
+          handleSubmit,
+          isSubmitting,
+          isValid,
+          dirty,
+          touched,
+          values
+        }) =&gt; (
+          &lt;form autoComplete="off" noValidate onSubmit={handleSubmit}&gt;
+            &lt;CardContent&gt;
+              &lt;Grid container spacing={2}&gt;
+                &lt;Grid item md={6} xs={12}&gt;
+                  &lt;TextField
+                    error={Boolean(touched.name &amp;&amp; errors.name)}
+                    fullWidth
+                    required
+                    helperText={touched.name &amp;&amp; errors.name}
+                    label="Name"
+                    name="name"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    type="text"
+                    value={values.name}
+                    variant="outlined"
+                    size="small"
+                  /&gt;
+                &lt;/Grid&gt;
+                &lt;Grid item md={6} xs={12}&gt;
+                  &lt;TextField
+                    error={Boolean(touched.age &amp;&amp; errors.age)}
+                    fullWidth
+                    required
+                    helperText={touched.age &amp;&amp; errors.age}
+                    label="Age"
+                    name="age"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    type="number"
+                    value={values.age}
+                    variant="outlined"
+                    size="small"
+                  /&gt;
+                &lt;/Grid&gt;
+                &lt;Grid item md={6} xs={12}&gt;
+                  &lt;TextField
+                    error={Boolean(touched.email &amp;&amp; errors.email)}
+                    fullWidth
+                    required
+                    helperText={touched.email &amp;&amp; errors.email}
+                    label="Email"
+                    name="email"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    type="text"
+                    value={values.email}
+                    variant="outlined"
+                    size="small"
+                  /&gt;
+                &lt;/Grid&gt;
+
+                &lt;Grid item md={6} xs={12}&gt;
+                  &lt;TextField
+                    error={Boolean(touched.phone &amp;&amp; errors.phone)}
+                    fullWidth
+                    required
+                    helperText={touched.phone &amp;&amp; errors.phone}
+                    label="Phone"
+                    name="phone"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    type="text"
+                    value={values.phone}
+                    variant="outlined"
+                    size="small"
+                  /&gt;
+                &lt;/Grid&gt;
+                &lt;Grid item md={6} xs={12}&gt;
+                  &lt;TextField
+                    error={Boolean(
+                      getIn(touched, 'social.facebook') &amp;&amp;
+                        getIn(errors, 'social.facebook')
+                    )}
+                    fullWidth
+                    required
+                    helperText={
+                      getIn(touched, 'social.facebook') &amp;&amp;
+                      getIn(errors, 'social.facebook')
+                    }
+                    label="Facebook"
+                    name="social.facebook"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    type="text"
+                    value={values.social.facebook}
+                    variant="outlined"
+                    size="small"
+                  /&gt;
+                &lt;/Grid&gt;
+                &lt;Grid item md={6} xs={12}&gt;
+                  &lt;TextField
+                    error={Boolean(
+                      getIn(touched, 'social.linkedin') &amp;&amp;
+                        getIn(errors, 'social.linkedin')
+                    )}
+                    fullWidth
+                    required
+                    helperText={
+                      getIn(touched, 'social.linkedin') &amp;&amp;
+                      getIn(errors, 'social.linkedin')
+                    }
+                    label="LinkedIn"
+                    name="social.linkedin"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    type="text"
+                    value={values.social.linkedin}
+                    variant="outlined"
+                    size="small"
+                  /&gt;
+                &lt;/Grid&gt;
+                &lt;Grid item md={6} xs={12}&gt;
+                  &lt;TextField
+                    error={Boolean(touched.password &amp;&amp; errors.password)}
+                    fullWidth
+                    required
+                    helperText={touched.password &amp;&amp; errors.password}
+                    label="Password"
+                    name="password"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    type="password"
+                    value={values.password}
+                    variant="outlined"
+                    size="small"
+                  /&gt;
+                &lt;/Grid&gt;
+
+                &lt;Grid item md={6} xs={12}&gt;
+                  &lt;TextField
+                    error={Boolean(
+                      touched.confirmPassword &amp;&amp; errors.confirmPassword
+                    )}
+                    fullWidth
+                    required
+                    helperText={
+                      touched.confirmPassword &amp;&amp; errors.confirmPassword
+                    }
+                    label="Confirm Password"
+                    name="confirmPassword"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    type="password"
+                    value={values.confirmPassword}
+                    variant="outlined"
+                    size="small"
+                  /&gt;
+                &lt;/Grid&gt;
+              &lt;/Grid&gt;
+            &lt;/CardContent&gt;
+            &lt;Divider /&gt;
+            &lt;CardActions className={classes.actions}&gt;
+              &lt;Button
+                color="primary"
+                disabled={Boolean(!isValid)}
+                type="submit"
+                variant="contained"&gt;
+                Save
+              &lt;/Button&gt;
+            &lt;/CardActions&gt;
+          &lt;/form&gt;
+        )}
+      &lt;/Formik&gt;
+    &lt;/Card&gt;
+  );
+};
+
+SignUpForm.propTypes = {
+  className: PropTypes.string
+};
+
+export default SignUpForm;</pre>
+<p>We&#8217;ve added noValidated to the form to prevent <code>HTML5</code> default form validation. Now let&#8217;s discuss the following text field:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;TextField
+    error={Boolean(touched.name &amp;&amp; errors.name)}
+    fullWidth
+    required
+    helperText={touched.name &amp;&amp; errors.name}
+    label="Name"
+    name="name"
+    onBlur={handleBlur}
+    onChange={handleChange}
+    type="text"
+    value={values.name}
+    variant="outlined"
+    size="small"
+/&gt;</pre>
+<p>Here <code>error</code> and <code>helperText</code> will be set conditionally if there&#8217;s an error and the input field is touched. Now let&#8217;s discuss the following text field with a slightly different syntax:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;TextField
+    error={Boolean(
+        getIn(touched, 'social.facebook') &amp;&amp;
+        getIn(errors, 'social.facebook')
+    )}
+    fullWidth
+    required
+    helperText={
+        getIn(touched, 'social.facebook') &amp;&amp;
+        getIn(errors, 'social.facebook')
+    }
+    label="Facebook"
+    name="social.facebook"
+    onBlur={handleBlur}
+    onChange={handleChange}
+    type="text"
+    value={values.social.facebook}
+    variant="outlined"
+    size="small"
+/&gt;</pre>
+<p>Here, because of the nested object, we&#8217;re setting error and helperText values differently. We&#8217;re using a helper function <code>getIn()</code> provided by Formik. Also, notice the value and name prop and how we set the value by accessing values.social.facebook, etc.</p>
+<p>You&#8217;ll also notice we&#8217;ve conditionally made the button disabled for invalid form:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">&lt;Button
+    color="primary"
+    disabled={Boolean(!isValid)}
+    type="submit"
+    variant="contained"&gt;
+    Save
+&lt;/Button&gt;</pre>
+<p>After running the final code snippet if we try to submit the invalid form the output looks like this:</p>
+<p><img decoding="async" src="/wp-content/uploads/2021/06/react-formik-blog-form-invalid.jpg" alt="react formik blog form invalid React: Form Validation (having nested schema) with Formik, Yup, and Material-UI"></p>
+<p>If you submit a valid form after filling out all the required fields, you&#8217;ll get the values automatically passed to the <code>onSubmit()</code> function by Formik. Then you can write the necessary code to send those data to the backend if you want.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">onSubmit={(values) =&gt; {
+    console.log(values);
+}}</pre>
+<h3>Summary</h3>
+<p>Here, we described how can we validate forms and show error messages with <strong>Formik, Yup,</strong> and <strong>Material-UI</strong>. Most importantly we&#8217;ve worked with the nested object and discussed how to validate the nested object properties. We also discussed how to access the submitted data.</p>
+<p>That&#8217;s it, I hope you&#8217;ve enjoyed this simple tutorial and this is helpful to you. To learn more about Formik, Yup and Material-UI please visit the following links in the Resources section.</p>
+<p>Thanks!</p>
+<h3>Resources</h3>
+<ol>
+<li>Formik: <a href="https://jaredpalmer.com/formik/docs/overview" rel="nofollow noopener" target="_blank">https://jaredpalmer.com/formik/docs/overview</a></li>
+<li>Material-UI: <a href="https://material-ui.com/" rel="nofollow noopener" target="_blank">https://material-ui.com/</a></li>
+<li>Yup: <a href="https://github.com/jquense/yup" rel="nofollow noopener" target="_blank">https://github.com/jquense/yup</a></li>
+</ol>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Issue Arises When Building A Desktop App Using Electron And Electron-Builder</title>
+		<link>/blog/issue-arises-when-building-a-desktop-app-using-electron-and-electron-builder/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Mon, 07 Jun 2021 11:05:01 +0000</pubDate>
+				<category><![CDATA[Personal]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[AntDesign]]></category>
+		<category><![CDATA[DesktopAPP]]></category>
+		<category><![CDATA[Electron]]></category>
+		<category><![CDATA[ElectronBuilder]]></category>
+		<category><![CDATA[ElectronReactBoilerplate]]></category>
+		<category><![CDATA[React]]></category>
+		<guid isPermaLink="false">/?p=2544</guid>
+
+					<description><![CDATA[Author: Eftakher Sazid Designation: Intern at Vivasoft LTD Javascript and its available incredible user-friendly frameworks make it very easy to make web applications. But as it runs only on the web and browsers, it is not possible to create a desktop application using Javascript. Here ElectronJS comes to the rescue. ElectronJS is an open-source framework [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p style="text-align: left" align="center">Author: Eftakher Sazid<br />
+Designation: Intern at Vivasoft LTD</p>
+<p align="center"><img decoding="async" src="https://upload.wikimedia.org/wikipedia/commons/9/91/Electron_Software_Framework_Logo.svg" width="200" height="200" alt="Electron Software Framework Logo Issue Arises When Building A Desktop App Using Electron And Electron-Builder"></p>
+<p>Javascript and its available incredible user-friendly frameworks make it very easy to make web applications. But as it runs only on the web and browsers, it is not possible to create a desktop application using Javascript. Here ElectronJS comes to the rescue.</p>
+<p>ElectronJS is an open-source framework that allows us to create desktop applications using web technologies. That means Javascript, HTML, CSS, and their entire arsenal of frameworks. That makes it significantly easy to design and create a GUI for a desktop application.</p>
+<p>ElectronJS has all the tools as the browser and some additional tools to access the file system for reading and writing operations. So it is not a browser but more. It is pretty easy to create an application in development mode but the tricky part comes while packaging the app for production. We’ll explore all the challenges of creating one.</p>
+<p>The very first step is to create a project. Now we can create a Javascript and HTML-only project pretty easily but the hassle begins while adding the frameworks like React and webpack. Now boilerplates for electron applications have solved the hassle of manually configuring the project along with all its dependencies. Popular boilerplates like <a href="https://electron-react-boilerplate.js.org/" rel="nofollow noopener" target="_blank">electron-react-boilerplate</a>, <a href="https://www.electronforge.io/" rel="nofollow noopener" target="_blank">electron-forge</a>, <a href="https://www.electron.build/" rel="nofollow noopener" target="_blank">electron-builder</a> are widely used.</p>
+<p>For my application, I used the <code>electron-react-boilerplate</code>. It has support for <em><strong>TypeScript</strong></em>, <em><strong>React</strong></em>, <em><strong>react-router-dom</strong></em> out of the box and it uses <code>electron-builder</code> to package the application. It has a pretty straightforward project setup that you can find <a href="https://electron-react-boilerplate.js.org/docs/installation" rel="nofollow noopener" target="_blank">here</a>. Then after project setup, you should get rid of all the unnecessary pre-installed dependencies and config files. Let me name some of them, <code>.github</code>, <code>.git</code>(obviously, you don’t want to use that git), <code>CHANGELOG.md</code>, <code>CODE_OF_CONDUCT.md</code>, <code>src/__test__</code> if you don&#8217;t need them.</p>
+<p>The first issue that you may face that <code>electron-react-boilerplate</code> has all the support needed for <em><strong>Typescript</strong></em> but if you use Javascript only like I did, you have to change the <code>.erb/webpack.config.base.js</code> file in the project directory. By default, while packaging this application using the electron-builder it will only accept files with the <code>.tsx</code> extension.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">import path from 'path';
+import webpack from 'webpack';
+import { dependencies as externals } from '../../src/package.json';
+
+export default {
+  externals: [...Object.keys(externals || {})],
+
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+          },
+        },
+      },
+    ],
+  }
+}
+</pre>
+<p>Now to configure for accepting files with <code>.js</code>, <code>.jsx</code> and <code>.ts</code> extensions we need to change,</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">import path from 'path';
+import webpack from 'webpack';
+import { dependencies as externals } from '../../src/package.json';
+
+export default {
+  externals: [...Object.keys(externals || {})],
+
+  module: {
+    rules: [
+      {
+        test: /\.ts|\.tsx|\.jsx|\.js?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+          },
+        },
+      },
+    ],
+  }
+}
+</pre>
+<p>Now we are good to go.</p>
+<p>The second issue that I faced was using third-party UI libraries like <code>semantic-ui</code>, <code>ant-design</code> was that even after installing the dependencies the imports of their CSS files in the <code>index.tsx</code> was not working.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">import 'react-datepicker/dist/react-datepicker.css';
+import 'antd/dist/antd.css';</pre>
+<p>Now to solve this you have to add them inside the <code>&lt;head&gt;</code> tag of your <code>src/index.html</code> file as <code>&lt;link/&gt;</code> .</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;head&gt;
+  &lt;meta charset="utf-8" /&gt;
+  &lt;title&gt;App name&lt;/title&gt;
+  &lt;link
+    rel="stylesheet"
+    type="text/css"
+    href="../node_modules/react-toastify/dist/ReactToastify.css"
+  /&gt;
+  &lt;link
+    rel="stylesheet"
+    type="text/css"
+    href="../node_modules/antd/dist/antd.css"
+  /&gt;
+  ...
+&lt;/head&gt;</pre>
+<p>Now all the CSS property of the UI components will be working fine.</p>
+<p>For my project, I had to run the executable of my backend when my app was starting. To run an external application electron can use the <code>exec</code> and <code>execFile</code> from the <code>child_process</code> of the node.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">import { exec, execFile } from 'child_process';</pre>
+<p>The <code>execFile</code> executes the executable for my backend. You can run pretty much any executable using this.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">execFile(
+  backEnd,
+  {
+    windowsHide: false,
+  },
+  (err, stdout, stderr) =&gt; {
+    if (err) {
+      console.log(err);
+    }
+    if (stdout) {
+      console.log(stdout);
+    }
+    if (stderr) {
+      console.log(stderr);
+    }
+  }
+);</pre>
+<p>To close the backend while closing the app you can use <code>exec</code>.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">exec(`taskkill /f /t /im ${executableName}`, (err, stdout, stderr) =&gt; {
+  if (err) {
+    log.error(err);
+    console.log(err);
+    return;
+  }
+  console.log(`stdout: ${stdout}`);
+  console.log(`stderr: ${stderr}`);
+});</pre>
+<p>&nbsp;</p>
+<p>For this to work, I kept my backend in the <code>src/Backend</code> folder. Now to package this along with all the dependencies I need to add this folder to the <em><code>package.json</code></em> file. Any file or folder included in the <code>“files”</code> array, will be added to the <em><code>app.asar</code></em> file. That does not solve it, because while packaging using <code>electron-builder</code> all these files are exported to a format called <strong><code>.asar</code></strong> format. The problem with this format is that no executable or app can be executed from within this <strong><code>.asar</code></strong> format. So we have to unpack the backend from the packaged <em><code>app.asar</code></em> file. The file specified in the <code>“asarUnpack”</code> will be unpacked from the <em><code>app.asar</code></em> and will be executable.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">"build": {
+    "productName": "App name",
+    "appId": "org.erb.appName",
+    "asarUnpack": [
+      "Backend/bin/*"
+    ],
+    "files": [
+      "dist/",
+      "node_modules/",
+      "index.html",
+      "main.prod.js",
+      "main.prod.js.map",
+      "package.json",
+      "Backend"
+    ],
+ ....
+    }
+  },</pre>
+<p>Now while packaging <code>yarn package</code> will create the native installer for the OS in the <code>release</code> folder in the root directory.</p>
+<h4 id="to-make-os-specific-build" class="mume-header">To make OS-specific build:</h4>
+<ul>
+<li><strong>Linux</strong>: <code>yarn package --linux</code></li>
+<li><strong>Windows</strong>: <code>yarn package --win</code></li>
+<li><strong>macOS</strong>: <code>yarn package --mac</code></li>
+</ul>
+<p>The final build doesn&#8217;t have any dev-tool support, so enable dev-tool in build version:</p>
+<ul>
+<li><strong>Build debug</strong>: <code>yarn cross-env DEBUG_PROD=true yarn package</code></li>
+</ul>
+<p>This installer will be enough to run the application on any system.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

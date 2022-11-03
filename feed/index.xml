@@ -1,0 +1,2073 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Vivasoft</title>
+	<atom:link href="/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Tue, 01 Nov 2022 05:24:11 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Efficient way to handle Procedures, Views, Functions in EF Core</title>
+		<link>/blog/procedures-views-functions-in-entity-framework-core/</link>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Mon, 31 Oct 2022 10:00:24 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[entity framework]]></category>
+		<category><![CDATA[function]]></category>
+		<category><![CDATA[procedure]]></category>
+		<category><![CDATA[view]]></category>
+		<guid isPermaLink="false">/?p=12348</guid>
+
+					<description><![CDATA[Sometimes we need to write new Functions, Views and Procedures or use existing ones. In the past, EFCore hasn’t had a super nice way to handle non-table database structures. Therefore, in order to work with non-table database objects in EFCore5 code first implemented some new functionality around some of these items, including the ability to [&#8230;]]]></description>
+										<content:encoded><![CDATA[<div dir="ltr">Sometimes we need to write new Functions, Views and Procedures or use existing ones. In the past, EFCore hasn’t had a super nice way to handle non-table database structures. Therefore, in order to work with non-table database objects in EFCore5 code first implemented some new functionality around some of these items, including the ability to do a ToFunction or ToView call in the Fluent API to map queries to table-valued functions, procedures and views, which we can leverage in EFCore6.</div>
+<div dir="ltr"></div>
+<div dir="ltr">In this post, we will see how to add non-table database objects to db context  and put the SQL scripts into migration script in a nicer and cleaner way.</div>
+<div dir="ltr"></div>
+<div dir="ltr">
+<p>At first we will create one Procedure (spGetWeatherInformation), one View (vwLocationTemperatureSummery) and one Function (fnGetTemperatureByLocation) for example.  Then we will keep them in  three seperate directory in Sql Script directory of our WeatherForecast.Infrastructure project.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">CREATE OR ALTER VIEW vwLocationTemperatureSummery
+AS
+SELECT 
+     Date,
+     Location,
+     TemperatureC Temperature,
+     Summary
+FROM WeatherForecasts</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">CREATE OR ALTER PROCEDURE spGetWeatherForecast
+(
+   @location NVARCHAR(50)
+)
+AS
+BEGIN
+    SELECT 
+         Date,
+         Location,
+         TemperatureC Temperature,
+         Summary
+    FROM WeatherForecasts
+    WHERE LOWER(Location) = LOWER(@location)
+END</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">CREATE OR ALTER FUNCTION fnGetTemperatureByLocation
+(
+   @location NVARCHAR(50)
+)
+RETURNS INT
+AS
+BEGIN
+
+    DECLARE @Temperature INT
+
+    SELECT TOP(1)
+    	@Temperature = TemperatureC
+    FROM WeatherForecasts
+    WHERE LOWER(Location) = LOWER(@location)
+    ORDER BY Id DESC
+
+    RETURN @Temperature
+
+END</pre>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter size-full wp-image-12356" src="/wp-content/uploads/2022/10/script-directory-1.png" alt="script directory 1 Efficient way to handle Procedures, Views, Functions in EF Core" width="448" height="821" srcset="/wp-content/uploads/2022/10/script-directory-1.png 448w, /wp-content/uploads/2022/10/script-directory-1-164x300.png 164w" sizes="(max-width: 448px) 100vw, 448px"><br />
+Build Action of those file should be Embedded resource- Right click on the file then select Property—<br />
+<img decoding="async" class="aligncenter size-full wp-image-12357" src="/wp-content/uploads/2022/10/2-build-action.png" alt="2 build action Efficient way to handle Procedures, Views, Functions in EF Core" width="570" height="902" srcset="/wp-content/uploads/2022/10/2-build-action.png 570w, /wp-content/uploads/2022/10/2-build-action-480x760.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 570px, 100vw"></p>
+</div>
+<div dir="ltr"></div>
+<div dir="ltr">
+<div dir="ltr">
+<p>Now opening the Package Manager Console, will run following migration command—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="bash">add-migration v1_3 -c ApplicationDbContext -o Migrations</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-12358" src="/wp-content/uploads/2022/10/3.-run-migration.png" alt="3. run migration Efficient way to handle Procedures, Views, Functions in EF Core" width="1885" height="946" srcset="/wp-content/uploads/2022/10/3.-run-migration.png 1885w, /wp-content/uploads/2022/10/3.-run-migration-1280x642.png 1280w, /wp-content/uploads/2022/10/3.-run-migration-980x492.png 980w, /wp-content/uploads/2022/10/3.-run-migration-480x241.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1885px, 100vw"></p>
+<p>we could have add the SQL Scripts like bellow in our migration to generate migration script</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">namespace WeatherForecast.Infrastucture.Migrations
+{
+    public partial class v1_3 : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(@"'CREATE OR ALTER VIEW vwLocationTemperatureSummery
+                                    AS
+                                    SELECT 
+    	                                Date,
+    	                                Location,
+    	                                TemperatureC Temperature,
+    	                                Summary
+                                    FROM WeatherForecasts'");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(string.Format(@"DROP VIEW IF EXISTS {0}", "vwLocationTemperatureSummery"));
+        }
+    }
+}</pre>
+<p>But we will follow another approach so that we can create migration scripts dynamically from previously created scripts as well as those scripts can be tracked by the source control easily.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">namespace WeatherForecast.Infrastucture.Migrations
+{
+    public partial class v1_3 : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.RunSqlScript(View.LocationTemperatureSummery);
+            migrationBuilder.RunSqlScript(Procedure.GetWeatherInformation);       
+            migrationBuilder.RunSqlScript(Function.GetTemperatureByLocation);
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(string.Format(@"DROP VIEW IF EXISTS {0}", View.LocationTemperatureSummery));
+            migrationBuilder.Sql(string.Format(@"DROP PROCEDURE IF EXISTS {0}", Procedure.GetWeatherInformation));
+            migrationBuilder.Sql(string.Format(@"DROP FUNCTION IF EXISTS dbo.{0}", Function.GetTemperatureByLocation));
+        }
+    }
+}</pre>
+<p>Here RunSqlScript is an Extention funtion that takes the script name as parameter to generate the script—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">namespace WeatherForecast.Infrastucture.Extensions
+{
+    public static class MigrationExtension
+    {
+        public static void RunSqlScript(this MigrationBuilder migrationBuilder, string script)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(x =&gt; x.EndsWith($"{script}.sql"));
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            using var reader = new StreamReader(stream);
+            var sqlResult = reader.ReadToEnd();
+            migrationBuilder.Sql(sqlResult);
+        }
+    }
+}</pre>
+<p>Besides this, we will use constants to keep the name of View, Procedure and Function because this name needs to be used in many places.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class View
+{
+    /// &lt;summary&gt;
+    /// vwLocationTemperatureSummery
+    /// &lt;/summary&gt;
+    public const string LocationTemperatureSummery = "vwLocationTemperatureSummery";
+}
+
+public class Function
+{
+    /// &lt;summary&gt;
+    /// fnGetTemperatureByLocation(@location nvarchar) returns int
+    /// &lt;/summary&gt;
+    public const string GetTemperatureByLocation = "fnGetTemperatureByLocation";
+}
+
+public class Procedure
+{
+    /// &lt;summary&gt;
+    /// spGetWeatherInformation(@location nvarchar(50))
+    /// &lt;/summary&gt;
+    public const string GetWeatherInformation = "spGetWeatherInformation";
+}</pre>
+<p>Now to generate the migration script, run the following command—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="bash">Script-Migration location-added v1_3 -c ApplicationDbContext -o Services/WeatherForecast/WeatherForecast.Infrastucture/Migrations/Scripts/v1.3.sql -i</pre>
+<p>-o = output location<br />
+-c = db-context<br />
+From location-added to v1_3<br />
+-i = Generate a script that can be used on a database at any migration</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    CREATE OR ALTER VIEW vwLocationTemperatureSummery
+    AS
+    SELECT 
+    	Date,
+    	Location,
+    	TemperatureC Temperature,
+    	Summary
+    FROM WeatherForecasts
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    CREATE OR ALTER PROCEDURE spGetWeatherForecast(@location nvarchar(50))
+    AS
+    SELECT 
+    	Date,
+    	Location,
+    	TemperatureC Temperature,
+    	Summary
+    FROM WeatherForecasts
+    WHERE LOWER(Location) = LOWER(@location)
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+
+    CREATE OR ALTER FUNCTION fnGetTemperatureByLocation
+    (
+
+    	@location NVARCHAR(50)
+    )
+    RETURNS int
+    AS
+    BEGIN
+
+    	DECLARE @Temperature int
+
+    	SELECT TOP(1)
+    		@Temperature = TemperatureC
+    	FROM WeatherForecasts
+    	WHERE LOWER(Location) = LOWER(@location)
+    	ORDER BY Id DESC
+
+    	RETURN @Temperature
+
+    END
+
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20221031051328_v1_3', N'6.0.4');
+END;
+GO
+
+COMMIT;
+GO
+
+</pre>
+<p>But this script show some syntax error—<br />
+<img decoding="async" class="aligncenter size-full wp-image-12360" src="/wp-content/uploads/2022/10/4.-error-1-1.png" alt="4. error 1 1 Efficient way to handle Procedures, Views, Functions in EF Core" width="1922" height="818" srcset="/wp-content/uploads/2022/10/4.-error-1-1.png 1922w, /wp-content/uploads/2022/10/4.-error-1-1-1280x545.png 1280w, /wp-content/uploads/2022/10/4.-error-1-1-980x417.png 980w, /wp-content/uploads/2022/10/4.-error-1-1-480x204.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1922px, 100vw">So that we will add some modification maually and script sould be like folllowing—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+EXEC(N'    CREATE OR ALTER VIEW vwLocationTemperatureSummery
+    AS
+    SELECT 
+    	Date,
+    	Location,
+    	TemperatureC Temperature,
+    	Summary
+    FROM WeatherForecasts')
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    EXEC(N'    CREATE OR ALTER PROCEDURE spGetWeatherForecast(@location nvarchar(50))
+        AS
+        SELECT 
+    		Date,
+    		Location,
+    		TemperatureC Temperature,
+    		Summary
+        FROM WeatherForecasts
+        WHERE LOWER(Location) = LOWER(@location)')
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+
+   EXEC(N' CREATE OR ALTER FUNCTION fnGetTemperatureByLocation
+    (
+    	@location NVARCHAR(50)
+    )
+    RETURNS int
+    AS
+    BEGIN
+
+    	DECLARE @Temperature int
+
+    	SELECT TOP(1)
+    		@Temperature = TemperatureC
+    	FROM WeatherForecasts
+    	WHERE LOWER(Location) = LOWER(@location)
+    	ORDER BY Id DESC
+
+    	RETURN @Temperature
+
+    END')
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20221031051328_v1_3', N'6.0.4');
+END;
+GO
+
+COMMIT;
+GO
+
+</pre>
+<p>Run the script and see the output—<br />
+<img decoding="async" class="aligncenter size-full wp-image-12362" src="/wp-content/uploads/2022/10/5.script-runngr-1-1.png" alt="5.script runngr 1 1 Efficient way to handle Procedures, Views, Functions in EF Core" width="1920" height="910" srcset="/wp-content/uploads/2022/10/5.script-runngr-1-1.png 1920w, /wp-content/uploads/2022/10/5.script-runngr-1-1-1280x607.png 1280w, /wp-content/uploads/2022/10/5.script-runngr-1-1-980x464.png 980w, /wp-content/uploads/2022/10/5.script-runngr-1-1-480x228.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><br />
+Migration is done, Now we will create Dtos against our View, Procedure and Functions as well as map them in DbContext.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class ApplicationDbContext: DbContext, IApplicationDbContext
+{
+   public ApplicationDbContext()
+   {
+   }
+    #region TABLES
+    public DbSet&lt;WeatherForecastEntity&gt; WeatherForecasts =&gt; Set&lt;WeatherForecastEntity&gt;();
+    #endregion
+
+    #region VIEWS
+    /// &lt;summary&gt;
+    /// vwLocationTemperatureSummery
+    /// &lt;/summary&gt;
+    public DbSet&lt;LocationTemperatureSummeryDto&gt; LocationTemperatureSummery =&gt; Set&lt;LocationTemperatureSummeryDto&gt;();
+    #endregion
+
+    #region PROCEDURES
+    /// &lt;summary&gt;
+    /// spGetWeatherInformation(@location nvarchar(50)
+    /// &lt;/summary&gt;
+    public DbSet&lt;WeatherInformationDto&gt; GetWeatherInformation =&gt; Set&lt;WeatherInformationDto&gt;();
+    #endregion
+
+    #region FUNCTIONS
+    /// &lt;summary&gt;
+    /// fnGetTemperatureByLocation(@location nvarchar(50)
+    /// &lt;/summary&gt;
+    public DbSet&lt;TemperatureByLocationDto&gt; GetTemperatureByLocation =&gt; Set&lt;TemperatureByLocationDto&gt;();
+    #endregion
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        base.OnModelCreating(builder);
+
+        #region VIEWS
+        builder.Entity&lt;LocationTemperatureSummeryDto&gt;(x =&gt;
+        {
+            x.HasNoKey();
+            x.ToView(View.LocationTemperatureSummery);
+            x.Metadata.SetIsTableExcludedFromMigrations(true);
+        });
+        #endregion
+
+        #region FUNCTIONS
+        builder.Entity&lt;TemperatureByLocationDto&gt;(x =&gt;
+        {
+            x.HasNoKey();
+            x.ToFunction(Function.GetTemperatureByLocation);
+            x.Metadata.SetIsTableExcludedFromMigrations(true);
+        });
+        #endregion
+
+        #region PROCEDURES
+        builder.Entity&lt;WeatherInformationDto&gt;(x =&gt;
+        {
+            x.HasNoKey();
+            x.ToView(Procedure.GetWeatherInformation);
+            x.Metadata.SetIsTableExcludedFromMigrations(true);
+        });
+        #endregion
+    }
+}
+</pre>
+<p>all are done, now test with running following code—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var locationTemp = await _context
+    .LocationTemperatureSummery
+    .Where(x =&gt; x.Location == request.Location)
+    .ToListAsync();
+
+var location = new SqlParameter("location", System.Data.SqlDbType.NVarChar);
+location.Value = request.Location;
+
+// procedure 
+var weatherInfo = await _context
+    .GetWeatherInformation
+    .FromSqlRaw($"EXEC dbo.{Procedure.GetWeatherInformation} @location", location)
+    .ToListAsync();
+
+// function         
+var temp = (await _context
+.GetTemperatureByLocation
+.FromSqlRaw($"SELECT dbo.{Function.GetTemperatureByLocation}(@location) Temperature", location)
+.FirstOrDefaultAsync())!.Temperature;</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-12363" src="/wp-content/uploads/2022/10/final.png" alt="final Efficient way to handle Procedures, Views, Functions in EF Core" width="1914" height="918" srcset="/wp-content/uploads/2022/10/final.png 1914w, /wp-content/uploads/2022/10/final-1280x614.png 1280w, /wp-content/uploads/2022/10/final-980x470.png 980w, /wp-content/uploads/2022/10/final-480x230.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1914px, 100vw"></p>
+<p>Hope this will help to track non-table database objects by source controll and make easy to use of non-table database like View, Procedure and Function.</p>
+<p>Thanks with <a href="https://github.com/Khairultaher/SimpleCleanArchV2" rel="nofollow noopener" target="_blank">Source</a>.</p>
+</div>
+</div>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Go Pointers &#8211; Immutability Vs Efficiency</title>
+		<link>/blog/go-pointers-immutability-vs-efficiency/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Tue, 25 Oct 2022 17:06:46 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Efficiency]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[Immutability]]></category>
+		<category><![CDATA[Pointers]]></category>
+		<category><![CDATA[vs]]></category>
+		<guid isPermaLink="false">/?p=12334</guid>
+
+					<description><![CDATA[Pointers are a fundamental and necessary aspect of Golang. They allow us to manipulate memory and data structures from a simple level, without needing to know the specifics of some more abstract data structures. This article will cover Go pointers, their use in stacks and heaps, immutability vs efficiency as well as pointer types (primitives [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p class="maps-to-line">Pointers are a fundamental and necessary aspect of Golang. They allow us to manipulate memory and data structures from a simple level, without needing to know the specifics of some more abstract data structures.</p>
+<p class="maps-to-line">This article will cover Go pointers, their use in stacks and heaps, immutability vs efficiency as well as pointer types (primitives and variables).</p>
+<p class="maps-to-line">Everybody uses pointers occasionally. How well-versed are we in it? What is taking place behind the scenes? In this post, we&#8217;ll talk about pointers and how they might improve program performance at the expense of flexibility.<br />
+Anyone who reads this will be able to explain how pointers relate to any of this, as well as what happens when a function calls and the distinction between heap and stack allocations.</p>
+<p class="maps-to-line">Let&#8217;s define a variable in Golang, you can relate to any programming in general.<br />
+Let&#8217;s understand what is a variable first. So a variable is a container for storing a value. we can think of it as a box that has 3 things</p>
+<ul>
+<li class="maps-to-line">a name</li>
+<li class="maps-to-line">a type</li>
+<li class="maps-to-line">a value</li>
+</ul>
+<p><img decoding="async" class="wp-image-12336 aligncenter" src="/wp-content/uploads/2022/10/variable_explain.gif" alt="Go Pointers - Immutability Vs Efficiency" width="421" height="421"></p>
+<h2 id="it-will-store-somewhere-in-the-memory" class="maps-to-line">It will store somewhere in the memory.</h2>
+<p class="maps-to-line"><img decoding="async" class="wp-image-12337 aligncenter" src="/wp-content/uploads/2022/10/somewhere_in_the_memory.gif" alt="somewhere_in_the_memory" width="494" height="278" /></p>
+<p class="maps-to-line">It resembles putting a box in a warehouse in many ways. The value is in the box. We gave that box a name and a type as well. We added an address to that box as well. The location of the box inside the warehouse will be indicated by this address. Therefore, if we know the address, we can quickly locate and retrieve the box if we need it.</p>
+<p class="maps-to-line">Let&#8217;s see this in Golang</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    var foo, bar int = 23, 42
+    
+    fmt.Println(foo, bar) // will print the value
+    fmt.Println(&amp;foo, &amp;bar) // will print the address
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">Easy, right? In the first line we are defining 2 variables foo, bar with the value of 23, and 42 of type int. in lines 3 &amp; 4 we print the values and it&#8217;s addressed in the console.</p>
+<blockquote class="maps-to-line"><p>Quick Note: <code class="inline-code">&amp;</code> can be read as <code class="inline-code">address of</code>.<br />
+Every new variable has been given an address, and with that, we can locate that in the memory. This address will be the value of the pointer if we assign it to a pointer like below</p></blockquote>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    var foo, bar int = 23, 42
+    p := &amp;foo
+    q := &amp;bar
+    
+    fmt.Println(p, q) // will print the address of foo, bar
+    // 0xc00001c0a8 0xc00001c0b0
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">p &amp; q will hold the address of the foo &amp; bar variable. Here we&#8217;re using the short-hand variable declaration feature of Golang.</p>
+<p class="maps-to-line"><img decoding="async" class="wp-image-12338 aligncenter" src="/wp-content/uploads/2022/10/foo2p-address.gif" alt="foo_2_pointer_address" width="533" height="533" /></p>
+<p class="maps-to-line">In the above picture, we can see how <code class="inline-code">p</code> is holding the address of <code class="inline-code">foo</code>.</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    var foo int = 23
+    p := &amp;foo
+    
+    fmt.Println(*p) 
+    // any guess
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line"><code class="inline-code">*p</code> will print the value stored in that address which is the foo value <code class="inline-code">23</code> we define above.</p>
+<p class="maps-to-line">Here <code class="inline-code">*</code> can be a little confusing at first as it can be used in two ways.</p>
+<ul>
+<li class="maps-to-line">Before a type (<code class="inline-code">*int</code>)</li>
+<li class="maps-to-line">Before a variable (<code class="inline-code">*p</code>)</li>
+</ul>
+<h4 id="before-a-type" class="maps-to-line">Before a type</h4>
+<p class="maps-to-line"><code class="inline-code">*int</code> the whole thing becomes a type. It is <code class="inline-code">pointer type</code> and the <code class="inline-code">int</code> as its base.</p>
+<h4 id="before-a-variable" class="maps-to-line">Before a variable</h4>
+<p class="maps-to-line"><code class="inline-code">*p</code> means when it is before a variable, it acts as an operator which returns the value the p is pointing to. That&#8217;s why when we print <code class="inline-code">*p</code> it&#8217;ll print <code class="inline-code">23</code> because it&#8217;s the value of the variable <code class="inline-code">p</code> is pointing to. It&#8217;s also called <code class="inline-code">Dereferencing</code>. So we can say that the value of <code class="inline-code">p</code> is the address of <code class="inline-code">foo</code> and <code class="inline-code">*p</code> is the value at that address which is the value of <code class="inline-code">foo</code>.<br />
+So what if we want to change the value of *p what will happen then. Any guess&#8230;</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    var foo int = 23
+    p := &amp;foo
+    fmt.Println(*p) // 23
+    *p = 42
+    fmt.Println(*p)
+    // any guess
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">Yes, it&#8217;ll be <code class="inline-code">42</code>.</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    var foo, bar int = 23, 3600
+    p := &amp;foo
+    fmt.Println(*p) // 23
+    p = &amp;bar
+    *p = *p / 36
+    fmt.Println(bar)
+    // any guess
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">Any guess what will happen to the value of <code class="inline-code">bar</code> variable?</p>
+<blockquote class="maps-to-line"><p>Quick note: We can put <code class="inline-code">bar</code> in <code class="inline-code">*p</code> because p&#8217;s type is a pointer and the base type is int, if it&#8217;s not int then it&#8217;ll return a run time error.</p></blockquote>
+<p class="maps-to-line">As we&#8217;re doing an operation on <code class="inline-code">*p</code> so the value of the bar will be modified. So the value will be printed 100.<br />
+So why do we need pointers anyway?<br />
+Good question, right? If we just want to modify <code class="inline-code">bar</code>s value then we can just modify <code class="inline-code">bar</code> right? Then why??<br />
+Well, It&#8217;s efficient to store a value in one place and access it from multiple places.<br />
+Let&#8217;s understand with an example<br />
+Suppose we have four different functions and all the functions want to access <code class="inline-code">bar</code> and want to modify it. So <code class="inline-code">bar</code> will be modified in multiple places. This way of accessing a variable from multiple places using pointers is more efficient than creating a local copy of the variable without using a pointer.<br />
+To understand the situation more clearly, we need to understand <code class="inline-code">Memory Allocations</code> first. Let&#8217;s understand that first&#8230;</p>
+<h2 id="memory-allocations" class="maps-to-line">Memory Allocations</h2>
+<p class="maps-to-line">When we try to run a program, a goroutine is created and each goroutine gets a stack of memory.</p>
+<p class="maps-to-line"><img decoding="async" class="wp-image-12339 aligncenter" src="/wp-content/uploads/2022/10/stack_of_memory.gif" alt="stack_of_memory" width="622" height="350" /></p>
+<p class="maps-to-line">You may ask what is a goroutine&#8230;</p>
+<blockquote class="maps-to-line">
+<h3 id="what-is-a-goroutine">What is a goroutine?</h3>
+<p>a <code class="inline-code">goroutine</code> is an independent path of execution. we can also think of it as a very lightweight thread that is managed by go runtime.</p></blockquote>
+<p class="maps-to-line">Let&#8217;s go back to the topic. Whenever a goroutine makes a function call, a part of the stack is going to be allocated we call that <code class="inline-code">frame</code>. Let&#8217;s see this in an example for a better understand</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    a := 6
+    AddN(a)
+}
+// AddN will add n to the result and print its address and value 
+func AddN(n int) {
+    r := 0
+    r += n
+    fmt.Println(&amp;r, r)
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">Here we define two functions <code class="inline-code">main</code> &amp; <code class="inline-code">AddN</code>, when we run the main function we get a frame on the stack. The current running frame is called the <code class="inline-code">Active Frame</code>.</p>
+<p class="maps-to-line"><img decoding="async" class="wp-image-12340 aligncenter" src="/wp-content/uploads/2022/10/active_frame_stack.gif" alt="active_frame_stack" width="622" height="350" /></p>
+<p class="maps-to-line">So, After running the main function, we then call &#8220;AddN&#8221; as we follow through the main function. The stack will allocate another frame as soon as we call &#8220;AddN,&#8221; and the goroutine will only operate within that new frame. It cannot go to other frames, stacks, or anything else. This is advantageous because, if we isolate each frame, we guarantee immutability, which implies that there is less chance that the variables will be changed during the program. So here the common question arises how can we access the <code class="inline-code">a</code> variable inside the active frame? So the straight forward answer would be we can&#8217;t access it. instead, we have to copy the value of <code class="inline-code">a</code> into the new active frame and inside the active frame that value is going to be called <code class="inline-code">n</code> and we can modify <code class="inline-code">n</code> add it then print it, and do whatever we want with it but because we&#8217;re making the changes inside the active frame it will not change anything else in the program outside of this frame. So the mutation will only happen inside this isolated frame.</p>
+<p class="maps-to-line">Can anyone guess what&#8217;s the catch here? Because we need to copy the arguments each time we make a function call which is not going to be so efficient. So when the <code class="inline-code">AddN</code> function call ends and the active frame goes back to the main function <code class="inline-code">a</code> will still be 6 but what if we want to change <code class="inline-code">a</code> itself in the main function we want to get our hands on <code class="inline-code">a</code> and not just the copy of it well this is where we start talking about pointers.</p>
+<p class="maps-to-line">Let&#8217;s write a new function using pointers so that it can modify the variable <code class="inline-code">a</code> in the main function from the function by saying go and changing the value at that specific address.</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    a := 6
+    squareAdd(&amp;a)
+}
+// AddN will add n to the result and print its address and value 
+func squareAdd(p *int) {
+    *p *= *p
+    fmt.Println(p, *p)
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">We&#8217;re inputting an address instead of a normal integer so we&#8217;re going to put this address as the input parameter and we&#8217;re calling it <code class="inline-code">p</code> so the type of the input is <code class="inline-code">*int(star int)</code>. The star here is not a dereferencing operator as we discuss above. Star int itself is just one whole token. We want to square the value of what&#8217;s at that address so we need to put a star in front of p if we want to say the value at p which in this example is going to be <code class="inline-code">a</code> and then let&#8217;s print out p which is an address and the value of what p is pointing to by saying star p(<code class="inline-code">*p</code>).</p>
+<p class="maps-to-line">So when we call this function we need to pass in an address, not a value what you need to pass is an ampersand(&amp;) <code class="inline-code">a</code> because <code class="inline-code">&amp;</code> means that you&#8217;re passing in the address of <code class="inline-code">a</code>.</p>
+<p class="maps-to-line">Let&#8217;s see what happens in the stack when we call <code class="inline-code">squareAdd</code> function. Instead of copying <code class="inline-code">a</code> we are copying the address of <code class="inline-code">a</code> and assigning it as a pointer <code class="inline-code">p</code> in the frame and that pointer is pointing across the boundary of the frame and this is how we can modify the value of <code class="inline-code">a</code> in the currently active frame by using <code class="inline-code">*p</code>.</p>
+<p class="maps-to-line">After we finish calling the functions we move to the main function again and everything under the active frame then becomes invalid meaning that if we make another function call this space will be overwritten and go will set all the variables to a zero value for the new frame so that we won&#8217;t accidentally be using any random garbage values.</p>
+<p class="maps-to-line">We&#8217;ll explain <code class="inline-code">Garbage collector</code> in detail in a future post. Stay tuned for that. Now let&#8217;s continue&#8230;</p>
+<p class="maps-to-line">When we&#8217;re using value semantics like the example above with <code class="inline-code">AddN</code> it was fine there&#8217;s no way <code class="inline-code">a</code> can get mutated but when we using pointer semantics we need to be careful because there is more possibility for the variable to be mutated in a way we didn&#8217;t intend.</p>
+<p class="maps-to-line">When we use pointer semantics you&#8217;re giving up the safety of immutability for more efficiency. Now that we understand how pointers work in functions and we also learned about how they can affect variables in the stack. Now final topic we need to understand is Heaps. Let&#8217;s talk about it.</p>
+<h2 id="heaps" class="maps-to-line">Heaps</h2>
+<p class="maps-to-line">To understand the Heaps which is not the data structure we know from CS 101, but it&#8217;s a separate structure altogether. We need to understand that heaps need to be cleaned by the garbage collection where the stack is self-cleaning. To understand the difference between heap and stack, we need to compare the difference between returning a value and returning a pointer. Let&#8217;s define an example to understand more clearly&#8230;</p>
+<h4 id="return-value" class="maps-to-line">Return value</h4>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package main
+
+type person struct {S
+    name string
+    age uint
+}
+
+func NewPerson() person {
+    p := person{
+        name: "dummy person"
+        age: 60
+    }
+    fmt.Println("new person --&gt; ", p)
+    return p
+}
+
+func main() {
+    fmt.Println("main --&gt; ", NewPerson())
+}</pre>
+<p>&nbsp;</p>
+</div>
+<h4 id="return-pointer" class="maps-to-line">Return Pointer</h4>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package main
+
+type person struct {S
+    name string
+    age uint
+}
+
+func NewPerson() *person {
+    p := person{
+        name: "dummy person"
+        age: 60
+    }
+    fmt.Println("new person --&gt; ", &amp;p)
+    return &amp;p
+}
+
+func main() {
+    fmt.Println("main --&gt; ", NewPerson())
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">So the two code block above has almost identical code with one exception where 1st code block returns a value from<code class="inline-code"> NewPerson</code> function and 2nd code returns a pointer from <code class="inline-code">NewPerson</code> function.</p>
+<p class="maps-to-line">The <code class="inline-code">NewPerson</code> initializes the person struct with dummy values and then returns it. After that, we call the <code class="inline-code">NewPerson</code> function from the main function and print the result.</p>
+<p class="maps-to-line">What happening behind the scene is, Go runtime assign the main function as an active frame in the stack of memory. Then when we call the <code class="inline-code">NewPerson</code>, a new frame is created in the stack of memory and allocates <code class="inline-code">p</code>, and then changes the values in p. Because of the isolation of the <code class="inline-code">NewPerson</code> frame, we can not send <code class="inline-code">p</code> to the main function instead we will be making a copy of it and pass to the main active frame so that&#8217;s what happens when we return a value.</p>
+<p class="maps-to-line">But instead of returning a value, let&#8217;s return the address of <code class="inline-code">p</code> which we showed in the above example. The point to be noted here is the function still works the same way as before but instead of copying the value this function going to make a copy of the address of <code class="inline-code">p</code> to the main function frame, we can notice something important here at the same time something weird as the <code class="inline-code">NewPerson</code> finishes executing here the <code class="inline-code">New Person</code> active frame is going to become invalid so the address we copied into the active frame is going to be useless we don&#8217;t know what that going to point to in the memory. So that can be a huge problem if we can&#8217;t resolve the address and this is where <code class="inline-code">heaps</code> going to help us solve the problem.</p>
+<blockquote class="maps-to-line"><p>Note <code class="inline-code">Heaps</code> is not the same as the data structure we study in cs 101 data structures, they share the same name but completely different things.</p></blockquote>
+<p class="maps-to-line">So the compiler will analyze that and conclude that there&#8217;s going to be a problem so it&#8217;s going to copy m to the <code class="inline-code">heap</code> then the <code class="inline-code">NewPerson</code> function will return the address of <code class="inline-code">p</code> in the heap and after return when the address of <code class="inline-code">p</code> is copied to the frame of the main function. So now we can access <code class="inline-code">p</code> with that address.</p>
+<p class="maps-to-line">In the above, we print the address of the <code class="inline-code">p</code> to check if they share the same address from <code class="inline-code">NewPerson</code> function and the main function. So our problem is solved but we&#8217;re doing this in the cost of heap allocations which can be a burden for the garbage collector and it can cost us performance.</p>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/go-pointers" rel="nofollow noopener" target="_blank">[Personal blog]</a></p>
+<blockquote>
+<h4> You can read my other blog-posts <a href="https://rezwanul-haque.hashnode.dev/" rel="nofollow noopener" target="_blank">[Here]</a></h4>
+</blockquote>
+<h2 id="conclusion" class="maps-to-line">Conclusion</h2>
+<p class="maps-to-line">Go pointers can be a great way to implement efficiency in the codebase. But in doing so we have to think about the garbage collector as we assign more work for it as it needs to clean the heap allocations instead if we want Immutability in the codebase so that it uses a stack of memory which will automatically clean the stack when the frame finished its work and it just discards the frame and everything inside that frame when another function is called this space will be used by another frame. So we need to understand the stack and heaps because if we put too many things on the heap then the Garbage Collector needs to free more things from the heap as we don&#8217;t use those things anymore. In contrast, it can affect performance.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Golang Mistakes: #1 Maps and Memory Leaks</title>
+		<link>/blog/golang-mistakes-1-maps-and-memory-leaks/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Thu, 20 Oct 2022 17:11:41 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[errors]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[maps]]></category>
+		<category><![CDATA[memory]]></category>
+		<category><![CDATA[mistakes]]></category>
+		<guid isPermaLink="false">/?p=12205</guid>
+
+					<description><![CDATA[When it comes to software development we always want to ensure our code never uses excessive memory when a function finishes its work. That&#8217;s why some of the language features like garbage collection (GC) were implemented so that memory leaks do not occur. Also as a beginner software engineer, who just learning to code in [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p class="maps-to-line">When it comes to software development we always want to ensure our code never uses excessive memory when a function finishes its work. That&#8217;s why some of the language features like garbage collection (GC) were implemented so that memory leaks do not occur. Also as a beginner software engineer, who just learning to code in Golang uses built-in maps data structure for faster access to data. Sometimes even seniors may miss the drawbacks of excessively using those data structures without thinking. Sometimes those data structures may lead to memory leaks in the code base. Today we&#8217;re going to talk about the cons of the map&#8217;s data structure if anyone without thinking uses it excessively it may lead to a memory leak.</p>
+<blockquote class="maps-to-line"><p>The post is taken from a book called <code class="inline-code">100 Go Mistakes and How to Avoid Them</code> If anyone wants to learn more about this mistake and others please read the book. I learned a lot from the book.</p></blockquote>
+<p class="maps-to-line">A map is a powerful, ingenious, and versatile data structure. Golang Maps is a collection of unordered pairs of key-value. It is widely used because it provides fast lookups and values that can retrieve, updated, or delete with the help of keys.</p>
+<p class="maps-to-line">Let&#8217;s create a simple map in Golang</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package main
+ 
+import "fmt"
+ 
+func main() {
+    // Creating and initializing empty ma using `var` keyword
+    var nilMapContainer map[int]int
+ 
+    // Checking if the map is nil or not
+    if nilMapContainer == nil {
+        fmt.Println("True")
+    } else {
+        fmt.Println("False")
+    }
+    
+    // Note: `nilMapContainer` will throw panic if we try to assign value to an uninitialized key
+    
+    // Using shorthand declaration
+    animes := map[int]string{
+            1: "One Piece",
+            2: "Naruto",
+            3: "Link Click",
+            4: "Death Parade",
+            5: "Tomodachi Game",
+    }
+     
+    fmt.Println("animes ", animes)
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">Also, this data structure references a hash table. So data lookups from this table are fast using the key.</p>
+<h2 id="but" class="maps-to-line">But</h2>
+<p class="maps-to-line">There&#8217;s a huge drawback if we use a map without thinking. So let&#8217;s talk about that&#8230;</p>
+<p class="maps-to-line">In memory, If we put a new key value in a Map it takes some memory space. Interestingly this memory space never shrinks in size, it always grows in the memory as a result. Because of this, it may lead to memory problems.</p>
+<p class="maps-to-line">When working with the map data structure in Golang, we need to know some of the important characteristics of this data structure, how it grows and how much it shrinks.</p>
+<p class="maps-to-line">Although, It&#8217;s proposed that in the future version of Go, the map implementation will be changed so that it can shrink too. Anyone can check the issue on <a title="https://github.com/golang/go/issues/54766" href="https://github.com/golang/go/issues/54766" data-from-md="" rel="nofollow noopener" target="_blank">Github</a>.</p>
+<p class="maps-to-line">Let’s deep dive into this to prevent issues that can cause memory leaks.</p>
+<p class="maps-to-line">First, to view a concrete example of this problem, let’s design a scenario where we will work with the following map:</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">m := make(map[int][128]byte)</pre>
+</div>
+<p class="maps-to-line">Each value of <code class="inline-code">m</code> is an array of 128 bytes. We will do the following:</p>
+<ol>
+<li class="maps-to-line">Allocate an empty map.</li>
+<li class="maps-to-line">Add 1 million elements.</li>
+<li class="maps-to-line">Remove all the elements, and run a Garbage Collection (GC).</li>
+</ol>
+<p class="maps-to-line">After each step, we want to print the size of the heap (using a <code class="inline-code">printAllocatedMemory</code> utility function). This shows us how this example behaves in memory:</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package main
+
+import (
+    "fmt"
+    "runtime"
+)
+
+func main() {
+    n := 1_000_000
+    m := make(map[int][128]byte)
+    printAllocatedMemory()
+
+    for i := 0; i &lt; n; i++ { // Adds 1 million elements
+        m[i] = [128]byte{}
+    }
+    printAllocatedMemory()
+
+    for i := 0; i &lt; n; i++ { // Deletes 1 million elements
+        delete(m, i)
+    }
+
+    runtime.GC() // Triggers a manual GC
+    printAllocatedMemory()
+    runtime.KeepAlive(m) // Keeps a reference to m so that the map isn’t collected
+}
+
+func printAllocatedMemory() {
+    var m runtime.MemStats
+    runtime.ReadMemStats(&amp;m)
+    fmt.Printf("%d MB\n", (m.Alloc/1024)/1024)
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">We allocate an empty map, add 1 million elements, remove 1 million elements, and then run a GC. We also make sure to keep a reference to the map using <code class="inline-code">runtime.KeepAlive</code> so that the map isn’t collected by the GC and removed it. In simple terms, <code class="inline-code">KeepAlive</code> will not be collected by the Garbage Collector when all the key-value is removed from the variable <code class="inline-code">m</code>. Let’s run this example:</p>
+<table class="maps-to-line">
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Steps</td>
+<td>Memory</td>
+</tr>
+<tr>
+<td>After m is allocated</td>
+<td>0 MB</td>
+</tr>
+<tr>
+<td>After we add 1 million elements</td>
+<td>461 MB</td>
+</tr>
+<tr>
+<td>After we remove 1 million elements</td>
+<td>293 MB</td>
+</tr>
+</tbody>
+</table>
+<p class="maps-to-line">After observing the result above, we can say that the heap size is initially very small. Once 1 million additional elements have been added to the map, it then expands dramatically. But if we had anticipated that the heap size would shrink after eliminating all the values, Which is not the case here, because Go maps don&#8217;t operate in this way. In the end, the heap size is still 293 MB even if the GC has collected all of the components. Although we say it doesn&#8217;t shrink at the beginning of the post which is not true, right? but in the end, even though the GC has collected all the elements, the heap size is still 293 MB. The memory shrank as a result, but not in the way we might have anticipated. Why is this happening, exactly? We must thoroughly examine how Go&#8217;s map data structure operates.</p>
+<p class="maps-to-line">A map offers an unordered collection of key-value pairs where each key is unique. A map in Go is based on the hash table data structure, which is an array whose elements each point to a collection of key-value pairs. As shown in figure 1.</p>
+<p><img decoding="async" class="alignnone size-full wp-image-12207" src="/wp-content/uploads/2022/10/hash_table_in_golang.gif" alt="hash table in golang Golang Mistakes: #1 Maps and Memory Leaks" width="800" height="450"></p>
+<p class="maps-to-line" style="text-align: center"><span style="font-family: 'Courier New', monospace">Figure 1 &#8211; Hash Table In Golang</span></p>
+<p class="maps-to-line">In Golang, The bucket size is fixed and the max limit is eight elements per bucket. So in case of inserting a new element into an overflowed bucket, Go assign a new bucket for the new element and links the new bucket to the previous one. Figure 2 shows an example:</p>
+<p class="maps-to-line"><img decoding="async" class="alignnone size-full wp-image-12206" src="/wp-content/uploads/2022/10/bucket_overflow_in_golang_v3.gif" alt="bucket overflow in golang v3 Golang Mistakes: #1 Maps and Memory Leaks" width="800" height="450"><code></code></p>
+<p style="text-align: center">Figure 2 &#8211; Bucket overflow, link new bucket to previous one.</p>
+<p class="maps-to-line">Behind the scene, a Go map is a pointer to a <code class="inline-code">runtime.hmap</code> struct. This struct contains multiple fields which including a <code class="inline-code">B</code> field, <code class="inline-code">B</code> represents the number of buckets in a map:</p>
+<p class="maps-to-line">After adding 1 million elements to the map, the value of <code class="inline-code">B</code> which corresponds to the bucket is 18, which means 2¹⁸ = 262,144 buckets assign to the map. But when we remove the 1 million elements from the map, what happen to the number of buckets? As the number of the bucket in a map cannot shrink therefore removing elements from the map doesn&#8217;t reduce the number of buckets. it just zeros the slots in the buckets.</p>
+<p class="maps-to-line">In our example, we went from 461 MB to 293 MB because the elements were collected by the garbage collector, but running the GC didn’t impact the map itself. Even the number of extra buckets (the buckets created because of overflows) remains the same.</p>
+<p class="maps-to-line">Let’s take a step back and discuss when the fact that a map cannot shrink can be a problem. Imagine building a cache using a <code class="inline-code">map[int][128]byte</code>. This map holds per customer ID (the int), a sequence of 128 bytes. Now, suppose we want to save the last 1,000 customers. The map size will remain constant, so we shouldn’t worry about the fact that a map cannot shrink.</p>
+<p class="maps-to-line">However, let’s say we want to store one hour of data. Meanwhile, our company has decided to have a big promotion for the Eid festival: in one hour, we may have millions of customers connected to our system. But a few days after the Eid festival, our map will contain the same number of buckets as during the peak time. This explains why we can experience high memory consumption that doesn’t significantly decrease in such a scenario. This is a big problem, right? So we want to clean this amount of memory without manually restarting our service, right?</p>
+<h2 id="solution" class="maps-to-line">Solution</h2>
+<h3 id="1" class="maps-to-line">#1</h3>
+<p class="maps-to-line">We can make copies of the current map at regular intervals. We could create a new map, clone all the components, and release it every hour, as an example. The biggest disadvantage of this method is that for a little period after the copy and up to the subsequent garbage collection, we might need twice as much RAM as we do right now.</p>
+<h3 id="2" class="maps-to-line">#2</h3>
+<p class="maps-to-line">We may also alter the map type to <code class="inline-code">map[int]*[128]byte</code> to hold an array pointer. Although it doesn&#8217;t address the issue of how many buckets we will have, each bucket entry will reserve a pointer size for the item rather than 128 bytes (8 bytes on 64-bit systems and 4 bytes on 32-bit systems).</p>
+<p class="maps-to-line">Let&#8217;s compare the memory usage for each map type after each step, going back to the initial scenario. The comparison is presented in the following table.</p>
+<table class="maps-to-line">
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Steps</td>
+<td><code class="inline-code">map[int][128]byte</code></td>
+<td><code class="inline-code">map[int]*[128]byte</code></td>
+</tr>
+<tr>
+<td>Allocate an empty map</td>
+<td>0 MB</td>
+<td>0 MB</td>
+</tr>
+<tr>
+<td>Add 1 million elements</td>
+<td>461 MB</td>
+<td>182 MB</td>
+</tr>
+<tr>
+<td>Remove all the elements and run a GC</td>
+<td>293 MB</td>
+<td>38 MB</td>
+</tr>
+</tbody>
+</table>
+<p class="maps-to-line">As we can see, a <code class="inline-code">map[int]*[128]byte</code> type requires substantially less memory after all the elements have been removed. Additionally, because of several optimizations to lower memory consumption, the amount of RAM required in this scenario is less significant during peak times.</p>
+<blockquote class="maps-to-line"><p>NOTE: If a key or a value is over 128 bytes, Go won’t store it directly in the map bucket. Instead, Go stores a pointer to reference the key or the value.</p></blockquote>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/golang-mistakes-1-maps-and-memory-leaks" rel="nofollow noopener" target="_blank">[ Personal blog]</a></p>
+<blockquote>
+<h4>You can read my other blog-posts <a href="https://rezwanul-haque.hashnode.dev/" rel="nofollow noopener" target="_blank">[Here]</a></h4>
+</blockquote>
+<h2 id="conclusion" class="maps-to-line">Conclusion</h2>
+<p class="maps-to-line">We can say, Go never removes the buckets from memory even after removing all the elements from the map. So we need to be careful when using a map as it only grows in memory as a result. To reduce the high memory consumption, we need to use different techniques like re-create the map forcefully or using pointers so that memory consumption can be optimized.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Guideline for switching to GoLang from other Programming Languages</title>
+		<link>/blog/guideline-for-switching-to-golang-from-other-programming-languages/</link>
+		
+		<dc:creator><![CDATA[abdul.mukit]]></dc:creator>
+		<pubDate>Thu, 13 Oct 2022 06:49:29 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=12197</guid>
+
+					<description><![CDATA[Not just Golang, but for learning any programming language, one should be aware of basic concepts like data types, variables, branching, looping, functions, etc. If you are familiar with the C language, learning Golang will be very easy. The syntax of Golang is somewhat similar to the C language. However, switching from other programming languages [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span style="font-weight: 400;">Not just Golang, but for learning any programming language, one should be aware of basic concepts like data types, variables, branching, looping, functions, etc.</span></p>
+<p><span style="font-weight: 400;">If you are familiar with the C language, learning Golang will be very easy. The syntax of Golang is somewhat similar to the C language. However, switching from other programming languages is also more accessible and more interesting.</span></p>
+<p><span style="font-weight: 400;">As a beginner, you should cover the following topics to learn GoLang:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Basic syntax and data structure </span><a href="https://go.dev/ref/spec" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">go syntax</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Learn the basics of Go </span><a href="https://go.dev/tour/welcome/1" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Tour to Go</span></a>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Understand basic data types</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Build something using control structures</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Understand the pointer and its scope</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Get practice with functions</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Get practice with array, slice, maps, and type conversion</span></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Understand Interface and its usage  </span><a href="http://jordanorelli.com/post/32665860244/how-to-use-interfaces-in-go" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">interface in golang</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Error handling (Go doesn’t have exceptions, you have to handle errors in a different way) </span><a href="https://medium.com/gett-engineering/error-handling-in-go-53b8a7112d04" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Handling errors in golang</span></a><span style="font-weight: 400;"> </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Goroutine and  channel for concurrency </span></li>
+</ul>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><a href="/blog/concurrency-in-go-goroutine-and-channels/"><span style="font-weight: 400;">concurrency in go</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://gist.github.com/rushilgupta/228dfdf379121cb9426d5e90d34c5b96" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">dive into go concurrency</span></a></li>
+</ul>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Understand Go’s design patterns </span><span style="font-weight: 400;"><br />
+</span><span style="font-weight: 400;">      &#8211;  </span><a href="https://github.com/tmrts/go-patterns" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">go patterns</span><span style="font-weight: 400;"><br />
+</span></a><span style="font-weight: 400;">      &#8211;  </span><a href="/blog/dive-to-clean-architecture/"><span style="font-weight: 400;">go clean architecture</span></a><span style="font-weight: 400;"> </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Learn testing with Go </span><a href="https://go.dev/doc/tutorial/add-a-test" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Write test in Go</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Web frameworks and routers (at least one)</span></li>
+</ul>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><a href="https://echo.labstack.com/guide/" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Echo</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://github.com/gin-gonic/gin#quick-start" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Gin</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://github.com/gorilla/mux" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Mux</span></a></li>
+</ul>
+<p><span style="font-weight: 400;">Knowledge of log frameworks can be useful </span><a href="https://pkg.go.dev/log" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">log framework</span></a></p>
+<p><b>Recommended Books for GoLang:</b></p>
+<ol>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">The Go Programming Language (Alan A. A. Donovan and Brian Kernighan)</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Learning Go (Jon Bodner)</span></li>
+</ol>
+<p><b>Some useful resources/tutorials:</b></p>
+<ol>
+<li style="font-weight: 400;" aria-level="1"><a href="https://go.dev/tour/welcome/1" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">https://go.dev/tour/welcome/1</span></a><span style="font-weight: 400;"> </span></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://gobyexample.com/" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">https://gobyexample.com/</span></a><span style="font-weight: 400;"> </span></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://golangbot.com/" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">https://golangbot.com/</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://www.golang-book.com/books/intro" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">https://www.golang-book.com/books/intro</span></a></li>
+</ol>
+<ul>
+<li style="list-style-type: none;"></li>
+</ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Elasticsearch কি এবং কেন?</title>
+		<link>/blog/elasticsearch/</link>
+		
+		<dc:creator><![CDATA[Jidul Islam]]></dc:creator>
+		<pubDate>Fri, 30 Sep 2022 10:06:37 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Data]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=12161</guid>
+
+					<description><![CDATA[আমরা যারা সফটওয়্যার ইঞ্জিনিয়ার বা যারা টেকনোলোজি নিয়ে কাজ করি বা যে যাই নিয়ে আছি না কেন, সবাই আমরা একটা কথায় একমত হব যে, প্রতিটা টেকনোলজি কোন না কোন নির্দিষ্ট সমস্যাকে সমাধান করতে এসেছে, সেইটা প্রোগ্রামিং লেঙ্গুয়েজে থেকে শুরু করে ডাটাবেস, ফ্রেমেওয়ার্ক কিংবা লাইব্রেরি (প্রোগ্রামিং ল্যাঙ্গুয়েজে এর) পর্যন্ত, তা না হলে টেকনোলজির এত বিস্তার কখনোই [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span style="font-weight: 400;">আমরা যারা সফটওয়্যার ইঞ্জিনিয়ার বা যারা টেকনোলোজি নিয়ে কাজ করি বা যে যাই নিয়ে আছি না কেন, সবাই আমরা একটা কথায় একমত হব যে, প্রতিটা টেকনোলজি কোন না কোন নির্দিষ্ট সমস্যাকে সমাধান করতে এসেছে, সেইটা প্রোগ্রামিং লেঙ্গুয়েজে থেকে শুরু করে ডাটাবেস, ফ্রেমেওয়ার্ক কিংবা লাইব্রেরি (প্রোগ্রামিং ল্যাঙ্গুয়েজে এর) পর্যন্ত, তা না হলে টেকনোলজির এত বিস্তার কখনোই হতো না।</span><span style="font-weight: 400;"> </span></p>
+<h2><b>Elasticsearch কি</b></h2>
+<p><span style="font-weight: 400;">এটি একটি NoSQL ডাটাবেস যেটা বিশেষ ভাবে distributed search  এবং aggregation ইঞ্জিন হিসাবে ব্যবহার এর জন্য বানানো হয়েছে। Elasticsearch এ স্ট্রাকচার্ড এবং আনস্ট্রাকচার্ড ডাটা ইন্সার্ট করা যায় এবং তার ভিত্তিতে রেজাল্ট পাওয়া যায়। আমরা সবাই NoSQL ডাটাবেস হিসাবে MongoDB এর কথা জানি কিন্তু MongoDB সাধারণ ভাবে (general purpose) NoSQL কে ব্যবহার করার জন্য বানানো হয়েছে। Elasticsearch এর রেজাল্ট কিন্তু </span><b>প্রায়</b><span style="font-weight: 400;"> রিয়েল টাইম।</span></p>
+<h2><b>কেন প্রয়োজন </b></h2>
+<p><span style="font-weight: 400;">আগে একটা কেইস বলি তারপর </span><b>কেন প্রয়োজন</b><span style="font-weight: 400;"> সেইটা নিয়ে বলবো, কথা দিলাম।  আমরা যখন একটা সফটওয়্যার বানায়, তখন আমাদের সফটওয়্যার খুব ভালো ভাবে চলে, আচরণ ও ভালো করে কিন্তু আস্তে আস্তে যখন সফটওয়্যার এর বয়স ও দায়িত্ব বাড়তে থাকে (ডাটা ভলিউম, read  এবং write concurrency) তখন আর আগের মতো ভালো আচরণ করে না, স্লো হয়ে যায়, ল্যাটেন্সি বেড়ে যায়। ফলাফলে end user নাখোশ। এইটা হয় </span><i><span style="font-weight: 400;">বেশিরভাগ সময় </span></i><span style="font-weight: 400;"> ঠিকঠাক ইনডেক্সিং না করা, রেপ্লিকেশনের অভাব, পচা কোয়েরি (N + ১) লেখা এবং সর্বোপরি না বুঝে ডাটাবেস সিলেক্ট করা </span><i><span style="font-weight: 400;">(কোথায় কত ইঞ্চির পেরেক মারা লাগবে তা জানা জরুরি)</span></i><span style="font-weight: 400;">। </span></p>
+<p><span style="font-weight: 400;">তারপর খুব সাধারণ ভাবে প্রায় সময় আমরা দোষ দেয় প্রোগ্রামিং ল্যাঙ্গুয়েজকে, ভাবি, ইশ একটা রকেট মার্কা ল্যাংগুজে দিয়ে লিখলে আজ এই দিন দেখা লাগতো না। </span><b>বেশির ভাগ সময় সময় সফটওয়্যার (ডাটা পারসিস্ট করে এমন) এর bottleneck থাকে হল ডাটাবেস</b><span style="font-weight: 400;"> </span></p>
+<p><span style="font-weight: 400;">এইবার আসি মূল গল্পে, </span><b>কেন প্রয়োজন</b><span style="font-weight: 400;">, </span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">আপনি একটা ইকমার্স সফটওয়্যার বানাচ্ছেন যেইখানে হেভি সার্চ অপারেশন আছে, প্রোডাক্ট এর সংখ্যা ১০ লাখ বা তার ও বেশি। আপনাকে কিওয়ার্ড ধরে ধরে প্রথমে সাজেশন দেখতে হবে তারপর রেজাল্ট এবং ফিল্টার ও থাকতে পারে। রেস্পন্স টাইম থাকতে হবে ৩০০ মিলিসেকেন্ড এর কাছাকাছি। </span></li>
+<li><span style="font-weight: 400;">আপনি একটা রিয়েল এস্টেট সফটওয়্যার বানাচ্ছেন বাংলাদেশ এর জন্য যেইখানে geolocation এর উপর সার্চ হবে। ধরুন বনানী লিখে সার্চ দেয়ার পর বনানী এরিয়ার ভিতর এ যত বাসা ভাড়া দেয়া হবে তার একটা লিস্ট আসবে। মানে বনানীর পলিগন দিয়ে সার্চ। </span></li>
+<li><span style="font-weight: 400;">আপনার কাছে প্রচুর পরিমানে ডাটা আছে যেখানে ফুল টেক্সট সার্চ দরকার, উদহারণ হিসাবে ব্লগ টাইপের কনটেন্ট যেখানে সেন্টেন্স দিয়ে সার্চ করে কন্টেন্ট গুলা ফিল্টার করতে চাচ্ছেন</span></li>
+<li><span style="font-weight: 400;">আপনি দেশের জাতীয় ডাটাবেস থেকে একটা ডেমোগ্রাফিক aggregetion চাচ্ছেন, যেমন &#8211; বয়স, জেন্ডার, চাকরি, বেকার এর সংখ্যা ইত্যাদি এর রিপোর্ট। ডেটা ভলিউম বুজতেই পারছেন, প্রায় ১৮ কোটি এর উপর </span></li>
+</ul>
+<p><span style="font-weight: 400;">আমি শুধু কিছু আইডিয়া দেয়ার চেষ্টা করলাম কেইস গুলা বলে, এছাড়া আরো অনেক কিছু থাকতে পারে, এইটা আপনাদের বিবেচনা। </span></p>
+<h2><b>কিছু মৌলিক জ্ঞান</b><span style="font-weight: 400;"> </span></h2>
+<p><span style="font-weight: 400;">Elasticsearch এর কথা যখনি বলছি তখন অনেকে হয়তো SQL এর সাথে তুলুনা করতে পারেন। বুঝার সুবিধার্তে SQL এর সাথে তুলুনা করলে Elasticsearch এর কোনটাকে আমরা কি বলতে পারি এবং কি কি পার্থক্য আছে, সেইগুলা নিয়ে কথা হবে। </span></p>
+<p><span style="font-weight: 400;">চলুন শুরু করি &#8211; </span></p>
+<table>
+<tbody>
+<tr>
+<td>SQL</td>
+<td>Elasticsearch</td>
+<td>পার্থক্য</td>
+</tr>
+<tr>
+<td>column</td>
+<td>field</td>
+<td>SQL এ field এর যে data type দিব, আমাদেরকে সেইটাই ব্যবহার করতে হবে কিন্তু elasticsearch এ আমরা  একই datatype এর একাধিক (list) data রাখতে পারি</td>
+</tr>
+<tr>
+<td>row</td>
+<td>document</td>
+<td>SQL এর row বেশ কড়া (strict), schema তে যা আছে তাতেই ডাটা ঢুকাতে হবে, যতটা আছে, ঠিক ততটা কিন্তু elasticsearch এই দিক দিয়ে ফ্লেক্সিবল (যদিও তার schema আগে বলে দেয়া যায়), রানটাইমে column ও বাড়ানো যায়</td>
+</tr>
+<tr>
+<td>table</td>
+<td>index</td>
+<td>দুইটায় একই জিনিস, মানে যার উপর query হবে</td>
+</tr>
+<tr>
+<td>schema</td>
+<td>implicit</td>
+<td>SQL এ schema হল একটা boundary (দুস্টুমি চলবে না), elasticsearch schemaless হলেও predefined mapping করা যায় (বিস্তারিত পরে বলবো) যদিও পরবর্তীতে field এর সংখ্যা runtime এ বাড়ানো যায়</td>
+</tr>
+<tr>
+<td>database</td>
+<td>cluster</td>
+<td>SQL এ অনেক গুলা table একটা database এ encapsulate থাকে, elasticsearch এ database কন্সেপ্টটা নাই কিন্তু এইখানে indices গুলা একটা cluster এর মধ্যে থাকে। মানে, এইখানে SQL এর মতো আলাদা database তৈরি করা যায় না।</td>
+</tr>
+</tbody>
+</table>
+<h3><b>Mapping</b></h3>
+<p><span style="font-weight: 400;">Elasticsearch এ</span> <span style="font-weight: 400;">mapping</span> <span style="font-weight: 400;">হলো, index (table) এর মধ্যে field গুলাকে কিভাবে রাখা হবে / store হবে, কিভাবে index হবে তার একটা process. সহজ কথা হলো &#8211; একটা schema define করে দেয়া কোন field এর data type কেমন হবে এবং indexable হবে কিনা। যেমন &#8211; name, email, age, gender তিনটা ফিল্ড আছে</span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">PUT /users
+
+{
+
+  "mappings": {
+
+    "properties": {
+
+      "name":   { "type": "text"  }
+
+      "email":  { "type": "keyword"  },  
+
+      "age":    { "type": "integer" }, 
+
+      "gender":    { "type": "keyword", "index": false, },     
+
+    }
+
+  }
+
+}</pre>
+<p>&nbsp;</p>
+<p><span style="font-weight: 400;">তারপর যখন data ঢুকানো হবে তখন mapping অনুযায়ী data persist হবে। elasticsearch এ by default সব কিছু index থাকে, যদি কোন ফিল্ড এর index দরকার না হয় তখন mapping এর সময় index কে false করে দেয়া যায়। </span></p>
+<p><span style="font-weight: 400;">Mapping দুই ধরণের হতে পারে </span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Dynamic mapping </span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">যদি field এর নাম এবং data type যদি run time এ সেট হয়, predefined না থাকে তাহলে dynamic mapping ভালো একটা চয়েজ </span></li>
+</ul>
+</li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Explicit mapping </span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">এই mapping টাতে অনেক বেশি কন্ট্রোল পাওয়া যায়, যেহেতু predefined থাকে field এর নাম এবং data type</span></li>
+</ul>
+</li>
+</ul>
+<h3><b>Field এর data type</b></h3>
+<p><span style="font-weight: 400;">কিছু কমন data type নিয়ে কথা বলবো, যেগুলা প্রায় সব সময় লাগে </span></p>
+<ul>
+<li><b>text</b><span style="font-weight: 400;"> &#8211; যখন একটা বড় content রাখতে হয় এবং পরে full text search করার প্রয়োজন হয়, তখন এটি ব্যবহার করা হয় সাধারণত</span></li>
+<li style="font-weight: 400;" aria-level="1"><b>keyword</b><span style="font-weight: 400;"> &#8211; exact match করবে এই ধরণের কেইস এ keyword ব্যবহার করা হয়</span></li>
+<li style="font-weight: 400;" aria-level="1"><b>numeric</b><span style="font-weight: 400;">  &#8211; এইখানে integer, long, short, double, float এবং আরো কিছু ধরণের value রাখা যায় </span></li>
+<li style="font-weight: 400;" aria-level="1"><b>date</b><span style="font-weight: 400;"> &#8211; এইখানে বিভিন্ন format এ date রাখা যায় &#8211; date, date-time, </span><span style="font-weight: 400;">milliseconds-since-the-epoch ইত্যাদি </span></li>
+<li style="font-weight: 400;" aria-level="1"><b>boolean</b><span style="font-weight: 400;"> &#8211; true, “true”, false, “false”</span></li>
+<li style="font-weight: 400;" aria-level="1"><b>object</b><span style="font-weight: 400;"> &#8211; field এ inner object হিসাবে data রাখার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="1"><b>geo_point</b><span style="font-weight: 400;"> &#8211; এই field এ latitude এবং longitude রাখা যায়</span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">একটা boundary এর ভিতরে geopoint খুঁজে পাওয়ার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">central point থেকে নির্দিষ্ট দুরুত্বে (radius এ) অন্য coordinate গুলা খুঁজে বের করার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">polygon দিয়ে search করার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">geographically কোন aggregated data পাওয়ার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">distance এর ভিত্তিতে sort করার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">multipolygon দিয়ে search করে data পাওয়ার জন্য </span></li>
+</ul>
+</li>
+<li style="font-weight: 400;" aria-level="1"><b>geo_shape</b><span style="font-weight: 400;">  &#8211; যে কোন latitude এবং longitude এর shape store করার জন্য এটি ব্যবহার করা যায়, যেমন &#8211; polygon, multipolygon অথবা যে কোন ধরণের shape, যা দিয়ে পরবর্তীতে geo_point এর উপর search operation চালিয়ে data পাওয়া যায়</span></li>
+</ul>
+<p><span style="font-weight: 400;">আরো অনেক ধরনের data type আছে, দয়া করে নিজ দায়িত্বে দেখে নিবেন elasticsearch documentation এ</span></p>
+<h3><b>DSL query</b></h3>
+<p><span style="font-weight: 400;"> </span><span style="font-weight: 400;">DSL (Domain specific language) হল JSON based query language. DSL query দুইটা context এর উপর রান করে &#8211; </span><b><i>query</i></b><span style="font-weight: 400;">, </span><b><i>filter</i></b></p>
+<ul>
+<li><span style="font-weight: 400;">Query context: এই context টার মূল লক্ষ্য হল, একটা query এর response কতটা match করবে এবং relevant হবে। document এ _score নামে একটা meta field থাকে, যেখানে একটা number থাকে, যেই document এর </span><i><span style="font-weight: 400;">_score</span></i><span style="font-weight: 400;"> যত বেশি সেইটা ততটা match করেছে এবং সেইটা সবচেয়ে relevant</span></li>
+<li><span style="font-weight: 400;">Filter context: এই context মূলত কোন কিছু filter করে আনার জন্য, match করতে ও পারে আবার না ও পারে। এই context এর কোন _score নেই এবং এটি ব্যবহার করা হয় structure data filter করার জন্য। filter context frequent call হলে, elasticsearch তা cache করে রাখে performance বাড়ানোর জন্য। </span></li>
+</ul>
+<p><span style="font-weight: 400;">Query এবং filter context এর একটি উদাহরণ &#8211;</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">title ফিল্ড এ Database নামের একটা word (text data type) থাকবে </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">content field এ Elasticsearch নামের একটা word (text data type) থাকবে</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">status field এ published নামের একটা exact word (keyword data type) থাকবে</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">published_date এ একটা date (date data type) থাকবে </span></li>
+</ul>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET posts/_search
+
+{
+
+  "query": { 
+
+    "bool": { 
+
+      "must": [
+
+        { "match": { "title":   "Database" }},
+
+        { "match": { "content":   "Elasticsearch" }}
+
+      ],
+
+      "filter": [ 
+
+        { "term":  { "status": "published" }},
+
+        { "range": { "publish_date": { "gte": "2015-01-01" }}}
+
+      ]
+
+    }
+
+  }
+
+}</pre>
+<p>&nbsp;</p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">এইখানে query parameter টা query context কে বুজাচ্ছে </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">bool এবং match ব্যবহার করা হচ্ছে query context এ যাতে কতটা ভালো ভাবে match হয়েছে তার উপর ভিত্তি করে  _score আসে</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">filter parameter দিয়ে filter context বুঝানো হচ্ছে, term এবং range query দিয়ে docuent filter করে আনা হচ্ছে, এতে query context এর _score এর কোন সমস্যা হবে না। </span></li>
+</ul>
+<h3><b>Compound queries</b></h3>
+<p><span style="font-weight: 400;">এক বা একাধিক leaf queries অথবা compound query এর সমন্বয়ে compound query তৈরী হয়। সহজ ভাষায় বলতে গেলে bool, boosting অথবা এই ধরণের আরো কিছু scope এ যখন কোন query কে group করা হয়। </span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Bool &#8211; document গুলা query তে match করে আসবে কি আসবে না তার একটা boolean combination. bool এর ভিতর must, must_not, should, filter ব্যবহার করা হয়</span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">must &#8211; যেই clause গুলা match করতেই হবে, সেইগুলা must দিয়ে ব্যবহার করা যায় </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">must_not &#8211; যেই clause গুলা ম্যাচ করবে না,  সেইগুলা must_not এ রাখা হয়</span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">should &#8211; যখন কোন additional value দিয়ে match এর relevency বাড়িয়ে _score বাড়ানো হয় তখন should ব্যবহার করা হয়  </span></li>
+</ul>
+</li>
+</ul>
+<h3><b>Match query</b></h3>
+<p><span style="font-weight: 400;">যখন word / sentence দিয়ে কোন content search করার প্রয়োজন হয় তখন match query দিয়ে full text search করা যায়। field এর data type text হতে হবে </span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET posts/_search
+
+{
+
+  "query": {
+
+    "match": {
+
+      "body": {
+
+        "query": "elasticsearch is fast"
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<p>&nbsp;</p>
+<p><span style="font-weight: 400;">Match query বিভিন্ন ভাবে করা যায়, documentation বিস্তারিত বলা আছে, আমি শুধু প্রাথমিক ধারণা দিয়েছি</span></p>
+<h3><b>Term query</b></h3>
+<p><span style="font-weight: 400;">যখন exact match প্রয়োজন হয় তখন term query করা হয়, এই ক্ষেত্রে field এর data type keyword হতে হবে</span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET posts/_search
+
+{
+
+  "query": {
+
+    "match": {
+
+      "body": {
+
+        "query": "elasticsearch is fast"
+
+      }
+
+    },
+
+    "term": {
+
+      "is_published": {
+
+        "value": true
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h3><b>Range query</b></h3>
+<p><span style="font-weight: 400;">যখন কোন range এর ভিতরে search করার প্রয়োজন হয় তখন এই query ব্যবহার করা যায়, যেমন &#8211; numeric value অথবা date এর range</span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET populations/_search
+
+{
+
+  "query": {
+
+    "range": {
+
+      "age": {
+
+        "gte": 10,
+
+        "lte": 20
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h3><b>Geo distance query</b></h3>
+<p><span style="font-weight: 400;">কোন geo_point থেকে নির্দিষ্ট radius এ geolocation based search করার জন্য এই query ব্যবহার করা হয়ে থাকে। </span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET /locations/_search
+
+{
+
+  "query": {
+
+    "bool": {
+
+      "must": {
+
+        "match_all": {}
+
+      },
+
+      "filter": {
+
+        "geo_distance": {
+
+          "distance": "20km",
+
+          "pin.location": {
+
+            "lat": 40,
+
+            "lon": -70
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h3><b>Geo shape query</b></h3>
+<p><span style="font-weight: 400;">কোন geo_point এর উপর polygon অথবা multipolygon দিয়ে search করে documents পাওয়ার জন্য geo_shape কোয়েরি করা হয়। ধরা যাক, বনানী এলাকার ভিতরে সব হসপিটাল এর documents লাগবে (হসপিটাল এর geo_point গুলা আগে থেকে ingest করা আছে), তখন বনানী এলাকার multipolygon দিয়ে search করলে সব গুলা documents পাওয়া সম্ভব। </span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET /hospitals/_search
+
+{
+
+  "query": {
+
+    "bool": {
+
+      "must": {
+
+        "match_all": {}
+
+      },
+
+      "filter": {
+
+        "geo_shape": {
+
+          "location": {
+
+            "shape": {
+
+              "type": "multipolygon",
+
+              "coordinates": [ [ 13.0, 53.0 ], [ 14.0, 52.0 ] ]
+
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h2><b>শেষের কথা</b></h2>
+<p><span style="font-weight: 400;">আমি চেষ্টা করেছি সহজ ভাবে বলার এবং শক্ত কথা গুলা এড়িয়ে যাওয়ার, elasticsearch বেশ বড় একটা বিষয়, এর মধ্যে আরো অনেক কিছু আছে, আমি শুধু কিছু প্রাথমিক আলোচনা করার চেষ্টা করেছি। আমার আলোচনার বাহিরে আরো অনেক বিষয় আছে যেমন &#8211; </span><b>aggregation</b><span style="font-weight: 400;"> (মেট্রিক্স দেখানোর জন্য অনেক কাজের একটা জিনিস), </span><b>kibana</b><span style="font-weight: 400;"> (data visualization এর জন্য), </span><b>logstash</b><span style="font-weight: 400;"> (data migration এর কাজে লাগে) এবং আরো অনেক কিছু, যা নিয়ে আলোচনা করা হয় নাই। নিজ গুনে দেখে নেয়ার জন্য অনুরুধ করা হলো।</span></p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Power Apps:  Custom REST API Connector</title>
+		<link>/blog/power-apps-custom-rest-api-connector/</link>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Fri, 30 Sep 2022 09:13:46 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=12112</guid>
+
+					<description><![CDATA[With custom connectors, we can utilize existing REST API services or create new APIs to expose complex server-side operations that are not available with the out-of-the-box connectors. In this case, we&#8217;re dealing with a middle-tier architecture where Power Apps is used as a UI layer. This architecture also offers flexibility. In general, as the complexity [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>With custom connectors, we can utilize existing REST API services or create new APIs to expose complex server-side operations that are not available with the out-of-the-box connectors. In this case, we&#8217;re dealing with a middle-tier architecture where Power Apps is used as a UI layer. This architecture also offers flexibility. In general, as the complexity of the app increases, you should strongly consider this type of architecture. When multiple data sources are needed to build a single view in that case we can use an API layer to deliver a performant experience, because the data response can be shaped server-side and delivered to the client more efficiently. The use of this middle-tier layer means that you can add a server-side caching layer and implement richer telemetry for the app.</p>
+<p>Let&#8217;s create a Canvas App with custom REST API connector &#8211;</p>
+<ol>
+<li>From Power Apps home expand Dataverse<br />
+<img decoding="async" class="aligncenter size-full wp-image-12140" src="/wp-content/uploads/2022/09/Capture1-3.png" alt="Capture1 3 Power Apps: Custom REST API Connector" width="1916" height="938" srcset="/wp-content/uploads/2022/09/Capture1-3.png 1916w, /wp-content/uploads/2022/09/Capture1-3-1280x627.png 1280w, /wp-content/uploads/2022/09/Capture1-3-980x480.png 980w, /wp-content/uploads/2022/09/Capture1-3-480x235.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1916px, 100vw"></li>
+<li>Select Country/Region and Get started<br />
+<img decoding="async" class="aligncenter size-full wp-image-12141" src="/wp-content/uploads/2022/09/Capture2-2.png" alt="Capture2 2 Power Apps: Custom REST API Connector" width="1919" height="937" srcset="/wp-content/uploads/2022/09/Capture2-2.png 1919w, /wp-content/uploads/2022/09/Capture2-2-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture2-2-980x479.png 980w, /wp-content/uploads/2022/09/Capture2-2-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw"></li>
+<li>From top right expand new custom connector, From available options we will select &#8216;Create from blank&#8217; option. But we can import postman collection, swagger json and so on.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12143" src="/wp-content/uploads/2022/09/Capture3-3.png" alt="Capture3 3 Power Apps: Custom REST API Connector" width="1924" height="934" srcset="/wp-content/uploads/2022/09/Capture3-3.png 1924w, /wp-content/uploads/2022/09/Capture3-3-1280x621.png 1280w, /wp-content/uploads/2022/09/Capture3-3-980x476.png 980w, /wp-content/uploads/2022/09/Capture3-3-480x233.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1924px, 100vw"> <img decoding="async" class="aligncenter size-full wp-image-12144" src="/wp-content/uploads/2022/09/Capture4-2.png" alt="Capture4 2 Power Apps: Custom REST API Connector" width="1917" height="936" srcset="/wp-content/uploads/2022/09/Capture4-2.png 1917w, /wp-content/uploads/2022/09/Capture4-2-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture4-2-980x478.png 980w, /wp-content/uploads/2022/09/Capture4-2-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1917px, 100vw">give a name and continue&#8230;</li>
+<li>In general section select Schema and provide base URL<br />
+<img decoding="async" class="aligncenter size-full wp-image-12145" src="/wp-content/uploads/2022/09/Capture5-1.png" alt="Capture5 1 Power Apps: Custom REST API Connector" width="1921" height="932" srcset="/wp-content/uploads/2022/09/Capture5-1.png 1921w, /wp-content/uploads/2022/09/Capture5-1-1280x621.png 1280w, /wp-content/uploads/2022/09/Capture5-1-980x475.png 980w, /wp-content/uploads/2022/09/Capture5-1-480x233.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1921px, 100vw"></li>
+<li>From Security section expand authentication options and select authentication type<br />
+<img decoding="async" class="aligncenter size-full wp-image-12146" src="/wp-content/uploads/2022/09/Capture6-1.png" alt="Capture6 1 Power Apps: Custom REST API Connector" width="1923" height="937" srcset="/wp-content/uploads/2022/09/Capture6-1.png 1923w, /wp-content/uploads/2022/09/Capture6-1-1280x624.png 1280w, /wp-content/uploads/2022/09/Capture6-1-980x478.png 980w, /wp-content/uploads/2022/09/Capture6-1-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1923px, 100vw"></li>
+<li>In defination section provide the required information then click on &#8216;Import from sample&#8217; then provide the full URL and click on &#8216;Import&#8217;<br />
+<img decoding="async" class="aligncenter size-full wp-image-12147" src="/wp-content/uploads/2022/09/Capture7-1.png" alt="Capture7 1 Power Apps: Custom REST API Connector" width="1921" height="938" srcset="/wp-content/uploads/2022/09/Capture7-1.png 1921w, /wp-content/uploads/2022/09/Capture7-1-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture7-1-980x479.png 980w, /wp-content/uploads/2022/09/Capture7-1-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1921px, 100vw">Next scrool down and click on &#8216;Add default response&#8217;, provide the example response data then click on import<br />
+<img decoding="async" class="aligncenter size-full wp-image-12148" src="/wp-content/uploads/2022/09/Capture8-1.png" alt="Capture8 1 Power Apps: Custom REST API Connector" width="1919" height="937" srcset="/wp-content/uploads/2022/09/Capture8-1.png 1919w, /wp-content/uploads/2022/09/Capture8-1-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture8-1-980x479.png 980w, /wp-content/uploads/2022/09/Capture8-1-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw"></li>
+<li>Skip the Code(Preview) , Keep it as it is. Click on &#8216;Create connector&#8217; before moving  to &#8216;Test&#8217; section.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12151" src="/wp-content/uploads/2022/09/Capture9-3.png" alt="Capture9 3 Power Apps: Custom REST API Connector" width="1922" height="932" srcset="/wp-content/uploads/2022/09/Capture9-3.png 1922w, /wp-content/uploads/2022/09/Capture9-3-1280x621.png 1280w, /wp-content/uploads/2022/09/Capture9-3-980x475.png 980w, /wp-content/uploads/2022/09/Capture9-3-480x233.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1922px, 100vw"></li>
+<li>Now select the an operation then clieck on &#8216;Test operation&#8217;<br />
+<img decoding="async" class="aligncenter size-full wp-image-12152" src="/wp-content/uploads/2022/09/Capture11-1.png" alt="Capture11 1 Power Apps: Custom REST API Connector" width="1925" height="935" srcset="/wp-content/uploads/2022/09/Capture11-1.png 1925w, /wp-content/uploads/2022/09/Capture11-1-1280x622.png 1280w, /wp-content/uploads/2022/09/Capture11-1-980x476.png 980w, /wp-content/uploads/2022/09/Capture11-1-480x233.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1925px, 100vw">Our connector is ready, Now we will move to next section, Build a Canvas App</li>
+<li>From Home click on &#8216;Create&#8217; then  Blank App<br />
+<img decoding="async" class="aligncenter size-full wp-image-12153" src="/wp-content/uploads/2022/09/Capture1-4.png" alt="Capture1 4 Power Apps: Custom REST API Connector" width="1921" height="936" srcset="/wp-content/uploads/2022/09/Capture1-4.png 1921w, /wp-content/uploads/2022/09/Capture1-4-1280x624.png 1280w, /wp-content/uploads/2022/09/Capture1-4-980x478.png 980w, /wp-content/uploads/2022/09/Capture1-4-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1921px, 100vw"></li>
+<li>Now select  Blank Canvas App -&gt; click on &#8216;Create&#8217; -&gt; Give a name then click on &#8216;Create&#8217; again<br />
+<img decoding="async" class="aligncenter size-full wp-image-12154" src="/wp-content/uploads/2022/09/Capture2-3.png" alt="Capture2 3 Power Apps: Custom REST API Connector" width="1914" height="935" srcset="/wp-content/uploads/2022/09/Capture2-3.png 1914w, /wp-content/uploads/2022/09/Capture2-3-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture2-3-980x479.png 980w, /wp-content/uploads/2022/09/Capture2-3-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1914px, 100vw"> <img decoding="async" class="aligncenter size-full wp-image-12155" src="/wp-content/uploads/2022/09/Capture3-4.png" alt="Capture3 4 Power Apps: Custom REST API Connector" width="1919" height="937" srcset="/wp-content/uploads/2022/09/Capture3-4.png 1919w, /wp-content/uploads/2022/09/Capture3-4-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture3-4-980x479.png 980w, /wp-content/uploads/2022/09/Capture3-4-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw"></li>
+<li>Click on Data icon then select &#8216;CustomRestApiConnector&#8217; as data source<br />
+<img decoding="async" class="aligncenter size-full wp-image-12156" src="/wp-content/uploads/2022/09/Capture5-2.png" alt="Capture5 2 Power Apps: Custom REST API Connector" width="1921" height="937" srcset="/wp-content/uploads/2022/09/Capture5-2.png 1921w, /wp-content/uploads/2022/09/Capture5-2-1280x624.png 1280w, /wp-content/uploads/2022/09/Capture5-2-980x478.png 980w, /wp-content/uploads/2022/09/Capture5-2-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1921px, 100vw"></li>
+<li>Now insert a Button controll inside the container. Then select the button and write following function on OnSelect action:<br />
+<img decoding="async" class="aligncenter size-full wp-image-12157" src="/wp-content/uploads/2022/09/Capture5.2.png" alt="Capture5.2 Power Apps: Custom REST API Connector" width="1920" height="936" srcset="/wp-content/uploads/2022/09/Capture5.2.png 1920w, /wp-content/uploads/2022/09/Capture5.2-1280x624.png 1280w, /wp-content/uploads/2022/09/Capture5.2-980x478.png 980w, /wp-content/uploads/2022/09/Capture5.2-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>Now insert a Gallary controll inside the container. Then select datasource<br />
+<img decoding="async" class="aligncenter size-full wp-image-12158" src="/wp-content/uploads/2022/09/Capture7.1.png" alt="Capture7.1 Power Apps: Custom REST API Connector" width="1921" height="935" srcset="/wp-content/uploads/2022/09/Capture7.1.png 1921w, /wp-content/uploads/2022/09/Capture7.1-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture7.1-980x477.png 980w, /wp-content/uploads/2022/09/Capture7.1-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1921px, 100vw"></li>
+<li>Run the app and click on &#8216;Load Data&#8217; &#8211;<br />
+<img decoding="async" class="aligncenter size-full wp-image-12159" src="/wp-content/uploads/2022/09/Capture8-2.png" alt="Capture8 2 Power Apps: Custom REST API Connector" width="1921" height="935" srcset="/wp-content/uploads/2022/09/Capture8-2.png 1921w, /wp-content/uploads/2022/09/Capture8-2-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture8-2-980x477.png 980w, /wp-content/uploads/2022/09/Capture8-2-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1921px, 100vw">Yes, our app is running and fetching data from the API.</li>
+</ol>
+<p>Our Test API is running on localhost, For testing purpose, accessing localhost from outside and HTTPS has been enbled using <a href="https://ngrok.com/" rel="nofollow noopener" target="_blank">ngrok</a><br />
+<img decoding="async" class="aligncenter size-full wp-image-12165" src="/wp-content/uploads/2022/09/Capture4.1.png" alt="Capture4.1 Power Apps: Custom REST API Connector" width="1920" height="1006" srcset="/wp-content/uploads/2022/09/Capture4.1.png 1920w, /wp-content/uploads/2022/09/Capture4.1-1280x671.png 1280w, /wp-content/uploads/2022/09/Capture4.1-980x513.png 980w, /wp-content/uploads/2022/09/Capture4.1-480x252.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12167" src="/wp-content/uploads/2022/09/Capture4.2-1.png" alt="Capture4.2 1 Power Apps: Custom REST API Connector" width="1924" height="512" srcset="/wp-content/uploads/2022/09/Capture4.2-1.png 1924w, /wp-content/uploads/2022/09/Capture4.2-1-1280x341.png 1280w, /wp-content/uploads/2022/09/Capture4.2-1-980x261.png 980w, /wp-content/uploads/2022/09/Capture4.2-1-480x128.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1924px, 100vw"><br />
+Thanks&#8230;.</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Microsoft Power Platform: Power Apps</title>
+		<link>/blog/microsoft-power-platform-power-apps/</link>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Wed, 28 Sep 2022 11:33:41 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=11969</guid>
+
+					<description><![CDATA[Microsoft Power Platform is a group of business intelligence, app development and app connectivity software applications. Power Platform integration lets us create apps and flows by using the new Power Platform environment that is automatically created for you. Integrate finance and operations apps data with the Dataverse platform by using virtual tables, business events, and [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><strong>Microsoft Power Platform</strong> is a group of business intelligence, app development and app connectivity software applications. Power Platform integration lets us create apps and flows by using the new Power Platform environment that is automatically created for you. Integrate finance and operations apps data with the Dataverse platform by using virtual tables, business events, and dual-write features. Microsoft developed the Power Fx low-code programming language for expressing logic across the Power Platform. It also provides integrations with GitHub, Teams etc.</p>
+<p>Microsoft Power Platform is combination of four key products: Power Apps, Power Automate, Power BI and Power Virtual Agents-</p>
+<ul>
+<li><strong>Power Apps</strong> provides a rapid low code or no code development environment for building custom apps for business needs. It has services, connectors(built in + custom), a scalable data service and app platform (Microsoft Dataverse) to allow simple integration and interaction with existing data. Power Apps enables the creation of web and mobile applications that run on all devices. Power Apps eases users into app development with a simple interface so that every business user or pro developer can build custom apps. Power Apps integration allows you to connect data from multiple services and dashboards, including Outlook, OneDrive,PowerPoint, Excel, SharePoint, Dynamics 365, Salesforce, Dropbox, and others.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12044" src="/wp-content/uploads/2022/09/c1.jpg" alt="c1 Microsoft Power Platform: Power Apps" width="908" height="577" srcset="/wp-content/uploads/2022/09/c1.jpg 908w, /wp-content/uploads/2022/09/c1-480x305.jpg 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 908px, 100vw"></p>
+<ul>
+<li><strong>Canvas app </strong>is one of the main types of applications that you can create in PowerApps. It gives you a blank canvas and allows you to design the form, also it allows you to connect with many types of data sources. If you want to make your own design, then the Canvas app is the best choice for you. The Canvas app provides you with a blank canvas and you will design your app screen-by-screen, which means that you will have full control of building your own design.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12045" src="/wp-content/uploads/2022/09/canvas.png" alt="canvas Microsoft Power Platform: Power Apps" width="1923" height="937" srcset="/wp-content/uploads/2022/09/canvas.png 1923w, /wp-content/uploads/2022/09/canvas-1280x624.png 1280w, /wp-content/uploads/2022/09/canvas-980x478.png 980w, /wp-content/uploads/2022/09/canvas-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1923px, 100vw"></li>
+<li><strong>Model-driven app</strong> is another app type that you can create in PowerApps. Unlike the Canvas App, the PowerApps will design the appearance of your Model-driven app according to the data you will add to your app. If you don’t have a custom design and your data is in Data Verse ” common data service before” then you should choose the model-driven app.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12046" src="/wp-content/uploads/2022/09/model-drivem.png" alt="model drivem Microsoft Power Platform: Power Apps" width="2736" height="1463" srcset="/wp-content/uploads/2022/09/model-drivem.png 2736w, /wp-content/uploads/2022/09/model-drivem-1280x684.png 1280w, /wp-content/uploads/2022/09/model-drivem-980x524.png 980w, /wp-content/uploads/2022/09/model-drivem-480x257.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2736px, 100vw"></li>
+<li><strong>Portal </strong>is an external-facing website that enables users outside their organizations to sign in to create and view data. Also, the Portal App provides viewing the content anonymously. When you want to create websites that can be accessed by external users with a wide variety of identities including personal accounts, LinkedIn, and other Azure Active Directory organizations, and enable anonymous access to content, then you will use Portal App.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12047" src="/wp-content/uploads/2022/09/portal.png" alt="portal Microsoft Power Platform: Power Apps" width="1918" height="935" srcset="/wp-content/uploads/2022/09/portal.png 1918w, /wp-content/uploads/2022/09/portal-1280x624.png 1280w, /wp-content/uploads/2022/09/portal-980x478.png 980w, /wp-content/uploads/2022/09/portal-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"></li>
+</ul>
+</li>
+<li><strong>Power Automate</strong> allows users create automated workflows between applications and services. It helps automate repetitive business processes such as communication, data collections, and decision approvals.Don&#8217;t waste important productive hours on drafting the same email for a weekly update or walking approvals through. Not only for the individual user, Power Automate allows for the creation of enterprise-grade process automation. Power Automate&#8217;s simple interface allows every level of user to automate work tasks &#8211; from beginners to seasoned developers.</li>
+<li><strong>Power BI </strong>(Business Intelligence) is a business analytics service that delivers insights for analyzing data. It can share those insights through data visualizations which make up reports and dashboards to enable fast, informed decisions. Power BI scales across an organization, and it has built-in governance and security allowing businesses to focus on using data more than managing it.<br />
+You can consider Power BI as the analysis and insights leg of Microsoft Power Platform. It takes business data and allows you to display it in ways that makes the most sense to users. A Power BI dashboard could potentially replace a standing meeting to report out on company metrics such as sales data, progress against goals, or employee performance.</li>
+<li><strong>Power Virtual Agents </strong>enables anyone to create powerful chatbots using a guided, no-code graphical interface, without the need for data scientists or developers.<br />
+It minimizes the IT effort required to deploy and maintain a custom solution by empowering subject matter experts to build and maintain their own conversational solutions. Power Virtual Agents is part of Microsoft Power Platform, therefore integration into existing systems is streamlined with out-of-the-box integration with Power Automate and its ecosystems of hundreds of connectors. Users can enable chatbots to perform an action by simply calling a Power Automate flow. Flows help users automate activities or call back end systems. Users can utilize existing flows that have been created in their Power Apps environment or they can create a flow within Power Virtual Agents authoring canvas.</li>
+</ul>
+<p>Among the programs listed above, there are cross cutting features which enable Microsoft Power Platform to be leveraged to its full potential. Some of these are:</p>
+<ul>
+<li><strong>AI Builder</strong> lets users and developers add AI capabilities to the workflows and Power Apps they create and use. AI Builder is a turnkey solution that allows you to easily add intelligence to your workflows and apps and predict outcomes to help improve business performance without writing code.</li>
+<li><strong>Microsoft Dataverse</strong> is scalable data service and app platform which lets users securely store and manage data from multiple sources and integrate that data in business applications using a common data model to ensure ease and consistency to users. Microsoft Dataverse is the common currency that enables the components of Microsoft Power Platform to work together. It’s the foundation that enables the consolidation, display, and manipulation of data.</li>
+<li><strong>Connectors</strong> enable you to connect apps, data, and devices in the cloud. Consider connectors the bridge across which information and commands travel. There are more than 600 connectors for Microsoft Power Platform, enabling all of your data and actions to connect cohesively. Examples of popular connectors include Salesforce, Office 365, Twitter, Dropbox, Google services, and more.</li>
+</ul>
+<p>Want to see how easy and fast it is to create a Power Apps? Let&#8217;s create a canvas app with data from an Excel file.</p>
+<ul>
+<li>Sign in to <a href="https://make.powerapps.com/?utm_source=padocs&amp;utm_medium=linkinadoc&amp;utm_campaign=referralsfromdoc" data-linktype="external" rel="nofollow noopener" target="_blank">Power Apps</a>.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12049" src="/wp-content/uploads/2022/09/Capture1-1.png" alt="Capture1 1 Microsoft Power Platform: Power Apps" width="1920" height="849" srcset="/wp-content/uploads/2022/09/Capture1-1.png 1920w, /wp-content/uploads/2022/09/Capture1-1-1280x566.png 1280w, /wp-content/uploads/2022/09/Capture1-1-980x433.png 980w, /wp-content/uploads/2022/09/Capture1-1-480x212.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>Click on create and select Excel<br />
+<img decoding="async" class="aligncenter size-full wp-image-12051" src="/wp-content/uploads/2022/09/Capture2-1.png" alt="Capture2 1 Microsoft Power Platform: Power Apps" width="1917" height="937" srcset="/wp-content/uploads/2022/09/Capture2-1.png 1917w, /wp-content/uploads/2022/09/Capture2-1-1280x626.png 1280w, /wp-content/uploads/2022/09/Capture2-1-980x479.png 980w, /wp-content/uploads/2022/09/Capture2-1-480x235.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1917px, 100vw"></li>
+<li>Select Google Drive as Source connection then click on Create button<br />
+<img decoding="async" class="aligncenter size-full wp-image-12056" src="/wp-content/uploads/2022/09/Capture3-1.png" alt="Capture3 1 Microsoft Power Platform: Power Apps" width="1918" height="934" srcset="/wp-content/uploads/2022/09/Capture3-1.png 1918w, /wp-content/uploads/2022/09/Capture3-1-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture3-1-980x477.png 980w, /wp-content/uploads/2022/09/Capture3-1-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"></li>
+<li>Select your source Excel file and click on Connect button, You can download the example file from here <a href="https://az787822.vo.msecnd.net/documentation/get-started-from-data/FlooringEstimates.xlsx" data-linktype="external" rel="nofollow noopener" target="_blank">Flooring Estimates </a><br />
+<img decoding="async" class="aligncenter size-full wp-image-12059" src="/wp-content/uploads/2022/09/Capture6.png" alt="Capture6 Microsoft Power Platform: Power Apps" width="1920" height="936" srcset="/wp-content/uploads/2022/09/Capture6.png 1920w, /wp-content/uploads/2022/09/Capture6-1280x624.png 1280w, /wp-content/uploads/2022/09/Capture6-980x478.png 980w, /wp-content/uploads/2022/09/Capture6-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>Your App is now ready to run, Click on run button<br />
+<img decoding="async" class="aligncenter size-full wp-image-12060" src="/wp-content/uploads/2022/09/Capture7.png" alt="Capture7 Microsoft Power Platform: Power Apps" width="1920" height="935" srcset="/wp-content/uploads/2022/09/Capture7.png 1920w, /wp-content/uploads/2022/09/Capture7-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture7-980x477.png 980w, /wp-content/uploads/2022/09/Capture7-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12061" src="/wp-content/uploads/2022/09/Capture8.png" alt="Capture8 Microsoft Power Platform: Power Apps" width="1412" height="927" srcset="/wp-content/uploads/2022/09/Capture8.png 1412w, /wp-content/uploads/2022/09/Capture8-1280x840.png 1280w, /wp-content/uploads/2022/09/Capture8-980x643.png 980w, /wp-content/uploads/2022/09/Capture8-480x315.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1412px, 100vw"> <img decoding="async" class="aligncenter size-full wp-image-12062" src="/wp-content/uploads/2022/09/Capture9.png" alt="Capture9 Microsoft Power Platform: Power Apps" width="1417" height="937" srcset="/wp-content/uploads/2022/09/Capture9.png 1417w, /wp-content/uploads/2022/09/Capture9-1280x846.png 1280w, /wp-content/uploads/2022/09/Capture9-980x648.png 980w, /wp-content/uploads/2022/09/Capture9-480x317.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1417px, 100vw"> <img decoding="async" class="aligncenter size-full wp-image-12063" src="/wp-content/uploads/2022/09/Capture10.png" alt="Capture10 Microsoft Power Platform: Power Apps" width="1414" height="939" srcset="/wp-content/uploads/2022/09/Capture10.png 1414w, /wp-content/uploads/2022/09/Capture10-1280x850.png 1280w, /wp-content/uploads/2022/09/Capture10-980x651.png 980w, /wp-content/uploads/2022/09/Capture10-480x319.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1414px, 100vw"></li>
+<li>To publish the app click on publish icon from top right corner<br />
+<img decoding="async" class="aligncenter size-full wp-image-12064" src="/wp-content/uploads/2022/09/Capture11.0.png" alt="Capture11.0 Microsoft Power Platform: Power Apps" width="1918" height="937" srcset="/wp-content/uploads/2022/09/Capture11.0.png 1918w, /wp-content/uploads/2022/09/Capture11.0-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture11.0-980x479.png 980w, /wp-content/uploads/2022/09/Capture11.0-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12065" src="/wp-content/uploads/2022/09/Capture11.png" alt="Capture11 Microsoft Power Platform: Power Apps" width="1918" height="936" srcset="/wp-content/uploads/2022/09/Capture11.png 1918w, /wp-content/uploads/2022/09/Capture11-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture11-980x478.png 980w, /wp-content/uploads/2022/09/Capture11-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"></li>
+<li>Now you can share the app to your users, To share click on share icon from top right corner<br />
+<img decoding="async" class="aligncenter size-full wp-image-12067" src="/wp-content/uploads/2022/09/Capture13.0.png" alt="Capture13.0 Microsoft Power Platform: Power Apps" width="1920" height="934" srcset="/wp-content/uploads/2022/09/Capture13.0.png 1920w, /wp-content/uploads/2022/09/Capture13.0-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture13.0-980x477.png 980w, /wp-content/uploads/2022/09/Capture13.0-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12066" src="/wp-content/uploads/2022/09/Capture13.png" alt="Capture13 Microsoft Power Platform: Power Apps" width="1920" height="937" srcset="/wp-content/uploads/2022/09/Capture13.png 1920w, /wp-content/uploads/2022/09/Capture13-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture13-980x478.png 980w, /wp-content/uploads/2022/09/Capture13-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>To use the App, Users will find the shared app list in Power Apps Desktop or in Power Apps mobile<br />
+<img decoding="async" class="aligncenter wp-image-12068" src="/wp-content/uploads/2022/09/Capture14.1.jpeg" alt="Capture14.1 Microsoft Power Platform: Power Apps" width="236" height="498"><img decoding="async" class="aligncenter size-full wp-image-12132" src="/wp-content/uploads/2022/09/Capture14-3.png" alt="Capture14 3 Microsoft Power Platform: Power Apps" width="1912" height="1134" srcset="/wp-content/uploads/2022/09/Capture14-3.png 1912w, /wp-content/uploads/2022/09/Capture14-3-1280x759.png 1280w, /wp-content/uploads/2022/09/Capture14-3-980x581.png 980w, /wp-content/uploads/2022/09/Capture14-3-480x285.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1912px, 100vw"><br />
+<img decoding="async" class="aligncenter size-full wp-image-12131" src="/wp-content/uploads/2022/09/Capture15.png" alt="Capture15 Microsoft Power Platform: Power Apps" width="1913" height="1200" srcset="/wp-content/uploads/2022/09/Capture15.png 1913w, /wp-content/uploads/2022/09/Capture15-1280x803.png 1280w, /wp-content/uploads/2022/09/Capture15-980x615.png 980w, /wp-content/uploads/2022/09/Capture15-480x301.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1913px, 100vw"><br />
+Next, Will try to show how to create custom REST connector for a Canvas Apps.<br />
+Thanks&#8230;</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>5 Tips to Improve Performance of C# / .NET Application</title>
+		<link>/blog/5-tips-to-improve-performance-of-c-net-application/</link>
+		
+		<dc:creator><![CDATA[Kanij Fatema]]></dc:creator>
+		<pubDate>Tue, 20 Sep 2022 13:19:32 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[.NET]]></category>
+		<category><![CDATA[C#]]></category>
+		<category><![CDATA[Performance Improvement]]></category>
+		<category><![CDATA[Tips]]></category>
+		<guid isPermaLink="false">/?p=11853</guid>
+
+					<description><![CDATA[1. Use Async/Await Asynchronous Programming helps improve the overall efficiency while dealing with functions that can take some time to finish computing. During such function executions, the complete application may seem to be frozen to the end-user. This results in a bad user experience. In such cases, we use async methods to free the main [&#8230;]]]></description>
+										<content:encoded><![CDATA[<h2 id="1.-Use-Async/Await" data-renderer-start-pos="1"></h2>
+<h2 data-renderer-start-pos="1">1. Use Async/Await</h2>
+<p>Asynchronous Programming helps improve the overall efficiency while dealing with functions that can take some time to finish computing. During such function executions, the complete application may seem to be frozen to the end-user. This results in a bad user experience. In such cases, we use async methods to free the main thread.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public async Task GetEmployee(int empId)
+{
+       var employee = await new EmployeeService().GetAsync(empId);
+
+        if (employee != null)
+        {
+            var employeeInfo = new
+            {
+                id = employee.Id,
+                code = employee.Code,
+                text = employee.FullName
+            };
+            return Json(employeeInfo);
+        }
+        else
+        {
+            return Json(new { });
+        }
+    }</pre>
+<p data-renderer-start-pos="823">ASP.NET Core apps should be designed to process many requests simultaneously. Asynchronous APIs allow a small pool of threads to handle thousands of concurrent requests by not waiting on blocking calls. Rather than waiting on a long-running synchronous task to complete, the thread can work on another request.</p>
+<p data-renderer-start-pos="1135">A common performance problem in ASP.NET Core apps is blocking calls that could be asynchronous. Many synchronous blocking calls lead to <a class="css-tgpl01" title="https://docs.microsoft.com/en-us/archive/blogs/vancem/diagnosing-net-core-threadpool-starvation-with-perfview-why-my-service-is-not-saturating-all-cores-or-seems-to-stall" href="https://docs.microsoft.com/en-us/archive/blogs/vancem/diagnosing-net-core-threadpool-starvation-with-perfview-why-my-service-is-not-saturating-all-cores-or-seems-to-stall" data-renderer-mark="true" rel="nofollow noopener" target="_blank">Thread Pool starvation</a> and degraded response times.</p>
+<h2 data-renderer-start-pos="1324"></h2>
+<h2 id="2.-Caching-large-objects-that-are-frequently-used" data-renderer-start-pos="1324">2. Caching large objects that are frequently used</h2>
+<p data-renderer-start-pos="1324">Generally, we don’t need to worry about memory release or allocation as the .NET Core garbage collector manages the allocation and release of memory automatically. But cleaning up unreferenced objects takes CPU time, so developers should minimize allocating objects. Garbage collection is especially expensive on large objects (&gt; 85 K bytes). Large objects are stored on the large object heap and require a full (generation 2) garbage collection to clean up. Unlike generation 0 and generation 1 collections, a generation 2 collection requires a temporary suspension of app execution. Frequent allocation and de-allocation of large objects can cause inconsistent performance. In this case, caching large objects prevents expensive allocations. caching frequently accessed data retrieved from a database or remote service if slightly out-of-date data is acceptable. Depending on the scenario, use a MemoryCache or a DistributedCache such as Redis.</p>
+<p data-renderer-start-pos="2326">Besides, do not allocate many, short-lived large objects on frequently used methods.</p>
+<p data-renderer-start-pos="2412"><a class="css-tgpl01" title="https://docs.microsoft.com/en-us/aspnet/core/performance/caching/response?view=aspnetcore-6.0" href="https://docs.microsoft.com/en-us/aspnet/core/performance/caching/response?view=aspnetcore-6.0" data-renderer-mark="true" rel="nofollow noopener" target="_blank">Response caching</a> is also a way of improving performance which reduces the number of requests a client or proxy makes to a web server. Response caching also reduces the amount of work the web server performs to generate a response.</p>
+<h2 data-renderer-start-pos="2645"></h2>
+<h2 id="3.-Use-Pagination-to-return-large-collections" data-renderer-start-pos="2645">3. Use Pagination to return large collections</h2>
+<p data-renderer-start-pos="2645">A webpage shouldn&#8217;t load large amounts of data all at once. When returning a collection of objects, consider whether it could lead to performance issues. Determine if the design could produce the following poor outcomes:</p>
+<ul class="ak-ul" data-indent-level="1">
+<li>
+<p data-renderer-start-pos="2917">High CPU or high memory consumption</p>
+</li>
+<li>
+<p data-renderer-start-pos="2956">Thread pool starvation</p>
+</li>
+<li>
+<p data-renderer-start-pos="2982">Slow response times</p>
+</li>
+<li>
+<p data-renderer-start-pos="3005">Frequent garbage collection</p>
+</li>
+</ul>
+<p data-renderer-start-pos="3036">Do add pagination to mitigate the preceding scenarios.</p>
+<h2 data-renderer-start-pos="3092"></h2>
+<h2 id="4.-Use-AsNoTracking()-while-reading-only" data-renderer-start-pos="3092">4. Use AsNoTracking() while reading only</h2>
+<p data-renderer-start-pos="3092">By default, queries that return entity types are tracked in Entity Framework Core. When we load records from a database via LINQ-to-Entities queries, we will be processing them and update them back to the database. For this purpose, entities are tracked.</p>
+<p data-renderer-start-pos="3392">Do use no-tracking queries when accessing data for read-only purposes. EF Core can return the results of no-tracking queries more efficiently. When we are performing only read operations, we won’t make any updates back to the database, but entities will assume that we are going to make updates back to the database and will process them accordingly. So, we can use <strong data-renderer-mark="true">AsNoTracking()</strong> to restrict entities from assuming and processing, thus reducing the amount of memory that entities will track.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var blogs = context.Blogs
+    .AsNoTracking()
+    .ToList();</pre>
+<p>You can also change the default tracking behavior at the context instance level:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+var blogs = context.Blogs.ToList();</pre>
+<h2 data-renderer-start-pos="4150"></h2>
+<h2 id="5.-Review-your-data-access-and-I/O" data-renderer-start-pos="4150">5. Review your data access and I/O</h2>
+<p data-renderer-start-pos="4150">Data access and I/O are one of the most important factors for optimizing performance. If your system performs slow, review your I/O operations with the following criteria:</p>
+<ul class="ak-ul" data-indent-level="1">
+<li>
+<p data-renderer-start-pos="4361">Ensure all data access APIs are asynchronous.</p>
+</li>
+<li>
+<p data-renderer-start-pos="4410">Do not retrieve more data than is necessary. Write queries to return just the data that&#8217;s necessary for the current HTTP request.</p>
+</li>
+<li>
+<p data-renderer-start-pos="4543">Minimize network round trips. The goal is to retrieve the required data in a single call rather than several calls.</p>
+</li>
+<li>
+<p data-renderer-start-pos="4662">Do filter and aggregate LINQ queries (with <code class="code css-1xivnph" data-renderer-mark="true">.Where</code>, <code class="code css-1xivnph" data-renderer-mark="true">.Select</code>, or <code class="code css-1xivnph" data-renderer-mark="true">.Sum</code> statements, for example) so that the filtering is performed by the database.</p>
+</li>
+<li>
+<p data-renderer-start-pos="4810">Query caching and parameterization</p>
+<ul class="ak-ul" data-indent-level="2">
+<li>
+<p data-renderer-start-pos="4849">When EF receives a LINQ query tree for execution, it must first &#8220;compile&#8221; that tree, e.g. produces SQL from it. Because this task is a heavy process, EF caches queries by the query tree shape, so that queries with the same structure reuse internally-cached compilation outputs. This caching ensures that executing the same LINQ query multiple times is very fast, even if parameter values differ.</p>
+<p data-renderer-start-pos="5246">Consider the following two queries:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var post1 = context.Posts.FirstOrDefault(p =&gt; p.Title == "post1");
+var post2 = context.Posts.FirstOrDefault(p =&gt; p.Title == "post2");
+</pre>
+<p>Since the expression trees contain different constants, the expression tree differs and each of these queries will be compiled separately by EF Core. In addition, each query produces a slightly different SQL command:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">SELECT TOP(1) [b].[Id], [b].[Name]
+FROM [Blogs] AS [b]
+WHERE [b].[Name] = N'blog1'
+
+SELECT TOP(1) [b].[Id], [b].[Name]
+FROM [Blogs] AS [b]
+WHERE [b].[Name] = N'blog2'
+</pre>
+<p data-renderer-start-pos="5806">Because the SQL differs, your database server will likely also need to produce a query plan for both queries, rather than reusing the same plan.</p>
+<p data-renderer-start-pos="5952">A small modification to your queries can change things considerably:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var postTitle = "post1";
+var post1 = context.Posts.FirstOrDefault(p =&gt; p.Title == postTitle);
+postTitle = "post2";
+var post2 = context.Posts.FirstOrDefault(p =&gt; p.Title == postTitle);
+</pre>
+<p>Since the blog name is now <em data-renderer-mark="true">parameterized</em>, both queries have the same tree shape, and EF only needs to be compiled once. The SQL produced is also parameterized, allowing the database to reuse the same query plan:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">SELECT TOP(1) [b].[Id], [b].[Name]
+FROM [Blogs] AS [b]
+WHERE [b].[Name] = @__blogName_0
+</pre>
+<p>Note that there is no need to parameterize every query: it&#8217;s perfectly fine to have some queries with constants, and indeed, databases (and EF) can sometimes perform certain optimization around constants which aren&#8217;t possible when the query is parameterized.</li>
+</ul>
+</li>
+<li>
+<p data-renderer-start-pos="6775">Do not use projection queries on collections, which can result in executing &#8220;N + 1&#8221; SQL queries.</p>
+<p data-renderer-start-pos="6873">As an example, the following query normally gets translated into one query for Customers, plus N (where &#8220;N&#8221; is the number of customers returned) separate queries for Orders:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var query = context.Customers.Select(
+    c =&gt; c.Orders.Where(o =&gt; o.Amount  &gt; 100).Select(o =&gt; o.Amount));
+</pre>
+<p>You can optimize it by including <code class="code css-1xivnph" data-renderer-mark="true">ToList()</code> in the right place, you indicate that buffering is appropriate for the Orders:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var query = context.Customers.Select(
+    c =&gt; c.Orders.Where(o =&gt; o.Amount  &gt; 100).Select(o =&gt; o.Amount).ToList());
+</pre>
+<p>Note that this query will be translated to only two SQL queries: One for Customers and the next one for Orders.</p>
+<p data-renderer-start-pos="7048">
+</li>
+</ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>10 Coding Best Practices and Tips by Vivasoft Developers</title>
+		<link>/blog/10-coding-best-practices-and-tips-by-vivasoft-developers/</link>
+		
+		<dc:creator><![CDATA[Kanij Fatema]]></dc:creator>
+		<pubDate>Tue, 20 Sep 2022 10:04:58 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[.NET]]></category>
+		<category><![CDATA[Best Practices]]></category>
+		<category><![CDATA[C#]]></category>
+		<category><![CDATA[Tips]]></category>
+		<guid isPermaLink="false">/?p=11791</guid>
+
+					<description><![CDATA[Writing clean code offers better performance and faster development. Sometimes “quick and dirty” code may save time during development but there is a strong likelihood it will cost you time later fixing the bugs. Writing clean code is a matter of habit which is easier to maintain and easier to spot bugs in a long [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Writing clean code offers better performance and faster development. Sometimes “quick and dirty” code may save time during development but there is a strong likelihood it will cost you time later fixing the bugs. Writing clean code is a matter of habit which is easier to maintain and easier to spot bugs in a long run. Here some tips have been described on how we can write more readable and cleaner code and some new features we can adopt.</p>
+<h4 data-renderer-start-pos="444"></h4>
+<h4 id="1.-Keep-your-functions/method-simple" data-renderer-start-pos="444">1. Keep your functions/method simple</h4>
+<p data-renderer-start-pos="444">Avoid writing long functions. The simpler your class is, your code is more readable and cleaner. If any function is required to write a hundred lines of business logic, break it down into smaller functions and name it appropriately describing the steps best way.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">Product PurchaseProduct(int id)
+{
+    var product = GetProduct(id);
+    UpdateInventory(product);
+    SendPurchaseNotification();
+    return null;
+}
+
+Product UpdateInventory(Product product){
+    if (product.Quantity &gt; 0)
+        {
+            product.Quantity--;
+            return product;
+        }
+}</pre>
+<h4 data-renderer-start-pos="1054"></h4>
+<h4 id="2.-Pay-attention-to-readability-and-meaningful-method/property-name" data-renderer-start-pos="1054">2. Pay attention to readability and meaningful method/property name</h4>
+<ul>
+<li>Use variable names that are easy to remember</li>
+</ul>
+<p style="text-align: left;"><strong data-renderer-mark="true">Bad way</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var yyyymmdstr = DateTime.Now.ToString("YYYY/MM/DD");</pre>
+<p><strong>Good Way </strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var currentDate = DateTime.Now.ToString("YYYY/MM/DD");</pre>
+<ul class="ak-ul" data-indent-level="1">
+<li>
+<p data-renderer-start-pos="1313">Use searchable names</p>
+</li>
+</ul>
+<p data-renderer-start-pos="1313"><strong data-renderer-mark="true">Bad way</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">// In the future we will not remember what 86400000 means.
+
+clearBacklog(backlog, 86400000);</pre>
+<p><strong data-renderer-mark="true">Good way:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">// Declare constants with a searchable name
+var MILLISECONDS_PER_DAY = 60 * 60 * 24 * 1000; //86400000;
+
+clearBacklog(backlog, MILLISECONDS_PER_DAY);</pre>
+<ul>
+<li>Use camel case notation for local variables and arguments</li>
+</ul>
+<p style="padding-left: 40px;"><strong data-renderer-mark="true">Bad Practice</strong></p>
+<pre style="padding-left: 40px;"><code class="language-cs">int RandomInteger;string FirstName;
+</code></pre>
+<p style="padding-left: 40px;"><strong data-renderer-mark="true">Good Practice</strong></p>
+<pre style="padding-left: 40px;"><code class="language-cs">int randomInteger;string firstName;</code></pre>
+<ul>
+<li data-renderer-start-pos="1779">Add comments whenever necessary and only when the situation demands. For example, when a particular method is too complex and requires an in-depth explanation. Maintaining comments will become a task as well. So use comments wisely.</li>
+</ul>
+<h4 data-renderer-start-pos="2015"></h4>
+<h4 id="3.-Don't-repeat-yourself" data-renderer-start-pos="2015">3. Don&#8217;t repeat yourself</h4>
+<p data-renderer-start-pos="2041">This error is very common because we unconsciously repeat names or words. This bad practice in the long run makes you have a very dirty code since there will be many things that will be repeated. Let&#8217;s get down to practice:</p>
+<p data-renderer-start-pos="2266"><strong data-renderer-mark="true">Bad way:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">Employee employee = new(){
+   employeeName = "ABC",
+   employeeCode = "EMP0001",
+   employeeMobileNo = "018xxxxxxxx"
+};
+
+void UpdateMobileNo(Employee employee, string number){
+     employee.employeeMobileNo = number;
+}
+</pre>
+<p><strong data-renderer-mark="true">Good way:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">Employee employee = new(){
+   name = "ABC",
+   code = "EMP0001",
+   mobileNo = "018xxxxxxxx"
+};
+
+void UpdateMobileNo(Employee employee, string number){
+     employee.MobileNo = number;
+}</pre>
+<h4 data-renderer-start-pos="2696"></h4>
+<h4 id="4.-Follow-the-‘early-return’-principle" data-renderer-start-pos="2696">4. Follow the ‘early return’ principle</h4>
+<p>Return early is the way of writing functions or methods so that the invalid cases validate first and return as early as possible. The expected positive result is returned at the end of the function after some required validations. It works as a guard of the functions for invalid cases.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">Product PurchaseProduct(int id)
+{
+    var product = GetProduct(id);
+
+    if (product.Quantity &gt; 0)
+    {
+        product.Quantity--;
+
+        return product;
+    }
+
+    SendOutOfStockNotification(product);
+
+    return null;
+}</pre>
+<h4 data-renderer-start-pos="3251"></h4>
+<h4 id="5.--Simple-way-of-using-the-If/else-statement" data-renderer-start-pos="3251">5. Simple way of using the If/else statement</h4>
+<p>We often write a validation case that has to return a <code class="code css-1xivnph" data-renderer-mark="true">bool</code> value from a function:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">bool IsInStock(Product product){    
+  if (product.Quantity &gt; 0)    
+  {        
+    return true;    
+  }    
+  else    
+  {        
+    return false;    
+  }
+}</pre>
+<p>Although this approach is mostly fine, we have to ask ourselves if we even need an if-statement in the first place. Since we already have a logical expression inside the if-statement, we can simplify the method by simply returning the value of that logical expression:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">bool IsInStock(Product product)
+{
+    return product.Quantity &gt; 0;
+}</pre>
+<p>For achieving the same result we can do it more simplistic way:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">bool IsInStock(Product product) =&gt; product.Quantity &gt; 0;</pre>
+<p><code class="language-cs"></code></p>
+<p>Besides, we often need to validate the case for value/object is null or not. We usually do it the following way :</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var employee = GetEmployee();
+
+if (employee== null)
+{
+    return new Employee();
+}
+return employee;
+
+</pre>
+<p>You can do this in a more simplistic way by using the Null-Coalescing operator:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var employee = GetEmployee() ?? new Employee();
+return employee;</pre>
+<p>Another scenario :</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">if (Employee!= null &amp;&amp; Employee.Name == null)  
+{ 
+     Console.WriteLine("No Employee name provided");  
+}</pre>
+<p>Use the null propagation operator instead:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">Console.WriteLine(Employee?.Name ?? "No Employee name provided");</pre>
+<h4 data-renderer-start-pos="4618"></h4>
+<h4 id="6.-Simplify-Switch-Statement" data-renderer-start-pos="4618">6. Simplify Switch Statement</h4>
+<p>We generally write a switch statement in this way. There is no issue with it but C# 8.0 version introduces a more simplistic way of writing of switch statement which is more clean and readable.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public static int DayId(this DateTime date)
+{
+    var dn = date.ToString("dddd");
+    switch (dn)
+    {
+        case "Saturday":
+            return 1;
+        case "Sunday":
+            return 2;
+        case "Monday":
+            return 3;
+        case "Tuesday":
+            return 4;
+        case "Wednesday":
+            return 5;
+        case "Thursday":
+            return 6;
+        case "Friday":
+            return 7;
+    }
+
+    return 0;
+}</pre>
+<p>C# 8.0 version simplifies the switch statement this way:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public static int DayId(this DateTime date)
+       {
+           var dn = date.ToString("dddd");
+           return dn switch
+           {
+               "Saturday" =&gt; 1,
+               "Sunday" =&gt; 2,
+               "Monday" =&gt; 3,
+               "Tuesday" =&gt; 4,
+               "Wednesday" =&gt; 5,
+               "Thursday" =&gt; 6,
+               "Friday" =&gt; 7,
+               _ =&gt; 0
+           };
+       }
+</pre>
+<p>Pattern Matching Expression</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public enum Hand
+    {
+        Rock, Paper, Scissors
+    }
+
+    public class RockPaperScissors
+    {
+        public Option&lt;Hand&gt; Round(Hand first, Hand second)
+            =&gt; (first, second) switch
+            {
+                (Hand.Rock, Hand.Paper) =&gt; "Paper Wins!",
+                (Hand.Rock, Hand.Scissors) =&gt; "Rock Wins!",
+                (Hand.Paper, Hand.Rock) =&gt; "Paper Wins!",
+                (Hand.Paper, Hand.Scissors) =&gt; "Scissors Wins!",
+                (Hand.Scissors, Hand.Rock) =&gt; "Rock Wins!",
+                (Hand.Scissors, Hand.Paper) =&gt; "Scissors Wins!",
+                (_, _) =&gt; "Tie!" // to be interpreted as a tie
+            };
+    }</pre>
+<h4 data-renderer-start-pos="6462"></h4>
+<h4 id="7.-Minimize-exceptions" data-renderer-start-pos="6462">7. Minimize exceptions</h4>
+<ul class="ak-ul" data-indent-level="1">
+<li>
+<p data-renderer-start-pos="6488">Throwing <strong data-renderer-mark="true">Exceptions</strong> as normal behavior is bad practice. While adding <code class="code css-1xivnph" data-renderer-mark="true">try/catch</code> is cheap, actually throwing an exception is expensive. Therefore, include logic in the method to detect and handle conditions that would cause an exception. For example, checking if something can be parsed by calling <code class="code css-1xivnph" data-renderer-mark="true">int.Parse()</code> and catching an exception, should be avoided. Instead, we can use <code class="code css-1xivnph" data-renderer-mark="true">int.TryParse()</code> which returns <code class="code css-1xivnph" data-renderer-mark="true">false</code> if parsing is impossible.</p>
+</li>
+<li>
+<p data-renderer-start-pos="6926">‘throw ex’ causes to loss of the stack trace data. The stack trace of the exception gets rewritten to the line of code where we explicitly rethrow it. This means that we lose all of the valuable information about what caused the exception in the first place. This can make debugging the code very hard. Just use ‘throw’. Besides, use try/catch only if you need to catch the exception and need to handle it as well.</p>
+</li>
+</ul>
+<div class="fabric-editor-block-mark fabric-editor-indentation-mark" data-level="1">
+<p style="padding-left: 40px;" data-renderer-start-pos="7346"><strong data-renderer-mark="true">Bad Practice:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">try
+{
+    // Do something..
+}
+catch (Exception ex)
+{
+    throw ex;
+}</pre>
+<p style="padding-left: 40px;"><strong data-renderer-mark="true">Good Practice</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">try{    
+  // Do something..
+}
+catch (Exception ex){
+    throw;
+}</pre>
+<h4 data-renderer-start-pos="7518"></h4>
+<h4 id="8.-Use-FirstOrDefault()-instead-of-First()" data-renderer-start-pos="7518">8. Use FirstOrDefault() instead of First()</h4>
+<p>FirstOrDefault() works same as First() but there is a significant advantage over First(). First() returns the first element from a sequence, but if there is no record in the collection which matches input criteria then it throws an exception immediately whereas FirstOrDefault() can handle null values and it does not throw an exception.</p>
+<p><img decoding="async" class="aligncenter wp-image-11813 size-full" src="/wp-content/uploads/2022/09/maxresdefault-2-e1663667480467.jpg" alt="maxresdefault 2 e1663667480467 10 Coding Best Practices and Tips by Vivasoft Developers" width="1270" height="486" srcset="/wp-content/uploads/2022/09/maxresdefault-2-e1663667480467-980x486.jpg 980w, /wp-content/uploads/2022/09/maxresdefault-2-e1663667480467-480x270.jpg 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1270px, 100vw"></p>
+<p>Same scenario goes for Single or SingleOrDefault , Last() and LastOrDefault().</p>
+<h4 data-renderer-start-pos="7986"></h4>
+<h4 id="9.-Use-the-using-statement" data-renderer-start-pos="7986">9. Use the <strong data-renderer-mark="true">using </strong>statement</h4>
+<p data-renderer-start-pos="8014"><strong data-renderer-mark="true">using </strong>keywords in C# plays a vital role in improving performance in Garbage Collection.</p>
+<p data-renderer-start-pos="8103">The using statement ensures that Dispose() is called even if an exception occurs when you are creating objects and calling methods, properties, and so on. Dispose() is a method that is present in the IDisposable interface that helps to implement custom Garbage Collection. In other words, if you are doing some database operation (Insert, Update, Delete) but somehow an exception occurs, then here the using statement closes the connection automatically. There’s no need to call the connection Close() method explicitly.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public async Task&lt;IEnumerable&lt;Company&gt;&gt; GetCompanies()
+{
+    var query = "SELECT * FROM Companies";
+
+    using (var connection = _context.CreateConnection())
+    {
+        var companies = await connection.QueryAsync&lt;Company&gt;(query);
+        return companies.ToList();
+    }
+}</pre>
+<p>The using declaration, which was introduced in C# 8.0, doesn&#8217;t require braces:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public async Task&lt;IEnumerable&lt;Company&gt;&gt; GetCompanies()
+{
+    var query = "SELECT * FROM Companies";
+
+    using var connection = _context.CreateConnection();
+    var companies = await connection.QueryAsync&lt;Company&gt;(query);
+    return companies.ToList();
+}</pre>
+<h4 data-renderer-start-pos="9238"></h4>
+<h4 id="10.-Default-Interface-Method" data-renderer-start-pos="9238">10. Default Interface Method</h4>
+<p data-renderer-start-pos="9268">Before C# 8.0 interfaces only contain the declaration of the members (methods, properties, events, and indexers), but from C# 8.0 it is allowed to add members as well as their implementation to the interface. Now you are allowed to add a method with their implementation to the interface without breaking the existing implementation of the interface, such type of method is known as default interface methods (also known as the virtual extension methods).</p>
+<p data-renderer-start-pos="9725">The main benefit of the Default method is that it allows us to add new functionality to the interfaces of our libraries and ensure backward compatibility with code written for older versions of those interfaces. For a better understanding, please have a look at the below example.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">using System;
+namespace Csharp8Features
+{
+    interface IDefaultInterfaceMethod
+    {
+        public void DefaultMethod()
+        {
+            Console.WriteLine("I am a default method in the interface!");
+        }
+    }
+    class AnyClass : IDefaultInterfaceMethod
+    {
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            IDefaultInterfaceMethod anyClass = new AnyClass();
+            anyClass.DefaultMethod();
+            Console.ReadKey();
+        }
+    }
+}</pre>
+<p>&nbsp;</p>
+</div>
+<pre style="padding-left: 40px;"><code class="language-cs"></code></pre>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Machine Learning quick start guide for enthusiast</title>
+		<link>/blog/machine-learning-quick-start-guide-for-enthusiast/</link>
+					<comments>/blog/machine-learning-quick-start-guide-for-enthusiast/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Fri, 16 Sep 2022 08:26:45 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=10277</guid>
+
+					<description><![CDATA[To achieve a better and professional level in Machine Learning as well as a quick start, We have to have some basic and professional level skills and knowledge in some related topics. In this post we will see the related topics, where to start, where the resources are available for study and practice. Understand your [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>To achieve a better and professional level in Machine Learning as well as a quick start, We have to have some basic and professional level skills and knowledge in some related topics. In this post we will see the related topics, where to start, where the resources are available for study and practice.</p>
+<ul>
+<li><strong>Understand your data first:<br />
+<img decoding="async" class="wp-image-10290 alignnone" src="/wp-content/uploads/2022/09/UntitledDiagram13.png" alt="UntitledDiagram13 Machine Learning quick start guide for enthusiast" width="800" height="290" srcset="/wp-content/uploads/2022/09/UntitledDiagram13.png 800w, /wp-content/uploads/2022/09/UntitledDiagram13-480x174.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 800px, 100vw"><br />
+</strong>“Data! Data! Data!” he cried impatiently. “I can’t make bricks without clay.” —Arthur Conan Doyle.<br />
+Machine Learning is highly dependent on data, historical data. we are to collect, clean, preprocess (For ML model need numeric data)  the data then  identify and discover the hidden pattern of data to teach the machine. There are basically two types  data &#8211; <strong>Structured</strong> (organized) data, <strong>Unstructured</strong> (unorganized) data.</p>
+<ul>
+<li><span class="TextRun SCXW177857176 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW177857176 BCX0">These two data types can be defined as follows:</span></span>
+<ul>
+<li><strong>Quantitative data:</strong> This data can be described using numbers, and basic mathematical procedures, including addition, are possible on the set.<br />
+Quantitative/Numeric data can be broken down, one step further, into discrete and continuous quantities. These can be defined as follows:</p>
+<ul>
+<li><strong> Discrete data</strong>: This describes data that is counted. It can only take on certain values. Examples of discrete quantitative data include a dice roll, because it can only take on six values, and the number of customers in a café, because you can&#8217;t have a real range of people.</li>
+<li><strong>Continuous data</strong>: This describes data that is measured. It exists on an infinite range of values.</li>
+</ul>
+</li>
+<li><strong>Qualitative data:</strong> This data cannot be described using numbers and basic mathematics. This data is generally thought of as being described using &#8220;natural&#8221; categories and language.<br />
+Qualitative /Categorical data takes only a fixed set of values, such as a type of TV screen (plasma, LCD, LED, etc.) or a state name (Alabama, Alaska, etc.). Binary data is an important special case of categorical data that takes on only one of two values, such as 0/1, yes/no, or true/false. Another useful type of categorical data is ordinal data in which the categories are ordered; an example of this is a numerical rating (1, 2, 3, 4, or 5)</li>
+</ul>
+</li>
+<li>There also four levels of data to understand:
+<ul>
+<li><strong>The nominal level:</strong> Data at the nominal level is mostly categorical in nature. At the nominal level, we deal with data usually described using vocabulary (but sometimes with numbers), with no order, and little use of mathematics. In order to find the center of nominal data, we generally turn to the mode (the most common element) of the dataset.</li>
+<li><strong>The ordinal level</strong>: At the ordinal level, we have data that can be described with numbers and also have a &#8220;natural&#8221; order, allowing us to put one in front of the other. At the ordinal level, the median is usually an appropriate way of defining the center of the data. The mean, however, would be impossible because division is not allowed at this level.</li>
+<li><strong>The interval level:</strong> Allow Addition, Subtraction. At this level, we can use the median and mode to describe this data; however, usually the most accurate description of the center of data would be the arithmetic mean, more commonly referred to as, simply, &#8220;the mean&#8221;</li>
+<li><strong>The ratio level:</strong> the ratio level proves to be the strongest of the four. Not only can we define order and difference, the ratio level allows us to multiply and divide as well. The arithmetic mean still holds meaning at this level, as does a new type of mean called the geometric mean. Data at the ratio level is usually non-negative.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Understanding of data will help to collect, clean and pre-process data as per the need to build the ML model</p>
+<ul>
+<li><strong>Programming Langulage &amp; Lybraries:<br />
+<img decoding="async" class="size-full wp-image-10292 alignnone" src="/wp-content/uploads/2022/09/25f6b013-351d-442f-b6f1-0ae11cd285d3-e1581506887542.jpg" alt="25f6b013 351d 442f b6f1 0ae11cd285d3 e1581506887542 Machine Learning quick start guide for enthusiast" width="600" height="321" srcset="/wp-content/uploads/2022/09/25f6b013-351d-442f-b6f1-0ae11cd285d3-e1581506887542.jpg 600w, /wp-content/uploads/2022/09/25f6b013-351d-442f-b6f1-0ae11cd285d3-e1581506887542-480x257.jpg 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 600px, 100vw"><br />
+</strong>For machine learning Python/R is in leading but from a developer perspective Python could be a choice for it&#8217;s huge community and rich <span class="TextRun SCXW144258744 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW144258744 BCX0">libraries</span></span>. We need a bettter understanding with all of it&#8217;s language related basics like- <em>Lists, List Slicing, Tuples, Dictionaries, Counters, Sets, Zip and Argument Unpacking</em> , data structure and algorighms. As well as following libraries are need to know while starting-</p>
+<ul>
+<li><strong>NumPy</strong> is a well known general-purpose array-processing package. An extensive collection of high complexity mathematical functions make NumPy powerful to process large multi-dimensional arrays and matrices</li>
+<li><strong>SciPy</strong> is a free and open-source library that’s based on NumPy. It can be used to perform scientific and technical computing on large sets of data. Similar to NumPy, SciPy comes with embedded modules for array optimization and linear algebra. It’s considered a foundational Python library due to its critical role in scientific analysis and engineering.</li>
+<li><strong>scikit-learn</strong> is a free Python library based on NumPy and SciPy, that’s often considered a direct extension of SciPy. It was specifically designed for data modeling and developing machine learning algorithms, both supervised and unsupervised.</li>
+<li><strong>Pandas</strong> is another Python library that is built on top of NumPy, responsible for preparing high-level data sets for machine learning and training. It relies on two types of data structures, one-dimensional (series) and two-dimensional (DataFrame).</li>
+<li><strong>Seaborn</strong> is another open-source Python library, one that is based on Matplotlib (which focuses on plotting and data visualization) but features Pandas’ data structures. Seaborn is often used in ML projects because it can generate plots of learning data.</li>
+<li><strong>Matplotlib</strong> is a Python library focused on data visualization and primarily used for creating beautiful graphs, plots, histograms, and bar charts. It is compatible for plotting data from SciPy, NumPy, and Pandas. If you have experience using other types of graphing tools, Matplotlib might be the most intuitive choice for you.there are many more <span class="TextRun SCXW144258744 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW144258744 BCX0">libraries</span></span></li>
+</ul>
+</li>
+<li><strong>Linear Algebra:<br />
+<img decoding="async" class="wp-image-10293 alignnone" src="/wp-content/uploads/2022/09/linear-algebra.jpg" alt="linear algebra Machine Learning quick start guide for enthusiast" width="738" height="359"><br />
+</strong></p>
+<ul>
+<li>Vectors Basics: Introduction to vectors, Vector arithmetic, Coordinate system</li>
+<li>Vector Projections and Basis: Dot product of vectors, Scalar and vector projection, Changing basis of vectors, Basis, linear independence, and span</li>
+<li>Matrices: Matrices introduction,Types of matrices,Types of matrix transformation,Composition or combination of matrix transformations</li>
+<li>Gaussian Elimination: Solving linear equations using Gaussian elimination,Gaussian elimination and finding the inverse matrix, Inverse and determinant</li>
+<li>Matrices from Orthogonality to Gram–Schmidt Process: Matrices changing basis ,Transforming to the new basis ,Orthogonal matrix, Gram–Schmidt process</li>
+<li>Eigenvalues and Eigenvectors: Calculating eigenvalues and eigenvectors</li>
+</ul>
+</li>
+</ul>
+<p><span class="EOP SCXW177857176 BCX0" data-ccp-props="{&quot;335559739&quot;:0}">                 For <a href="https://www.khanacademy.org/math/linear-algebra" rel="nofollow noopener" target="_blank">Linear algebra Khan Accademy</a>  and <a href="https://learning.edx.org/course/course-v1:Microsoft+DAT256x+2T2018/home" rel="nofollow noopener" target="_blank">edX Essential Math for Machine Learning: Python Edition </a> </span></p>
+<ul>
+<li><strong>Statistics &amp; Probability:<br />
+<img decoding="async" class="wp-image-10295 alignnone" src="/wp-content/uploads/2022/09/Screen-Shot-2022-06-13-at-10.20.58-AM.png" alt="Screen Shot 2022 06 13 at 10.20.58 AM Machine Learning quick start guide for enthusiast" width="846" height="385"><br />
+</strong></p>
+<ul>
+<li>Populations and Samples</li>
+<li>Mean, Median, Mode</li>
+<li>Variance, Range, Inter Quartile Range (IQR), Skewness</li>
+<li>Correlation, Correlation and Causation</li>
+<li>Dependence and Independency</li>
+<li>Conditional Probability</li>
+<li>Bayes&#8217;s Theorem and Random variables</li>
+<li>Distributions
+<ul>
+<li>Continuous Distribution</li>
+<li>Normal Distribution</li>
+</ul>
+</li>
+<li>Central Limit Theorem (CLT)</li>
+<li>Hypothesis Testing: Null Hypothesis(H0), Alternate Hypothesis (HA)</li>
+<li>Errors in Hypothesis Testing: Type 1 Error, Type 2 Error</li>
+<li>Statistical Significance and P-Values</li>
+<li>The chi-square goodness of fit test</li>
+<li><span class="TextRun SCXW130375983 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW130375983 BCX0">Confusion Matrix, <span class="TextRun Underlined SCXW112836330 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW112836330 BCX0">Precision, <span class="TextRun SCXW82991890 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW82991890 BCX0">Accuracy</span></span>, Recall, F1 Score</span></span></span></span></li>
+</ul>
+</li>
+</ul>
+<p>Resource for learning: <a href="https://www.khanacademy.org/math/statistics-probability" rel="nofollow noopener" target="_blank">Statistics and probability &#8211; Khan Academy</a>,<a href="https://www.coursera.org/learn/stanford-statistics" rel="nofollow noopener" target="_blank"> Introduction to Statistics-Coursera</a>,  <a href="https://www.coursera.org/learn/statistics-for-data-science-python" rel="nofollow noopener" target="_blank">Statistics for Data Science with Python-Coursera </a></p>
+<ul>
+<li><strong>Database Knowledge</strong>: Some basics of SQL and NoSQL may help. Basic of SQL queries like-
+<ul>
+<li>Join (Inner, Outer, Full, Cross)</li>
+<li>Pivot and Unpivote</li>
+<li>Window Functions
+<ul>
+<li>Aggregate Window Functions &#8211; SUM, MIN, MAX, AVG, COUNT</li>
+<li>Ranking Window Functions &#8211;  RANK, DENSE_RANK, ROW_NUMBER, NTILE</li>
+<li>Value Window Functions &#8211; LAG() and LEAD,FIRST_VALUE and LAST_VALUE</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>IDE:<br />
+<img decoding="async" class="wp-image-10298 alignnone" src="/wp-content/uploads/2022/09/maxresdefault.jpg" alt="Machine Learning quick start guide for enthusiast" width="711" height="400"><br />
+</strong></p>
+<ul>
+<li><strong>Spyder</strong>: Scientific Python Development Environment (Spyder) is a free &amp; open-source python IDE. It is lightweight and is an excellent python ide for data science &amp; ML</li>
+<li><strong>Jupiter Notebook:</strong> For its simplicity this one became a great IDE among the data enthusiasts as it is the descendant of IPython. Best thing of JuPyter is that there you can very easily switch between the different versions of python (or any other language) according to your preference.</li>
+<li><strong>Visual Studio Code</strong>: Visual Code is one of the most used Python IDE by ML &amp; DS professionals. It works on Windows, Mac, and Linux operating systems.</li>
+</ul>
+</li>
+<li><strong><span class="NormalTextRun SCXW174132279 BCX0">Machine</span> Learning:</strong> Supervised and Unsupervised learning are the two techniques of machine learning. But both the techniques are used in different scenarios and with different datasets.<br />
+<strong>Supervised</strong> learning is a machine learning method in which models are trained using labeled data.In supervised learning, models need to find the mapping function to map the input variable (X)<br />
+with the output variable (Y).<br />
+<strong>Unsupervised</strong> learning is another machine learning method in which patterns inferred from the unlabeled input data. The goal of unsupervised learning is to find the structure and patterns from the input data. Unsupervised learning does not need any supervision. Instead, it finds patterns from the data by its own. Machine Learning steps are &#8211;</p>
+<ul>
+<li><strong>Business Understanding</strong>: What you want to achieve by implementing it. This is the “business understanding”.
+<ul>
+<li>Identify the business objective/problem
+<ul>
+<li>Regression problems: We have data that needs to be mapped onto a predictor variable, so we need to learn a function that can do this mapping.</li>
+<li>Classification problems: Here, we have data that needs to be divided into predefined classes, based on some features of the data. We need an algorithm that can use previously classified data to learn how to put unknown data into the correct class. Ex: K-Nearest Neighbor for classification of a categorical outcome or prediction of a numerical outcome, Naïve Bays Classifier- Can be applied to data with categorical predictor.</li>
+<li>Summarization problems: Suppose we have data that needs to be shortened or summarized in some way. This could be as simple as calculating basic statistics from data, or as complex as learning how to summarize text or finding a topic model for text.</li>
+<li>Dependency modeling problems: For these problems, we have data that might be connected in some way, and we need to develop an algorithm that can calculate the probability of connection or describe the structure of connected data.</li>
+<li>Change and deviation detection problems: In another case, we have data that has changed significantly or where some subset of the data deviates from normative values. To solve these problems, we need an algorithm that can detect these issues automatically.</li>
+</ul>
+</li>
+<li>Assess the situation</li>
+<li>Determine the analytical goals</li>
+<li>Produce a project plan</li>
+</ul>
+</li>
+<li><strong>Data Understanding</strong>: Determining what kind of data can be collected to build a deployable model. In the next phase, “data understanding,”
+<ul>
+<li>Collect the data</li>
+<li>Describe the data</li>
+<li>Explore the data</li>
+<li>Verify the data quality</li>
+</ul>
+</li>
+<li><strong>Data Preprocessing:</strong>
+<ul>
+<li style="text-align: left;">Importing/Selecting the Dataset<br />
+<img decoding="async" class="wp-image-10363 alignnone" src="/wp-content/uploads/2022/09/5.3.1.png" alt="5.3.1 Machine Learning quick start guide for enthusiast" width="858" height="115"></li>
+<li style="text-align: left;">Handling Missing Data<br />
+<img decoding="async" class=" wp-image-10364 alignnone" src="/wp-content/uploads/2022/09/5.3.2.png" alt="5.3.2 Machine Learning quick start guide for enthusiast" width="858" height="139"></li>
+<li style="text-align: left;">Handling Categorical Data<br />
+<img decoding="async" class=" wp-image-10365 alignnone" src="/wp-content/uploads/2022/09/5.3.3.png" alt="5.3.3 Machine Learning quick start guide for enthusiast" width="858" height="222"></li>
+<li style="text-align: left;">Splitting the Dataset into the Training set and Test set<br />
+<img decoding="async" class=" wp-image-10366 alignnone" src="/wp-content/uploads/2022/09/5.3.4.png" alt="5.3.4 Machine Learning quick start guide for enthusiast" width="859" height="84"></li>
+<li style="text-align: left;">Feature Scaling<br />
+<img decoding="async" class=" wp-image-10367 alignnone" src="/wp-content/uploads/2022/09/5.3.5.1-1.png" alt="5.3.5.1 1 Machine Learning quick start guide for enthusiast" width="858" height="199"><br />
+<img decoding="async" class=" wp-image-10368 alignnone" src="/wp-content/uploads/2022/09/5.3.5.2.png" alt="5.3.5.2 Machine Learning quick start guide for enthusiast" width="857" height="332"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li><strong><span class="TextRun SCXW89223852 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW89223852 BCX0" data-ccp-parastyle="heading 2">Modeling: </span></span></strong><span class="TextRun SCXW89223852 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW89223852 BCX0" data-ccp-parastyle="heading 2">As per the business need we have to chose <span class="NormalTextRun SCXW205233688 BCX0">appropriate</span> model from various kind of available models-</span></span>
+<ul>
+<li><strong>Regression:</strong> Value estimation, Ex- how much wills this customer use the service?
+<ul>
+<li><strong>Linear Regression:</strong> Linear regression is an approach in modeling that helps model the scalar linear relationship between a scalar dependent variable, Y, and an independent variable, X, which can be one or more in value: y = X_ +_
+<ul>
+<li><span class="TextRun SCXW60745364 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW60745364 BCX0" data-ccp-charstyle="Heading 4 Char"><strong>Simple linear regression:</strong> <span class="TextRun SCXW241629472 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW241629472 BCX0">A simple linear regression has a single variable, and it can be described using the following formula: </span></span><span class="TextRun SCXW241629472 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW241629472 BCX0">y= A + Bx</span></span><span class="EOP SCXW241629472 BCX0" data-ccp-props="{&quot;201341983&quot;:0,&quot;335559685&quot;:720,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span></span></span></li>
+<li>
+<p aria-level="5"><span data-contrast="none"><strong>Multiple linear regression model:</strong> </span><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto">Multiple linear regression occurs when more than one independent variable is used to predict a dependent variable: Y_ = a +b1x1+b2x2 +…+ bnxn</span><span data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span></p>
+</li>
+<li>
+<p aria-level="5"><b><span data-contrast="none">Polynomial Regression:</span></b><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto">A regression equation is a polynomial regression equation if the power of independent variable is more than 1. The equation below represents a polynomial equation: y=a + b*x^2</span><span data-ccp-props="{}"><br />
+<img decoding="async" class="aligncenter size-full wp-image-10339" src="/wp-content/uploads/2022/09/regression.png" alt="regression Machine Learning quick start guide for enthusiast" width="1183" height="250" srcset="/wp-content/uploads/2022/09/regression.png 1183w, /wp-content/uploads/2022/09/regression-980x207.png 980w, /wp-content/uploads/2022/09/regression-480x101.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1183px, 100vw"><br />
+</span></p>
+</li>
+</ul>
+</li>
+<li><strong><span class="NormalTextRun SCXW80789932 BCX0" data-ccp-parastyle="heading 4">Non-Linear</span><span class="NormalTextRun SCXW80789932 BCX0" data-ccp-parastyle="heading 4"> Regression:</span></strong>
+<ul>
+<li><span class="TextRun SCXW151676946 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW151676946 BCX0" data-ccp-parastyle="heading 5">Support Vector Regression SVR</span></span></li>
+<li><span class="TextRun SCXW221411858 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW221411858 BCX0" data-ccp-parastyle="heading 5">Decision Tree Regression</span></span><span class="EOP SCXW221411858 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span></li>
+<li><span class="TextRun SCXW58969965 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW58969965 BCX0" data-ccp-parastyle="heading 5">Random Forest Regression</span></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong><span class="TextRun SCXW213434387 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW213434387 BCX0" data-ccp-parastyle="heading 3">Classification: </span></span></strong><span class="TextRun SCXW213434387 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW213434387 BCX0" data-ccp-parastyle="heading 3"><span class="TextRun SCXW9609195 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW9609195 BCX0">Will this customer purchase service S1 if given incentive I? Which service package (S1, S2, or none) will a customer likely purchase if given incentive I?</span></span></span></span>
+<ul>
+<li><span class="TextRun Underlined SCXW196884260 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><strong><span class="NormalTextRun SCXW196884260 BCX0" data-ccp-parastyle="heading 4">Decision trees</span></strong><span class="NormalTextRun SCXW196884260 BCX0" data-ccp-parastyle="heading 4">: </span></span><span class="EOP SCXW196884260 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW36949272 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW36949272 BCX0">Decision tree is a type of supervised learning algorithm (having a pre-defined target variable) that is mostly used in classification problems. It works for both categorical and continuous input and output variables.</span></span></li>
+<li><strong><span class="TextRun SCXW235591358 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW235591358 BCX0" data-ccp-parastyle="heading 4">Random Forest Classification</span></span></strong><span class="TextRun SCXW235591358 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW235591358 BCX0" data-ccp-parastyle="heading 4">:</span></span><span class="EOP SCXW235591358 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW131443930 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW131443930 BCX0">Random Forest is a trademark term for an ensemble of decision trees. In Random Forest, we’ve collection of decision trees (so known as “Forest”). To classify a new object based on attributes, each tree gives a classification and we say the tree “votes” for that class. The forest chooses the classification having the most votes (over all the trees in the forest.</span></span><span class="EOP SCXW131443930 BCX0" data-ccp-props="{}"> </span></li>
+<li><span class="TextRun SCXW256144533 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><strong><span class="NormalTextRun SCXW256144533 BCX0" data-ccp-parastyle="heading 4">Logistic regression</span></strong><span class="NormalTextRun SCXW256144533 BCX0" data-ccp-parastyle="heading 4"><strong>:</strong> </span></span><span class="EOP SCXW256144533 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW250130968 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW250130968 BCX0">Logistic regression extends the idea of linear regression to the situation where the dependent variable Y is categorical. We can think of a categorical variable as dividing the observations in to classes.  </span></span><span class="LineBreakBlob BlobObject DragDrop SCXW250130968 BCX0"><span class="SCXW250130968 BCX0"> </span></span><span class="TextRun SCXW250130968 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW250130968 BCX0">Don’t get confused by its name! It is a classification not a regression algorithm.<br />
+<img decoding="async" class="wp-image-10343 alignnone" src="/wp-content/uploads/2022/09/lr.png" alt="lr Machine Learning quick start guide for enthusiast" width="924" height="310"><br />
+</span></span></li>
+<li>
+<p aria-level="4"><b><span data-contrast="none">The naive Bayes classifier: </span></b><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto">It works on Bayes theorem of probability to predict the class of unknown data set.</span> <span data-contrast="auto">Naive Bayes uses a similar method to predict the probability of different class based on various attributes. This algorithm is mostly used in text classification and with problems having multiple classes.</span></p>
+</li>
+<li>
+<p aria-level="4"><b><i><span data-contrast="none">SVM (Support Vector Machine):</span></i></b><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto"> </span><span data-contrast="auto">It is a classification method. In this algorithm, we plot each data item as a point in n-dimensional space (where n is number of features you have) with the value of each feature being the value of a particular coordinate.</span><span data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span><span data-contrast="auto">For example, if we only had two features like Height and Hair length of an individual, we’d first plot these two variables in two dimensional space where each point has two co-ordinates (these co-ordinates are known as Support Vectors)</span><span data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span></p>
+</li>
+<li><span class="TextRun SCXW157341624 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW157341624 BCX0" data-ccp-parastyle="heading 4"><strong>K-Nearest Neighbor:</strong> </span></span><span class="EOP SCXW157341624 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW48525375 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW48525375 BCX0">KNN can be used for both classification and regression predictive problems. The “K” in KNN algorithm is the nearest neighbors we wish to take vote from?<br />
+<img decoding="async" class="wp-image-10349 alignnone" src="/wp-content/uploads/2022/09/knn.png" alt="knn Machine Learning quick start guide for enthusiast" width="783" height="297"><br />
+</span></span></li>
+</ul>
+</li>
+<li><span class="TextRun SCXW77015521 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW77015521 BCX0" data-ccp-parastyle="heading 3"><strong>Clustering</strong>: </span></span>
+<ul>
+<li><span class="NormalTextRun SCXW193408192 BCX0"><strong>k-means clustering:</strong>  The k-means clustering is an unsup</span><span class="NormalTextRun SCXW193408192 BCX0">ervised learning technique that </span><span class="NormalTextRun SCXW193408192 BCX0">helps in partitioning data of n observations into K buckets of similar observations.</span></li>
+<li><strong><span class="TextRun Underlined SCXW129119889 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW129119889 BCX0">Hierarchical clustering:</span></span></strong> <span class="TextRun SCXW129119889 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW129119889 BCX0">Hierarchical clustering is an unsupervised learning technique where a hierarchy of clusters is built out of observations</span></span></li>
+<li><strong> <span class="TextRun SCXW65955475 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW65955475 BCX0">Divisive hierarchical clustering</span></span></strong><span class="TextRun SCXW65955475 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW65955475 BCX0"><strong>:</strong> This is a top-down approach where observations start off in a single cluster and then they are split into two as they go down a hierarchy</span><span class="NormalTextRun SCXW65955475 BCX0">.</span></span></li>
+</ul>
+</li>
+<li><strong>Recommender Systems: </strong>Recommendations help monetize user behavior data that businesses capture. This allows them to recommend the content that they like. Recommender systems are a way of suggesting or similar items and ideas to a user’s specific way of thinking.</li>
+</ul>
+</li>
+<li><strong><span class="TextRun Underlined SCXW60958742 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW60958742 BCX0" data-ccp-parastyle="heading 2">Model </span><span class="NormalTextRun SCXW60958742 BCX0" data-ccp-parastyle="heading 2">Evaluation:</span></span><span class="EOP SCXW60958742 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}"> </span></strong>
+<ul>
+<li><span class="TextRun SCXW28168107 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW28168107 BCX0"> Evaluate the results, is it Overfitting (Good performance on the training data, poor generliazation to other data) or Underfitting (Poor performance on the training data and poor generalization to other data)</span></span></li>
+<li><span class="TextRun SCXW13247658 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW13247658 BCX0">Review the process</span></span></li>
+<li><span class="TextRun SCXW172585727 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="TextRun SCXW172585727 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW172585727 BCX0">Determine the next steps based on evaluation score<br />
+<img decoding="async" class="wp-image-10352 alignnone" src="/wp-content/uploads/2022/09/model-evPNG.png" alt="model evPNG Machine Learning quick start guide for enthusiast" width="706" height="284" srcset="/wp-content/uploads/2022/09/model-evPNG.png 706w, /wp-content/uploads/2022/09/model-evPNG-480x193.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 706px, 100vw"></span></span></span></li>
+</ul>
+</li>
+<li><strong><span class="TextRun Underlined SCXW146877088 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW146877088 BCX0" data-ccp-parastyle="heading 2">Test &amp; Deployment:</span></span><span class="EOP SCXW146877088 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}">  </span></strong><span class="EOP SCXW146877088 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}"><span class="EOP SCXW146877088 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}">After validation using various matix model is ready for testing. Here test set will be used for testing. The more data we will use the more the model will be robust.</span></span>More resource</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>for study and parctice : <a href="https://www.coursera.org/learn/machine-learning-with-python" rel="nofollow noopener" target="_blank"> Machine Learning with Python -Coursera</a>   , <a href="https://www.kaggle.com/" rel="nofollow noopener" target="_blank">Kaggle</a>, <a href="https://www.edx.org/" rel="nofollow noopener" target="_blank">edX</a><br />
+Hope this will help to quick start and Achieve Success Quicker.<br />
+Thanks&#8230;..</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/machine-learning-quick-start-guide-for-enthusiast/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

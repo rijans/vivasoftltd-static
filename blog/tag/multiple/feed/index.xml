@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>multiple &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/multiple/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Fri, 24 Sep 2021 05:08:25 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>multiple &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Multiple Git Account Setup (Ubuntu version)</title>
+		<link>/blog/multiple-git-account-setup-ubuntu-version/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Wed, 27 Jan 2021 12:30:43 +0000</pubDate>
+				<category><![CDATA[Git]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[account]]></category>
+		<category><![CDATA[git]]></category>
+		<category><![CDATA[multiple]]></category>
+		<category><![CDATA[vcs]]></category>
+		<guid isPermaLink="false">/?p=2361</guid>
+
+					<description><![CDATA[ssh-add is a command for adding SSH private keys into the SSH authentication agent for implementing single sign-on with SSH. The agent process is called ssh-agent; The cool thing about ssh-agent and ssh-add is that they allow the user to use any number of servers, spread across any number of organizations, without having to type [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>ssh-add is a command for adding SSH private keys into the SSH authentication agent for implementing single sign-on with SSH. The agent process is called ssh-agent;</p>
+<p>The cool thing about ssh-agent and ssh-add is that they allow the user to use any number of servers, spread across any number of organizations, without having to type in a password whenever moving between servers. This is commonly used by system administrators to move among the machine they administer. It is also widely used in universities and research institutions for accessing computing resources.</p>
+<p>More paractical example would be: when anyone shift to new organization and get a new organization email address for the specific organization. He/She might need to create a <strong>VCS</strong>(version control system) account at github, bitbuckt, gitlab etc. Most Developer already have one personal account on any of the those VCS sites. So to setup this two account on a single machine sometime complex. In this post we will learn how to setup two or more VCS account on a single machine.</p>
+<blockquote>
+<p>The below command will work on Ubuntu and Mac but Windows may not. But In windows, using window subsystem (<strong>WSL</strong>) will solved below command issue.</p>
+</blockquote>
+<h2>Step 1: Create ssh key for different email address</h2>
+<pre><code># With Office Email
+ssh-keygen -t rsa -b 4096 -C &quot;rezwanul.haque@vivasoftltd.com&quot; -f rezwanul.viva
+
+# With Personal Email
+ssh-keygen -t rsa -b 4096 -C &quot;rezwanul.cse@gmail.com&quot; -f rezwanul-haque</code></pre>
+<blockquote>
+<h4>add this ssh public keys to respective VCS accounts</h4>
+</blockquote>
+<h2>Step 2: Create a config file on .ssh file</h2>
+<pre><code>touch config
+
+sudo vim config</code></pre>
+<h3>Add this</h3>
+<pre><code># Personal account - default config
+Host github.com-rezwanul-haque
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/rezwanul-haque
+# Work account - Viva
+Host github.com-rezwanul-viva
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/rezwanul.viva
+</code></pre>
+<h2>Step 3: Create common <code>~/.gitconfig</code> file at home directory</h2>
+<pre><code>sudo vim ~/.gitconfig</code></pre>
+<h3>Add this to <code>~/.gitconfig</code></h3>
+<pre><code># Default account-Personal
+[user]
+        name = rezwanul-haque
+        email = rezwanul.cse@gmail.com
+# Professional account-Office
+[includeIf &quot;gitdir:~/&lt;office_work_space_path&gt;/&quot;]
+        path = ~/&lt;office_work_space_path&gt;/.gitconfig-viva
+</code></pre>
+<h2>Step 4: Create organization specific gitconfig to organization workspace folder</h2>
+<pre><code># Professional account-organization
+[user]
+    name = rezwanul-haque-viva
+    email = rezwanul.haque@vivasoftltd.com
+</code></pre>
+<h2>Step 5: remove ssh keys and entities from the SSH agent</h2>
+<pre><code>ssh-add -D</code></pre>
+<h2>Step 6: Add keys and entities</h2>
+<pre><code>ssh-add rezwanul-haque
+ssh-add rezwanul.viva
+
+# Check if added or not
+ssh-add -l</code></pre>
+<h2>Step 7: Test with Connection using ssh</h2>
+<pre><code>ssh -T github.com-rezwanul-haque
+ssh -T github.com-rezwanul-viva</code></pre>
+<blockquote>
+<h3>Also read this aricle on my personal <a href="https://gist.github.com/Rezwanul-Haque/fbf2f929a6a42407504a93c0ff08376a" rel="nofollow noopener" target="_blank">gist</a></h3>
+</blockquote>
+<h2>Step 8: Cloning any project with organization account(required)</h2>
+<pre><code># need to add github-hostname
+git clone git@&lt;HostName&gt;:Rezwanul-Haque-Viva/&lt;office_project_repo&gt;.git
+
+Example: git clone git@github.com-rezwanul-viva:Rezwanul-Haque-Viva/&lt;office_project_repo&gt;.git</code></pre>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Installing Multiple Version of Golang using GoEnv</title>
+		<link>/blog/installing-multiple-version-of-golang-using-goenv/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Mon, 18 Jan 2021 12:45:09 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[go]]></category>
+		<category><![CDATA[goenv]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[multiple]]></category>
+		<category><![CDATA[version]]></category>
+		<guid isPermaLink="false">/?p=2353</guid>
+
+					<description><![CDATA[Often we need a different version of go according to specific projects. There are different options we have like we can use Docker for our specific project&#8217;s need(we can talk about that in a different blog post). There are several other options but in this blog, we will talk about goenv. Prerequisites: git We&#8217;re using [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Often we need a different version of <strong>go</strong> according to specific projects. There are different options we have like we can use Docker for our specific project&#8217;s need(we can talk about that in a different blog post). There are several other options but in this blog, we will talk about <code>goenv</code>.</p>
+<blockquote>
+<h2>Prerequisites: git</h2>
+</blockquote>
+<p>We&#8217;re using Ubuntu 20.04 so below instruction will work in ubuntu. On Mac too. Not sure about windows.</p>
+<p>Official Installation Guide <a href="https://github.com/syndbg/goenv/blob/master/INSTALL.md" rel="nofollow noopener" target="_blank">GOENV Install guide</a></p>
+<h1>Goto github</h1>
+<pre><code>git clone https://github.com/syndbg/goenv.git ~/.goenv</code></pre>
+<blockquote>
+<p>if this particular git code syntax you(readers) are not familiar with we will explain it, it just cloning the repo and place it on <code>.goenv</code> folder on the <code>home//</code> directory.</p>
+</blockquote>
+<h1>Define environment variable GOENV_ROOT</h1>
+<pre><code>echo &#039;export GOENV_ROOT=&quot;$HOME/.goenv&quot;&#039; &gt;&gt; ~/.bashrc
+echo &#039;export PATH=&quot;$GOENV_ROOT/bin:$PATH&quot;&#039; &gt;&gt; ~/.bashrc</code></pre>
+<blockquote>
+<p>for <code>zsh/oh-my-zsh</code> users, use zshrc or respective config files according to your terminal settings. </p>
+</blockquote>
+<h1>Add goenv init to your shell</h1>
+<pre><code>echo &#039;eval &quot;$(goenv init -)&quot;&#039; &gt;&gt; ~/.bashrc</code></pre>
+<blockquote>
+<p>If you want goenv to manage GOPATH and GOROOT (recommended), add GOPATH and GOROOT to your shell after eval &quot;$(goenv init -)&quot;</p>
+</blockquote>
+<pre><code>echo &#039;export PATH=&quot;$GOROOT/bin:$PATH&quot;&#039; &gt;&gt; ~/.bashrc
+
+echo &#039;export GOPATH=&quot;$HOME/&lt;workspaces_path&gt;/go&quot;&#039; &gt;&gt; ~/.bashrc</code></pre>
+<blockquote>
+<p>GOPATH Folder Structure<br />
+<img decoding="async" src="/wp-content/uploads/2021/01/gopath_folder_structure-300x249.png" alt="gopath_folder_structure" /></p>
+</blockquote>
+<h1>Restart your shell so the path changes take effect.</h1>
+<pre><code>exec $SHELL</code></pre>
+<h1>Install Go versions into $GOENV_ROOT/versions</h1>
+<pre><code>goenv install &lt;version_number&gt;
+
+# check all version which can be installed
+goenv install -l
+
+# Example
+goenv install 1.15.6</code></pre>
+<h1>To upgrade to a specific release of goenv</h1>
+<pre><code>cd $(goenv root)
+git pull</code></pre>
+<h1>Uninstalling goenv</h1>
+<pre><code>rm -rf goenv root</code></pre>
+<h1>Disable goenv</h1>
+<blockquote>
+<p>To disable goenv managing your Go versions, simply remove the goenv init line from your shell startup configuration. This will remove goenv shims directory from PATH, and future invocations like goenv will execute the system Go version, as before goenv.</p>
+</blockquote>
+<h1>Uninstalling Go Versions</h1>
+<pre><code>goenv uninstall</code></pre>
+<h1>Run this command after you install a new version of Go to activate</h1>
+<pre><code>goenv rehash</code></pre>
+<p>If you like you can read the same article in my personal <a href="https://gist.github.com/Rezwanul-Haque/4c533b048a8e628487439ecb1b933604" rel="nofollow noopener" target="_blank">github gist</a></p>
+<h1>How to use a specified version of Go (Globally or Locally)</h1>
+<pre><code># global
+goenv global 1.15.6
+
+# Local
+goenv local 1.15.6</code></pre>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

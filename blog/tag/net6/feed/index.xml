@@ -1,0 +1,1121 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>.NET6 &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/net6/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Sun, 26 Jun 2022 15:00:24 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>.NET6 &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>.NET6 API Documentation &#038; Example request with Swagger</title>
+		<link>/blog/net6-api-documentation-example-request-with-swagger/</link>
+					<comments>/blog/net6-api-documentation-example-request-with-swagger/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Sun, 26 Jun 2022 13:22:59 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[.NET6]]></category>
+		<category><![CDATA[api]]></category>
+		<category><![CDATA[documentation]]></category>
+		<category><![CDATA[swagger]]></category>
+		<guid isPermaLink="false">/?p=9534</guid>
+
+					<description><![CDATA[In this post,  Will try to show some basic of Swagger with .NET 6 as well as how to generate example request to make testing handy. Create a new Web API project with enabling the OpenAPI support. To add API information and description update builder.Services.AddSwaggerGen() like bellow example: using Microsoft.OpenApi.Models; builder.Services.AddSwaggerGen(c =&#62; { c.SwaggerDoc("v1", new [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>In this post,  Will try to show some basic of Swagger with .NET 6 as well as how to generate example request to make testing handy.</p>
+<p>Create a new Web API project with enabling the OpenAPI support.<br />
+<img decoding="async" class="aligncenter size-full wp-image-9539" src="/wp-content/uploads/2022/06/new-project.png" alt="new project .NET6 API Documentation &amp; Example request with Swagger" width="1017" height="673" srcset="/wp-content/uploads/2022/06/new-project.png 1017w, /wp-content/uploads/2022/06/new-project-980x649.png 980w, /wp-content/uploads/2022/06/new-project-480x318.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1017px, 100vw"></p>
+<p>To add API information and description update builder.Services.AddSwaggerGen() like bellow example:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using Microsoft.OpenApi.Models;
+
+builder.Services.AddSwaggerGen(c =&gt;
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "WeatherForecast",
+        Version = "v1",     
+        Description = "This is the API for managing WeatherForecast",
+        TermsOfService = new Uri("https://www.linkedin.com/in/khairultaher"),
+        Contact = new OpenApiContact
+        {
+            Name = "khairul Alam",
+            Email = "abc@gmail.com",
+            Url = new Uri("https://www.linkedin.com/in/khairultaher")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Use under LICX",
+            Url = new Uri("https://www.linkedin.com/in/khairultaher"),
+        }
+    });
+}</pre>
+<p>Run the app and see the API info and description:<br />
+<img decoding="async" class="aligncenter wp-image-9545" src="/wp-content/uploads/2022/06/api-info.png" alt="api info .NET6 API Documentation &amp; Example request with Swagger" width="1059" height="395" srcset="/wp-content/uploads/2022/06/api-info.png 1059w, /wp-content/uploads/2022/06/api-info-480x179.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 1059px, 100vw"></p>
+<p>To enable xml comment open .csporj file update propertygroup with these two item:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">&lt;PropertyGroup&gt;
+  ......
+  &lt;GenerateDocumentationFile&gt;True&lt;/GenerateDocumentationFile&gt;
+  &lt;NoWarn&gt;$(NoWarn);1591&lt;/NoWarn&gt;
+&lt;/PropertyGroup&gt;</pre>
+<p>Now configure swagger to use generated xml:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">builder.Services.AddSwaggerGen(c =&gt;
+{
+    ........
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});</pre>
+<p>Go to WeatherForecast controller and add comment on Create action like bellow example:<br />
+<strong>For POST/PUT:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">/// &lt;summary&gt;
+/// Add new WeatherForecast
+/// &lt;/summary&gt;
+/// &lt;param name="model"&gt;&lt;/param&gt;
+/// &lt;returns&gt;Return success/fail status&lt;/returns&gt;
+/// &lt;remarks&gt;
+/// **Sample request body:**
+///
+///     {
+///        "id": 1,
+///        "Date": "2022-06-24",
+///        "TemperatureC": 30,
+///        "Summary": "TemperatureC is 30 today",
+///     }
+///
+/// &lt;/remarks&gt;
+/// &lt;response code="200"&gt;Success&lt;/response&gt;
+/// &lt;response code="401"&gt;Failed/Unauthorized&lt;/response&gt;
+[HttpPost]
+[ProducesResponseType(typeof(WeatherForecast), 201)]
+[ProducesResponseType(400)]
+public async Task&lt;ActionResult&lt;WeatherForecast&gt;&gt; Create([FromBody] WeatherForecast model)
+{
+
+    WeatherForecast weatherForecast = new WeatherForecast()
+    {
+        Id = model.Id,
+        Date = model.Date,
+        TemperatureC =  model.TemperatureC,
+        Summary = model.Summary
+    };
+
+    return await Task.FromResult(weatherForecast);  
+}</pre>
+<p>By runnig the app we will see the information are adedd to swagger:<br />
+<img decoding="async" class="aligncenter wp-image-9548" src="/wp-content/uploads/2022/06/comment.png" alt="comment .NET6 API Documentation &amp; Example request with Swagger" width="1260" height="672" srcset="/wp-content/uploads/2022/06/comment.png 1260w, /wp-content/uploads/2022/06/comment-980x523.png 980w, /wp-content/uploads/2022/06/comment-480x256.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1260px, 100vw"></p>
+<p>Look into the example value, see that it show the default values. now we want here to add example value for testing. To do so add Swashbuckle.AspNetCore.Filters NuGet package.<br />
+update</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using Swashbuckle.AspNetCore.Filters;
+
+builder.Services.AddSwaggerGen(c =&gt;
+{
+   .........
+    c.ExampleFilters();
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+}
+builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());</pre>
+<p>Now add new class that will generate example value for the WeatherForecast class.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using Swashbuckle.AspNetCore.Filters;
+
+namespace SwaggerExample
+{
+
+    public class WeatherForecastRequestExample : IExamplesProvider&lt;WeatherForecast&gt;
+    {
+        public WeatherForecast GetExamples()
+        {
+            return new WeatherForecast()
+            {
+                Id = 1,
+                Date = DateTime.Now,
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = "test data"
+            };
+        }
+    }
+}
+</pre>
+<p>rebuild and run the the app again.</p>
+<p><img decoding="async" class="aligncenter size-full wp-image-9551" src="/wp-content/uploads/2022/06/example-values.png" alt="example values .NET6 API Documentation &amp; Example request with Swagger" width="1417" height="275" srcset="/wp-content/uploads/2022/06/example-values.png 1417w, /wp-content/uploads/2022/06/example-values-1280x248.png 1280w, /wp-content/uploads/2022/06/example-values-980x190.png 980w, /wp-content/uploads/2022/06/example-values-480x93.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1417px, 100vw"><br />
+<strong>For GET/DELETE request:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">/// &lt;summary&gt;
+/// Get WeatherForecast By Id
+/// &lt;/summary&gt;
+///&lt;param name="id" example="2"&gt;The product id&lt;/param&gt;
+/// &lt;returns&gt;Return success/fail status&lt;/returns&gt;
+/// &lt;remarks&gt;
+/// **Sample request body:**
+///
+///     {
+///        "id": 2
+///     }
+///
+/// &lt;/remarks&gt;
+/// &lt;response code="200"&gt;Success&lt;/response&gt;
+/// &lt;response code="401"&gt;Failed/Unauthorized&lt;/response&gt;
+
+[HttpGet]
+[ProducesResponseType(typeof(WeatherForecast), 200)]
+[ProducesResponseType(400)]
+public ActionResult&lt;WeatherForecast&gt; Get([FromQuery] int id)
+{
+    return Enumerable.Range(1, 5)
+        .Select(index =&gt; new WeatherForecast
+        {
+            Id = index,
+            Date = DateTime.Now.AddDays(index),
+            TemperatureC = Random.Shared.Next(-20, 55),
+            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+        }).Where(w =&gt; w.Id == id).FirstOrDefault()!;
+}</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-9556" src="/wp-content/uploads/2022/06/example-values-2.png" alt="example values 2 .NET6 API Documentation &amp; Example request with Swagger" width="1419" height="961" srcset="/wp-content/uploads/2022/06/example-values-2.png 1419w, /wp-content/uploads/2022/06/example-values-2-1280x867.png 1280w, /wp-content/uploads/2022/06/example-values-2-980x664.png 980w, /wp-content/uploads/2022/06/example-values-2-480x325.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1419px, 100vw"></p>
+<p><img decoding="async" class="aligncenter size-full wp-image-9552" src="/wp-content/uploads/2022/06/schema-information.png" alt="schema information .NET6 API Documentation &amp; Example request with Swagger" width="1415" height="532" srcset="/wp-content/uploads/2022/06/schema-information.png 1415w, /wp-content/uploads/2022/06/schema-information-1280x481.png 1280w, /wp-content/uploads/2022/06/schema-information-980x368.png 980w, /wp-content/uploads/2022/06/schema-information-480x180.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1415px, 100vw">Swagger shows all available schema information like above but if we don&#8217;t want to show them then just add DefaultModelsExpandDepth(-1)</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">app.UseSwagger();
+app.UseSwaggerUI(x =&gt;
+{
+    x.SwaggerEndpoint("/swagger/v1/swagger.json", "WeatherForecast: API");
+    x.DefaultModelsExpandDepth(-1);
+});</pre>
+<p><strong>Implement authorization:<br />
+</strong>Take advantage of authentication and authorization to secure your Swagger UI in .NET Core 6</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddSwaggerGen(c =&gt;
+{
+    .......
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme {
+                Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+    
+   ......
+});</pre>
+<p><strong><img decoding="async" class="aligncenter size-full wp-image-9568" src="/wp-content/uploads/2022/06/security.png" alt="security .NET6 API Documentation &amp; Example request with Swagger" width="1478" height="881" srcset="/wp-content/uploads/2022/06/security.png 1478w, /wp-content/uploads/2022/06/security-1280x763.png 1280w, /wp-content/uploads/2022/06/security-980x584.png 980w, /wp-content/uploads/2022/06/security-480x286.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1478px, 100vw"><br />
+Source: </strong><a href="https://github.com/Khairultaher/SwaggerExample" rel="nofollow noopener" target="_blank">https://github.com/Khairultaher/SwaggerExample</a></p>
+<p>Thanks&#8230;</p>
+<p>&nbsp;</p>
+<p><strong> </strong></p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/net6-api-documentation-example-request-with-swagger/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>মাইক্রোসার্ভিসের সিকিউরিটি  ও  সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity</title>
+		<link>/blog/identityserver4-asp-net-identity-single-signon-signout/</link>
+					<comments>/blog/identityserver4-asp-net-identity-single-signon-signout/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Sun, 29 May 2022 14:13:02 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[.NET6]]></category>
+		<category><![CDATA[ASP.NET Identity]]></category>
+		<category><![CDATA[IdentityServer4(OAuth2]]></category>
+		<category><![CDATA[OpenID)]]></category>
+		<guid isPermaLink="false">/?p=8635</guid>
+
+					<description><![CDATA[আজ আমরা দেখব IdentityServer4(OAuth2,OpenID), ASP.NET Identity -র মাধ্যমে কিভাবে মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO) সুবিধা ইমপ্লিমেন্ট করা যায়। প্রথমে আমরা কিছু বেসিক জেনে নেই- OAuth2: একটি ইন্ডাস্ট্রি স্ট্যান্ডার্ড অথোরাইজেশন প্রোটোকল, এটা সার্ভিস ব্যাবহারকারির অথোরাইজেশন নিয়ে কাজ করে, সিকিউরিটি সার্ভিস হতে এক্সেস টোকেন সংগ্রহ করে তা অন্য সার্ভিস বা APIs -র সাথে যোগাযোগ রক্ষা করে থাকে। [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>আজ আমরা দেখব IdentityServer4(OAuth2,OpenID), ASP.NET Identity -র মাধ্যমে কিভাবে মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO) সুবিধা ইমপ্লিমেন্ট করা যায়।<br />
+প্রথমে আমরা কিছু বেসিক জেনে নেই-</p>
+<p><strong>OAuth2:</strong> একটি ইন্ডাস্ট্রি স্ট্যান্ডার্ড অথোরাইজেশন প্রোটোকল, এটা সার্ভিস ব্যাবহারকারির অথোরাইজেশন নিয়ে কাজ করে, সিকিউরিটি সার্ভিস হতে এক্সেস টোকেন সংগ্রহ করে তা অন্য সার্ভিস বা APIs -র সাথে যোগাযোগ রক্ষা করে থাকে।<br />
+<strong>OpenID Connect:</strong> অথেন্টিকেশন প্রোটোকল যা মূলত OAuth2 এর এক্সটেনশন, যা ব্যাবহারকারির অথেন্টিকেশন নিয়ে কাজ করে ।<br />
+<strong>IdentityServer4:</strong> একটি ওপেন সোর্স ফ্রেমওয়ার্ক, যেখানে OAuth2, OpenID Connect একত্রে ব্যবহার করে মোবাইল, ওয়েব আপ্লিকেশনের সিকিউরিটি নিশ্চিত করা হয়। .NET আপ্লিকেশনে মিডিলওয়্যার হিসাবে খুব সহজে যুক্ত করা আর ব্যাবহার করা যায়। IdentityServer4 ব্যাবহারকারিদের নিয়ে কাজ করে না শুধু তাদের অথোরাইজেশন ও অথেন্টিকেশন নিয়ে কাজ করে যেমন &#8211; টোকেন এক্সেস, টোকেন এন্ডপয়েন্ট , ক্লায়েন্ট, স্কোপ ইত্যাদি।<br />
+<strong>ASP.NET Identity:</strong> এটি মাইক্রোসফটের ইউজার ম্যানেজমেন্ট লাইব্রেরী, ইউজারের বেসিক ইনফরমেশন, রোল, ক্লেইম ইত্যাদি নিয়ে কাজ করে ও সংরক্ষন করে থাকে। যেহেতু IdentityServer4 সরাসরি ইউজার নিয়ে কাজ করে না তাই IdentityServer4 এর ইউজার ইনফরমেশন ASP.NET Identity এর মাধ্যমে ব্যবহার করবো।</p>
+<p>এই এক্সাম্পলের তিনটি পার্ট- সিকিউরিটির জন্য IdentityServer, একটি API ডাটা প্রভাইড করে অন্যটি API ক্লায়েন্ট যে API হতে ডাটা সংগ্রহ করে ও প্রদর্শন করে ।<br />
+<img decoding="async" class="aligncenter size-full wp-image-8743" src="/wp-content/uploads/2022/05/solution-overview-1.png" alt="solution overview 1 মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="391" height="943" srcset="/wp-content/uploads/2022/05/solution-overview-1.png 391w, /wp-content/uploads/2022/05/solution-overview-1-124x300.png 124w" sizes="(max-width: 391px) 100vw, 391px"></p>
+<p>প্রথমে IdentityServer এর জন্য একটি ASP.NET Core Empty প্রোজেক্ট নেই এবং <a href="https://github.com/IdentityServer/IdentityServer4.Quickstart.UI" rel="nofollow noopener" target="_blank">IdentityServer4.Quickstart.UI</a> থেকে এই কমান্ড টি কপি করে নেই।<br />
+iex ((New-Object System.Net.WebClient).DownloadString(&#8216;https://raw.githubusercontent.com/IdentityServer/IdentityServer4.Quickstart.UI/main/getmain.ps1&#8217;))<br />
+তারপর প্রজেক্টের উপর রাইট ক্লিক করে Open in Terminal এ ক্লিক করে কপি করে কমান্ডটি পেস্ট করে রান করে দেই।<br />
+<img decoding="async" class="aligncenter wp-image-8745" src="/wp-content/uploads/2022/05/solution-overview-empty-temp.png" alt="solution overview empty temp মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1129" height="1072" srcset="/wp-content/uploads/2022/05/solution-overview-empty-temp.png 1129w, /wp-content/uploads/2022/05/solution-overview-empty-temp-980x930.png 980w, /wp-content/uploads/2022/05/solution-overview-empty-temp-480x455.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1129px, 100vw"></p>
+<p><img decoding="async" class="aligncenter wp-image-8746" src="/wp-content/uploads/2022/05/identity-server-ui.png" alt="identity server ui মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1148" height="620" srcset="/wp-content/uploads/2022/05/identity-server-ui-980x529.png 980w, /wp-content/uploads/2022/05/identity-server-ui-480x259.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1148px, 100vw"></p>
+<p>এবার বাকি দুটি API অ্যাড করে নেই যথাক্রমে- IdentityServer.API, IdentityServer.Client। প্রত্যেকের launchSettings.json ওপেন করে applicationUrl সেট করে নেই।<br />
+তারপর ধাপে ধাপে IdentityServer4 এর IdentityResource, ApiScope, Client সেটআপ এবং ConfigurationStore, OperationalStore, AspNetIdentity সার্ভিসে অ্যাড করতে হবে।<br />
+IdentityResource, ApiScope, Client সেটআপ:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">using IdentityServer4;
+using IdentityServer4.Models;
+using System.Collections.Generic;
+
+namespace IdentityServer
+{
+    public static class Config
+    {
+        public static IEnumerable&lt;IdentityResource&gt; IdentityResources =&gt;
+            new List&lt;IdentityResource&gt;
+            {
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
+            };
+
+
+        public static IEnumerable&lt;ApiScope&gt; ApiScopes =&gt;
+            new List&lt;ApiScope&gt;
+            {
+                new ApiScope("apiscope", "API")
+            };
+
+        public static IEnumerable&lt;Client&gt; Clients =&gt;
+            new List&lt;Client&gt;
+            {              
+                // interactive ASP.NET Core MVC client
+                new Client
+                {
+                    ClientId = "client1",
+                    ClientName = "MVC WEB API",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    ClientSecrets = { new Secret("secret".Sha256()) },
+                    
+                    //RequireClientSecret = false,                  
+                    //RequirePkce = false,
+                    //AllowRememberConsent = false,
+
+                    // where to redirect to after login
+                    RedirectUris = { "https://localhost:5002/signin-oidc" },
+
+                    // where to redirect to after logout
+                    PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+
+                    AllowedScopes = new List&lt;string&gt;
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "apiscope"
+                    }
+                },
+
+                // machine to machine client
+                new Client
+                {
+                    ClientId = "client2",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientSecrets = { new Secret("secret".Sha256()) },                  
+                    // scopes that client has access to
+                    AllowedScopes = { "apiscope" }
+                }
+            };
+    }
+}</pre>
+<p>&nbsp;</p>
+<p>ConfigurationStore, OperationalStore, AspNetIdentity সার্ভিস রেজিস্ট্রি:<br />
+<strong>IdentityServer Program.cs</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddIdentityServer()
+    .AddInMemoryClients(Config.Clients)
+    .AddInMemoryApiScopes(Config.ApiScopes)
+    .AddInMemoryIdentityResources(Config.IdentityResources)
+    .AddTestUsers(TestUsers.Users)
+    .AddDeveloperSigningCredential();</pre>
+<p><strong>IdentityServer.API Program.cs<br />
+</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">// accepts any access token issued by identity server
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(options =&gt;
+    {
+        options.Authority = "https://localhost:5001/";
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = false
+        };
+    });
+
+// adds an authorization policy to make sure the token is for scope 'apiscope'
+builder.Services.AddAuthorization(options =&gt;
+{
+    options.AddPolicy("apiscope", policy =&gt;
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("scope", "apiscope");
+    });
+});
+
+
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =&gt;
+{
+    endpoints.MapControllers()
+        .RequireAuthorization("apiscope");
+    //endpoints.MapControllers();
+});
+</pre>
+<p><strong>IdentityServer.Client Program.cs<br />
+</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddAuthentication(options =&gt;
+{
+    options.DefaultScheme = "Cookies";
+    options.DefaultChallengeScheme = "oidc";
+
+    //options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    //options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+})
+.AddCookie("Cookies")
+.AddOpenIdConnect("oidc", options =&gt;
+//    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+//.AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =&gt;
+{
+    options.Authority = "https://localhost:5001/";
+    options.RequireHttpsMetadata = false;
+
+    options.ClientId = "client1";
+    options.ClientSecret = "secret";
+    options.ResponseType = "code";
+    //options.ResponseType = "code id_token";
+
+    options.Scope.Add("apiscope");
+
+    options.SaveTokens = true;
+});
+
+
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =&gt;
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});</pre>
+<p>IdentityServer4 সাধারণত কনফিগারেশন গুলো মেমরিতে রাখে আর IdentityServer4.Quickstart.UI কমান্ড TestUsers.Users তৈরি করে যা আমাদের টেস্ট এ ব্যবহার করা হবে।<br />
+এখন আপ্লিকেশন রান করে আমরা নিন্মক্ত UI গুলো দেখতে পাব&#8211;<br />
+<img decoding="async" class="aligncenter size-full wp-image-8789" src="/wp-content/uploads/2022/05/identity-server-endpoints.png" alt="identity server endpoints মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1920" height="1042" srcset="/wp-content/uploads/2022/05/identity-server-endpoints.png 1920w, /wp-content/uploads/2022/05/identity-server-endpoints-1280x695.png 1280w, /wp-content/uploads/2022/05/identity-server-endpoints-980x532.png 980w, /wp-content/uploads/2022/05/identity-server-endpoints-480x261.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><br />
+<img decoding="async" class="aligncenter size-full wp-image-8752" src="/wp-content/uploads/2022/05/ui-before-login.png" alt="ui before login মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1918" height="1080" srcset="/wp-content/uploads/2022/05/ui-before-login.png 1918w, /wp-content/uploads/2022/05/ui-before-login-1280x721.png 1280w, /wp-content/uploads/2022/05/ui-before-login-980x552.png 980w, /wp-content/uploads/2022/05/ui-before-login-480x270.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw">ক্লায়েন্ট থেকে লগইন এর পর<br />
+<img decoding="async" class="aligncenter size-full wp-image-8753" src="/wp-content/uploads/2022/05/ui-after-login.png" alt="ui after login মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1916" height="1048" srcset="/wp-content/uploads/2022/05/ui-after-login.png 1916w, /wp-content/uploads/2022/05/ui-after-login-1280x700.png 1280w, /wp-content/uploads/2022/05/ui-after-login-980x536.png 980w, /wp-content/uploads/2022/05/ui-after-login-480x263.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1916px, 100vw">IdentityServer4 হতে লগআউট এর পর<br />
+<img decoding="async" class="aligncenter size-full wp-image-8754" src="/wp-content/uploads/2022/05/ui-after-logout.png" alt="ui after logout মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1919" height="1042" srcset="/wp-content/uploads/2022/05/ui-after-logout.png 1919w, /wp-content/uploads/2022/05/ui-after-logout-1280x695.png 1280w, /wp-content/uploads/2022/05/ui-after-logout-980x532.png 980w, /wp-content/uploads/2022/05/ui-after-logout-480x261.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw"></p>
+<p>এবার IdentityServer.API হতে ডাটা IdentityServer.Clent এ দেখাব, এর জন্য IdentityServer.Clent এর Weather একশন নিন্মরুপ হবে-</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public async Task&lt;IActionResult&gt; Weather()
+{
+    var client = new HttpClient();
+
+    var disco = await client.GetDiscoveryDocumentAsync("https://localhost:5001/");
+    if (disco.IsError)
+    {
+        Console.WriteLine(disco.Error);
+        return View();
+    }
+
+    // request token
+    var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+    {
+        Address = disco.TokenEndpoint,
+        ClientId = "client2",
+        ClientSecret = "secret",
+        Scope = "apiscope"
+    });
+
+    if (tokenResponse.IsError)
+    {
+        Console.WriteLine(tokenResponse.Error);
+        return View();
+    }
+
+    Console.WriteLine(tokenResponse.Json);
+    Console.WriteLine("\n\n");
+
+    // call api
+    var apiClient = new HttpClient();
+    apiClient.SetBearerToken(tokenResponse.AccessToken);
+
+    var response = await apiClient.GetAsync("https://localhost:5003/WeatherForecast");
+    if (!response.IsSuccessStatusCode)
+    {
+        Console.WriteLine(response.StatusCode);
+    }
+    else
+    {
+        var content = await response.Content.ReadAsStringAsync();
+        var movieList = JsonConvert.DeserializeObject&lt;List&lt;WeatherForecast&gt;&gt;(content);
+        Console.WriteLine(JArray.Parse(content));
+        return View(movieList);
+    }
+    return View();
+}</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-8757" src="/wp-content/uploads/2022/05/data-from-api-1.png" alt="data from api 1 মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1920" height="1040" srcset="/wp-content/uploads/2022/05/data-from-api-1.png 1920w, /wp-content/uploads/2022/05/data-from-api-1-1280x693.png 1280w, /wp-content/uploads/2022/05/data-from-api-1-980x531.png 980w, /wp-content/uploads/2022/05/data-from-api-1-480x260.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></p>
+<p>আমরা যদি IdentityServer4 এর কনফিগারেশন গুলো এবং Users কে আমাদের ডাটাবেসে রাখতে চাই তবে ConfigurationStore, OperationalStore, AspNetIdentity নিন্মরুপে রেজিস্টার করতে হবে এবং ডাটাবেসে মাইগ্রেসন করে সিড ডাটা হিসাবে অ্যাড করতে হবে-</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">builder.Services.AddDbContext&lt;ApplicationDbContext&gt;(options =&gt; options
+    .UseSqlServer(connectionString, sql =&gt; sql.MigrationsAssembly(migrationsAssembly)));
+
+
+builder.Services.AddIdentity&lt;ApplicationUser, IdentityRole&gt;()
+    .AddEntityFrameworkStores&lt;ApplicationDbContext&gt;()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddIdentityServer(options =&gt;
+{
+    options.Events.RaiseErrorEvents = true;
+    options.Events.RaiseInformationEvents = true;
+    options.Events.RaiseFailureEvents = true;
+    options.Events.RaiseSuccessEvents = true;
+
+    // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
+    options.EmitStaticAudienceClaim = true;
+    options.Authentication = new AuthenticationOptions()
+    {
+        CookieLifetime = TimeSpan.FromHours(10), // ID server cookie timeout set to 10 hours
+        CookieSlidingExpiration = true
+    };
+})
+.AddConfigurationStore(options =&gt;
+{
+    options.ConfigureDbContext = b =&gt; b.UseSqlServer(connectionString,
+                    sql =&gt; sql.MigrationsAssembly(migrationsAssembly));
+})
+.AddOperationalStore(options =&gt;
+{
+    options.ConfigureDbContext = b =&gt; b.UseSqlServer(connectionString,
+        sql =&gt; sql.MigrationsAssembly(migrationsAssembly));
+})
+.AddAspNetIdentity&lt;ApplicationUser&gt;()
+.AddDeveloperSigningCredential();
+
+
+//builder.Services.AddIdentityServer()
+//    .AddInMemoryClients(Config.Clients)
+//    .AddInMemoryApiScopes(Config.ApiScopes)
+//    .AddInMemoryIdentityResources(Config.IdentityResources)
+//    .AddTestUsers(TestUsers.Users)
+//    .AddDeveloperSigningCredential();
+// not recommended for production - you need to store your key material somewhere secure
+//builder.Services.AddDeveloperSigningCredential();
+
+
+builder.Services.AddAuthentication()
+    .AddGoogle(options =&gt;
+    {
+        options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+        // register your IdentityServer with Google at https://console.developers.google.com/
+        // enable the Google+ API
+        // set the redirect URI to https://localhost:5001/signin-google
+        options.ClientId = "copy client ID from Google here";
+        options.ClientSecret = "copy client secret from Google here";
+    });
+
+builder.Services.Configure&lt;IdentityOptions&gt;(options =&gt;
+{
+    // Default Lockout settings.
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = false;
+
+    // Default Password settings.
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 3;
+    options.Password.RequiredUniqueChars = 1;
+});
+
+//hosted services for seeding primary data
+builder.Services.AddHostedService&lt;DatabaseSeedingService&gt;();</pre>
+<p><strong>DatabaseSeedingService:<br />
+</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">using IdentityModel;
+using IdentityServer.Data;
+using IdentityServer.Models;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+using System.Security.Claims;
+
+namespace IdentityServer
+{
+    public class DatabaseSeedingService : IHostedService
+    {
+        private readonly IServiceProvider _serviceProvider;
+
+
+        public DatabaseSeedingService(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
+
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            await SeedInitialData(cancellationToken);
+        }
+
+        private async Task SeedInitialData(CancellationToken cancellationToken)
+        {
+            await SeedDefaultApplicationUserAsync();
+
+            // Initialize PersistedGrantDb &amp; ConfigurationDb
+            await SeedPersistedGrantDbConfigurationDbAsync();
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken) =&gt; Task.CompletedTask;
+
+        #region Internal functions
+        public async Task SeedDefaultApplicationUserAsync()
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService&lt;ApplicationDbContext&gt;();
+
+            context.Database.Migrate();
+
+            var userMgr = scope.ServiceProvider.GetRequiredService&lt;UserManager&lt;ApplicationUser&gt;&gt;();
+            var alice = await userMgr.FindByNameAsync("alice");
+            if (alice == null)
+            {
+                alice = new ApplicationUser
+                {
+                    UserName = "alice",
+                    Email = "AliceSmith@email.com",
+                    EmailConfirmed = true,
+                };
+                var result = userMgr.CreateAsync(alice, "alice").Result;
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.First().Description);
+                }
+
+                result = userMgr.AddClaimsAsync(alice, new Claim[]{
+                            new Claim(JwtClaimTypes.Name, "Alice Smith"),
+                            new Claim(JwtClaimTypes.GivenName, "Alice"),
+                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
+                            new Claim(JwtClaimTypes.WebSite, "http://alice.com/"),
+                        }).Result;
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.First().Description);
+                }
+                Log.Debug("alice created");
+            }
+            else
+            {
+                Log.Debug("alice already exists");
+            }
+
+            var bob = userMgr.FindByNameAsync("bob").Result;
+            if (bob == null)
+            {
+                bob = new ApplicationUser
+                {
+                    UserName = "bob",
+                    Email = "BobSmith@email.com",
+                    EmailConfirmed = true
+                };
+                var result = userMgr.CreateAsync(bob, "alice").Result;
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.First().Description);
+                }
+
+                result = userMgr.AddClaimsAsync(bob, new Claim[]{
+                            new Claim(JwtClaimTypes.Name, "Bob Smith"),
+                            new Claim(JwtClaimTypes.GivenName, "Bob"),
+                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
+                            new Claim(JwtClaimTypes.WebSite, "http://bob.com/"),
+                            new Claim("location", "somewhere")
+                        }).Result;
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.First().Description);
+                }
+                Log.Debug("bob created");
+            }
+            else
+            {
+                Log.Debug("bob already exists");
+            }
+        }
+
+        public async Task SeedPersistedGrantDbConfigurationDbAsync()
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService&lt;ConfigurationDbContext&gt;();
+            context.Database.Migrate();
+
+            if (!context.Clients.Any())
+            {
+                foreach (var client in Config.Clients)
+                {
+                    context.Clients.Add(client.ToEntity());
+                }
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.IdentityResources.Any())
+            {
+                foreach (var resource in Config.IdentityResources)
+                {
+                    context.IdentityResources.Add(resource.ToEntity());
+                }
+                context.SaveChanges();
+            }
+
+            if (!context.ApiScopes.Any())
+            {
+                foreach (var resource in Config.ApiScopes)
+                {
+                    context.ApiScopes.Add(resource.ToEntity());
+                }
+                context.SaveChanges();
+            }
+        }
+        #endregion
+    }
+}
+</pre>
+<p>&nbsp;</p>
+<p><strong> </strong></p>
+<p><strong>মাইগ্রেসন কমান্ড:<br />
+</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">Add-Migration InitialPersistedGrantDbMigration -c PersistedGrantDbContext -o Data/Migrations/IdentityServer/PersistedGrantDb
+Add-Migration InitialConfigurationDbMigration -c ConfigurationDbContext -o Data/Migrations/IdentityServer/ConfigurationDb
+Add-Migration initial -c ApplicationDbContext -o Data/Migrations/AspNetIdentity
+
+Update-Database -Context PersistedGrantDbContext
+Update-Database -Context ConfigurationDbContext
+Update-Database -Context ApplicationDbContext</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-8766" src="/wp-content/uploads/2022/05/database-3.png" alt="database 3 মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO): IdentityServer4(OAuth2,OpenID Connect), ASP.NET Identity" width="1126" height="1038" srcset="/wp-content/uploads/2022/05/database-3.png 1126w, /wp-content/uploads/2022/05/database-3-980x903.png 980w, /wp-content/uploads/2022/05/database-3-480x442.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1126px, 100vw"></p>
+<p>এরপর IdentityServer এর লগইন একশন কে আপডেট করতে হবে-</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task&lt;IActionResult&gt; Login(LoginInputModel model, string button)
+{
+    // check if we are in the context of an authorization request
+    var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+
+    // the user clicked the "cancel" button
+    if (button != "login")
+    {
+        if (context != null)
+        {
+            // if the user cancels, send a result back into IdentityServer as if they 
+            // denied the consent (even if this client does not require consent).
+            // this will send back an access denied OIDC error response to the client.
+            await _interaction.DenyAuthorizationAsync(context, AuthorizationError.AccessDenied);
+
+            // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+            if (context.IsNativeClient())
+            {
+                // The client is native, so this change in how to
+                // return the response is for better UX for the end user.
+                return this.LoadingPage("Redirect", model.ReturnUrl);
+            }
+
+            return Redirect(model.ReturnUrl);
+        }
+        else
+        {
+            // since we don't have a valid context, then we just go back to the home page
+            return Redirect("~/");
+        }
+    }
+
+    if (ModelState.IsValid)
+    {
+        // validate username/password against in-memory store
+        //if (_users.ValidateCredentials(model.Username, model.Password))
+        //{
+        //    var user = _users.FindByUsername(model.Username);
+        //    await _events.RaiseAsync(new UserLoginSuccessEvent(user.Username, user.SubjectId, user.Username, clientId: context?.Client.ClientId));
+
+        //    // only set explicit expiration here if user chooses "remember me". 
+        //    // otherwise we rely upon expiration configured in cookie middleware.
+        //    AuthenticationProperties props = null;
+        //    if (AccountOptions.AllowRememberLogin &amp;&amp; model.RememberLogin)
+        //    {
+        //        props = new AuthenticationProperties
+        //        {
+        //            IsPersistent = true,
+        //            ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration)
+        //        };
+        //    };
+
+        //    // issue authentication cookie with subject ID and username
+        //    var isuser = new IdentityServerUser(user.SubjectId)
+        //    {
+        //        DisplayName = user.Username
+        //    };
+
+        //    await HttpContext.SignInAsync(isuser, props);
+
+        //    if (context != null)
+        //    {
+        //        if (context.IsNativeClient())
+        //        {
+        //            // The client is native, so this change in how to
+        //            // return the response is for better UX for the end user.
+        //            return this.LoadingPage("Redirect", model.ReturnUrl);
+        //        }
+
+        //        // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+        //        return Redirect(model.ReturnUrl);
+        //    }
+
+        //    // request for a local page
+        //    if (Url.IsLocalUrl(model.ReturnUrl))
+        //    {
+        //        return Redirect(model.ReturnUrl);
+        //    }
+        //    else if (string.IsNullOrEmpty(model.ReturnUrl))
+        //    {
+        //        return Redirect("~/");
+        //    }
+        //    else
+        //    {
+        //        // user might have clicked on a malicious link - should be logged
+        //        throw new Exception("invalid return URL");
+        //    }
+        //}
+
+        // validate username/password against parsist store
+        var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
+        if (result.Succeeded)
+        {
+            var user = await _userManager.FindByNameAsync(model.Username);
+            await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client.ClientId));
+
+            if (context != null)
+            {
+                if (context.IsNativeClient())
+                {
+                    // The client is native, so this change in how to
+                    // return the response is for better UX for the end user.
+                    return this.LoadingPage("Redirect", model.ReturnUrl);
+                }
+
+                // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+                return Redirect(model.ReturnUrl);
+            }
+
+            // request for a local page
+            if (Url.IsLocalUrl(model.ReturnUrl))
+            {
+                return Redirect(model.ReturnUrl);
+            }
+            else if (string.IsNullOrEmpty(model.ReturnUrl))
+            {
+                return Redirect("~/");
+            }
+            else
+            {
+                // user might have clicked on a malicious link - should be logged
+                throw new Exception("invalid return URL");
+            }
+        }
+
+        await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.Client.ClientId));
+        ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
+    }
+
+    // something went wrong, show form with error
+    var vm = await BuildLoginViewModelAsync(model);
+    return View(vm);
+}</pre>
+<p>&nbsp;</p>
+<p>আশাকরি, মাইক্রোসার্ভিসের সিকিউরিটি ও সিঙ্গেল সাইন-অন/সাইন-আউট(SSO) এর জন্য কিভাবে IdentityServer4(OAuth2,OpenID), ASP.NET Identity অ্যাড/ব্যবহার করে তার কিছু ধারনা দিতে পেরেছি।<br />
+ধন্যবাদ।।</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/identityserver4-asp-net-identity-single-signon-signout/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ  .NET6, RabbitMQ, MassTransit</title>
+		<link>/blog/asynchronous-communication/</link>
+					<comments>/blog/asynchronous-communication/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Sat, 21 May 2022 11:09:54 +0000</pubDate>
+				<category><![CDATA[Technology]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[.NET6]]></category>
+		<category><![CDATA[MassTransit]]></category>
+		<category><![CDATA[microservices]]></category>
+		<category><![CDATA[RabbitMQ]]></category>
+		<guid isPermaLink="false">/?p=8500</guid>
+
+					<description><![CDATA[আজকে আমরা মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশন নিয়ে কিছু সাধারন আলোচনা করবো ( কেন, কি, কিভাবে)। আমরা জানি মাইক্রোসার্ভিসের সার্ভিস থেকে সার্ভিসের কমিউনিকেশন সাধারণত দুই ভাবে হয়ে থাকে। ১) সিনক্রোনাসঃ এ ক্ষেত্রে সাধারণত রিকোয়েস্ট রেস্পন্স ( http/grpc) প্যাটার্নে মাইক্রোসার্ভিস একে অপরের সাথে কমিউনিকেশন করে থাকে। যেখানে এক্সচেঞ্জের ধারাবাহিক সিকুয়েন্স থাকে যা অর্কেস্ট্রেশন জন্য সুবিধাজনক। তবে API গুলো [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>আজকে আমরা মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশন নিয়ে কিছু সাধারন আলোচনা করবো ( কেন, কি, কিভাবে)।</p>
+<p>আমরা জানি মাইক্রোসার্ভিসের সার্ভিস থেকে সার্ভিসের কমিউনিকেশন সাধারণত দুই ভাবে হয়ে থাকে।<br />
+১) সিনক্রোনাসঃ এ ক্ষেত্রে সাধারণত রিকোয়েস্ট রেস্পন্স ( http/grpc) প্যাটার্নে মাইক্রোসার্ভিস একে অপরের সাথে কমিউনিকেশন করে থাকে। যেখানে এক্সচেঞ্জের ধারাবাহিক সিকুয়েন্স থাকে যা অর্কেস্ট্রেশন জন্য সুবিধাজনক।<br />
+তবে API গুলো একে অনের সাথে End Point দ্বারা একে অন্যের সরাসরি নির্ভরশীল থাকে, কোন একটা API End Point পরিবর্তন হলে নির্ভরশীল মাইক্রোসারভিস এ নতুন করে API End Point সেট করতে হয়।</p>
+<p>২) অ্যাসিনক্রোনাসঃ এখানে মাইক্রোসার্ভিস একটা সেন্ট্রাল সিস্টেম এর মাধ্যমে মেসেজ বিনিময়ে ( Event Driven) কমিউনিকেশন করে থাকে। মাইক্রোসার্ভিস গুলো একে অন্যের সরাসরি নির্ভরশীল থাকে না যার কারনে<br />
+সার্ভিস গুলো স্বাধীন ভাবে ডেপলয় ও নিয়ন্ত্রন করা যায়।</p>
+<p>যে সেন্ট্রাল সিস্টেমের মাধ্যমে মেসেজ বিনিময়ে হয়ে থাকে তাকে Message Broker বলা হয়ে থাকে। আমরা একে একটা ডাকঘর/পোস্ট অফিস এর সাথে তুলনা করতে পারি- একটা ডাকঘরে বিভিন্ন অফিসের- সরকারি , বেসরকারি, বেক্তিগত চিঠিপত্র আসে আর ডাকঘর কর্তৃপক্ষ বিশেষ ঠিকানা দেখে চিঠি গুলো সঠিক ভাবে পৌঁছে দেয়। অনেক Message Broker আছে তার মধ্যে RabbitMQ, Kafka, ActiveMQ উল্লেখ যোগ্য, তাছাড়া ক্লাউড সার্ভিস প্রোভাইডাররা নিজস্ব Message Broker সার্ভিস দিয়ে থাকে।</p>
+<p>আমাদের উদাহরনে আমরা RabbitMQ ব্যবহার করবো আর RabbitMQ-র দুটি গুরুত্বপূর্ণ পার্ট হল-<br />
+১) Exchanges: এর কাজ মুলত মেসজ গ্রহন করা এবং সঠিক Queues এ বিতরন করা<br />
+২) Queues: Exchanges মাধ্যমে মেসজ গ্রহন করে এবং কনফিগারেশন অনুসারে সংরক্ষন করে থাকে।</p>
+<p>Exchanges আবার চার ধরনের হয়ে থাকে-<br />
+১) Fanout: মেসজ কে সরাসরি সকল Queue তে পৌঁছে দেয় যেসব Queue নির্দিষ্ট Exchange এ বাইন্ড করা আছে।<br />
+<img decoding="async" class="aligncenter wp-image-8505" src="/wp-content/uploads/2022/05/fanout-exchange.png" alt="fanout মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="772" height="339"><br />
+2) Direct: মেসজ কে সরাসরি সকল Queue তে পৌঁছে না দিয়ে বরং Routing Key বা Binding Key যাচাই করে বাইন্ড করা Queue তে পৌঁছে দেয়।<br />
+<img decoding="async" class="aligncenter wp-image-8504" src="/wp-content/uploads/2022/05/direct-exchange.png" alt="direct মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="757" height="292"><br />
+3) Topic: মেসজ কে সেই সব Queue তে পৌঁছে দেয় যাদের Routing Key বা Binding আংশিক বা সম্পূর্ণ মিলে যায়।<br />
+<img decoding="async" class="aligncenter wp-image-8507" src="/wp-content/uploads/2022/05/topic-exchange.png" alt="topic মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="849" height="365"><br />
+4) Headers: Header এর Key-Value কে Routing Key বা Binding এর সাথে যাচাই করে মেসজ কে Queue তে পৌঁছে দেয়।<br />
+<img decoding="async" class="aligncenter wp-image-8506" src="/wp-content/uploads/2022/05/header-exchange.png" alt="header মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="838" height="305"></p>
+<p>এখানে আমাদের দুটি সার্ভিস রয়েছে- WeatherForecast: একটা CRUD App যেখান থেকে তাপমাত্রার আপডেট RabbitMQ তে পাবলিশ করা হয় । অন্যটি WeatherForecast.Consumer: এটি RabbitMQ হতে মেসেজ কনজিউম/গ্রহন করে এবং ডিসপ্লে করে।<br />
+<img decoding="async" class="aligncenter size-full wp-image-8510" src="/wp-content/uploads/2022/05/services.png" alt="services মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="3286" height="1081" srcset="/wp-content/uploads/2022/05/services.png 3286w, /wp-content/uploads/2022/05/services-1280x421.png 1280w, /wp-content/uploads/2022/05/services-980x322.png 980w, /wp-content/uploads/2022/05/services-480x158.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 3286px, 100vw"></p>
+<p>এখানে আমাদের দুটি সার্ভিস রয়েছে- WeatherForecast: একটা CRUD App যেখান থেকে তাপমাত্রার আপডেট RabbitMQ তে পাবলিশ করা হয় । অন্যটি WeatherForecast.Consumer: এটি RabbitMQ হতে মেসেজ কনজিউম/গ্রহন করে এবং ডিসপ্লে করে।<br />
+RabbitMQ এর অ্যাবস্ট্র্যাক্ট হিসাবে MassTransit ব্যবহার করা হবে যাতে আমাদের সার্ভিস RabbitMQ এর সাথে loosely-coupled থাকে।</p>
+<p><strong>WeatherForecast  Publisher API:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using MassTransit;
+
+[HttpPost]
+[Authorize(policy: "Admin")]
+[ProducesResponseType(StatusCodes.Status200OK)]
+[ProducesDefaultResponseType]
+public async Task&lt;IActionResult&gt; Create([FromForm] CreateWeatherForecastCommand command)
+{
+    response.Data = await Mediator.Send(command);
+    response.Message = "Item Added successfully";
+
+    //Masstransit...
+    _publishEndpoint?.Publish(new WeatherForecastEvent(command.TemperatureC, command.Location, command.Summary, DateTime.UtcNow, EventBusEnums.CREATED.ToString()));
+
+    return Ok(response);
+}
+
+
+[HttpPut]
+[Authorize(policy: "Admin")]
+[ProducesResponseType(StatusCodes.Status200OK)]
+[ProducesDefaultResponseType]
+public async Task&lt;ActionResult&gt; Update([FromForm] UpdateWeatherForecastCommand command)
+{
+    response.Data = await Mediator.Send(command);
+    response.Message = "Item updated successfully";
+    
+    //Masstransit...
+    _publishEndpoint?.Publish(new WeatherForecastEvent(command.TemperatureC, command.Location, command.Summary, DateTime.UtcNow, EventBusEnums.UPDATED.ToString()));
+
+    return Ok(response);
+}</pre>
+<p><strong>Add MassTransit &amp; RabbitMq in Service Registry(WeatherForecast  Publisher AP):</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using MassTransit;
+
+#region MassTransit
+services.AddMassTransit(config =&gt;
+{
+config.UsingRabbitMq((ctx, cfg) =&gt;
+{
+cfg.Send&lt;WeatherForecastEvent&gt;(x =&gt;
+{
+});
+cfg.Message&lt;WeatherForecastEvent&gt;(x =&gt; x.SetEntityName(EventBusConstants.Exchages.WeatherForecastExchange));
+cfg.Publish&lt;WeatherForecastEvent&gt;(x =&gt; x.ExchangeType = ExchangeType.Fanout);
+});
+});</pre>
+<p><strong>WeatherForecast.Consumer Console App:<br />
+</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">using EventBus.Common;
+using EventBus.Events;
+using MassTransit;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
+
+
+var busControl = Bus.Factory.CreateUsingRabbitMq(cfg =&gt;
+{
+    cfg.ReceiveEndpoint(EventBusConstants.Queues.WeatherForecastCreatedQueue, e =&gt;
+    {
+        // turns off default fanout settings
+        e.ConfigureConsumeTopology = false;
+        // a replicated queue to provide high availability and data safety. available in RMQ 3.8+
+        //e.SetQuorumQueue();
+        //e.SetQueueArgument("declare", "lazy");
+
+
+        e.Consumer&lt;WeatherForecastCreatedConsumer&gt;();
+        e.Bind(EventBusConstants.Exchages.WeatherForecastExchange, s =&gt;
+        {
+            //s.RoutingKey = EventBusEnums.CREATED.ToString();
+            //s.ExchangeType = ExchangeType.Direct;
+        });
+
+        e.PrefetchCount = 20;
+        e.UseMessageRetry(r =&gt; r.Interval(2, 100));
+
+    });
+
+    cfg.ReceiveEndpoint(EventBusConstants.Queues.WeatherForecastUpdatedQueue, e =&gt;
+    {
+        // turns off default fanout settings
+        e.ConfigureConsumeTopology = false;
+        // a replicated queue to provide high availability and data safety. available in RMQ 3.8+
+        //e.SetQuorumQueue();
+        //e.SetQueueArgument("declare", "lazy");
+
+        e.Consumer&lt;WeatherForecastUpdatedConsumer&gt;();
+        e.Bind("WeatherForecast-Exchange", s =&gt;
+        {
+            //s.RoutingKey = EventBusEnums.UPDATED.ToString();
+            //s.ExchangeType = ExchangeType.Direct;
+        });
+
+        e.PrefetchCount = 20;
+        e.UseMessageRetry(r =&gt; r.Interval(2, 100));
+
+    });
+});
+
+await busControl.StartAsync(new CancellationToken());
+
+try
+{
+    Console.WriteLine("Press enter to exit");
+
+    await Task.Run(() =&gt; Console.ReadLine());
+}
+finally
+{
+    await busControl.StopAsync();
+}
+
+class WeatherForecastCreatedConsumer : IConsumer&lt;WeatherForecastEvent&gt;
+{
+    public async Task Consume(ConsumeContext&lt;WeatherForecastEvent&gt; context)
+    {
+        await Task.Run(() =&gt;
+        {
+            var jsonMessage = JsonConvert.SerializeObject(context.Message);
+            Console.WriteLine($"New weather forecast for {context.Message.Location} is added: {jsonMessage}");
+        });
+    }
+}
+
+class WeatherForecastUpdatedConsumer : IConsumer&lt;WeatherForecastEvent&gt;
+{
+    public async Task Consume(ConsumeContext&lt;WeatherForecastEvent&gt; context)
+    {
+        await Task.Run(() =&gt;
+        {
+            var jsonMessage = JsonConvert.SerializeObject(context.Message);
+            Console.WriteLine($"Weather forecast for {context.Message.Location} is updated : {jsonMessage}");
+        });
+    }
+}
+</pre>
+<p>কনজিউমার সার্ভিসে দুটি কনজিউমার আছে &#8211;<br />
+WeatherForecastCreatedConsumer: WeatherForecastCreated-Queue থেকে মেসেজ গ্রহন করবে, যেখানে Queue টি &#8216;CREATED&#8217; নামের Binding/Routing Key দিয়ে WeatherForecast-Exchange বাইন্ড করা আছে।<br />
+WeatherForecastUpdatedConsumer: WeatherForecastUpdated-Queue থেকে মেসেজ গ্রহন করবে, যেখানে Queue টি &#8216;UPDATED&#8217; নামের Binding/Routing Key দিয়ে WeatherForecast-Exchange বাইন্ড করা আছে।</p>
+<p>এখন সার্ভিস দুটি রান করে ওয়েদার অ্যাড এবং আপডেট করিঃ<br />
+<img decoding="async" class="aligncenter size-full wp-image-8522" src="/wp-content/uploads/2022/05/fanout-example.png" alt="fanout মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="1880" height="999" srcset="/wp-content/uploads/2022/05/fanout-example.png 1880w, /wp-content/uploads/2022/05/fanout-example-1280x680.png 1280w, /wp-content/uploads/2022/05/fanout-example-980x521.png 980w, /wp-content/uploads/2022/05/fanout-example-480x255.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1880px, 100vw"></p>
+<p>একটা ওয়েদার ইনফরমেশন অ্যাড এবং আপডেট করা হয়ছে কিন্তু আমরা দেখছি যে , WeatherForecastCreatedConsumer ও WeatherForecastUpdatedConsumer দুটি কনজিউমারই একই মেসেজ প্রিন্ট করেছে এর কারন<br />
+Add MassTransit &amp; RabbitMq in Service Registry সেকশনে Binding/Routing Key কনফিগার করা হয়নি এবং এক্সচেঞ্জ টাইপ Fanout আছে।</p>
+<p>এবার আমরা এক্সচেঞ্জ টাইপ Direct -এ পরিবর্তন করে সার্ভিস আবার টেস্ট করি।<br />
+<strong>Publisher App:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">services.AddMassTransit(config =&gt;
+     {
+         config.UsingRabbitMq((ctx, cfg) =&gt;
+         {
+             cfg.Send&lt;WeatherForecastEvent&gt;(x =&gt;
+             {
+                 // use customeType for the routing/binding key
+                 x.UseRoutingKeyFormatter(context =&gt; context.Message.EventType?.ToString()); // route by provider (CREATE or UPDATE)
+
+                 // multiple conventions can be set, in this case also CorrelationId
+                 //x.UseCorrelationId(context =&gt; context.Message.TransactionId);
+             });
+             cfg.Message&lt;WeatherForecastEvent&gt;(x =&gt; x.SetEntityName(EventBusConstants.Exchages.WeatherForecastExchange));
+             cfg.Publish&lt;WeatherForecastEvent&gt;(x =&gt; x.ExchangeType = ExchangeType.Direct);
+         });
+     });</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">cfg.ReceiveEndpoint(EventBusConstants.Queues.WeatherForecastCreatedQueue, e =&gt;
+{
+    // turns off default fanout settings
+    e.ConfigureConsumeTopology = false;
+    // a replicated queue to provide high availability and data safety. available in RMQ 3.8+
+    //e.SetQuorumQueue();
+    //e.SetQueueArgument("declare", "lazy");
+
+
+    e.Consumer&lt;WeatherForecastCreatedConsumer&gt;();
+    e.Bind(EventBusConstants.Exchages.WeatherForecastExchange, s =&gt;
+    {
+        s.RoutingKey = EventBusEnums.CREATED.ToString();
+        s.ExchangeType = ExchangeType.Direct;
+    });
+
+    e.PrefetchCount = 20;
+    e.UseMessageRetry(r =&gt; r.Interval(2, 100));
+
+});
+
+cfg.ReceiveEndpoint(EventBusConstants.Queues.WeatherForecastUpdatedQueue, e =&gt;
+{
+    // turns off default fanout settings
+    e.ConfigureConsumeTopology = false;
+    // a replicated queue to provide high availability and data safety. available in RMQ 3.8+
+    //e.SetQuorumQueue();
+    //e.SetQueueArgument("declare", "lazy");
+
+    e.Consumer&lt;WeatherForecastUpdatedConsumer&gt;();
+    e.Bind("WeatherForecast-Exchange", s =&gt;
+    {
+        s.RoutingKey = EventBusEnums.UPDATED.ToString();
+        s.ExchangeType = ExchangeType.Direct;
+    });
+
+    e.PrefetchCount = 20;
+    e.UseMessageRetry(r =&gt; r.Interval(2, 100));
+
+});</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-8527" src="/wp-content/uploads/2022/05/direct-example.png" alt="direct মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনঃ .NET6, RabbitMQ, MassTransit" width="1878" height="998" srcset="/wp-content/uploads/2022/05/direct-example.png 1878w, /wp-content/uploads/2022/05/direct-example-1280x680.png 1280w, /wp-content/uploads/2022/05/direct-example-980x521.png 980w, /wp-content/uploads/2022/05/direct-example-480x255.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1878px, 100vw"></p>
+<p>এবার দেখতে পাচ্ছি, একটা ওয়েদার ইনফরমেশন আপডেট করায় শুধু WeatherForecastUpdatedConsumer মেসেজ প্রিন্ট করেছে কারন এবার আমরা Binding/Routing Key উল্লেখ করে দিয়েছি।</p>
+<p>আশাকরি, মাইক্রোসার্ভিসের অ্যাসিনক্রোনাস কমিউনিকেশনে RabbitMQ, MassTransit কিভাবে কাজ করে তার কিছু ধারনা দিতে পেরেছি।<br />
+ধন্যবাদ।।</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/asynchronous-communication/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

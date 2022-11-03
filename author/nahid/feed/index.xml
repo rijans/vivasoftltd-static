@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>nahid &#8211; Vivasoft</title>
+	<atom:link href="/author/nahid/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Thu, 11 Aug 2022 05:12:37 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>nahid &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Start Caching With Python: Basics, Caching Policies, And StreamLit Caching With Python</title>
+		<link>/blog/start-caching-with-python-basics-caching-policies-and-streamlit-caching-with-python/</link>
+					<comments>/blog/start-caching-with-python-basics-caching-policies-and-streamlit-caching-with-python/#respond</comments>
+		
+		<dc:creator><![CDATA[nahid]]></dc:creator>
+		<pubDate>Wed, 10 Aug 2022 05:18:47 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[cache eviction policies]]></category>
+		<category><![CDATA[cache releasing policies]]></category>
+		<category><![CDATA[cachetools]]></category>
+		<category><![CDATA[caching]]></category>
+		<category><![CDATA[caching policies]]></category>
+		<category><![CDATA[FIFO]]></category>
+		<category><![CDATA[first in first out cache]]></category>
+		<category><![CDATA[least frequently used cache]]></category>
+		<category><![CDATA[least recently used cache]]></category>
+		<category><![CDATA[LFU]]></category>
+		<category><![CDATA[LRU]]></category>
+		<category><![CDATA[python]]></category>
+		<category><![CDATA[python cache]]></category>
+		<category><![CDATA[random replacement cache]]></category>
+		<category><![CDATA[RR cache]]></category>
+		<category><![CDATA[streamlit]]></category>
+		<category><![CDATA[streamlit caching]]></category>
+		<category><![CDATA[streamlit caching with python]]></category>
+		<category><![CDATA[TTL]]></category>
+		<category><![CDATA[TTL cache]]></category>
+		<guid isPermaLink="false">/?p=9937</guid>
+
+					<description><![CDATA[Caching is a process of making frequently used and not often changed data more available and easy to access by placing or copying them at fast accessing and computationally less costly memory space. The basic working concept of caching is straightforward. If any data is cached, it first looks for data from the faster access [&#8230;]]]></description>
+										<content:encoded><![CDATA[<h3 class="graf graf--h3">Caching is a process of making frequently used and not often changed data more available and easy to access by placing or copying them at fast accessing and computationally less costly memory space.</h3>
+<p class="graf graf--p">The basic working concept of caching is straightforward. If any data is cached, it first looks for data from the faster access memory(where the data is cached). In this case, the application server does not make costly network requests to its database if it is found there. If the cache hit misses, the application server makes a direct request to the database server.</p>
+<figure class="graf graf--figure"><img decoding="async" class="graf-image aligncenter" title="Caching Basic Diagram" src="https://cdn-images-1.medium.com/max/800/1*ihXecu5JerrV5aGyuPNJ_Q.jpeg" alt="Caching blog diagram" width="800" height="473" data-image-id="1*ihXecu5JerrV5aGyuPNJ_Q.jpeg" data-width="1638" data-height="969" /></figure>
+<figure class="graf graf--figure">The purposes behind caching are:</figure>
+<ol class="postList">
+<li class="graf graf--li">Faster access to data.</li>
+<li class="graf graf--li">Reduce computationally costly database server network requests.</li>
+<li class="graf graf--li">Speed up a slow-performing system.</li>
+</ol>
+<h3 class="graf graf--h4"><strong class="markup--strong markup--h4-strong">Let&#8217;s Understand Caching With A Scenario:</strong></h3>
+<p class="graf graf--p">Suppose, You have a bookshelf and You have plenty of different kinds of books there. Next week is your programming exam. So, You have planned to read only programming-related books. So, instead of finding books each time from the shelf, You can fetch all the programming-related books at a time and put them on Your table. You can pick your needing book from the table. You do not have to waste time fetching a book from the shelf each time. So you get more time to read and concentrate.</p>
+<p class="graf graf--p">Consider, the shelf as the <strong class="markup--strong markup--p-strong">database server</strong>, Your table as <strong class="markup--strong markup--p-strong">caching memory</strong>, and the programming-related books are your <strong class="markup--strong markup--p-strong">cache</strong>. So, keeping those books on Your table, saving your time for going near the shelf and fetching books. Consider going near the shelf and fetching books as <strong class="markup--strong markup--p-strong">network requests</strong> to the database server. So, now we understand how caching reduces unnecessary requests to the database and makes a system faster, and increase the efficiency of any system releasing more bit of processor from unnecessary <a class="markup--anchor markup--p-anchor" href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol" target="_blank" rel="noopener nofollow" data-href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol" data->HTTP</a> requests.</p>
+<p class="graf graf--p"><strong class="markup--strong markup--p-strong">To understand the very basics of caching more clearly, a python dictionary based naive example could be like this:</strong></p>
+<figure class="graf graf--figure"><img decoding="async" class="graf-image" src="https://cdn-images-1.medium.com/max/800/1*1hO12XErw0bqtiLgDDbkCw.png" alt="python naive implementation of caching" data-image-id="1*1hO12XErw0bqtiLgDDbkCw.png" data-width="1012" data-height="974" /><figcaption class="imageCaption">Naive Implementation of Caching with Python</figcaption></figure>
+<p class="graf graf--p">Here in this example, imagine the cache named dictionary as the caching memory. When the <code class="markup--code markup--p-code">get_data</code> function is called, it calls the <code class="markup--code markup--p-code">get_data_from_server</code> function to fetch data from the server for the first time and store data in our <code class="markup--code markup--p-code">cache</code> dictionary. When the <code class="markup--code markup--p-code">get_data</code> function is called for the second time, it does not call the <code class="markup--code markup--p-code">get_data_from_server</code> function to fetch data as there is data in <code class="markup--code markup--p-code">cache</code> and simply take the data from the cache without making costly requests to the server. This is the simple mechanism of caching.</p>
+<figure class="graf graf--figure"><img decoding="async" class="graf-image" src="https://cdn-images-1.medium.com/max/800/1*80yn6fnhW0F0s9aSSffMsA.png" data-image-id="1*80yn6fnhW0F0s9aSSffMsA.png" data-width="1840" data-height="596" alt="1*80yn6fnhW0F0s9aSSffMsA Start Caching With Python: Basics, Caching Policies, And StreamLit Caching With Python"><figcaption class="imageCaption">Result Of Python Naive Implementation Of Caching </figcaption></figure>
+<p class="graf graf--p">One of the characteristics of caching is the space for caching is limited. And we have to be very selective about the data that we want to cache. We have to know when we should cache data and when we should not.</p>
+<p class="graf graf--p">We will be caching, if-</p>
+<ol class="postList">
+<li class="graf graf--li">Very slow to fetch server data.</li>
+<li class="graf graf--li">A lot of requests for static data.</li>
+<li class="graf graf--li">Hardly, changes data.</li>
+<li class="graf graf--li">To reduce the load on the primary database and balance load.</li>
+</ol>
+<p class="graf graf--p">We will not cache if-</p>
+<ol class="postList">
+<li class="graf graf--li">Takes a lot of time to access data.</li>
+<li class="graf graf--li">Low repetition of data on requests.</li>
+<li class="graf graf--li">Frequently changes data.</li>
+</ol>
+<p class="graf graf--p">So, we have learned that cache data should not increase indefinitely. We have to limit the size of cache data. For that, we need to eliminate data from cache memory. Now, the question arises, <strong class="markup--strong markup--p-strong">Which data to keep and which to remove?</strong></p>
+<p class="graf graf--p">To decide on this, there are some policies. These policies are called <strong class="markup--strong markup--p-strong">Cache Eviction Policies.</strong></p>
+<h3 class="graf graf--h4"><strong>Cache Eviction Policies:</strong></h3>
+<p class="graf graf--p">There are several kinds of cache eviction policies. Some of the most used are-</p>
+<ul class="postList">
+<li class="graf graf--li">Random Replacement(RR)</li>
+<li class="graf graf--li">Least Frequently Used(LFU)</li>
+<li class="graf graf--li">Least Recently Used(LRU)</li>
+<li class="graf graf--li">First In First Out(FIFO)</li>
+</ul>
+<p class="graf graf--p">Let&#8217;s take a quick journey to understand these cache eviction policies-</p>
+<h4 class="graf graf--p"><strong class="markup--strong markup--p-strong">Random Replacement(RR):</strong></h4>
+<p class="graf graf--p">From the name, we are getting the idea about RR cache. When it reaches the limit of caching, it just eliminates previously cached data randomly from the cache space. It is not important here, which data is cached first or which data is cached last, or any other parameters. It picks data randomly to eliminate from the cache server to make space for new cache data. Let&#8217;s see a demo code for RR-</p>
+<div class="graf graf--mixtapeEmbed">
+<pre><code class="language-python">from cachetools import cached, RRCache
+import time
+
+@cached(cache = RRCache(maxsize = 3))
+def myfunc(n):
+	s = time.time()
+	time.sleep(n)
+	return (f&quot;Executed: {n}&quot;)
+
+s = time.time()
+print(myfunc(3))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(3))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(6))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(5))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(6))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(5))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+&#039;&#039;&#039;
+Result:
+Executed: 3
+Time Taken to execute:  3.003613233566284 
+Executed: 3
+Time Taken to execute:  0.00010895729064941406 
+Executed: 2
+Time Taken to execute:  2.0036702156066895 
+Executed: 6
+Time Taken to execute:  6.007461309432983 
+Executed: 5
+Time Taken to execute:  5.005535364151001 
+Executed: 1
+Time Taken to execute:  1.0015869140625 
+Executed: 2
+Time Taken to execute:  2.0025484561920166 
+Executed: 6
+Time Taken to execute:  6.006529808044434 
+Executed: 2
+Time Taken to execute:  2.002703905105591 
+Executed: 1
+Time Taken to execute:  0.00014352798461914062 
+Executed: 5
+Time Taken to execute:  5.005505800247192 
+&#039;&#039;&#039;</code></pre>
+</div>
+<p class="graf graf--p">If you look at the executed numbers and observe the time of execution of the numbers, you will understand the RR cache is removing previously cached numbers randomly when the limit for storing numbers is exceeding.</p>
+<h4 class="graf graf--p"><strong class="markup--strong markup--p-strong">Least Frequently Used(LFU):</strong></h4>
+<p class="graf graf--p">LFU keeps the most frequently used data to cache and eliminates less frequently used data if the limit of cache storage exceeds. We can have a clear idea about LFU if we look at the code below-</p>
+<pre><code class="language-python">import time
+from cachetools import cached, LFUCache
+
+@cached(cache = LFUCache(maxsize = 3))
+def myfunc(n):
+    time.sleep(n)
+    return (f&quot;Executed: {n}&quot;)
+
+
+s = time.time()
+print(myfunc(3))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(3))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(4))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(5))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(5))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(6))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(4))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(5))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+&#039;&#039;&#039;
+Result:
+Executed: 3
+Time Taken to execute:  3.003491163253784 
+Executed: 3
+Time Taken to execute:  0.00011420249938964844 
+Executed: 1
+Time Taken to execute:  1.0017178058624268 
+Executed: 1
+Time Taken to execute:  0.0001633167266845703 
+Executed: 2
+Time Taken to execute:  2.0025696754455566 
+Executed: 4
+Time Taken to execute:  4.004656791687012 
+Executed: 5
+Time Taken to execute:  5.005551099777222 
+Executed: 5
+Time Taken to execute:  0.00011658668518066406 
+Executed: 6
+Time Taken to execute:  6.006593942642212 
+Executed: 1
+Time Taken to execute:  0.0003552436828613281 
+Executed: 4
+Time Taken to execute:  4.004685401916504 
+Executed: 5
+Time Taken to execute:  0.0001475811004638672 
+&#039;&#039;&#039;</code></pre>
+<p class="graf graf--p">If we go through the output section of the code we will see, number 1 is used more frequently than number 4, previously. So at last, when we called the function <code class="markup--code markup--p-code">myfunc</code> with 1, it takes no time to execute because, 1 is taken from the cache, but while 4 is called afterward, it takes its execution time to execute as 4 is no longer in the cache while it is called lastly. So, from this scenario, we understand, how the LFU cache keeps more frequently data in the cache and eliminates less frequently used data.</p>
+<h4 class="graf graf--p"><strong class="markup--strong markup--p-strong">Least Recently Used(LRU):</strong></h4>
+<p class="graf graf--p">In LRU policy, the most recent data are kept in cache memory within the limit of caching space. It removes old data in terms of the time of use and makes room for new data. Recently used data remains in the cache.</p>
+<div class="graf graf--mixtapeEmbed">
+<pre><code class="language-python">import time
+from cachetools import cached, LRUCache
+  
+@cached(cache = LRUCache(maxsize = 3))
+def myfunc(n):
+    # This delay resembles some task
+    time.sleep(n)
+    return (f&quot;Executed: {n}&quot;)
+
+s = time.time()
+print(myfunc(3))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(3))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(4))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(3))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+&#039;&#039;&#039;
+Result:
+Executed: 3
+Time Taken to execute:  3.003572702407837 
+Executed: 3
+Time Taken to execute:  0.00012040138244628906 
+Executed: 2
+Time Taken to execute:  2.002492666244507 
+Executed: 1
+Time Taken to execute:  1.0015416145324707 
+Executed: 4
+Time Taken to execute:  4.004684925079346 
+Executed: 1
+Time Taken to execute:  0.0001659393310546875 
+Executed: 3
+Time Taken to execute:  3.0035295486450195 
+&#039;&#039;&#039;</code></pre>
+</div>
+<p class="graf graf--p">Let&#8217;s look at the LRU cache code example. We will see that the most recently used data are not taking any time to execute, whereas some data that has been called much earlier is taking its execution time to execute as the data has been removed already by LRU cache policy. Thus, we get the idea of how the LRU cache policy works as an eviction policy keeping recently used data to cache.</p>
+<h4 class="graf graf--p"><strong class="markup--strong markup--p-strong">First In First Out(FIFO):</strong></h4>
+<p class="graf graf--p">FIFO is a method where the first element of the data is processed first and the last element of the data is processed last. So, from the FIFO method, we understand that in the FIFO cache policy, the cache memory will evict the firstly stored cache first and it will keep the newest cache data in the cache memory within the cache limit.</p>
+<pre><code class="language-python">import time
+
+CACHE_LIMIT = 3
+fifo_cache = []
+
+def myfunc(n):
+  if n not in fifo_cache:
+    time.sleep(n)
+    fifo_cache.append(n)
+    if len(fifo_cache)&gt;CACHE_LIMIT:
+      fifo_cache.pop(0)
+  return (f&quot;Executed: {n}&quot;)
+
+s = time.time()
+print(myfunc(3))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(3))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(4))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(5))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+&#039;&#039;&#039;
+Result:
+Executed: 3
+Time Taken to execute:  3.003526449203491 
+Executed: 2
+Time Taken to execute:  2.002443552017212 
+Executed: 3
+Time Taken to execute:  0.00011157989501953125 
+Executed: 1
+Time Taken to execute:  1.0014557838439941 
+Executed: 4
+Time Taken to execute:  4.004620790481567 
+Executed: 5
+Time Taken to execute:  5.005484104156494 
+Executed: 2
+Time Taken to execute:  2.0024352073669434 
+&#039;&#039;&#039;</code></pre>
+<p class="graf graf--p">In the example, we have simulated a simple FIFO method caching policy. We have declared a cache limit in <code class="markup--code markup--p-code">CACHE_LIMIT</code> variable. When this cache limit exceeds, the caching policy evicts the older data from the cache and keeps the newer data.</p>
+<h3 class="graf graf--h4"><strong>Evicting Cache Entries Based on Both Time and Space:</strong></h3>
+<p class="graf graf--p">We have seen various kinds of cache eviction policies above. Now we can apply space and time limitation parameters to those policies if we want to manage cache more precisely. These parameters declare a lifetime for every caching data. To do this, we can write our own custom cache decorator function that will consider defined expiry time and evicting space while caching.</p>
+<div class="graf graf--mixtapeEmbed">
+<pre><code class="language-python">import time
+from functools import lru_cache, wraps
+from datetime import datetime, timedelta
+
+def lru_cache_with_time_and_space_parameter(seconds: int, maxsize: int):
+    def wrapper_cache(func):
+        func = lru_cache(maxsize=maxsize)(func)
+        func.lifetime = timedelta(seconds=seconds)
+        func.expiration = datetime.utcnow() + func.lifetime
+
+        @wraps(func)
+        def wrapped_func(*args, **kwargs):
+            if datetime.utcnow() &gt;= func.expiration:
+                func.cache_clear()
+                func.expiration = datetime.utcnow() + func.lifetime
+            return func(*args, **kwargs)
+
+        return wrapped_func
+
+    return wrapper_cache
+
+
+@lru_cache_with_time_and_space_parameter(5, 32)
+def myfunc(n):
+    # This delay resembles some task
+    time.sleep(n)
+    return (f&quot;Executed: {n}&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(6))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(6))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+
+&#039;&#039;&#039;
+Result:
+Executed: 2
+Time Taken to execute:  2.0024309158325195 
+Executed: 2
+Time Taken to execute:  0.00011897087097167969 
+Executed: 6
+Time Taken to execute:  6.006444454193115 
+Executed: 6
+Time Taken to execute:  6.006414175033569 
+Executed: 2
+Time Taken to execute:  2.0024681091308594 
+Executed: 1
+Time Taken to execute:  1.0027210712432861 
+Executed: 1
+Time Taken to execute:  0.00016355514526367188 
+&#039;&#039;&#039;</code></pre>
+</div>
+<p class="graf graf--p">In the result part of the code, we will see when the time of caching is exceeding, it is erasing all the data it had in the cache.</p>
+<p class="graf graf--p">Python provides a built-in decorator named as <code class="markup--code markup--p-code">TTLCache</code> from <code class="markup--code markup--p-code">cachetools</code> library what provides what we have done with our custom cache decorator. The built-in function keeps the lifetime and space of the cache. For this, we have to define the space and time parameters to it. TTL’s full form is<strong class="markup--strong markup--p-strong"> Time to Live</strong>. Let’s see an example-</p>
+<div>
+<pre><code class="language-python">import time
+from cachetools import cached, TTLCache
+
+@cached(TTLCache(maxsize=12, ttl=5))
+def myfunc(n):
+    # This delay resembles some task
+    time.sleep(n)
+    return (f&quot;Executed: {n}&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(6))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(6))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+
+
+&#039;&#039;&#039;
+Result:
+Executed: 2
+Time Taken to execute:  2.003089189529419 
+Executed: 2
+Time Taken to execute:  0.0001232624053955078 
+Executed: 6
+Time Taken to execute:  6.006647348403931 
+Executed: 6
+Time Taken to execute:  0.00012040138244628906 
+Executed: 2
+Time Taken to execute:  2.0025570392608643 
+Executed: 1
+Time Taken to execute:  1.000640869140625 
+Executed: 1
+Time Taken to execute:  0.00013566017150878906 
+&#039;&#039;&#039;</code></pre>
+</div>
+<div></div>
+<p class="graf graf--p">This <code class="markup--code markup--p-code">TTLCache</code> function is doing the same thing that our custom function has done.</p>
+<h3 class="graf graf--h4"><strong>Streamlit Caching:</strong></h3>
+<p class="graf graf--p"><code class="markup--code markup--p-code">streamlit</code> library provides more advanced features than the previously described policies. It provides a mechanism that can be used to manage huge cache data, and to play with complex and lengthy computations. Moreover, it can perform at the same time as fetching data from remote storage.</p>
+<p class="graf graf--p">Streamlit is a third-party library. It is not provided with basic python libraries. So you have to configure streamlit to use it. Follow thefollowing instructions to make use of it with python-</p>
+<ol class="postList">
+<li class="graf graf--li">Create a virtual environment, activate it and install <code class="markup--code markup--li-code">streamlit</code> . You can also install <code class="markup--code markup--li-code">streamlit</code> globally with <code class="markup--code markup--li-code">pip install streamlit</code> command.</li>
+<li class="graf graf--li">Run your python script with <code class="markup--code markup--li-code">streamlit run your_python_script_name.py</code> .</li>
+</ol>
+<p class="graf graf--p">Streamlit is a <strong class="markup--strong markup--p-strong">cool</strong> third-party tool to manage caching. After running for the first-time it will show you something like this-</p>
+<figure class="graf graf--figure"><img decoding="async" class="graf-image" src="https://cdn-images-1.medium.com/max/800/1*MZUrm55btOtK3AhRfQFI3A.png" alt="streamlit caching with python startup view" data-image-id="1*MZUrm55btOtK3AhRfQFI3A.png" data-width="862" data-height="268" /><figcaption class="imageCaption">Streamlit caching startup</figcaption></figure>
+<p class="graf graf--p">It also provides you with a local host and a network host to view your cache data and play with them. How cool is it?</p>
+<figure class="graf graf--figure"><img decoding="async" class="graf-image" src="https://cdn-images-1.medium.com/max/800/1*zrK1Dd7OqSPcsaAgiUhL9Q.png" alt="streamlit ccaching provided host to view cache data" data-image-id="1*zrK1Dd7OqSPcsaAgiUhL9Q.png" data-width="867" data-height="101" /><figcaption class="imageCaption">Streamlit caching provided hosts and browser view</figcaption></figure>
+<figure class="graf graf--figure"><img decoding="async" class="graf-image" src="https://cdn-images-1.medium.com/max/800/1*zo2R8cUopDA-P7w4x-vrFg.png" data-image-id="1*zo2R8cUopDA-P7w4x-vrFg.png" data-width="1166" data-height="487" alt="1*zo2R8cUopDA P7w4x vrFg Start Caching With Python: Basics, Caching Policies, And StreamLit Caching With Python"></figure>
+<p class="graf graf--p">An implementation of streamlit cache with python is provided below-</p>
+<div>
+<pre><code class="language-python">import streamlit as st
+import time
+
+@st.cache(suppress_st_warning=True)  # ???? Changed this
+def myfunc(n):
+    # This delay resembles some task
+    time.sleep(n)
+    return (f&quot;Executed: {n}&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(6))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(6))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(2))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+s = time.time()
+print(myfunc(1))
+print(&quot;Time Taken to execute: &quot;, time.time() - s, &quot;\n&quot;)
+
+
+&#039;&#039;&#039;
+Result:
+Executed: 2
+Time Taken to execute:  2.1840202808380127 
+Executed: 2
+Time Taken to execute:  0.0053174495697021484 
+Executed: 6
+Time Taken to execute:  6.005890846252441 
+Executed: 6
+Time Taken to execute:  0.0037260055541992188 
+Executed: 2
+Time Taken to execute:  0.0067899227142333984 
+Executed: 1
+Time Taken to execute:  1.0083811283111572 
+Executed: 1
+Time Taken to execute:  0.0014271736145019531 
+&#039;&#039;&#039;</code></pre>
+</div>
+<blockquote class="graf graf--blockquote"><p>To learn more about streamlit caching, You may find <a class="markup--anchor markup--blockquote-anchor" href="https://docs.streamlit.io/library/advanced-features/caching" target="_blank" rel="noopener nofollow" data-href="https://docs.streamlit.io/library/advanced-features/caching" data-><strong class="markup--strong markup--blockquote-strong">streamlit library official documentation</strong></a> helpful.</p></blockquote>
+<p class="graf graf--p">No cache eviction policy is perfect. A perfect cache eviction algorithm would be if the algorithm can determine which cache data will not be used for the longest period of time in the future. Unfortunately, it is impossible to determine the future lifetime of data when it will be needed. Considering this fact, there is a concept called <a class="markup--anchor markup--p-anchor" href="https://en.wikipedia.org/wiki/Cache_replacement_policies#Cache%20replacement%20policies%20approximating%20Bélády%27s%20algorithm" target="_blank" rel="noopener nofollow" data-href="https://en.wikipedia.org/wiki/Cache_replacement_policies#Cache replacement policies approximating Bélády&#039;s algorithm">Bélády’s algorithm</a>. It is the concept of optimal caching policy and it requires future knowledge about data that could determine which data will survive longest in the future and which data will not and determine the future lifetime of data in cache. It is impossible to get the exact future knowledge about data but we can get predictions about the future life of data. For getting this kind of prediction, there have been proposed multiple policies. Some of them are- <a class="markup--anchor markup--p-anchor" href="https://www.cs.utexas.edu/~lin/papers/crc17.pdf" target="_blank" rel="noopener nofollow" data-href="https://www.cs.utexas.edu/~lin/papers/crc17.pdf" data->Hawkeye</a>, Mockingjay, <a class="markup--anchor markup--p-anchor" href="https://dl.acm.org/doi/10.1145/511399.511340" target="_blank" rel="noopener nofollow" data-href="https://dl.acm.org/doi/10.1145/511399.511340" data->LIRS</a>, ARC, AC, CAR, MQ Etc.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/start-caching-with-python-basics-caching-policies-and-streamlit-caching-with-python/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

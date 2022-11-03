@@ -1,0 +1,1559 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>golang &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/golang/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Wed, 26 Oct 2022 23:10:14 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>golang &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Go Pointers &#8211; Immutability Vs Efficiency</title>
+		<link>/blog/go-pointers-immutability-vs-efficiency/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Tue, 25 Oct 2022 17:06:46 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Efficiency]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[Immutability]]></category>
+		<category><![CDATA[Pointers]]></category>
+		<category><![CDATA[vs]]></category>
+		<guid isPermaLink="false">/?p=12334</guid>
+
+					<description><![CDATA[Pointers are a fundamental and necessary aspect of Golang. They allow us to manipulate memory and data structures from a simple level, without needing to know the specifics of some more abstract data structures. This article will cover Go pointers, their use in stacks and heaps, immutability vs efficiency as well as pointer types (primitives [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p class="maps-to-line">Pointers are a fundamental and necessary aspect of Golang. They allow us to manipulate memory and data structures from a simple level, without needing to know the specifics of some more abstract data structures.</p>
+<p class="maps-to-line">This article will cover Go pointers, their use in stacks and heaps, immutability vs efficiency as well as pointer types (primitives and variables).</p>
+<p class="maps-to-line">Everybody uses pointers occasionally. How well-versed are we in it? What is taking place behind the scenes? In this post, we&#8217;ll talk about pointers and how they might improve program performance at the expense of flexibility.<br />
+Anyone who reads this will be able to explain how pointers relate to any of this, as well as what happens when a function calls and the distinction between heap and stack allocations.</p>
+<p class="maps-to-line">Let&#8217;s define a variable in Golang, you can relate to any programming in general.<br />
+Let&#8217;s understand what is a variable first. So a variable is a container for storing a value. we can think of it as a box that has 3 things</p>
+<ul>
+<li class="maps-to-line">a name</li>
+<li class="maps-to-line">a type</li>
+<li class="maps-to-line">a value</li>
+</ul>
+<p><img decoding="async" class="wp-image-12336 aligncenter" src="/wp-content/uploads/2022/10/variable_explain.gif" alt="Go Pointers - Immutability Vs Efficiency" width="421" height="421"></p>
+<h2 id="it-will-store-somewhere-in-the-memory" class="maps-to-line">It will store somewhere in the memory.</h2>
+<p class="maps-to-line"><img decoding="async" class="wp-image-12337 aligncenter" src="/wp-content/uploads/2022/10/somewhere_in_the_memory.gif" alt="somewhere_in_the_memory" width="494" height="278" /></p>
+<p class="maps-to-line">It resembles putting a box in a warehouse in many ways. The value is in the box. We gave that box a name and a type as well. We added an address to that box as well. The location of the box inside the warehouse will be indicated by this address. Therefore, if we know the address, we can quickly locate and retrieve the box if we need it.</p>
+<p class="maps-to-line">Let&#8217;s see this in Golang</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    var foo, bar int = 23, 42
+    
+    fmt.Println(foo, bar) // will print the value
+    fmt.Println(&amp;foo, &amp;bar) // will print the address
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">Easy, right? In the first line we are defining 2 variables foo, bar with the value of 23, and 42 of type int. in lines 3 &amp; 4 we print the values and it&#8217;s addressed in the console.</p>
+<blockquote class="maps-to-line"><p>Quick Note: <code class="inline-code">&amp;</code> can be read as <code class="inline-code">address of</code>.<br />
+Every new variable has been given an address, and with that, we can locate that in the memory. This address will be the value of the pointer if we assign it to a pointer like below</p></blockquote>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    var foo, bar int = 23, 42
+    p := &amp;foo
+    q := &amp;bar
+    
+    fmt.Println(p, q) // will print the address of foo, bar
+    // 0xc00001c0a8 0xc00001c0b0
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">p &amp; q will hold the address of the foo &amp; bar variable. Here we&#8217;re using the short-hand variable declaration feature of Golang.</p>
+<p class="maps-to-line"><img decoding="async" class="wp-image-12338 aligncenter" src="/wp-content/uploads/2022/10/foo2p-address.gif" alt="foo_2_pointer_address" width="533" height="533" /></p>
+<p class="maps-to-line">In the above picture, we can see how <code class="inline-code">p</code> is holding the address of <code class="inline-code">foo</code>.</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    var foo int = 23
+    p := &amp;foo
+    
+    fmt.Println(*p) 
+    // any guess
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line"><code class="inline-code">*p</code> will print the value stored in that address which is the foo value <code class="inline-code">23</code> we define above.</p>
+<p class="maps-to-line">Here <code class="inline-code">*</code> can be a little confusing at first as it can be used in two ways.</p>
+<ul>
+<li class="maps-to-line">Before a type (<code class="inline-code">*int</code>)</li>
+<li class="maps-to-line">Before a variable (<code class="inline-code">*p</code>)</li>
+</ul>
+<h4 id="before-a-type" class="maps-to-line">Before a type</h4>
+<p class="maps-to-line"><code class="inline-code">*int</code> the whole thing becomes a type. It is <code class="inline-code">pointer type</code> and the <code class="inline-code">int</code> as its base.</p>
+<h4 id="before-a-variable" class="maps-to-line">Before a variable</h4>
+<p class="maps-to-line"><code class="inline-code">*p</code> means when it is before a variable, it acts as an operator which returns the value the p is pointing to. That&#8217;s why when we print <code class="inline-code">*p</code> it&#8217;ll print <code class="inline-code">23</code> because it&#8217;s the value of the variable <code class="inline-code">p</code> is pointing to. It&#8217;s also called <code class="inline-code">Dereferencing</code>. So we can say that the value of <code class="inline-code">p</code> is the address of <code class="inline-code">foo</code> and <code class="inline-code">*p</code> is the value at that address which is the value of <code class="inline-code">foo</code>.<br />
+So what if we want to change the value of *p what will happen then. Any guess&#8230;</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    var foo int = 23
+    p := &amp;foo
+    fmt.Println(*p) // 23
+    *p = 42
+    fmt.Println(*p)
+    // any guess
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">Yes, it&#8217;ll be <code class="inline-code">42</code>.</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    var foo, bar int = 23, 3600
+    p := &amp;foo
+    fmt.Println(*p) // 23
+    p = &amp;bar
+    *p = *p / 36
+    fmt.Println(bar)
+    // any guess
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">Any guess what will happen to the value of <code class="inline-code">bar</code> variable?</p>
+<blockquote class="maps-to-line"><p>Quick note: We can put <code class="inline-code">bar</code> in <code class="inline-code">*p</code> because p&#8217;s type is a pointer and the base type is int, if it&#8217;s not int then it&#8217;ll return a run time error.</p></blockquote>
+<p class="maps-to-line">As we&#8217;re doing an operation on <code class="inline-code">*p</code> so the value of the bar will be modified. So the value will be printed 100.<br />
+So why do we need pointers anyway?<br />
+Good question, right? If we just want to modify <code class="inline-code">bar</code>s value then we can just modify <code class="inline-code">bar</code> right? Then why??<br />
+Well, It&#8217;s efficient to store a value in one place and access it from multiple places.<br />
+Let&#8217;s understand with an example<br />
+Suppose we have four different functions and all the functions want to access <code class="inline-code">bar</code> and want to modify it. So <code class="inline-code">bar</code> will be modified in multiple places. This way of accessing a variable from multiple places using pointers is more efficient than creating a local copy of the variable without using a pointer.<br />
+To understand the situation more clearly, we need to understand <code class="inline-code">Memory Allocations</code> first. Let&#8217;s understand that first&#8230;</p>
+<h2 id="memory-allocations" class="maps-to-line">Memory Allocations</h2>
+<p class="maps-to-line">When we try to run a program, a goroutine is created and each goroutine gets a stack of memory.</p>
+<p class="maps-to-line"><img decoding="async" class="wp-image-12339 aligncenter" src="/wp-content/uploads/2022/10/stack_of_memory.gif" alt="stack_of_memory" width="622" height="350" /></p>
+<p class="maps-to-line">You may ask what is a goroutine&#8230;</p>
+<blockquote class="maps-to-line">
+<h3 id="what-is-a-goroutine">What is a goroutine?</h3>
+<p>a <code class="inline-code">goroutine</code> is an independent path of execution. we can also think of it as a very lightweight thread that is managed by go runtime.</p></blockquote>
+<p class="maps-to-line">Let&#8217;s go back to the topic. Whenever a goroutine makes a function call, a part of the stack is going to be allocated we call that <code class="inline-code">frame</code>. Let&#8217;s see this in an example for a better understand</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    a := 6
+    AddN(a)
+}
+// AddN will add n to the result and print its address and value 
+func AddN(n int) {
+    r := 0
+    r += n
+    fmt.Println(&amp;r, r)
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">Here we define two functions <code class="inline-code">main</code> &amp; <code class="inline-code">AddN</code>, when we run the main function we get a frame on the stack. The current running frame is called the <code class="inline-code">Active Frame</code>.</p>
+<p class="maps-to-line"><img decoding="async" class="wp-image-12340 aligncenter" src="/wp-content/uploads/2022/10/active_frame_stack.gif" alt="active_frame_stack" width="622" height="350" /></p>
+<p class="maps-to-line">So, After running the main function, we then call &#8220;AddN&#8221; as we follow through the main function. The stack will allocate another frame as soon as we call &#8220;AddN,&#8221; and the goroutine will only operate within that new frame. It cannot go to other frames, stacks, or anything else. This is advantageous because, if we isolate each frame, we guarantee immutability, which implies that there is less chance that the variables will be changed during the program. So here the common question arises how can we access the <code class="inline-code">a</code> variable inside the active frame? So the straight forward answer would be we can&#8217;t access it. instead, we have to copy the value of <code class="inline-code">a</code> into the new active frame and inside the active frame that value is going to be called <code class="inline-code">n</code> and we can modify <code class="inline-code">n</code> add it then print it, and do whatever we want with it but because we&#8217;re making the changes inside the active frame it will not change anything else in the program outside of this frame. So the mutation will only happen inside this isolated frame.</p>
+<p class="maps-to-line">Can anyone guess what&#8217;s the catch here? Because we need to copy the arguments each time we make a function call which is not going to be so efficient. So when the <code class="inline-code">AddN</code> function call ends and the active frame goes back to the main function <code class="inline-code">a</code> will still be 6 but what if we want to change <code class="inline-code">a</code> itself in the main function we want to get our hands on <code class="inline-code">a</code> and not just the copy of it well this is where we start talking about pointers.</p>
+<p class="maps-to-line">Let&#8217;s write a new function using pointers so that it can modify the variable <code class="inline-code">a</code> in the main function from the function by saying go and changing the value at that specific address.</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    a := 6
+    squareAdd(&amp;a)
+}
+// AddN will add n to the result and print its address and value 
+func squareAdd(p *int) {
+    *p *= *p
+    fmt.Println(p, *p)
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">We&#8217;re inputting an address instead of a normal integer so we&#8217;re going to put this address as the input parameter and we&#8217;re calling it <code class="inline-code">p</code> so the type of the input is <code class="inline-code">*int(star int)</code>. The star here is not a dereferencing operator as we discuss above. Star int itself is just one whole token. We want to square the value of what&#8217;s at that address so we need to put a star in front of p if we want to say the value at p which in this example is going to be <code class="inline-code">a</code> and then let&#8217;s print out p which is an address and the value of what p is pointing to by saying star p(<code class="inline-code">*p</code>).</p>
+<p class="maps-to-line">So when we call this function we need to pass in an address, not a value what you need to pass is an ampersand(&amp;) <code class="inline-code">a</code> because <code class="inline-code">&amp;</code> means that you&#8217;re passing in the address of <code class="inline-code">a</code>.</p>
+<p class="maps-to-line">Let&#8217;s see what happens in the stack when we call <code class="inline-code">squareAdd</code> function. Instead of copying <code class="inline-code">a</code> we are copying the address of <code class="inline-code">a</code> and assigning it as a pointer <code class="inline-code">p</code> in the frame and that pointer is pointing across the boundary of the frame and this is how we can modify the value of <code class="inline-code">a</code> in the currently active frame by using <code class="inline-code">*p</code>.</p>
+<p class="maps-to-line">After we finish calling the functions we move to the main function again and everything under the active frame then becomes invalid meaning that if we make another function call this space will be overwritten and go will set all the variables to a zero value for the new frame so that we won&#8217;t accidentally be using any random garbage values.</p>
+<p class="maps-to-line">We&#8217;ll explain <code class="inline-code">Garbage collector</code> in detail in a future post. Stay tuned for that. Now let&#8217;s continue&#8230;</p>
+<p class="maps-to-line">When we&#8217;re using value semantics like the example above with <code class="inline-code">AddN</code> it was fine there&#8217;s no way <code class="inline-code">a</code> can get mutated but when we using pointer semantics we need to be careful because there is more possibility for the variable to be mutated in a way we didn&#8217;t intend.</p>
+<p class="maps-to-line">When we use pointer semantics you&#8217;re giving up the safety of immutability for more efficiency. Now that we understand how pointers work in functions and we also learned about how they can affect variables in the stack. Now final topic we need to understand is Heaps. Let&#8217;s talk about it.</p>
+<h2 id="heaps" class="maps-to-line">Heaps</h2>
+<p class="maps-to-line">To understand the Heaps which is not the data structure we know from CS 101, but it&#8217;s a separate structure altogether. We need to understand that heaps need to be cleaned by the garbage collection where the stack is self-cleaning. To understand the difference between heap and stack, we need to compare the difference between returning a value and returning a pointer. Let&#8217;s define an example to understand more clearly&#8230;</p>
+<h4 id="return-value" class="maps-to-line">Return value</h4>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package main
+
+type person struct {S
+    name string
+    age uint
+}
+
+func NewPerson() person {
+    p := person{
+        name: "dummy person"
+        age: 60
+    }
+    fmt.Println("new person --&gt; ", p)
+    return p
+}
+
+func main() {
+    fmt.Println("main --&gt; ", NewPerson())
+}</pre>
+<p>&nbsp;</p>
+</div>
+<h4 id="return-pointer" class="maps-to-line">Return Pointer</h4>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package main
+
+type person struct {S
+    name string
+    age uint
+}
+
+func NewPerson() *person {
+    p := person{
+        name: "dummy person"
+        age: 60
+    }
+    fmt.Println("new person --&gt; ", &amp;p)
+    return &amp;p
+}
+
+func main() {
+    fmt.Println("main --&gt; ", NewPerson())
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">So the two code block above has almost identical code with one exception where 1st code block returns a value from<code class="inline-code"> NewPerson</code> function and 2nd code returns a pointer from <code class="inline-code">NewPerson</code> function.</p>
+<p class="maps-to-line">The <code class="inline-code">NewPerson</code> initializes the person struct with dummy values and then returns it. After that, we call the <code class="inline-code">NewPerson</code> function from the main function and print the result.</p>
+<p class="maps-to-line">What happening behind the scene is, Go runtime assign the main function as an active frame in the stack of memory. Then when we call the <code class="inline-code">NewPerson</code>, a new frame is created in the stack of memory and allocates <code class="inline-code">p</code>, and then changes the values in p. Because of the isolation of the <code class="inline-code">NewPerson</code> frame, we can not send <code class="inline-code">p</code> to the main function instead we will be making a copy of it and pass to the main active frame so that&#8217;s what happens when we return a value.</p>
+<p class="maps-to-line">But instead of returning a value, let&#8217;s return the address of <code class="inline-code">p</code> which we showed in the above example. The point to be noted here is the function still works the same way as before but instead of copying the value this function going to make a copy of the address of <code class="inline-code">p</code> to the main function frame, we can notice something important here at the same time something weird as the <code class="inline-code">NewPerson</code> finishes executing here the <code class="inline-code">New Person</code> active frame is going to become invalid so the address we copied into the active frame is going to be useless we don&#8217;t know what that going to point to in the memory. So that can be a huge problem if we can&#8217;t resolve the address and this is where <code class="inline-code">heaps</code> going to help us solve the problem.</p>
+<blockquote class="maps-to-line"><p>Note <code class="inline-code">Heaps</code> is not the same as the data structure we study in cs 101 data structures, they share the same name but completely different things.</p></blockquote>
+<p class="maps-to-line">So the compiler will analyze that and conclude that there&#8217;s going to be a problem so it&#8217;s going to copy m to the <code class="inline-code">heap</code> then the <code class="inline-code">NewPerson</code> function will return the address of <code class="inline-code">p</code> in the heap and after return when the address of <code class="inline-code">p</code> is copied to the frame of the main function. So now we can access <code class="inline-code">p</code> with that address.</p>
+<p class="maps-to-line">In the above, we print the address of the <code class="inline-code">p</code> to check if they share the same address from <code class="inline-code">NewPerson</code> function and the main function. So our problem is solved but we&#8217;re doing this in the cost of heap allocations which can be a burden for the garbage collector and it can cost us performance.</p>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/go-pointers" rel="nofollow noopener" target="_blank">[Personal blog]</a></p>
+<blockquote>
+<h4> You can read my other blog-posts <a href="https://rezwanul-haque.hashnode.dev/" rel="nofollow noopener" target="_blank">[Here]</a></h4>
+</blockquote>
+<h2 id="conclusion" class="maps-to-line">Conclusion</h2>
+<p class="maps-to-line">Go pointers can be a great way to implement efficiency in the codebase. But in doing so we have to think about the garbage collector as we assign more work for it as it needs to clean the heap allocations instead if we want Immutability in the codebase so that it uses a stack of memory which will automatically clean the stack when the frame finished its work and it just discards the frame and everything inside that frame when another function is called this space will be used by another frame. So we need to understand the stack and heaps because if we put too many things on the heap then the Garbage Collector needs to free more things from the heap as we don&#8217;t use those things anymore. In contrast, it can affect performance.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Golang Mistakes: #1 Maps and Memory Leaks</title>
+		<link>/blog/golang-mistakes-1-maps-and-memory-leaks/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Thu, 20 Oct 2022 17:11:41 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[errors]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[maps]]></category>
+		<category><![CDATA[memory]]></category>
+		<category><![CDATA[mistakes]]></category>
+		<guid isPermaLink="false">/?p=12205</guid>
+
+					<description><![CDATA[When it comes to software development we always want to ensure our code never uses excessive memory when a function finishes its work. That&#8217;s why some of the language features like garbage collection (GC) were implemented so that memory leaks do not occur. Also as a beginner software engineer, who just learning to code in [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p class="maps-to-line">When it comes to software development we always want to ensure our code never uses excessive memory when a function finishes its work. That&#8217;s why some of the language features like garbage collection (GC) were implemented so that memory leaks do not occur. Also as a beginner software engineer, who just learning to code in Golang uses built-in maps data structure for faster access to data. Sometimes even seniors may miss the drawbacks of excessively using those data structures without thinking. Sometimes those data structures may lead to memory leaks in the code base. Today we&#8217;re going to talk about the cons of the map&#8217;s data structure if anyone without thinking uses it excessively it may lead to a memory leak.</p>
+<blockquote class="maps-to-line"><p>The post is taken from a book called <code class="inline-code">100 Go Mistakes and How to Avoid Them</code> If anyone wants to learn more about this mistake and others please read the book. I learned a lot from the book.</p></blockquote>
+<p class="maps-to-line">A map is a powerful, ingenious, and versatile data structure. Golang Maps is a collection of unordered pairs of key-value. It is widely used because it provides fast lookups and values that can retrieve, updated, or delete with the help of keys.</p>
+<p class="maps-to-line">Let&#8217;s create a simple map in Golang</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package main
+ 
+import "fmt"
+ 
+func main() {
+    // Creating and initializing empty ma using `var` keyword
+    var nilMapContainer map[int]int
+ 
+    // Checking if the map is nil or not
+    if nilMapContainer == nil {
+        fmt.Println("True")
+    } else {
+        fmt.Println("False")
+    }
+    
+    // Note: `nilMapContainer` will throw panic if we try to assign value to an uninitialized key
+    
+    // Using shorthand declaration
+    animes := map[int]string{
+            1: "One Piece",
+            2: "Naruto",
+            3: "Link Click",
+            4: "Death Parade",
+            5: "Tomodachi Game",
+    }
+     
+    fmt.Println("animes ", animes)
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">Also, this data structure references a hash table. So data lookups from this table are fast using the key.</p>
+<h2 id="but" class="maps-to-line">But</h2>
+<p class="maps-to-line">There&#8217;s a huge drawback if we use a map without thinking. So let&#8217;s talk about that&#8230;</p>
+<p class="maps-to-line">In memory, If we put a new key value in a Map it takes some memory space. Interestingly this memory space never shrinks in size, it always grows in the memory as a result. Because of this, it may lead to memory problems.</p>
+<p class="maps-to-line">When working with the map data structure in Golang, we need to know some of the important characteristics of this data structure, how it grows and how much it shrinks.</p>
+<p class="maps-to-line">Although, It&#8217;s proposed that in the future version of Go, the map implementation will be changed so that it can shrink too. Anyone can check the issue on <a title="https://github.com/golang/go/issues/54766" href="https://github.com/golang/go/issues/54766" data-from-md="" rel="nofollow noopener" target="_blank">Github</a>.</p>
+<p class="maps-to-line">Let’s deep dive into this to prevent issues that can cause memory leaks.</p>
+<p class="maps-to-line">First, to view a concrete example of this problem, let’s design a scenario where we will work with the following map:</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">m := make(map[int][128]byte)</pre>
+</div>
+<p class="maps-to-line">Each value of <code class="inline-code">m</code> is an array of 128 bytes. We will do the following:</p>
+<ol>
+<li class="maps-to-line">Allocate an empty map.</li>
+<li class="maps-to-line">Add 1 million elements.</li>
+<li class="maps-to-line">Remove all the elements, and run a Garbage Collection (GC).</li>
+</ol>
+<p class="maps-to-line">After each step, we want to print the size of the heap (using a <code class="inline-code">printAllocatedMemory</code> utility function). This shows us how this example behaves in memory:</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package main
+
+import (
+    "fmt"
+    "runtime"
+)
+
+func main() {
+    n := 1_000_000
+    m := make(map[int][128]byte)
+    printAllocatedMemory()
+
+    for i := 0; i &lt; n; i++ { // Adds 1 million elements
+        m[i] = [128]byte{}
+    }
+    printAllocatedMemory()
+
+    for i := 0; i &lt; n; i++ { // Deletes 1 million elements
+        delete(m, i)
+    }
+
+    runtime.GC() // Triggers a manual GC
+    printAllocatedMemory()
+    runtime.KeepAlive(m) // Keeps a reference to m so that the map isn’t collected
+}
+
+func printAllocatedMemory() {
+    var m runtime.MemStats
+    runtime.ReadMemStats(&amp;m)
+    fmt.Printf("%d MB\n", (m.Alloc/1024)/1024)
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">We allocate an empty map, add 1 million elements, remove 1 million elements, and then run a GC. We also make sure to keep a reference to the map using <code class="inline-code">runtime.KeepAlive</code> so that the map isn’t collected by the GC and removed it. In simple terms, <code class="inline-code">KeepAlive</code> will not be collected by the Garbage Collector when all the key-value is removed from the variable <code class="inline-code">m</code>. Let’s run this example:</p>
+<table class="maps-to-line">
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Steps</td>
+<td>Memory</td>
+</tr>
+<tr>
+<td>After m is allocated</td>
+<td>0 MB</td>
+</tr>
+<tr>
+<td>After we add 1 million elements</td>
+<td>461 MB</td>
+</tr>
+<tr>
+<td>After we remove 1 million elements</td>
+<td>293 MB</td>
+</tr>
+</tbody>
+</table>
+<p class="maps-to-line">After observing the result above, we can say that the heap size is initially very small. Once 1 million additional elements have been added to the map, it then expands dramatically. But if we had anticipated that the heap size would shrink after eliminating all the values, Which is not the case here, because Go maps don&#8217;t operate in this way. In the end, the heap size is still 293 MB even if the GC has collected all of the components. Although we say it doesn&#8217;t shrink at the beginning of the post which is not true, right? but in the end, even though the GC has collected all the elements, the heap size is still 293 MB. The memory shrank as a result, but not in the way we might have anticipated. Why is this happening, exactly? We must thoroughly examine how Go&#8217;s map data structure operates.</p>
+<p class="maps-to-line">A map offers an unordered collection of key-value pairs where each key is unique. A map in Go is based on the hash table data structure, which is an array whose elements each point to a collection of key-value pairs. As shown in figure 1.</p>
+<p><img decoding="async" class="alignnone size-full wp-image-12207" src="/wp-content/uploads/2022/10/hash_table_in_golang.gif" alt="hash table in golang Golang Mistakes: #1 Maps and Memory Leaks" width="800" height="450"></p>
+<p class="maps-to-line" style="text-align: center"><span style="font-family: 'Courier New', monospace">Figure 1 &#8211; Hash Table In Golang</span></p>
+<p class="maps-to-line">In Golang, The bucket size is fixed and the max limit is eight elements per bucket. So in case of inserting a new element into an overflowed bucket, Go assign a new bucket for the new element and links the new bucket to the previous one. Figure 2 shows an example:</p>
+<p class="maps-to-line"><img decoding="async" class="alignnone size-full wp-image-12206" src="/wp-content/uploads/2022/10/bucket_overflow_in_golang_v3.gif" alt="bucket overflow in golang v3 Golang Mistakes: #1 Maps and Memory Leaks" width="800" height="450"><code></code></p>
+<p style="text-align: center">Figure 2 &#8211; Bucket overflow, link new bucket to previous one.</p>
+<p class="maps-to-line">Behind the scene, a Go map is a pointer to a <code class="inline-code">runtime.hmap</code> struct. This struct contains multiple fields which including a <code class="inline-code">B</code> field, <code class="inline-code">B</code> represents the number of buckets in a map:</p>
+<p class="maps-to-line">After adding 1 million elements to the map, the value of <code class="inline-code">B</code> which corresponds to the bucket is 18, which means 2¹⁸ = 262,144 buckets assign to the map. But when we remove the 1 million elements from the map, what happen to the number of buckets? As the number of the bucket in a map cannot shrink therefore removing elements from the map doesn&#8217;t reduce the number of buckets. it just zeros the slots in the buckets.</p>
+<p class="maps-to-line">In our example, we went from 461 MB to 293 MB because the elements were collected by the garbage collector, but running the GC didn’t impact the map itself. Even the number of extra buckets (the buckets created because of overflows) remains the same.</p>
+<p class="maps-to-line">Let’s take a step back and discuss when the fact that a map cannot shrink can be a problem. Imagine building a cache using a <code class="inline-code">map[int][128]byte</code>. This map holds per customer ID (the int), a sequence of 128 bytes. Now, suppose we want to save the last 1,000 customers. The map size will remain constant, so we shouldn’t worry about the fact that a map cannot shrink.</p>
+<p class="maps-to-line">However, let’s say we want to store one hour of data. Meanwhile, our company has decided to have a big promotion for the Eid festival: in one hour, we may have millions of customers connected to our system. But a few days after the Eid festival, our map will contain the same number of buckets as during the peak time. This explains why we can experience high memory consumption that doesn’t significantly decrease in such a scenario. This is a big problem, right? So we want to clean this amount of memory without manually restarting our service, right?</p>
+<h2 id="solution" class="maps-to-line">Solution</h2>
+<h3 id="1" class="maps-to-line">#1</h3>
+<p class="maps-to-line">We can make copies of the current map at regular intervals. We could create a new map, clone all the components, and release it every hour, as an example. The biggest disadvantage of this method is that for a little period after the copy and up to the subsequent garbage collection, we might need twice as much RAM as we do right now.</p>
+<h3 id="2" class="maps-to-line">#2</h3>
+<p class="maps-to-line">We may also alter the map type to <code class="inline-code">map[int]*[128]byte</code> to hold an array pointer. Although it doesn&#8217;t address the issue of how many buckets we will have, each bucket entry will reserve a pointer size for the item rather than 128 bytes (8 bytes on 64-bit systems and 4 bytes on 32-bit systems).</p>
+<p class="maps-to-line">Let&#8217;s compare the memory usage for each map type after each step, going back to the initial scenario. The comparison is presented in the following table.</p>
+<table class="maps-to-line">
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Steps</td>
+<td><code class="inline-code">map[int][128]byte</code></td>
+<td><code class="inline-code">map[int]*[128]byte</code></td>
+</tr>
+<tr>
+<td>Allocate an empty map</td>
+<td>0 MB</td>
+<td>0 MB</td>
+</tr>
+<tr>
+<td>Add 1 million elements</td>
+<td>461 MB</td>
+<td>182 MB</td>
+</tr>
+<tr>
+<td>Remove all the elements and run a GC</td>
+<td>293 MB</td>
+<td>38 MB</td>
+</tr>
+</tbody>
+</table>
+<p class="maps-to-line">As we can see, a <code class="inline-code">map[int]*[128]byte</code> type requires substantially less memory after all the elements have been removed. Additionally, because of several optimizations to lower memory consumption, the amount of RAM required in this scenario is less significant during peak times.</p>
+<blockquote class="maps-to-line"><p>NOTE: If a key or a value is over 128 bytes, Go won’t store it directly in the map bucket. Instead, Go stores a pointer to reference the key or the value.</p></blockquote>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/golang-mistakes-1-maps-and-memory-leaks" rel="nofollow noopener" target="_blank">[ Personal blog]</a></p>
+<blockquote>
+<h4>You can read my other blog-posts <a href="https://rezwanul-haque.hashnode.dev/" rel="nofollow noopener" target="_blank">[Here]</a></h4>
+</blockquote>
+<h2 id="conclusion" class="maps-to-line">Conclusion</h2>
+<p class="maps-to-line">We can say, Go never removes the buckets from memory even after removing all the elements from the map. So we need to be careful when using a map as it only grows in memory as a result. To reduce the high memory consumption, we need to use different techniques like re-create the map forcefully or using pointers so that memory consumption can be optimized.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>How and when to use sync.WaitGroup in Golang</title>
+		<link>/blog/how-and-when-to-use-sync-waitgroup-in-golang/</link>
+					<comments>/blog/how-and-when-to-use-sync-waitgroup-in-golang/#respond</comments>
+		
+		<dc:creator><![CDATA[hirok.biswas]]></dc:creator>
+		<pubDate>Mon, 22 Aug 2022 06:58:25 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[channels]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[golang concurrency]]></category>
+		<category><![CDATA[golang waitgroup]]></category>
+		<guid isPermaLink="false">/?p=10198</guid>
+
+					<description><![CDATA[Golang is known for its first-class support for concurrency, or the ability for a program to deal with multiple things at once. Running code concurrently is becoming a more critical part of programming as computers move from running a single code stream faster to running more streams simultaneously. Goroutines solve the problem of running concurrent [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Golang is known for its first-class support for concurrency, or the ability for a program to deal with multiple things at once. Running code concurrently is becoming a more critical part of programming as computers move from running a single code stream faster to running more streams simultaneously.</p>
+<p>Goroutines solve the problem of running concurrent code in a program, and channels solve the problem of communicating safely between concurrently running code.</p>
+<p>Read details concept of Goroutines and Channels <a href="/concurrency-in-go-goroutine-and-channels">Concurrency in GO 101 &#8211; goroutine and channels</a></p>
+<p>In that article, we looked at using channels in Go to get data from one concurrent operation to another. But we also ran across another concern: How do we know when all the concurrent operations are complete? One answer is that we can use<strong> sync.WaitGroup</strong>.</p>
+<h3></h3>
+<h3>Waitgroup</h3>
+<p>Allows you to block a specific code block to allow a set of goroutines to complete their executions.</p>
+<p>WaitGroup ships with 3 methods:</p>
+<ul>
+<li> <strong>wg.Add(int)</strong>: Increase the counter based on the parameter (generally &#8220;1&#8221;).</li>
+<li> <strong>wg.Wait()</strong>: Blocks the execution of code until the internal counter reduces to 0 value.</li>
+<li> <strong>wg.Done()</strong>: Decreases the count parameter in Add(int) by 1.</li>
+</ul>
+<h6>Example:</h6>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang" data-enlighter-theme="monokai">package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+var taskIDs = []int32{1, 2, 3}
+
+func main() {
+    var wg sync.WaitGroup
+    for _, taskID := range taskIDs {
+        wg.Add(1)
+        go performTask(&amp;wg, taskID)
+    }
+    // waiting until counter value reach to 0
+    wg.Wait()
+}
+
+func performTask(wg *sync.WaitGroup, taskID int32) {
+    defer wg.Done()
+    time.Sleep(3 * time.Second)
+    fmt.Println(taskID, " - Done")
+}</pre>
+<p><a href="https://go.dev/play/p/xsJANC2xQA7" rel="nofollow noopener" target="_blank">Run code here</a></p>
+<p>In the above example, we have simply initiated 3 goroutines (we can also initiate more goroutines as we want). Before initiating every goroutine <strong>wg.Add(1)</strong> increases the counter by <strong>1</strong>. From inside goroutine <strong>defer</strong> <strong>wg.Done()</strong> executes after all functionality is done and decreases the counter value by <strong>1</strong>. And finally <strong>wg.Wait()</strong> releases the main block when the counter value reached to <strong>0</strong>.<br />
+So, <strong>WaitGroup</strong> ensures the completion of all initiated goroutine&#8217;s execution.</p>
+<h3>When to use Waitgroup?</h3>
+<ul>
+<li>The major use case is to simply wait for a set of goroutines untill complete their execution.</li>
+<li>Another is to use along with channel(s) to achieve better outcomes.</li>
+</ul>
+<p>For a better explanation of 2nd use case let&#8217;s solve a real-world problem. Assume we have 7 order ids. using concurrency we have to collect successful order details of those orders.</p>
+<p>At First, we will go for channel approach to collect individual order details.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang" data-enlighter-theme="monokai">package main
+import (
+    "fmt"
+    "time"
+)
+
+var orderIDs = []int32{1, 2, 3, 4, 5, 6, 7}
+type order struct {
+    id   int32
+    time string
+}
+
+func main() {
+    var orders []order
+    ch := make(chan order)
+
+    for _, orderID := range orderIDs {
+        go getOrderDetails(ch, orderID)
+    }
+
+    // iterate over length of orderIDs and append orders
+    for i := 0; i &lt; len(orderIDs); i++ {
+        orders = append(orders, &lt;-ch)
+    }
+
+    fmt.Printf("collected orders: %v", orders)
+}
+
+func getOrderDetails(ch chan order, orderID int32) {
+    time.Sleep(3 * time.Second)
+    // details collection logic
+    orderDetails := order{id: orderID, time: time.Now().UTC().Format("15:04:05")}
+
+    ch &lt;- orderDetails
+}</pre>
+<p><a href="https://go.dev/play/p/84IHnwkVz5N" rel="nofollow noopener" target="_blank">Run code here</a></p>
+<p>Here, we have created an unbuffered channel <strong>ch</strong>. Every goroutine collects order details and sends data to the channel. Same time for collecting order details we have iterated over the length of expected order ids to receive order data one by one from the channel for every order ids. As far the program works fine as expected and the output is:</p>
+<h6>Output:</h6>
+<pre><code class="language-bash">collected orders: [{3 23:00:03} {1 23:00:03} {7 23:00:03} {4 23:00:03} {2 23:00:03} {6 23:00:03} {5 23:00:03}]</code></pre>
+<p>But, suppose one of our goroutine returns an error instead of sending order data to the channel. On the other hand, our channel is trying to receive data but data is not available in the channel. In this situation program will enter a <strong>deadlock</strong> situation. <a href="https://go.dev/play/p/TxofC0aqFpQ" rel="nofollow noopener" target="_blank">Try this scenario here</a></p>
+<p>Now we will combine <strong>channel</strong> and <strong>waitgroup</strong> to collect successful order data.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang" data-enlighter-theme="monokai">package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+var orderIDs = []int32{1, 2, 3, 4, 5, 6, 7}
+type order struct {
+    id   int32
+    time string
+}
+
+func main() {
+    var wg sync.WaitGroup
+    var orders []order
+
+    // create a buffered channel wit length of orderIDs
+    ch := make(chan order, len(orderIDs))
+
+    for _, orderID := range orderIDs {
+        wg.Add(1)
+        go getOrderDetails(ch, &amp;wg, orderID)
+    }
+    // here we wait until all jobs done
+    wg.Wait()
+    // closing channel after all job done
+    close(ch)
+
+    // iterate over available channel results
+    for v := range ch {
+        orders = append(orders, v)
+    }
+
+    fmt.Printf("collected orders: %v", orders)
+}
+
+func getOrderDetails(ch chan order, wg *sync.WaitGroup, orderID int32) {
+    defer wg.Done()
+
+    time.Sleep(3 * time.Second)
+    // details collection logic
+    orderDetails := order{id: orderID, time: time.Now().UTC().Format("15:04:05")}
+    
+    if orderID == 4 {
+        fmt.Println("Something went wrong")
+        return
+    }
+
+    ch &lt;- orderDetails
+}</pre>
+<p><a href="https://go.dev/play/p/XrptK2WGgFh" rel="nofollow noopener" target="_blank">Run code here</a></p>
+<p>Here we have created a buffered channel having max buffer size of orders ids length. From goroutine, order data will be sent to channel(not necessary all order data will be sent, in case of error). Here for order id <strong>4</strong> no data is sent to the channel but <strong>wg.Done()</strong> executed as expected. After <strong>wg.Wait()</strong> reached its ends, we have closed the channel as all goroutine&#8217;s job done. Then from the channel, we have simply collected available order data by iterating over available channel results.</p>
+<p>In our case, there were <strong>7</strong> incoming order ids and we finally got <strong>6</strong> successful orders detail from the channel without any error.</p>
+<h6>Output:</h6>
+<pre><code class="language-bash">collected orders: [{5 23:00:00} {6 23:00:00} {3 23:00:00} {1 23:00:00} {7 23:00:00} {2 23:00:00}]</code></pre>
+<h3>Final thoughts:</h3>
+<p>Channels being a signature feature of the Go language shouldn&#8217;t mean that it is idiomatic to use them alone whenever possible. What is idiomatic in Go is to use the simplest and easiest way to understand the solution. The WaitGroup conveys both the meaning (the main function is Waiting for workers to be done) and the mechanic (the workers notify when they are Done).</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/how-and-when-to-use-sync-waitgroup-in-golang/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Generics In Golang 1.18</title>
+		<link>/blog/generics-in-golang-1-18/</link>
+					<comments>/blog/generics-in-golang-1-18/#respond</comments>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Tue, 24 May 2022 13:00:24 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[generics]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[new feature]]></category>
+		<guid isPermaLink="false">/?p=8626</guid>
+
+					<description><![CDATA[When we start using Golang, The simplicity of the language and its awesome way to handle threads(goroutine), and also its speed, make us happy that our code works so fast that sometimes the result came within a nanosecond(ns). Apart from these good sides when we work on a project we sometimes copy-paste lots of code, [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p class="maps-to-line">When we start using Golang, The simplicity of the language and its awesome way to handle threads(goroutine), and also its speed, make us happy that our code works so fast that sometimes the result came within a nanosecond(ns). Apart from these good sides when we work on a project we sometimes copy-paste lots of code, but it&#8217;s not because of a specific software engineer practicing bad code but it needs to be done because of the need. For example,</p>
+<div class="joplin-editable">
+<pre><code class="language-go">func Abs(x int64) int64 {
+	if x &lt; 0 {
+		return -x
+	}
+	return x
+}</code></pre>
+</div>
+<p class="maps-to-line">I&#8217;m writing an absolute value printing function. The parameter I&#8217;m expecting is an int64 but If I need a similar feature for any other type like int32, int, uint, float, float32, float64, etc. In the current Go stable (&lt;1.18) version currently, we can&#8217;t do this as go didn&#8217;t have any generics. A possible workaround for this feature to implement in the current stable(&lt;1.18) release of Golang would be to use <code class="inline-code">interface{}</code>, <code class="inline-code">type assertion</code> or <code class="inline-code">reflect</code> standard package which will check the type and then decide what to do next.</p>
+<div class="joplin-editable">
+<pre><code class="language-go">import &quot;reflect&quot;
+
+// interface with type assertion &amp; reflect example
+func Abs(x interface{}) interface{} {
+	switch reflect.TypeOf(x).Kind() {
+	case reflect.Int64:
+		if x.(int64) &lt; 0 {
+			return -x.(int64)
+		}
+		return x.(int64)
+	case reflect.Int:
+		if x.(int) &lt; 0 {
+			return -x.(int)
+		}
+		return x.(int)
+	}
+
+	return 0
+}</code></pre>
+</div>
+<p class="maps-to-line">But this above function has some problems as it&#8217;s not following the single responsibility principle from SOLID(Awesome principles to follow when developing software or any other work) principle.<br />
+Another problem with using <code class="inline-code">interface</code> is that the static type checking is ignored if anyone passes multiple types in the above function.</p>
+<h2 id="here-comes-the-good-news" class="maps-to-line">Here comes the good news</h2>
+<p class="maps-to-line">The good news is from go 1.18 and above. Now we can define generics.<br />
+It&#8217;s already in the stable release of go 1.18 so anyone wish to test this feature, do so by installing the &gt;1.18 versions.<br />
+You can install <code class="inline-code">go1.18 </code>by running the below two commands then run the program by <code class="inline-code">go1.18</code>.</p>
+<div class="joplin-editable">
+<pre><code class="language-bash">// command 1
+go install go1.18
+// command 2
+go1.18 download
+
+// running the program
+go1.18 run main.go</code></pre>
+</div>
+<blockquote class="maps-to-line"><p>You can also read my other blog <a href="/installing-multiple-version-of-golang-using-goenv">Installing Multiple Versions of Golang using GoEnv</a></p></blockquote>
+<p class="maps-to-line">Generics allow our functions or data structures to take in several types that are defined in their generic form.</p>
+<div class="joplin-editable">
+<pre><code class="language-go">func Abs[T int | int32 | int64 | float32 | float64](x T) T {
+	if x &lt; 0 {
+		return -x
+	}
+	return x
+}</code></pre>
+</div>
+<p class="maps-to-line">Some may say that this is a <code class="inline-code">Syntactic Sugar</code> of the language to give generics but the major difference between <code class="inline-code">interface{} with type assertion</code> and <code class="inline-code">generics</code> is that generics can use the static type checker to give runtime validation on the type of the parameter.</p>
+<p class="maps-to-line">The above code may get weird as you add more and more types in it and also want to reuse the type in multiple places so we can move that to a new type like below</p>
+<div class="joplin-editable">
+<pre><code class="language-go">type Number interface {
+	int | int32 | int64 | float32 | float64
+}
+
+func Abs[T Number](x T) T {
+	if x &lt; 0 {
+		return -x
+	}
+	return x
+}</code></pre>
+</div>
+<p class="maps-to-line">Still defining all the types in that interface has lots of work but if you want to get rid of these you can use <code class="inline-code">constraints</code></p>
+<h2 id="constaints" class="maps-to-line">Constaints</h2>
+<p class="maps-to-line">Generics come with some constraints so we can ignore type all the types. There are a few constraints right now, maybe add more later.</p>
+<ul>
+<li class="maps-to-line">any</li>
+<li class="maps-to-line">comparable</li>
+</ul>
+<h3 id="any-constraint" class="maps-to-line"><code class="inline-code">any</code> Constraint</h3>
+<p class="maps-to-line"><code class="inline-code">any</code> constraint, which is comparable to the empty <code class="inline-code">interface{}</code>, because it means the type in the variable could be anything.</p>
+<p class="maps-to-line">The <code class="inline-code">any</code> constraint works great if we’re treating the value like a bucket of data,<br />
+maybe we’re moving it around, but you don’t care at all about what’s in the bucket.</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+type A struct {
+	Name string
+}
+type B struct {
+	Name string
+}
+
+func Print[T any](x T) {
+	fmt.Println(x)
+	return
+}
+
+func main() {
+	a := A{}
+	a.Name = &quot;hello&quot;
+	b := B{}
+	b.Name = &quot;world&quot;
+	Print(a)
+	Print(&quot;nice&quot;)
+	Print(b)
+}</code></pre>
+<p class="maps-to-line">You can read the <a title="https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md" href="https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md" data-from-md="" rel="nofollow noopener" target="_blank">Generics proposal</a>, the operations permitted for <code class="inline-code">any</code> type are as follows.</p>
+<ol>
+<li class="maps-to-line">Declare variables of any types</li>
+<li class="maps-to-line">Assign other values of the same type to those variables</li>
+<li class="maps-to-line">Pass those variables to functions or return them from functions</li>
+<li class="maps-to-line">Take the address of those variables</li>
+<li class="maps-to-line">Convert or assign values of those types to the type interface{}</li>
+<li class="maps-to-line">Convert a value of type T to type T (permitted but useless)</li>
+<li class="maps-to-line">Use a type assertion to convert an interface value to the type</li>
+<li class="maps-to-line">Use the type as a case in a type switch</li>
+<li class="maps-to-line">Define and use composite types that use those types, such as a slice of that type</li>
+<li class="maps-to-line">Pass the type to some predeclared functions such as new<br />
+If we do need to know more about the generic types we’re working on we can constrain them using interfaces like the above.</li>
+</ol>
+<h3 id="comparable-constraint" class="maps-to-line"><code class="inline-code">comparable</code> Constraint</h3>
+<p class="maps-to-line">Comparable is also a predefined containts which is allowed us use the <code class="inline-code">!=</code> and <code class="inline-code">==</code> operators within your function logic</p>
+<div class="joplin-editable">
+<pre><code class="language-go">func indexOf[T comparable](s []T, x T) (int, error) {
+    for i, v := range s {
+        if v == x {
+            return i, nil
+        }
+    }
+    return 0, errors.New(&quot;not found&quot;)
+}
+
+func main() {
+    idx, err := indexOf([]string{&quot;pinapple&quot;, &quot;banana&quot;, &quot;pear&quot;}, &quot;banana&quot;)
+    fmt.Println(idx, err) // output: 1
+}</code></pre>
+</div>
+<h3 id="custom-constraints" class="maps-to-line">Custom Constraints</h3>
+<p class="maps-to-line">Our interface definitions, which can later be used as constraints can take their own type parameters.</p>
+<div class="joplin-editable">
+<pre><code class="language-go">type buildingUpgrader[S small, M medium] interface {
+    Upgrade(S) M
+}</code></pre>
+</div>
+<p class="maps-to-line">small, medium is defined as interface.</p>
+<h3 id="type-lists" class="maps-to-line">Type lists</h3>
+<p class="maps-to-line">simply list a bunch of types to get a new interface/constraint.</p>
+<div class="joplin-editable">
+<pre><code class="language-go">// Ordered is a type constraint that matches any ordered type.
+// An ordered type is one that supports the &lt;, &lt;=, &gt;, and &gt;= operators.
+type Ordered interface {
+    ~int | ~int8 | ~int16 | ~int32 | ~int64 |
+        ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr |
+        ~float32 | ~float64 |
+        ~string
+}</code></pre>
+</div>
+<h3 id="mixed" class="maps-to-line">Mixed</h3>
+<div class="joplin-editable">
+<pre><code class="language-go">type ComparableStringer interface {
+    comparable
+    String() string
+}</code></pre>
+</div>
+<h3 id="self-referential" class="maps-to-line">Self referential</h3>
+<div class="joplin-editable">
+<pre><code class="language-go">Cloneable interface {
+    Clone() Cloneable
+}</code></pre>
+</div>
+<h3 id="generic-types-vs-generic-functions" class="maps-to-line">Generic Types vs Generic Functions</h3>
+<p class="maps-to-line">So we know that we can write functions that use generic types, but what if we want to create a custom type that can contain generic types? For example, a slice of order-able objects. The <a title="https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md#operations-based-on-type-sets" href="https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md#operations-based-on-type-sets" data-from-md="" rel="nofollow noopener" target="_blank">new proposal</a> makes this possible.</p>
+<div class="joplin-editable">
+<pre><code class="language-go">type comparableSlice[T comparable] []T
+
+func allEqual[T comparable](s comparableSlice[T]) bool {
+    if len(s) == 0 {
+        return true
+    }
+    last := s[0]
+    for _, cur := range s[1:] {
+        if cur != last {
+            return false
+        }
+        last = cur
+    }
+    return true 
+}
+
+func main() {
+    fmt.Println(allEqual([]int{4,6,2}))
+    // false
+
+    fmt.Println(allEqual([]int{1,1,1}))
+    // true
+}</code></pre>
+</div>
+<p class="maps-to-line">Let&#8217;s implement a practical example and try to implement bubble sort using generics</p>
+<div class="joplin-editable">
+<pre><code class="language-go">import (
+	&quot;fmt&quot;
+)
+
+type Number interface {
+	int8 | int16 | int32 | int64 | float32 | float64
+}
+
+func BubbleSort[N Number](input []N) []N {
+	n := len(input)
+	swapped := true
+	for swapped {
+		swapped = false
+		for idx := 0; idx &lt; n-1; idx++ {
+			if input[idx] &gt; input[idx+1] {
+				input[idx], input[idx+1] = input[idx+1], input[idx]
+				swapped = true
+			}
+		}
+	}
+	return input
+}
+
+func main() {
+	list := []int32{4, 3, 1, 5, 6}
+	listFloat := []float32{4.3, 7.6, 2.4, 1.5}
+
+	fmt.Println(BubbleSort(list))
+	fmt.Println(BubbleSort(listFloat))
+}</code></pre>
+</div>
+<p class="maps-to-line">If you like, you can read the same article on my <a title="https://rezwanul-haque.hashnode.dev/generics-in-golang-118" href="https://rezwanul-haque.hashnode.dev/generics-in-golang-118" data-from-md="" rel="nofollow noopener" target="_blank">Personal blog</a></p>
+<blockquote class="maps-to-line">
+<h4 id="you-can-read-my-other-blog-posts-here">You can read my other blog-posts <a title="https://rezwanul-haque.hashnode.dev/" href="https://rezwanul-haque.hashnode.dev/" data-from-md="" rel="nofollow noopener" target="_blank">Here</a></h4>
+</blockquote>
+<p class="maps-to-line">So in conclusion we can say, Generics can give us lots of help if we can use them in development. Also, we don&#8217;t need to copy/paste the same functionality again and again. Hopefully, after the &gt;go 1.18 and above we can start using Generics. With this feature, we as Golang developers don&#8217;t have to copy/paste functions for different types with the same functionality. We can reuse our code more efficiently with our loved programming language.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/generics-in-golang-1-18/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Worker Pool in Golang</title>
+		<link>/blog/worker-pool-in-golang/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Tue, 23 Mar 2021 12:06:34 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[advance]]></category>
+		<category><![CDATA[channels]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[goroutine]]></category>
+		<category><![CDATA[threadpool]]></category>
+		<category><![CDATA[topic]]></category>
+		<category><![CDATA[workerpool]]></category>
+		<guid isPermaLink="false">/?p=2518</guid>
+
+					<description><![CDATA[Tags: #advance #topic #golang #goroutine #channels #workerpool #threadpool Often we end up with some work which is so time-consuming that if we&#8217;re able to assign, multiple person/worker, to do that job the execution time will reduce the time which will save a lot of time for those particular tasks. Today we&#8217;re going to solve this [&#8230;]]]></description>
+										<content:encoded><![CDATA[<h3>Tags: #advance #topic #golang #goroutine #channels #workerpool #threadpool</h3>
+<p>Often we end up with some work which is so time-consuming that if we&#8217;re able to assign, multiple person/worker, to do that job the execution time will reduce the time which will save a lot of time for those particular tasks.</p>
+<p>Today we&#8217;re going to solve this problem by creating a worker pool also known as thread pool so that tasks are done by multiple workers concurrently. We&#8217;re particularly using Golang&#8217;s lightweight thread also known as Goroutine &amp; Channels.</p>
+<h3>Prerequisites: Goroutine, Channels</h3>
+<h2>Goroutine</h2>
+<p>A goroutine is a lightweight thread managed by the Go runtime unlike other languages like Python who&#8217;s threads are managed by OS and also expensive to run. So goroutines are functions or methods that run concurrently with other functions or methods.</p>
+<h2>Channels</h2>
+<p>Channels are ways in which different goroutines communicate with each other. We can understand them as pipes through which you can connect with different concurrent goroutines. The communication is bidirectional by default, meaning that you can send and receive values from the same channel.</p>
+<p>Let&#8217;s define some workers so that we can solve the time issue using goroutines and channels.</p>
+<h2>Task</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func task() {
+    time.Sleep(time.Second) // some task to be executed
+}</pre>
+<h2>Job</h2>
+<blockquote>
+<h4>Note: Each job takes 1 second to complete</h4>
+</blockquote>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func job(workerID, jobID int) {
+    fmt.Println("worker", workerID, "started  job", jobID)
+    task()
+    fmt.Println("worker", workerID, "finished job", jobID)
+}</pre>
+<h3>Worker</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func worker(workerID int, jobs &lt;-chan int, results chan&lt;- int) {
+    for j := range jobs {
+        job(workerID, j)
+        results&lt;- j * 2
+    }
+}</pre>
+<p>In Golang, we define a channel with the keyword `chan`. Anyone get confused when seeing those arrow signs with channels, let&#8217;s simplified those first&#8230;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">chan   // read-write
+&lt;-chan // read-only
+chan&lt;- // write-only</pre>
+<p>So we can say without any arrow in the `chan` keyword would mean the channel can read-write which is the default behavior, but if we want a read-only channel we put an arrow sign before the `chan` keyword like `&lt;-chan` and if we want a write-only channel we put an arrow sign after the `chan` keyword like `chan&lt;-` this.</p>
+<blockquote><p>So for our example above the `jobs` channel only reads and the `results` channel only writes data.</p></blockquote>
+<p>So let&#8217;s continue on our worker pool example&#8230;</p>
+<p>Our worker function will receive the jobs and send the results of the job in the results channel.</p>
+<p>We make the job function to execute the task function to simulate an actual task running by the worker.</p>
+<blockquote><p>In the `task` function we put a sleep function which will wait for a second so that it behaves like expensive/time-consuming work.</p></blockquote>
+<h2>Create a int channel with buffer</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func makeIntChannels(buffer int) chan int {
+    channel := make(chan int, buffer)
+    return channel
+}</pre>
+<h2>Worker pool</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func execUsingWorkerPool(numOfJobs, numOfWorkers int) {
+    defer duration(track("time using worker pool"))
+
+    jobs := makeIntChannels(numOfJobs)
+    results := makeIntChannels(numOfJobs)
+
+    for w := 1; w &lt;= numOfWorkers; w++ {
+        go worker(w, jobs, results)
+    }
+
+    for job := 1; job &lt;= numOfJobs; job++ {
+        jobs&lt;- job
+    }
+
+    close(jobs) // closing the job channel to indicate that's all the work we have.
+
+    for i := 1; i &lt;= numOfJobs; i++ {
+        &lt;-results
+    }
+}</pre>
+<h2>Without worker pool</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func execWithoutUsingWorkerPool(numOfJobs, worker int) {
+    defer duration(track("time without using worker pool"))
+
+    for j := 1; j &lt;= numOfJobs; j++ {
+        job(worker, j)
+    }
+}</pre>
+<h2>Calculate execution time</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func track(msg string) (string, time.Time) {
+    return msg, time.Now()
+}
+
+func duration(msg string, start time.Time) {
+    log.Printf("%v: %v\n", msg, time.Since(start))
+}</pre>
+<p>whoo!!! lots of code right&#8230;<br />
+Let&#8217;s go through the `main` function to understand what&#8217;s happening</p>
+<h2>Main function</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    const numOfJobs = 5
+    const numOfWorkers = 3
+
+    execUsingWorkerPool(numOfJobs, numOfWorkers)
+
+    execWithoutUsingWorkerPool(numOfJobs, 1)
+}</pre>
+<p>In the main function, we&#8217;re defining the number of jobs and workers as a const a value so that we can reuse them in the worker pool function and single worker pool function.<br />
+Let&#8217;s check out the `execUsingWorkerPool` function to understand what&#8217;s happening.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">defer duration(track("time using worker pool"))</pre>
+<p>In the first line, we use the `defer` keyword, which means that when `execUsingWorkerPool` function executes all other statements in the function block &amp; the last command will be executed would be defined in the `defer` statement, cool right&#8230;</p>
+<p>`duration` &amp; `track` function here is a util function which allows us to track the execution time. `track` function passed as a parameter in the duration function as in the Golang, this is called higher-order function or first-class citizen which means is a function can be assigned to a variable, pass as a parameter to other function and return a function from another function.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">jobs := makeIntChannels(numOfJobs)
+results := makeIntChannels(numOfJobs)</pre>
+<p>Next line we define two int buffer channels as jobs &amp; results. In order to use our pool of workers, we need to send them jobs and collect their results.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">for worker := 1; worker &lt;= numOfWorkers; worker++ {
+    go worker(worker, jobs, results)
+}</pre>
+<p>Next line This starts up workers, for our example, we use 3 workers, initially blocked because there are no jobs yet.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">for job := 1; job &lt;= numOfJobs; job++ {
+    jobs&lt;- job
+}
+
+close(jobs) // closing the job channel to indicate that's all the work we have.</pre>
+<p>Next, we send a total of 5 jobs and then close the jobs channel to indicate, that’s all the work we have right now.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">for i := 1; i &lt;= numOfJobs; i++ {
+    &lt;-results
+}</pre>
+<p>Finally, we collect all the results of the jobs we define. This also ensures that the worker goroutines have finished all the workers.</p>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/worker-pool-in-golang" rel="nofollow noopener" target="_blank">Personal Blog</a></p>
+<p>You can read our other blog-posts <a href="/blog">Here</a></p>
+<p>You can read my other blog-posts <a href="https://rezwanul-haque.hashnode.dev/" rel="nofollow noopener" target="_blank">Here</a></p>
+<h2>Output</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">worker 3 started  job 1
+worker 1 started  job 2
+worker 2 started  job 3
+worker 2 finished job 3
+worker 2 started  job 4
+worker 3 finished job 1
+worker 3 started  job 5
+worker 1 finished job 2
+worker 3 finished job 5
+worker 2 finished job 4
+2021/03/18 09:25:25 time using worker pool: 2.000943787s
+worker 1 started  job 1
+worker 1 finished job 1
+worker 1 started  job 2
+worker 1 finished job 2
+worker 1 started  job 3
+worker 1 finished job 3
+worker 1 started  job 4
+worker 1 finished job 4
+worker 1 started  job 5
+worker 1 finished job 5
+2021/03/18 09:25:30 time without using worker pool: 5.001234313s</pre>
+<p>In Conclusion, we can say using the worker pool, execution time reduces to 2+ seconds where without worker pool, it&#8217;s taking 5+ seconds. Hopefully, After this, we understand what is a worker pool and how to create one in Golang, and the benefit of using a worker pool.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Why Golang?</title>
+		<link>/blog/why-golang/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Thu, 18 Mar 2021 17:12:40 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[project]]></category>
+		<guid isPermaLink="false">/?p=2483</guid>
+
+					<description><![CDATA[When we start learning a new language, we try to find the purpose of the language first so that we can decide if we&#8217;re going to use that language in our project or not. So when starting with Go, it&#8217;s common that you&#8217;ll hear that **&#8221; it&#8217;s a systems language&#8221;** as this was one of [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><img decoding="async" class="size-large wp-image-2493 aligncenter" src="/wp-content/uploads/2021/03/why-golang-Final-1-1030x1030-1.jpg" alt="why golang Final 1 1030x1030 1 Why Golang?" width="1030" height="1030"></p>
+<p>When we start learning a new language, we try to find the purpose of the language first so that we can decide if we&#8217;re going to use that language in our project or not.</p>
+<p>So when starting with Go, it&#8217;s common that you&#8217;ll hear that **&#8221; it&#8217;s a systems language&#8221;** as this was one of the earlier descriptions of language by the Go team. It was constructed to combine the speed and power of languages like C with the syntactical elegance of modern interpreted languages like Python in mind.</p>
+<p>From Go FAQ,</p>
+<blockquote>
+<h2>Why Go was created?</h2>
+<h3>Go was born out of frustration with existing languages and environments for systems programming.</h3>
+</blockquote>
+<p>Go hasn&#8217;t been considered a web language until recently as its main initial purpose to handle system-related tasks.</p>
+<p>Now Go is web-ready out of the box, it lacks a lot of the critical frameworks and tools people so often take for granted with web development now. As the community around Go grew, the scaffolding began to manifest in a lot of new and exciting ways. Combined with existing ancillary tools, Go is now a wholly viable option for end-to-end web development.</p>
+<p>Back to that primary question:</p>
+<h2>Why Go?</h2>
+<p>An honest answer to the above question, it&#8217;s not right for every web project, but any application that can benefit from high-performance, scalable as the business grows, secure web-serving out of the box with the added benefits of a beautiful concurrency model would make for a good candidate.</p>
+<p>We can summarize Golang&#8217;s effectiveness in six points:</p>
+<p><strong>1. Concurrency</strong><br />
+<strong>2. Scalability</strong><br />
+<strong>3. Error Checking</strong><br />
+<strong>4. Compiled Language</strong><br />
+<strong>5. Garbage Collection</strong><br />
+<strong>6. Cross-Platform</strong></p>
+<h2>Concurrency</h2>
+<h3>Millions of Platform Users</h3>
+<p>Go has many built-in features designed to handle several concurrent web requests due to which it is very efficient as compared to other legacy languages such as python etc</p>
+<h2>Scalability</h2>
+<h3>Grow with the Business</h3>
+<p>As an enterprise grows the programs used will be required to do several things at the same time. Golang can easily scale due to its ability to handle several simultaneous tasks.</p>
+<h2>Error Checking</h2>
+<h3>Nil/Null Malfunction</h3>
+<p>Go comes with a built-in error type. It uses error values to indicate an abnormal state while writing the code. The developer can spot errors leading to nil/null malfunction.</p>
+<h2>Compiled Language</h2>
+<h3>Fast Performance</h3>
+<p>As a compiled language runs source code files through a compiler, which reads source code and generates a binary, or executable, file that is used to run the program. Examples of other popular compiled languages include C, C++, and Swift. This way performance is way faster than other languages like python etc.</p>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/why-golang" target="_blank" rel="noopener nofollow">Personal Blog</a></p>
+<p>You can read my other blog-posts <a href="https://rezwanul-haque.hashnode.dev/" target="_blank" rel="noopener nofollow">Here</a></p>
+<h2>Garbage Collection</h2>
+<h3>Boost App Speed</h3>
+<p>Golang&#8217;s collection pauses are as low as 100 microseconds. As a result, it is predictable, better performance, and fast loading time.</p>
+<h2>Cross-Platform</h2>
+<h3>Low Investment</h3>
+<p>Golang performs well across various platforms such as Windows, Linux, Unix, Android, IOS, and other operating systems as well as cloud applications. This means businesses don&#8217;t have to spend much on ensuring cross-platform functionality.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Getting TestCase Based I/O Without Any Loop In Golang</title>
+		<link>/blog/getting-testcase-based-i-o-without-any-loop-in-golang/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Tue, 16 Mar 2021 12:26:10 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[interview]]></category>
+		<category><![CDATA[loop]]></category>
+		<category><![CDATA[no]]></category>
+		<category><![CDATA[recursion]]></category>
+		<guid isPermaLink="false">/?p=2431</guid>
+
+					<description><![CDATA[Sometimes interview questions come with some twist like Solve this problem without using any loops So today I will explain how to solve general input/output (i/o) with test cases problem where special rule defines as saying &#8220;Do not use any Loop statement&#8221;. We&#8217;re going to solve this in Golang. When this type of problem was [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Sometimes interview questions come with some twist like</p>
+<h3>Solve this problem without using any loops</h3>
+<p>So today I will explain how to solve general input/output (i/o) with test cases problem where special rule defines as saying &#8220;Do not use any <strong>Loop</strong> statement&#8221;. We&#8217;re going to solve this in Golang. When this type of problem was asked by the interviewer, the first thing that came to our mind(especially those who didn&#8217;t solve lots of problem-solving in his/her school/university life). The problem statement is given below that we will try to solve the problem without using any loop.</p>
+<blockquote>
+<h4>Note: This problem can be solved differently or different recursive implementation can be applied too.</h4>
+</blockquote>
+<h2>Problem Statement</h2>
+<p>&#8211; We want you to calculate the sum of squares of given integers, excluding any negatives.<br />
+&#8211; The first line of the input will be an integer N (1 &lt;= N &lt;= 100), indicating the number of test cases to follow.<br />
+&#8211; Each of the test cases will consist of a line with an integer X (0 &lt; X &lt;= 100), followed by another line consisting of X number of space-separated integers Y<sub>n</sub>(-100 &lt;= Y<sub>n</sub>&lt;= 100).<br />
+&#8211; For each test case, calculate the sum of squares of the integers, excluding any negatives, and print the calculated sum in the output.</p>
+<p>Note 1: Do not put blank lines between test case solutions.<br />
+Note 2: Take input from standard input and output to standard output.</p>
+<h3>Rules</h3>
+<p>&#8211; Do not use any <strong>Loop</strong> statement<br />
+&#8211; You may only use standard library packages<br />
+&#8211; There should be no output until all the input has been received.</p>
+<h2>Solution</h2>
+<h3>Defining Main &amp; standard library packages</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">package main
+
+import "fmt"</pre>
+<h3>Defining a global variable for storing results</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">var result []int</pre>
+<h3>Defining main function</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    var testCaseNum int
+    fmt.Scanln(&amp;testCaseNum)
+
+    nTestCase(0, testCaseNum)
+}</pre>
+<h3>Recursively taking inputs using ReadN</h3>
+<blockquote><p>Note: The function will finish when the test case and index value become equal and we&#8217;re printing the result array recursively using <strong>PrintN</strong> as Golang doesn&#8217;t have any built-in functions which print array without any loop (to my knowledge at least).</p></blockquote>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func nTestCase(idx int, testCase int) {
+    if idx == testCase {
+        PrintN(result, 0)
+        return
+    }
+    var n int
+    fmt.Scanln(&amp;n)
+    
+    all := make([]int, n)
+    ReadN(all, 0, n)  // reading array elements
+
+    result = append(result, sumOfSquare(all, 0, n))
+
+    nTestCase(idx + 1, testCase)
+}</pre>
+<h3>Calculating sum of squares of given integers, excluding any negatives.</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func sumOfSquare(values []int, idx int, arrayLen int) int {
+    if idx == arrayLen {
+        return 0
+    }
+
+    if values[idx] &gt; 0 {  // ignoring negative numbers in the array
+        return values[idx] * values[idx] + sumOfSquare(values, idx + 1, arrayLen)
+    }
+    return sumOfSquare(values, idx + 1, arrayLen)
+}</pre>
+<h3>Reading integer array inputs recursively</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func ReadN(all []int, idx, n int) {
+    if n == 0 {
+        return
+    }
+    if m, err := fmt.Scan(&amp;all[idx]); m != 1 {
+        panic(err)
+    }
+    ReadN(all, idx+1, n-1)
+}</pre>
+<h3>Outputting result integer array recursively</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func PrintN(values []int, idx int) {
+    if len(values) == idx {
+        return
+    }
+    fmt.Println(values[idx])
+
+    PrintN(values, idx + 1)
+}</pre>
+<p>In conclusion, When we saw this type of problem for the first time, we thought it&#8217;s easy problem until we read the line <strong>Do not use any Loop statement</strong> in your solution and the problem becomes hard for newbie or not too much experience on problem-solving.</p>
+<h2>You can read our other blog posts <a href="/blog/" target="_blank" rel="noopener">Here</a></h2>
+<p>So now we all know how to tackle this type of problem. Stay tuned for our next blog post. Thank you.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Reverse a linked list using Golang</title>
+		<link>/blog/reverse-a-linked-list-using-golang/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Tue, 16 Mar 2021 11:46:13 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[datastructure]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[linkedlist]]></category>
+		<category><![CDATA[reverse]]></category>
+		<guid isPermaLink="false">/?p=2417</guid>
+
+					<description><![CDATA[As we start coding and slowly learning about Data Structures(DS), we come across a very famous linear data structure which is known as a linked list. Linked lists and their related questions are quite popular in interviewers who love problem-solving. What is a Linked List? A linked list is a common linear data structure. its [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>As we start coding and slowly learning about Data Structures(DS), we come across a very famous linear data structure which is known as a linked list. Linked lists and their related questions are quite popular in interviewers who love problem-solving.</p>
+<h2>What is a Linked List?</h2>
+<p>A linked list is a common linear data structure. its elements are also known as **Node** are not stored at a contiguous location. The nodes are linked using pointers. Linked lists are popular as their size is not fixed like an array. Linked list&#8217;s each node contains a value and a pointer to the next node. The head pointer points to the first node, and the last node of the list points to null. When the linked list is empty, the head pointer points to null.</p>
+<p>Types of Linked Lists:<br />
+1. Singly Linked List (Uni-directional)<br />
+2. Doubly Linked List (Bi-directional)<br />
+3. Circular Linked List</p>
+<p>I&#8217;ll write about linked list types in a different post as this post about reversing a linked list.</p>
+<h2>Pros:</h2>
+<ol>
+<li>Dynamically increase in size</li>
+<li>Easy to insertion/deletion</li>
+</ol>
+<h2>Cons:</h2>
+<ol>
+<li>Accessing a random node is not allowed.</li>
+<li>Additional memory space needs for each node in a linked list.</li>
+<li>Not cache friendly.</li>
+</ol>
+<h2>Linked List</h2>
+<h2>Node for a linked list</h2>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">type Node struct {
+    prev *Node
+    next *Node
+    key interface{}
+}
+
+type LinkedList struct {
+    head *Node
+    tail *Node
+}</pre>
+<h3>Push method for a Linked List</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func (ll *LinkedList) Push(key interface{}) {
+    list := &amp;Node{
+        next: ll.head,
+        key: key,
+    }
+    if ll.head != nil {
+        ll.head.prev = list
+    }
+    ll.head = list
+    
+    l := ll.head
+    for ll.next != nil {
+        l = l.next
+    }
+    ll.tail = l
+}</pre>
+<pre></pre>
+<h3>Display a Linked list</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func (ll *LinkedList) Display() {
+    list := ll.head
+    for list != nil {
+        fmt.Printf("%+v -&gt;", list.key)
+        list = list.next
+    }
+    fmt.Println()
+}
+
+// normal display function
+func Display(list *Node) {
+    for list != nil {
+        fmt.Printf("%v -&gt;", list.key)
+        list = list.next
+    }
+    fmt.Println()
+}</pre>
+<h3>Reverse a Linked list</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func (ll *LinkedList) Reverse() {
+    currentNode := ll.head
+    var next *Node
+    var previousNode *Node
+    ll.tail = ll.head
+
+    for currentNode != nil {
+        next, currentNode.next = currentNode.next, previousNode
+        previousNode, currentNode = currentNode, next
+    }
+    ll.head = previousNode
+    Display(ll.head)
+}</pre>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/reverse-a-linked-list-using-golang" rel="nofollow noopener" target="_blank">Personal Blog</a></p>
+<h3>Main function</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang">func main() {
+    link := LinkedList{}
+    link.Push(9)
+    link.Push(12)
+    link.Push(15)
+    link.Push(8)
+    link.Push(1)
+    link.Push(3)
+
+    fmt.Println("==============================")
+    fmt.Printf("Head: %v\n", link.head.key)
+    fmt.Printf("Tail: %v\n", link.tail.key)
+    link.Display()
+    fmt.Println("==============================")
+    link.Reverse()
+    fmt.Printf("head: %v\n", link.head.key)
+    fmt.Printf("tail: %v\n", link.tail.key)
+    fmt.Println("==============================")
+}
+
+// output
+==============================
+Head: 3
+Tail: 9
+3 -&gt; 1 -&gt; 8 -&gt; 15 -&gt; 12 -&gt; 9 -&gt; 
+==============================
+9 -&gt; 12 -&gt; 15 -&gt; 8 -&gt; 1 -&gt; 3 -&gt; 
+head: 9
+tail: 3
+==============================</pre>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Installing Multiple Version of Golang using GoEnv</title>
+		<link>/blog/installing-multiple-version-of-golang-using-goenv/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Mon, 18 Jan 2021 12:45:09 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[go]]></category>
+		<category><![CDATA[goenv]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[multiple]]></category>
+		<category><![CDATA[version]]></category>
+		<guid isPermaLink="false">/?p=2353</guid>
+
+					<description><![CDATA[Often we need a different version of go according to specific projects. There are different options we have like we can use Docker for our specific project&#8217;s need(we can talk about that in a different blog post). There are several other options but in this blog, we will talk about goenv. Prerequisites: git We&#8217;re using [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Often we need a different version of <strong>go</strong> according to specific projects. There are different options we have like we can use Docker for our specific project&#8217;s need(we can talk about that in a different blog post). There are several other options but in this blog, we will talk about <code>goenv</code>.</p>
+<blockquote>
+<h2>Prerequisites: git</h2>
+</blockquote>
+<p>We&#8217;re using Ubuntu 20.04 so below instruction will work in ubuntu. On Mac too. Not sure about windows.</p>
+<p>Official Installation Guide <a href="https://github.com/syndbg/goenv/blob/master/INSTALL.md" rel="nofollow noopener" target="_blank">GOENV Install guide</a></p>
+<h1>Goto github</h1>
+<pre><code>git clone https://github.com/syndbg/goenv.git ~/.goenv</code></pre>
+<blockquote>
+<p>if this particular git code syntax you(readers) are not familiar with we will explain it, it just cloning the repo and place it on <code>.goenv</code> folder on the <code>home//</code> directory.</p>
+</blockquote>
+<h1>Define environment variable GOENV_ROOT</h1>
+<pre><code>echo &#039;export GOENV_ROOT=&quot;$HOME/.goenv&quot;&#039; &gt;&gt; ~/.bashrc
+echo &#039;export PATH=&quot;$GOENV_ROOT/bin:$PATH&quot;&#039; &gt;&gt; ~/.bashrc</code></pre>
+<blockquote>
+<p>for <code>zsh/oh-my-zsh</code> users, use zshrc or respective config files according to your terminal settings. </p>
+</blockquote>
+<h1>Add goenv init to your shell</h1>
+<pre><code>echo &#039;eval &quot;$(goenv init -)&quot;&#039; &gt;&gt; ~/.bashrc</code></pre>
+<blockquote>
+<p>If you want goenv to manage GOPATH and GOROOT (recommended), add GOPATH and GOROOT to your shell after eval &quot;$(goenv init -)&quot;</p>
+</blockquote>
+<pre><code>echo &#039;export PATH=&quot;$GOROOT/bin:$PATH&quot;&#039; &gt;&gt; ~/.bashrc
+
+echo &#039;export GOPATH=&quot;$HOME/&lt;workspaces_path&gt;/go&quot;&#039; &gt;&gt; ~/.bashrc</code></pre>
+<blockquote>
+<p>GOPATH Folder Structure<br />
+<img decoding="async" src="/wp-content/uploads/2021/01/gopath_folder_structure-300x249.png" alt="gopath_folder_structure" /></p>
+</blockquote>
+<h1>Restart your shell so the path changes take effect.</h1>
+<pre><code>exec $SHELL</code></pre>
+<h1>Install Go versions into $GOENV_ROOT/versions</h1>
+<pre><code>goenv install &lt;version_number&gt;
+
+# check all version which can be installed
+goenv install -l
+
+# Example
+goenv install 1.15.6</code></pre>
+<h1>To upgrade to a specific release of goenv</h1>
+<pre><code>cd $(goenv root)
+git pull</code></pre>
+<h1>Uninstalling goenv</h1>
+<pre><code>rm -rf goenv root</code></pre>
+<h1>Disable goenv</h1>
+<blockquote>
+<p>To disable goenv managing your Go versions, simply remove the goenv init line from your shell startup configuration. This will remove goenv shims directory from PATH, and future invocations like goenv will execute the system Go version, as before goenv.</p>
+</blockquote>
+<h1>Uninstalling Go Versions</h1>
+<pre><code>goenv uninstall</code></pre>
+<h1>Run this command after you install a new version of Go to activate</h1>
+<pre><code>goenv rehash</code></pre>
+<p>If you like you can read the same article in my personal <a href="https://gist.github.com/Rezwanul-Haque/4c533b048a8e628487439ecb1b933604" rel="nofollow noopener" target="_blank">github gist</a></p>
+<h1>How to use a specified version of Go (Globally or Locally)</h1>
+<pre><code># global
+goenv global 1.15.6
+
+# Local
+goenv local 1.15.6</code></pre>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>loops in Golang</title>
+		<link>/blog/loops-in-golang/</link>
+					<comments>/blog/loops-in-golang/#respond</comments>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Thu, 31 Dec 2020 20:12:23 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[loops]]></category>
+		<guid isPermaLink="false">/?p=2319</guid>
+
+					<description><![CDATA[Every programming language has some kind of loop for repeatedly executing a block of code. Programming languages like C/C++, C#, Python, Nodejs etc have their own way of writing loops. Among different types of loops the most common one is the for loop which almost all programming languages implement. Example of a &#34;for&#34; loop type [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Every programming language has some kind of loop for repeatedly executing a block of code. Programming languages like C/C++, C#, Python, Nodejs etc have their own way of writing loops. Among different types of loops the most common one is the <strong>for</strong> loop which almost all programming languages implement.</p>
+<h2>Example of a &quot;for&quot; loop</h2>
+<pre><code class="language-go">type Node struct {
+    Next  *Node
+    Value interface{}
+}
+var first *Node
+
+visited := make(map[*Node]bool)
+for n := first; n != nil; n = n.Next {
+    if visited[n] {
+        fmt.Println(&quot;cycle detected&quot;)
+        break
+    }
+    visited[n] = true
+    fmt.Println(n.Value)
+}</code></pre>
+<p>In the above example we traverse a linked list of Nodes and show it&#8217;s value, along the way we also detect if any cyclic  relation present in the linked list.</p>
+<p>As other programming languages implement different types of loops like while, for, foreach, do&#8230;while etc. On the other hand golang takes a different approach writing different types of loops using a single keyword <strong>for</strong> which we can say is a universal &quot;for&quot; loop.</p>
+<blockquote>
+<h2>Why universal, you  may ask?</h2>
+</blockquote>
+<p>As other programming languages implement different types of loops, golang makes it&#8217;s &quot;for&quot; loop act as all(almost) types of loop.</p>
+<h2>Different types of loop in golang</h2>
+<h2>1. Basic &quot;for&quot; loop or Three component loop</h2>
+<pre><code>for init; condition; post_statement {
+     loop body
+}</code></pre>
+<p>This is the basic way of writing a <strong>for</strong> loop in every programming language.</p>
+<pre><code class="language-go">// Golang version
+total := 0
+for i := 1; i &lt; 5; i++ {
+    total += i
+}
+fmt.Println(total) // (1+2+3+4) = 10</code></pre>
+<p>Summary of the above code:<br />
+we initialize the total variable to be 0. Then we initialize the <strong>for</strong> loop by saying &#8211; In the init statement we initialize the local variable i to 0 which scope is limited to the for loop.</p>
+<ul>
+<li>We put a condition statement. <code>i &lt; 5</code>, which will be checked every time the loop starts again.
+<ul>
+<li>if <strong>true</strong>, the loops body code will be executed</li>
+<li>if <strong>false</strong>, the loops done with the execution.</li>
+</ul>
+</li>
+<li>The post statement runs after the condition, and the loop body is executed. in the above code example it&#039;s incremented by 1.</li>
+<li>Back to step 2</li>
+</ul>
+<h2>2. &quot;foreach&quot; loop</h2>
+<pre><code>for index, value := range array {
+     fmt.Println(`%v %v`, index, value)
+}</code></pre>
+<p>Many languages give <strong>foreach</strong> to traverse or loop over elements of an array of items, maps etc. In Golang <strong>foreach</strong> loop can be easily achieved by using a <strong>for</strong> loop.</p>
+<pre><code class="language-go">// Golang version
+slice = []int{1,2,3} // array without a limit called slice
+for i, v := range slice {
+    fmt.Println(i, v)
+}
+// Output
+0 1
+1 2
+2 3</code></pre>
+<h2>3. &quot;While&quot; loop</h2>
+<pre><code>while condition {
+     fmt.Println(i)
+     i++ // i will be used to break from the loop
+}</code></pre>
+<p>Generally, we use <strong>for</strong> loops when we know how many times the loop should run. On the other hand if we need to run a loop to fulfil a certain condition then we can use <strong>while</strong> loop. In golang we also use the &quot;for&quot; to write a <strong>while</strong> loop as golang doesn&#039;t provide a while keyword for writing it.we write it like the <strong>for</strong> loop but ignoring the init and post_statement part of a three component loop.</p>
+<pre><code class="language-go">// Golang version
+i := 1
+for i &lt; 5 {
+    i *= 2
+}
+fmt.Println(i) // (1*2*2*2) = 8</code></pre>
+<p>Summary of the above code:<br />
+we initialize the i variable to be 1. Then we initialize the &quot;for&quot; loop</p>
+<ol>
+<li>We check the condition statement. i &lt; 5, which will be checked every time the loop starts again.
+<ul>
+<li>if <strong>true</strong>, the loops body code will be executed</li>
+<li>if <strong>false</strong>, the loop is done with the execution.</li>
+</ul>
+</li>
+<li>Back to step 1</li>
+</ol>
+<h2>4. &quot;Infinite&quot; loop</h2>
+<p>In the coding world we sometimes need to write an infinite loop. In other programming languages we use the <strong>while</strong> loop to write this.</p>
+<pre><code>n := 1
+while true {
+     fmt.Println(n) // this will repeat forever
+}</code></pre>
+<p>For golang we also achieve this by writing a <strong>for</strong> loop.</p>
+<pre><code class="language-go">// Golang version
+i := 1
+for {
+    i++ // this will repeat forever
+}
+fmt.Println(i) // this line will never be executed.</code></pre>
+<p>we just ignore the condition part of a <strong>while</strong> loop to make the loop statement an infinite loop.Also note that if we want to break from an infinite loop we need to put a base condition inside the infinite loop.</p>
+<pre><code class="language-go">// Golang version
+i := 1
+for {
+    i++
+    if i &gt; 10 {
+        break // will break the infinite loop when i value reach 10
+    }
+}
+fmt.Println(i) // 11</code></pre>
+<h2>5. &quot;do&#8230;while&quot; loop</h2>
+<p>The basic idea of a &quot;do&#8230;while&quot; loop is to run a block of code at least one time then check the condition</p>
+<ul>
+<li>if <strong>true</strong>, the loops body code will be executed.</li>
+<li>if <strong>false</strong>, the loops done with the execution.</li>
+</ul>
+<pre><code>do {
+     print(i)
+     i++ // i will be used to break from the loop
+} while(i &lt; 10)</code></pre>
+<p>So golang we can write the above scenario in two ways</p>
+<pre><code class="language-go">// 1st way
+for ok := true; ok; ok = condition {
+    work()
+}
+// 2nd way
+for {
+    work()
+    if !condition {
+        break
+    }
+}</code></pre>
+<p>In summary a &quot;do&#8230;while&quot; loop, the condition will be checked after the code block runs at least once.</p>
+<blockquote>
+<h4>This post also published as <a href="https://gist.github.com/Rezwanul-Haque/157dbde6d501b7eb843c31c6f9cc3157" title="github gist" rel="nofollow noopener" target="_blank">github gist</a>.</h4>
+</blockquote>
+<h2>Conclusion</h2>
+<p>As other programming language gives different keywords and syntax for writing loops, golang takes a slightly different approach and make it&#039;s <strong>for</strong> loop act as other loops. So now we can conclude our post by saying &quot;Golangs <strong>for</strong> loop, can act as universal loop.&quot;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/loops-in-golang/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Mukit Chowdhury &#8211; Vivasoft</title>
+	<atom:link href="/author/mukit-chowdhury/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Wed, 10 Aug 2022 08:26:19 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>Mukit Chowdhury &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>How string concatenation with plus operator reduce your application’s performance</title>
+		<link>/blog/how-string-concatenation-with-plus-operator-reduce-your-applications-performance/</link>
+					<comments>/blog/how-string-concatenation-with-plus-operator-reduce-your-applications-performance/#respond</comments>
+		
+		<dc:creator><![CDATA[Mukit Chowdhury]]></dc:creator>
+		<pubDate>Wed, 03 Aug 2022 09:10:58 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Java]]></category>
+		<guid isPermaLink="false">/?p=9875</guid>
+
+					<description><![CDATA[As programmers, we often have to add or concatenate different strings. This string concatenation is an essential topic in Java. This is because if the string concatenation is not done efficiently, it will affect the program’s performance. To understand the effect of this performance, let’s discuss a problem with LeetCode. The problem is Step By Step [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>As programmers, we often have to add or concatenate different strings. This string concatenation is an essential topic in Java. This is because if the string concatenation is not done efficiently, it will affect the program’s performance.</p>
+<p>To understand the effect of this performance, let’s discuss a problem with LeetCode. The problem is <a href="https://leetcode.com/problems/step-by-step-directions-from-a-binary-tree-node-to-another/" rel="nofollow noopener" target="_blank">Step By Step Directions From A Binary Tree Node to Another</a>.</p>
+<p>In this problem, a binary tree is given. After giving the source and destination, we are asked to return the shortest path from the source to the destination.</p>
+<p>Since only the root of the tree was given, my approach was first to take the edge out of the tree and bring the info of the traditional graph. Then keep track of the path while figuring out the shortest path by implementing <a href="https://en.wikipedia.org/wiki/Breadth-first_search" rel="nofollow noopener" target="_blank">BFS</a>. At the end of all, find the path and return it. Simple, but I got Time Limit Exceeded (or TLE. This verdict is given when someone got failed to pass the constrained runtime of the problem) after submitting! Why! Missed something in Constraint? No, not at all. The algorithm is straightforward BFS, so the complexity is also OK. So, maybe, there is a problem with the code, and I started looking at the code again, and then the problem came out.</p>
+<p>While concatenating the path, I was concatenating regular strings with the <strong>+ </strong>operator. What’s wrong with the <strong>+</strong> operator? That is what I will try to write now.</p>
+<p>In Java, strings are immutable. This means that a string object cannot be changed. A new string object will be created, whatever change we do to that string.</p>
+<p>In the above problem, since I was concatenating the directions of edges with the <strong>+</strong> operator, a new string object was created for each concatenation. During object creation through string concatenation, new memories (string objects and byte arrays) are taken from the heap, the characters of the previous string are copied, and characters of the new string are added. When you have to concat many strings through a loop, using <strong>+</strong> operator is not a good approach at all, because every concatenation has these tasks. As a result, my solution got TLE.</p>
+<p>In the case of <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/StringBuilder.html" rel="nofollow noopener" target="_blank">StringBuilder</a>, new objects are not created during each concatenation. StringBuilder first takes a memory of a certain capacity. If you need to append a new string, it dynamically creates a new byte array with the required memory, copies the contents of the StringBuilder there, then copies the contents of the new string. The process is such that these tasks aren’t done too many times. For example, if the initial capacity is 16, then to become a StringBuilder’s size 10^6, a new byte array creation and copying there can be happened at most 16 times (according to Oracle Java-11).</p>
+<p>So it turns out that, with the <strong>+</strong> operator, for each concatenation, a byte array is created with a new size, contents are copied, and a new string object is created. But in the case of StringBuilder, these tasks are only on demand. So when many strings are needed together, StringBuilder is a better option. For this reason, my solution got accepted after using StringBuilder.</p>
+<p>Showing some numbers to understand how much performance has been achieved using StringBuilder instead of the <strong>+</strong> operator. I have seen the accepted solution of 1.431 seconds to this problem. So I am assuming that this problem’s time limit is at least 1.5 seconds. This means that the solution of the string concatenation with the <strong>+</strong> operator could not finish the execution in 1.5 seconds. Since actual data is unavailable from Leetcode, I am assuming it finished in 1.5 seconds (reduced, it should take more). StringBuilder’s solution took 0.461 seconds. That means, a <strong>67.93%</strong> performance gain! Actually, the performance gain is much better than this. As Leetcode doesn’t give us info about the actual time taken by a TLE solution, we assumed a time that is much fewer than the actual.</p>
+<p>Now let’s get some actual values. Let’s concat some random strings with the <strong>+</strong> operator, then concat those same strings with other ways and compare them using <em class="kz"><a href="https://github.com/openjdk/jmh#readme" rel="nofollow noopener" target="_blank">Java Microbenchmark Harness</a> or JMH</em>. I will compare by concatenating 100 thousand strings of 10 lengths. Let me first declare two variables:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">private static final int TOTAL_STRING = 100_000;
+private static List&lt;String&gt; randomStringList = new ArrayList&lt;&gt;();</pre>
+<p>Then writing a method for random string generation:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">private String getRandomString(Random random) {
+    var leftLimit = 48; // numeral '0'
+    var rightLimit = 122; // letter 'z'
+    var targetStringLength = 10;
+    return random.ints(leftLimit, rightLimit + 1)
+        .filter(i -&gt; (i &lt;= 57 || i &gt;= 65) &amp;&amp; (i &lt;= 90 || i &gt;= 97))
+        .limit(targetStringLength)
+        .collect(StringBuilder::new, StringBuilder::appendCodePoint, 
+            StringBuilder::append)
+        .toString();
+}</pre>
+<p>Now writing a method to concat the string with the <strong>+</strong> operator</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">private int concatWithPlusOperator(List&lt;String&gt; list) {
+    var string = "";
+    for (var i = 0;i&lt;list.size(); i++)
+        string += list.get(i);
+    return string.length();
+}</pre>
+<p>Let’s write the method of concat strings with StringBuilder:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">private int concatWithStringBuilder(List&lt;String&gt; list) {
+    var stringBuilder = new StringBuilder();
+    for (var i = 0;i&lt;list.size(); i++)
+        stringBuilder.append(list.get(i));
+    return stringBuilder.length();
+}</pre>
+<p>Comparing two more ways to concat String. Here the first one is <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/StringJoiner.html" rel="nofollow noopener" target="_blank">StringJoiner</a> (introduced in Java 8):</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">private int concatWithStringJoiner() {
+    var stringJoiner = new StringJoiner(",");
+    for (var string : randomStringList)
+        stringJoiner.add(string);
+    return stringJoiner.toString().length();
+}</pre>
+<p>And the second one is <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html#join(java.lang.CharSequence,java.lang.CharSequence...)" rel="nofollow noopener" target="_blank">String.join()</a> (also introduced in Java 8):</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">private int concatWithStringJoin() {
+    var string = String.join(",", randomStringList);
+    return string.length();
+}</pre>
+<p>Now here is a static block to store the generated random strings in the list:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">static {
+    var random = new Random();
+    for (var i = 0; i &lt; TOTAL_STRING; i++) {
+        randomStringList.add(getRandomString(random));
+    }
+}</pre>
+<p>Finally, writing the benchmark method for concatenation with the <strong>+</strong> operator:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">@Fork(value = 10, warmups = 5)
+@Benchmark
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@BenchmarkMode(Mode.AverageTime)
+public void doBenchMarkOfPlusOperator() {
+    int len = concatWithPlusOperator(randomStringList);
+}</pre>
+<p>and the benchmark method for concatenation with StringBuilder:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">@Fork(value = 10, warmups = 5)
+@Benchmark
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@BenchmarkMode(Mode.AverageTime)
+public void doBenchMarkOfStringBuilder() {
+    int len = concatWithStringBuilder(randomStringList);
+}</pre>
+<p>Benchmark method for StringJoiner:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">@Fork(value = 10, warmups = 5)
+@Benchmark
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@BenchmarkMode(Mode.AverageTime)
+public void doBenchMarkOfStringJoiner() {
+    int len = concatWithStringJoiner();
+}</pre>
+<p>And the last one is the benchmark method for String.join():</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">@Fork(value = 10, warmups = 5)
+@Benchmark
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@BenchmarkMode(Mode.AverageTime)
+public void doBenchMarkOfStringJoin() {
+    int len = concatWithStringJoin();
+}</pre>
+<p>Let’s see the Benchmark results:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="java">Benchmark                                   Mode  Cnt     Score    Error  Units         
+BenchmarkRunner.doBenchMarkOfPlusOperator   avgt   50  4970.270 ± 68.968  ms/op           
+BenchmarkRunner.doBenchMarkOfStringBuilder  avgt   50     1.454 ±  0.023  ms/op                
+BenchmarkRunner.doBenchMarkOfStringJoin     avgt   50     1.987 ±  0.017  ms/op               
+BenchmarkRunner.doBenchMarkOfStringJoiner   avgt   50     1.961 ±  0.039  ms/op</pre>
+<p>See, it takes 1.454, 1.987 and 1.961 <strong>milliseconds</strong> on average with StringBuilder, String.join() and StringJoiner respectively, whereas to do the same concatenation of 100 thousand strings of 10 lengths, the <strong>+</strong> operator is taking 4970.270 <strong>milliseconds</strong> on average! How inefficient the plus operator way is to contact String objects!</p>
+<p>You will get the full code here: <a href="https://github.com/Mukit09/jmh/tree/main/string-concatenation" rel="nofollow noopener" target="_blank">github-repo</a></p>
+<p>By the way, none of the StringBuilder, StringJoiner, and String.join() is thread-safe. If thread safety is concerned, StringBuffer should be used. Since it is thread-safe, StringBuffer is slower than StringBuilder.</p>
+<p>StringJoiner and String.join() are useful to have a concise code when we need to make a string separated by a specific delimiter, from a string collection.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/how-string-concatenation-with-plus-operator-reduce-your-applications-performance/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>account &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/account/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Fri, 24 Sep 2021 05:08:25 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>account &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Multiple Git Account Setup (Ubuntu version)</title>
+		<link>/blog/multiple-git-account-setup-ubuntu-version/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Wed, 27 Jan 2021 12:30:43 +0000</pubDate>
+				<category><![CDATA[Git]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[account]]></category>
+		<category><![CDATA[git]]></category>
+		<category><![CDATA[multiple]]></category>
+		<category><![CDATA[vcs]]></category>
+		<guid isPermaLink="false">/?p=2361</guid>
+
+					<description><![CDATA[ssh-add is a command for adding SSH private keys into the SSH authentication agent for implementing single sign-on with SSH. The agent process is called ssh-agent; The cool thing about ssh-agent and ssh-add is that they allow the user to use any number of servers, spread across any number of organizations, without having to type [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>ssh-add is a command for adding SSH private keys into the SSH authentication agent for implementing single sign-on with SSH. The agent process is called ssh-agent;</p>
+<p>The cool thing about ssh-agent and ssh-add is that they allow the user to use any number of servers, spread across any number of organizations, without having to type in a password whenever moving between servers. This is commonly used by system administrators to move among the machine they administer. It is also widely used in universities and research institutions for accessing computing resources.</p>
+<p>More paractical example would be: when anyone shift to new organization and get a new organization email address for the specific organization. He/She might need to create a <strong>VCS</strong>(version control system) account at github, bitbuckt, gitlab etc. Most Developer already have one personal account on any of the those VCS sites. So to setup this two account on a single machine sometime complex. In this post we will learn how to setup two or more VCS account on a single machine.</p>
+<blockquote>
+<p>The below command will work on Ubuntu and Mac but Windows may not. But In windows, using window subsystem (<strong>WSL</strong>) will solved below command issue.</p>
+</blockquote>
+<h2>Step 1: Create ssh key for different email address</h2>
+<pre><code># With Office Email
+ssh-keygen -t rsa -b 4096 -C &quot;rezwanul.haque@vivasoftltd.com&quot; -f rezwanul.viva
+
+# With Personal Email
+ssh-keygen -t rsa -b 4096 -C &quot;rezwanul.cse@gmail.com&quot; -f rezwanul-haque</code></pre>
+<blockquote>
+<h4>add this ssh public keys to respective VCS accounts</h4>
+</blockquote>
+<h2>Step 2: Create a config file on .ssh file</h2>
+<pre><code>touch config
+
+sudo vim config</code></pre>
+<h3>Add this</h3>
+<pre><code># Personal account - default config
+Host github.com-rezwanul-haque
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/rezwanul-haque
+# Work account - Viva
+Host github.com-rezwanul-viva
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/rezwanul.viva
+</code></pre>
+<h2>Step 3: Create common <code>~/.gitconfig</code> file at home directory</h2>
+<pre><code>sudo vim ~/.gitconfig</code></pre>
+<h3>Add this to <code>~/.gitconfig</code></h3>
+<pre><code># Default account-Personal
+[user]
+        name = rezwanul-haque
+        email = rezwanul.cse@gmail.com
+# Professional account-Office
+[includeIf &quot;gitdir:~/&lt;office_work_space_path&gt;/&quot;]
+        path = ~/&lt;office_work_space_path&gt;/.gitconfig-viva
+</code></pre>
+<h2>Step 4: Create organization specific gitconfig to organization workspace folder</h2>
+<pre><code># Professional account-organization
+[user]
+    name = rezwanul-haque-viva
+    email = rezwanul.haque@vivasoftltd.com
+</code></pre>
+<h2>Step 5: remove ssh keys and entities from the SSH agent</h2>
+<pre><code>ssh-add -D</code></pre>
+<h2>Step 6: Add keys and entities</h2>
+<pre><code>ssh-add rezwanul-haque
+ssh-add rezwanul.viva
+
+# Check if added or not
+ssh-add -l</code></pre>
+<h2>Step 7: Test with Connection using ssh</h2>
+<pre><code>ssh -T github.com-rezwanul-haque
+ssh -T github.com-rezwanul-viva</code></pre>
+<blockquote>
+<h3>Also read this aricle on my personal <a href="https://gist.github.com/Rezwanul-Haque/fbf2f929a6a42407504a93c0ff08376a" rel="nofollow noopener" target="_blank">gist</a></h3>
+</blockquote>
+<h2>Step 8: Cloning any project with organization account(required)</h2>
+<pre><code># need to add github-hostname
+git clone git@&lt;HostName&gt;:Rezwanul-Haque-Viva/&lt;office_project_repo&gt;.git
+
+Example: git clone git@github.com-rezwanul-viva:Rezwanul-Haque-Viva/&lt;office_project_repo&gt;.git</code></pre>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

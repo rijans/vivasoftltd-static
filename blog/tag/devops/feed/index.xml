@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>devops &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/devops/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Fri, 12 Aug 2022 12:23:46 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>devops &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>What is Docker</title>
+		<link>/blog/what-is-docker/</link>
+					<comments>/blog/what-is-docker/#respond</comments>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Fri, 12 Aug 2022 12:04:02 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Personal]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[container]]></category>
+		<category><![CDATA[devops]]></category>
+		<category><![CDATA[docker]]></category>
+		<category><![CDATA[image]]></category>
+		<guid isPermaLink="false">/?p=10018</guid>
+
+					<description><![CDATA[Docker is an open-source, container technology that allows developers and sysadmins to package applications so that they can be easily moved from one environment to another. This includes their dependencies, libraries, the code itself, and more. Docker&#8217;s use cases are limitless. It can be used as a way to deploy web applications, set up development [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p class="maps-to-line">Docker is an open-source, container technology that allows developers and sysadmins to package applications so that they can be easily moved from one environment to another. This includes their dependencies, libraries, the code itself, and more.</p>
+<p class="maps-to-line">Docker&#8217;s use cases are limitless. It can be used as a way to deploy web applications, set up development environments, or build libraries of pre-tested components in a reliable and repeatable fashion.</p>
+<p class="maps-to-line">As software engineers, We are assigned a task that solves a specific client-related business problem in the IT world. As we try to solve that specific problem, we always use specific tools and technology that will solve that problem efficiently and as quickly as possible. As our software team grows and also each one of us like different OS(Operating System) preferences like someone like MacOS, others like Linux, Many of us like Windows, etc. Now when a new member joins our team, we provide him with a Personal Computer(PC) which he will use to work on. Another member of the team will provide him with the latest project repository so that he can easily set up the project on his new pc to work on. Most of the target focuses on a new team member, and how quickly he/she can contribute to that project. To do so the project should take a minimal amount of time to set up so our new members can start contributing to the project. This same problem occurs when we try to deploy our project solution to the dev, staging, or production server.</p>
+<p class="maps-to-line">You may say, what the hell? What that story above mentioned, relates to <strong>Docker</strong>. Let&#8217;s first go through the official definition of docker then we will explain it in simple terms</p>
+<blockquote class="maps-to-line"><p>What is Docker? What problem is it trying to solve?</p></blockquote>
+<p class="maps-to-line">Also, let&#8217;s try to relate how the above story relates to Docker.</p>
+<h2 id="official-definition" class="maps-to-line">Official Definition</h2>
+<blockquote class="maps-to-line"><p><strong>Docker</strong> is an open platform for developing, shipping, and running applications. Docker enables you to separate your applications from your infrastructure so you can deliver software quickly. With Docker, you can manage your infrastructure in the same ways you manage your applications. By taking advantage of Docker’s methodologies for shipping, testing, and deploying code quickly, you can significantly reduce the delay between writing code and running it in production.</p></blockquote>
+<p class="maps-to-line">The official definition isn&#8217;t that hard to understand, right?</p>
+<p class="maps-to-line">Simplified Definition</p>
+<blockquote class="maps-to-line"><p><strong>Docker</strong> is a tool to automate the deployment of an application as a lightweight container so that the application can work efficiently in different environments.</p></blockquote>
+<blockquote class="maps-to-line"><p>Let&#8217;s try to relate Docker with Our example above.</p></blockquote>
+<p class="maps-to-line">As software Engineers, We always heard almost every day that, a project working perfectly on my machine may be some issue with your(another teammate&#8217;s) pc or the server pc and the blame game starts.</p>
+<p class="maps-to-line">This is what Docker trying to solve,</p>
+<blockquote class="maps-to-line"><p>This works on my machine&#8230;</p></blockquote>
+<p class="maps-to-line">Every single project runs on every machine without any problem with minimal dependencies to set up. Project code works fine on the developer machine but as soon as it is deployed or moved to a new teammate&#8217;s pc, it doesn&#8217;t work like it was expected.</p>
+<blockquote class="maps-to-line"><p>Docker is like a <strong>blank box</strong> when you as a developer put your files moves into a new place and it works no matter where you place that box.</p></blockquote>
+<p class="maps-to-line">This blank box where you put your code, in docker term, it&#8217;s called <strong>Containers</strong>. These containers are the absolute heart of the docker. when every time you take these containers it&#8217;s going to work absolutely and exactly like how it worked on your machine. Docker also allows us to publish this as an image to the public or private registry like docker hub, AWS ECR, Harbor, etc. So that others can also use your code on other projects as if you run on your pc.</p>
+<p class="maps-to-line">A simple example can be given like these, Suppose you need an older version of MySQL for a particular project and your pc has the latest version of MySQL so to install the other version of MySQL you need to stop your latest MySQL service and then install the older which is tedious most of the time. But using docker it will take a single command to install the required version of MySQL without stopping your latest MySQL version.</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="bash">docker run --name mymysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:latest -p 3310:3306</pre>
+<pre class="hljs"><code>
+</code>Let's break down the command for better understanding...</pre>
+</div>
+<p class="maps-to-line"><code class="inline-code">docker</code>: represents the executable</p>
+<p class="maps-to-line"><code class="inline-code">run</code>: this is a subcommand. There&#8217;re lots of other commands. To check we can use <code class="inline-code">docker --help</code>.</p>
+<p class="maps-to-line"><code class="inline-code">--name</code>: will set a custom name to the container. If not provided it will set a random name for the container.</p>
+<p class="maps-to-line"><code class="inline-code">-e</code>: represents environment variables. if we have multiple environment variables then we have to add <code class="inline-code">-e</code> for each.</p>
+<p class="maps-to-line"><code class="inline-code">-d</code>: means to run the container as detached mode.</p>
+<p class="maps-to-line"><code class="inline-code">mysql:latest</code>: is the image(a set of instructions) itself which will be used to generate the container.</p>
+<p class="maps-to-line"><code class="inline-code">-p</code>: refer to <code class="inline-code">port</code>. we always write like this <code class="inline-code">3310:3306</code> which actually means <code class="inline-code">&lt;local_pc_port&gt;:&lt;container_port&gt;</code>. Also if your PC port and the container port are the same then <code class="inline-code">3306</code> we can exclude the <code class="inline-code">:3306</code>.</p>
+<blockquote class="maps-to-line">
+<h5 id="noteto-remember-this-i-always-think-like-this-ports-always-start-from-your-local-pc-port-to-the-docker-container-port">Note:To remember this, I always think like this, ports always start from your local pc port to the docker container port.</h5>
+</blockquote>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/what-is-docker" rel="nofollow noopener" target="_blank">[Personal blog]</a></p>
+<blockquote>
+<h4>You can read my other blog-posts <a href="https://rezwanul-haque.hashnode.dev/" rel="nofollow noopener" target="_blank">[Here]</a></h4>
+</blockquote>
+<p class="maps-to-line">In Conclusion, Docker is often used as a “development tool” by developers who want to ensure that they have required dependencies in the development environment without including them in their codebase or having to learn about those dependencies on each new machine that they use for development.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/what-is-docker/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Yml or Yaml for DevOps</title>
+		<link>/blog/yml-for-devops/</link>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Mon, 15 Feb 2021 14:53:36 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[devops]]></category>
+		<category><![CDATA[yaml]]></category>
+		<category><![CDATA[yml]]></category>
+		<guid isPermaLink="false">/?p=2376</guid>
+
+					<description><![CDATA[As software engineers, we are always learning new tech stacks as we process our careers. Everyone who works on any short of software farm all came across a term called DevOps. As the name suggests, it&#8217;s consists of two terms Dev equal Development Ops equals Operations. So DevOps means Development Operations. As a different career [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>As software engineers, we are always learning new tech stacks as we process our careers. Everyone who works on any short of software farm all came across a term called <strong>DevOps</strong>.</p>
+<p>As the name suggests, it&#8217;s consists of two terms Dev equal Development Ops equals Operations. So DevOps means Development Operations. As a different career choice/position in some software farms still as a developer, it may help a lot if we know some shot of DevOps terms and tools which we can use to help others if anyone needs help or fast peace our development/testing time.</p>
+<p>In this post, we&#8217;ll not post about any complicated tech stacks which may be used by our DevOps colleagues like <strong>Docker, Kubernetes, Ansible, Prometheus</strong>, etc. But we&#8217;ll learn to use a common language called data-serialization language. These languages are human-readable so that anyone can understand what&#8217;s going on in that particular DevOps tools when we first saw them in our projects.</p>
+<h3>Prerequisites: None</h3>
+<h2>What is YAML?</h2>
+<blockquote>
+<p>YAML (a recursive acronym for &quot;YAML Ain&#8217;t Markup Language&quot;) is a human-readable data-serialization language.</p>
+</blockquote>
+<p>It is quite popular in the DevOps tools which we will talk about in our later posts. One of the main reasons why YAML popularity has increased so much over the past few years is that it is super human-readable and intuitive which makes it a great tool for writing configuration files for all those recent DevOps tools like I mentioned above.</p>
+<p>As we try to learn YAML, we came across its competitors in this field which is XML and JSON. We&#8217;ll show you examples of the three so that you can understand why YAML so popular among these three.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left">YAML</th>
+<th style="text-align: left">XML</th>
+<th style="text-align: left">JSON</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left"><img decoding="async" src="/wp-content/uploads/2021/02/yml_syntax-300x165.png" alt="yml syntax" /></td>
+<td style="text-align: left"><img decoding="async" src="/wp-content/uploads/2021/02/xml_syntax-300x128.png" alt="xml syntax" /></td>
+<td style="text-align: left"><img decoding="async" src="/wp-content/uploads/2021/02/json_syntax-300x263.png" alt="json syntax" /></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Note: YAML is a superset of JSON, So any valid JSON syntax will be a valid YAML code.</p>
+</blockquote>
+<p>So as YAML uses line separation and spaces with indentation instead of tags with angle brackets in XML and curly bracket in JSON. It&#8217;s a lot more easy to understand by others than XML or JSON.</p>
+<p>In this post, we will learn just enough syntax of YAML so that when anyone saw any configuration files from now on, he/she can easily understand what it means.</p>
+<p>Now let&#8217;s talk about the basic use cases of YAML in DevOps tools. We use YAML(YML) used in docker-compose, Kubernetes, Prometheus, Ansible, etc configuration files.  </p>
+<h2>Basic Syntax</h2>
+<p>As YAML uses simple key-value pair with proper space and indentation to format as we have shown in the above YAML picture.</p>
+<h3>Writing a comment</h3>
+<pre><code class="language-yaml"># this is a comment in yaml(yml)</code></pre>
+<p>Placing a <code>#</code> sign in front of a sentence is considered comment in YAML.</p>
+<h3>Strings</h3>
+<pre><code class="language-yaml">&quot;valid string 1&quot;
+&#039;valid string 2&#039;
+valid string 3</code></pre>
+<p>In YAML, strings can be written with double quotes or single quotes or without any quotes.</p>
+<blockquote>
+<p>Note: If a string has any special character like <code>\n</code> or <code>\t</code> then it must be written inside quotes otherwise YAML can&#8217;t understand it.</p>
+<pre><code>&#039;This string must be inside \n quotes&#039;</code></pre>
+</blockquote>
+<h3>Key-Value pair</h3>
+<pre><code class="language-yaml">image: consul:latest
+container_name: consul_dev
+ports: 8500</code></pre>
+<p>Writing anything in YAML must be followed like the above key-value pair except comments.</p>
+<h3>Objects</h3>
+<pre><code class="language-yaml">consul:
+    image: consul:latest
+    container_name: consul_dev
+    ports: 8500</code></pre>
+<p>To write objects in YAML, we just need to indent them within another key, check the example above. <code>image, container_name, port</code> becomes an object with <code>consul</code> as its key.</p>
+<blockquote>
+<p>Note: Indentation must be the same without proper indentation YAML can&#8217;t understand what it meant so it will throw an error when executing the YAML file. It&#8217;ll be best if we use a YAML validator when writing YAML.</p>
+</blockquote>
+<h3><a href="https://onlineyamltools.com/validate-yaml" rel="nofollow noopener" target="_blank">Validate YAML</a>, this online tool can be used to validate YAML.</h3>
+<h3>Lists</h3>
+<pre><code class="language-yaml">ports: 
+    - 8500
+    - 9500
+# OR
+ports: [8500, 9500]</code></pre>
+<p>If we want to create a list of ports, we can just add a dash (-) in front of the port value which will make it a list item. Another way of writing a list item is more readable than the first one. so use whatever suits you better.</p>
+<h3>Booleans</h3>
+<pre><code class="language-yaml">app:
+    auth: true # false
+# OR
+app:
+    auth: yes # no
+# OR
+app:
+    auth: on # off</code></pre>
+<p>The above three ways are defined to express boolean values.</p>
+<p>This is the basic syntax anyone needs to understand any configuration file written in YAML.</p>
+<p>Let&#8217;s look at a practical example using a simple <code>docker-compose</code> file and we use YAML</p>
+<pre><code class="language-yaml">version: &#039;3.7&#039;
+
+services:
+  db:
+    image: mysql:8.0.21
+    container_name: mysql
+    ports:
+      - 3309:3306
+    volumes:
+      - ./db:/var/lib/mysql:rw
+    environment:
+      - MYSQL_USER=d2d_user
+      - MYSQL_PASSWORD=12345678
+      - MYSQL_DATABASE=d2d_db
+      - MYSQL_ROOT_PASSWORD=12345678
+    tty: true
+</code></pre>
+<p>At we start to write a docker-compose file we start with <code>version:3.7</code> key-pair as it&#8217;s required for docker-compose to understand which version of YAML we are using to write docker-compose so that it can parse the YAML file</p>
+<p>Then we create a <code>services</code> key-pair so that we can define our services when we run <code>docker-compose up</code> to start application needed services.</p>
+<p>Within the <code>services</code> key. we create a <code>db</code> service and a YAML object as its value. we used a MySQL image and defined <code>mysql</code> as docker container name. <code>:</code> sign used to define image tags. </p>
+<p>Other info&#8217;s like <code>volumes</code> to persist data in a local folder or <code>environment</code> to define environment variable and <code>tty: true</code> for <code>docker run -t</code> which are specific to docker so that it can start db containers.</p>
+<p>If you like you can read the same article in my <a href="https://rezwanul-haque.hashnode.dev/yml-or-yaml-for-devops" rel="nofollow noopener" target="_blank">Personal blog</a></p>
+<p>In conclusion, we can say, Understanding YAML can help a lot if we starting our career as a DevOps Engineer or a software engineer to understand other configuration files used by the DevOps team.</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

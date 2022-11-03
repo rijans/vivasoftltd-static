@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>loops &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/loops/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Fri, 24 Sep 2021 05:05:43 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>loops &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>loops in Golang</title>
+		<link>/blog/loops-in-golang/</link>
+					<comments>/blog/loops-in-golang/#respond</comments>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Thu, 31 Dec 2020 20:12:23 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[loops]]></category>
+		<guid isPermaLink="false">/?p=2319</guid>
+
+					<description><![CDATA[Every programming language has some kind of loop for repeatedly executing a block of code. Programming languages like C/C++, C#, Python, Nodejs etc have their own way of writing loops. Among different types of loops the most common one is the for loop which almost all programming languages implement. Example of a &#34;for&#34; loop type [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Every programming language has some kind of loop for repeatedly executing a block of code. Programming languages like C/C++, C#, Python, Nodejs etc have their own way of writing loops. Among different types of loops the most common one is the <strong>for</strong> loop which almost all programming languages implement.</p>
+<h2>Example of a &quot;for&quot; loop</h2>
+<pre><code class="language-go">type Node struct {
+    Next  *Node
+    Value interface{}
+}
+var first *Node
+
+visited := make(map[*Node]bool)
+for n := first; n != nil; n = n.Next {
+    if visited[n] {
+        fmt.Println(&quot;cycle detected&quot;)
+        break
+    }
+    visited[n] = true
+    fmt.Println(n.Value)
+}</code></pre>
+<p>In the above example we traverse a linked list of Nodes and show it&#8217;s value, along the way we also detect if any cyclic  relation present in the linked list.</p>
+<p>As other programming languages implement different types of loops like while, for, foreach, do&#8230;while etc. On the other hand golang takes a different approach writing different types of loops using a single keyword <strong>for</strong> which we can say is a universal &quot;for&quot; loop.</p>
+<blockquote>
+<h2>Why universal, you  may ask?</h2>
+</blockquote>
+<p>As other programming languages implement different types of loops, golang makes it&#8217;s &quot;for&quot; loop act as all(almost) types of loop.</p>
+<h2>Different types of loop in golang</h2>
+<h2>1. Basic &quot;for&quot; loop or Three component loop</h2>
+<pre><code>for init; condition; post_statement {
+     loop body
+}</code></pre>
+<p>This is the basic way of writing a <strong>for</strong> loop in every programming language.</p>
+<pre><code class="language-go">// Golang version
+total := 0
+for i := 1; i &lt; 5; i++ {
+    total += i
+}
+fmt.Println(total) // (1+2+3+4) = 10</code></pre>
+<p>Summary of the above code:<br />
+we initialize the total variable to be 0. Then we initialize the <strong>for</strong> loop by saying &#8211; In the init statement we initialize the local variable i to 0 which scope is limited to the for loop.</p>
+<ul>
+<li>We put a condition statement. <code>i &lt; 5</code>, which will be checked every time the loop starts again.
+<ul>
+<li>if <strong>true</strong>, the loops body code will be executed</li>
+<li>if <strong>false</strong>, the loops done with the execution.</li>
+</ul>
+</li>
+<li>The post statement runs after the condition, and the loop body is executed. in the above code example it&#039;s incremented by 1.</li>
+<li>Back to step 2</li>
+</ul>
+<h2>2. &quot;foreach&quot; loop</h2>
+<pre><code>for index, value := range array {
+     fmt.Println(`%v %v`, index, value)
+}</code></pre>
+<p>Many languages give <strong>foreach</strong> to traverse or loop over elements of an array of items, maps etc. In Golang <strong>foreach</strong> loop can be easily achieved by using a <strong>for</strong> loop.</p>
+<pre><code class="language-go">// Golang version
+slice = []int{1,2,3} // array without a limit called slice
+for i, v := range slice {
+    fmt.Println(i, v)
+}
+// Output
+0 1
+1 2
+2 3</code></pre>
+<h2>3. &quot;While&quot; loop</h2>
+<pre><code>while condition {
+     fmt.Println(i)
+     i++ // i will be used to break from the loop
+}</code></pre>
+<p>Generally, we use <strong>for</strong> loops when we know how many times the loop should run. On the other hand if we need to run a loop to fulfil a certain condition then we can use <strong>while</strong> loop. In golang we also use the &quot;for&quot; to write a <strong>while</strong> loop as golang doesn&#039;t provide a while keyword for writing it.we write it like the <strong>for</strong> loop but ignoring the init and post_statement part of a three component loop.</p>
+<pre><code class="language-go">// Golang version
+i := 1
+for i &lt; 5 {
+    i *= 2
+}
+fmt.Println(i) // (1*2*2*2) = 8</code></pre>
+<p>Summary of the above code:<br />
+we initialize the i variable to be 1. Then we initialize the &quot;for&quot; loop</p>
+<ol>
+<li>We check the condition statement. i &lt; 5, which will be checked every time the loop starts again.
+<ul>
+<li>if <strong>true</strong>, the loops body code will be executed</li>
+<li>if <strong>false</strong>, the loop is done with the execution.</li>
+</ul>
+</li>
+<li>Back to step 1</li>
+</ol>
+<h2>4. &quot;Infinite&quot; loop</h2>
+<p>In the coding world we sometimes need to write an infinite loop. In other programming languages we use the <strong>while</strong> loop to write this.</p>
+<pre><code>n := 1
+while true {
+     fmt.Println(n) // this will repeat forever
+}</code></pre>
+<p>For golang we also achieve this by writing a <strong>for</strong> loop.</p>
+<pre><code class="language-go">// Golang version
+i := 1
+for {
+    i++ // this will repeat forever
+}
+fmt.Println(i) // this line will never be executed.</code></pre>
+<p>we just ignore the condition part of a <strong>while</strong> loop to make the loop statement an infinite loop.Also note that if we want to break from an infinite loop we need to put a base condition inside the infinite loop.</p>
+<pre><code class="language-go">// Golang version
+i := 1
+for {
+    i++
+    if i &gt; 10 {
+        break // will break the infinite loop when i value reach 10
+    }
+}
+fmt.Println(i) // 11</code></pre>
+<h2>5. &quot;do&#8230;while&quot; loop</h2>
+<p>The basic idea of a &quot;do&#8230;while&quot; loop is to run a block of code at least one time then check the condition</p>
+<ul>
+<li>if <strong>true</strong>, the loops body code will be executed.</li>
+<li>if <strong>false</strong>, the loops done with the execution.</li>
+</ul>
+<pre><code>do {
+     print(i)
+     i++ // i will be used to break from the loop
+} while(i &lt; 10)</code></pre>
+<p>So golang we can write the above scenario in two ways</p>
+<pre><code class="language-go">// 1st way
+for ok := true; ok; ok = condition {
+    work()
+}
+// 2nd way
+for {
+    work()
+    if !condition {
+        break
+    }
+}</code></pre>
+<p>In summary a &quot;do&#8230;while&quot; loop, the condition will be checked after the code block runs at least once.</p>
+<blockquote>
+<h4>This post also published as <a href="https://gist.github.com/Rezwanul-Haque/157dbde6d501b7eb843c31c6f9cc3157" title="github gist" rel="nofollow noopener" target="_blank">github gist</a>.</h4>
+</blockquote>
+<h2>Conclusion</h2>
+<p>As other programming language gives different keywords and syntax for writing loops, golang takes a slightly different approach and make it&#039;s <strong>for</strong> loop act as other loops. So now we can conclude our post by saying &quot;Golangs <strong>for</strong> loop, can act as universal loop.&quot;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/loops-in-golang/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

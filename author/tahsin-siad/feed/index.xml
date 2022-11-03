@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Tahsin Siad &#8211; Vivasoft</title>
+	<atom:link href="/author/tahsin-siad/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Mon, 08 Aug 2022 13:08:45 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>Tahsin Siad &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>ESC/POS printing by bridging (React Js + Flutter)</title>
+		<link>/blog/esc-pos-printing-by-bridging-react-js-flutter/</link>
+					<comments>/blog/esc-pos-printing-by-bridging-react-js-flutter/#respond</comments>
+		
+		<dc:creator><![CDATA[Tahsin Siad]]></dc:creator>
+		<pubDate>Mon, 08 Aug 2022 12:53:46 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[escpos-printing]]></category>
+		<category><![CDATA[javascript]]></category>
+		<category><![CDATA[ReactJS]]></category>
+		<guid isPermaLink="false">/?p=9756</guid>
+
+					<description><![CDATA[In this blog, we will discuss the implementation of pos printing in react js app and communicate with flutter app to print the receipt. Here there are two parts. Sending buffer data from reactjs Receiving buffer data from flutter app and sending it to pos printer. Before diving into details, first of all we have [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>In this blog, we will discuss the implementation of pos printing in react js app and communicate with flutter app to print the receipt. Here there are two parts.</p>
+<ul>
+<li aria-level="1">Sending buffer data from reactjs</li>
+<li aria-level="1">Receiving buffer data from flutter app and sending it to pos printer.</li>
+</ul>
+<p>Before diving into details, first of all we have to know what is pos printing, how it works. A short explanation is given below. If you want to know more, please google it.</p>
+<h3><strong>POS printing/receipt printing</strong></h3>
+<p>In restaurant/super shop we might see that the seller gives us a receipt after the successful bill payment using a pos printer. Some well known pos printer manufacturer companies are Sunmi, rongta, xprinter, star printer etc. There are 3 types of pos printers. They are thermal, inkjet and dot matrix. In our case, we have used a thermal printer. Receipts are printed by direct contact between the thermal head and thermal paper with the use of heat. Therefore, no ink is required.</p>
+<h3><strong>Sending buffer data from react js</strong></h3>
+<p>While we started thinking about the integration of pos printing in our system, we faced some challenges.</p>
+<ul>
+<li aria-level="1">Order api response</li>
+<li aria-level="1">Receipt Template</li>
+<li aria-level="1">Communication between flutter app and react js web app</li>
+<li aria-level="1">Printing setup (USB/Bluetooth)</li>
+</ul>
+<h4><strong>Order api response</strong></h4>
+<p>We know that flutter has complete pos printing libraries but why need to implement this from react js app. The answer is our system deals with multiple providers, different providers provide different responses while sending api responses. So, we need to process it from frontend to view those api responses. Another thing is displaying the whole website into  webview. For this, flutter app has limited access to get the order response from the backend. Thus, we overcame the first problem.</p>
+<h4><strong>Receipt Template</strong></h4>
+<p>The main challenge was making the template. Initially, we thought of making a template using html and css. Because it is developer friendly and easy to maintain. But, pos printer doesn’t support html. It only understands the <a href="https://aures-support.com/DATA/drivers/Imprimantes/Commande%20ESCPOS.pdf" rel="nofollow noopener" target="_blank">esc/pos command</a>. So, we had to change our decision. There are a lot of libraries for generating templates using the esc/pos command. But, coping up with our api response was a little bit tough as there were nested level addons list. Then, we found <a href="https://www.npmjs.com/package/@tillpos/xml-escpos-helper" rel="nofollow noopener" target="_blank">xml-escpose-helper</a> library which provided a xml layout, converted the xml into esc/pos command using xml parser and generated our desired buffer data. It supports all the basic things you need like raw text, qr code, bar code, image, new line, paper cut etc. Here, we have also used another npm library called <a href="https://www.npmjs.com/package/table" rel="nofollow noopener" target="_blank">table</a> which generates a string table like github readme table. It is very helpful to display the tabular format data easily.</p>
+<p><img decoding="async" class="alignnone size-large wp-image-9767" src="/wp-content/uploads/2022/07/escpos-156-1024x410.png" alt="escpos 156 ESC/POS printing by bridging (React Js + Flutter)" width="1024" height="410" srcset="/wp-content/uploads/2022/07/escpos-156-980x392.png 980w, /wp-content/uploads/2022/07/escpos-156-480x192.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1024px, 100vw"></p>
+<h5><strong>Procedure</strong></h5>
+<p><b>STEPS 1: Template Data as object </b></p>
+<p>First, we need to make an object for populating the xml template. Keep in mind that the object key must be the same as the key used in the xml template.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">const templateData = {
+      orderDate: 'Oct 27, 2022, 12:00',
+      userName: 'Tahsin Ahmed Khan',
+      providerName: 'Test',
+      shortId: `#TS-1234`,
+      qrCode,
+      qrCodeLabel,
+      brandTemplateTable,
+      cartTemplateTable,
+      pricesTemplateTable,
+      totalTemplateTable,
+      logo: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAQAAAC0NkA6AAA223pUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjapZ1pkiY3zqT`
+}</pre>
+<p><b>STEPS 2: Xml template</b></p>
+<p>The key which is used in object must be the key of the template. Here, the key must be surrounded by two curly braces like <i>{{key}}. </i>Keep in mind that extra space causes problems while generating buffer. Please make sure to avoid it.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">export const cartXmlTemplate = (qrCodeContent, qrCodeLabel) =&gt; `
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;document&gt; 
+    &lt;text-line&gt;Order Date: {{orderDate}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;text-line size="1:1"&gt;{{userName}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;text-line size="1:1"&gt;{{providerName}} {{shortId}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;text-line&gt;{{brandTemplateTable}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;bold&gt;
+      &lt;text-line&gt;{{cartTemplateTable}}&lt;/text-line&gt;
+    &lt;/bold&gt;
+    &lt;text-line&gt;{{pricesTemplateTable}}&lt;/text-line&gt;
+    &lt;bold&gt;
+      &lt;text-line&gt;{{totalTemplateTable}}&lt;/text-line&gt;
+    &lt;/bold&gt;
+    &lt;line-feed /&gt;
+    ${qrCodeLabel ? `&lt;align mode="center"&gt; &lt;text-line&gt; {{qrCodeLabel}} &lt;/text-line&gt;&lt;/align&gt; &lt;line-feed /&gt;` : ``}
+    ${
+      qrCodeContent
+        ? `&lt;align mode="center"&gt;
+        &lt;image density="d24"&gt;
+        {{qrCode}}
+      &lt;/image&gt;
+      &lt;/align&gt; 
+    &lt;line-feed /&gt;`
+        : `&lt;line-feed /&gt;`
+    }
+    &lt;align mode="center"&gt;
+      &lt;small&gt;
+        &lt;text-line&gt;Powered by&lt;/text-line&gt;
+      &lt;/small&gt;
+      &lt;image density="d24"&gt;
+        {{logo}}
+      &lt;/image&gt;
+      &lt;small&gt;
+        &lt;text-line&gt;Company name&lt;/text-line&gt;
+      &lt;/small&gt;
+    &lt;/align&gt;
+    &lt;line-feed /&gt;
+    &lt;paper-cut/&gt;
+  &lt;/document&gt;`;
+</pre>
+<p><b>STEPS 3: Generating buffer from template data and xml</b></p>
+<p>A method called <code class="language-javascript">getBufferFromTemplate</code> takes 2 parameters. First parameter is xml, the second is template data as an object.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">const buffer = EscPos.getBufferFromTemplate(
+      cartXmlTemplate(qrCodeContent, qrCodeLabel),
+      templateData,
+    );</pre>
+<p>We faced some problems while trying to make a template. They were–</p>
+<ul>
+<li aria-level="1">Some characters aren’t supported by pos printers like Peso (Philippines currency). Because, it depends on its code page. In computing, a <a href="https://en.wikipedia.org/wiki/Code_page" rel="nofollow noopener" target="_blank">code page</a> is a character encoding and as such it is a specific association of a set of printable characters and control characters with unique numbers. Some renowned code pages are PC437（Standard Europe), Katakana, PC850（Multilingual, PC860（Portuguese), PC863 (Canadian), PC865（Nordic) etc. It varies from printer to printer.</li>
+<li aria-level="1">Most of the printers support bar code but some of them don’t support qr code. We also faced this problem. We overcame this problem using <a href="https://www.npmjs.com/package/@cheprasov/qrcode" rel="nofollow noopener" target="_blank">@cheprasov/qrcode</a>. It converts the qrcode as image and image is supported by pos printer.</li>
+</ul>
+<p>Summarising the whole process is like this –</p>
+<blockquote><p><b><i>Template Data as object -&gt; Syncing with xml template -&gt; Generate buffer using data and xml template -&gt; Send it to flutter app -&gt; Ready to Print</i></b></p></blockquote>
+<h3><strong>Communication between flutter app and react js web app</strong></h3>
+<p>The problem is quite simple. We took the help of <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage" rel="nofollow noopener" target="_blank">postMessage</a> which solved our second problem. After making the buffer data from order api response, we sent it to the flutter end using postMessage.</p>
+<h3><strong>Receiving buffer and Printing Receipt<br />
+</strong></h3>
+<p>Currently we are providing support for USB. The set up and printing process was done from the flutter end. So, please go to this <a href="/esc-pos-printing-with-flutter">link</a> to see the details.</p>
+<h3><strong>Final Output</strong></h3>
+<p><img decoding="async" class="alignnone size-large wp-image-9757" src="/wp-content/uploads/2022/07/IMG_20220725_172224-768x1024.jpg" alt="IMG 20220725 172224 ESC/POS printing by bridging (React Js + Flutter)" width="768" height="1024"></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/esc-pos-printing-by-bridging-react-js-flutter/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>How OOP works in JS (Part 1 &#8211; Prototype and Prototype Chaining)</title>
+		<link>/blog/how-oop-works-part-1/</link>
+					<comments>/blog/how-oop-works-part-1/#respond</comments>
+		
+		<dc:creator><![CDATA[Tahsin Siad]]></dc:creator>
+		<pubDate>Tue, 01 Mar 2022 17:25:23 +0000</pubDate>
+				<category><![CDATA[Personal]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[javascript]]></category>
+		<category><![CDATA[oop]]></category>
+		<category><![CDATA[prototype]]></category>
+		<category><![CDATA[prototype chaining]]></category>
+		<guid isPermaLink="false">/?p=7750</guid>
+
+					<description><![CDATA[Before starting we have to keep in mind that Javascript is not a class-based object-oriented language. Javascript is a prototype based language. Lets see the definition of Class based language and Prototype based Javascript. In the future, a blog will be written discussing the difference between Class based language and Prototype based Javascript. According to [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Before starting we have to keep in mind that <strong>Javascript is not a class-based object-oriented language. Javascript is a prototype based language.</strong> Lets see the definition of Class based language and Prototype based Javascript. In the future, a blog will be written discussing the difference between Class based language and Prototype based Javascript.</p>
+<p>According to <strong>Wikipedia,</strong> class-based programming is</p>
+<blockquote><p>A style of Object-oriented programming (OOP) in which inheritance occurs via defining classes of objects, instead of inheritance occurring via the objects alone</p></blockquote>
+<p>According to <strong>MDN</strong>,</p>
+<blockquote><p>A prototype-based language has the notion of a prototypical object, an object used as a template from which to get the initial properties for a new object.</p></blockquote>
+<h3><strong>Prototype</strong></h3>
+<blockquote><p><strong>Each object has a private property which holds a link to another object called its prototype</strong>.</p></blockquote>
+<p>Take a look at this code:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">let name = {
+fname: "Tahsin",
+lname: "Ahmed"
+}
+console.log(name.fname);
+console.log(name.hasOwnProperty("mname"));</pre>
+<p><strong>OUTPUT:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">Tahsin
+false</pre>
+<p>The name object has only two properties, <code class="language-">fname</code> and <code class="language-javascript">lname</code>. Where does the <strong>hasOwnProperty</strong> come form? It comes from <strong>Object&#8217;s </strong><code class="language-javascript">[[Prototype]]</code>. By default, every object has it&#8217;s own prototype. If we console it, we will see.</p>
+<p><img decoding="async" class="alignnone size-medium wp-image-7753" src="/wp-content/uploads/2022/03/Screenshot-from-2022-02-28-12-14-27-300x254.png" alt="Screenshot from 2022 02 28 12 14 27 How OOP works in JS (Part 1 - Prototype and Prototype Chaining)" width="300" height="254" srcset="/wp-content/uploads/2022/03/Screenshot-from-2022-02-28-12-14-27-300x254.png 300w, /wp-content/uploads/2022/03/Screenshot-from-2022-02-28-12-14-27.png 321w" sizes="(max-width: 300px) 100vw, 300px"><br />
+We saw that a lot of properties under <strong>Object</strong>. All these properties are coming from the global <strong>Object</strong> prototype. But, we can modify it as our own requirements.</p>
+<h3><strong>Modifying the <code class="language-javascript">__proto__/[[Prototype]]</code> property</strong></h3>
+<p>Please see the example below:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">function Person(name, age) {
+let personObj = Object.create(constructorObject);
+personObj.name = name;
+personObj.age = age;
+return personObj;
+}
+
+let constructorObject = {
+speak: function(){
+return "Man is mortal"
+}
+
+let bingo = Person("Bingo", 54);
+console.log(bingo);</pre>
+<p><img decoding="async" class="alignnone size-medium wp-image-7755" src="/wp-content/uploads/2022/03/Screenshot-from-2022-02-28-13-01-57-300x261.png" alt="Screenshot from 2022 02 28 13 01 57 How OOP works in JS (Part 1 - Prototype and Prototype Chaining)" width="300" height="261" srcset="/wp-content/uploads/2022/03/Screenshot-from-2022-02-28-13-01-57-300x261.png 300w, /wp-content/uploads/2022/03/Screenshot-from-2022-02-28-13-01-57.png 352w" sizes="(max-width: 300px) 100vw, 300px"></p>
+<p>Notice the <code class="language-javascript">__proto__</code> property and the speak method? <code>Object.create</code> uses the argument passed to it to become the prototype.</p>
+<p>Let&#8217;s regenerate this using <code class="language-javascript">new</code> keyword.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">function Person(name, age) {
+this.name = name;
+this.age = age;
+}
+Person.prototype.speak = function() {
+return "Man is mortal";
+}
+let john = new Person("John", 45);
+console.log(john);</pre>
+<p>If we console it from browser, we will get the same output as before. But, you may notice that, another <code class="language-cpp">__proto__</code> exists under the Person <code class="language-cpp">[[Prototype]</code>. It is called <strong>Prototype Chaining</strong>.</p>
+<h3><strong>Prototype Chaining</strong></h3>
+<p>We can wrap all these things reminding the short explanation of MDN which is given below:</p>
+<blockquote><p>Each object has a private property which holds a link to another object called its <strong>prototype.</strong> That prototype object has a prototype of its own, and so on until an object is reached with <code class="language-apache">null</code> as its prototype. By definition, <code class="language-apache">null</code> has no prototype, and acts as the final link in this <strong>prototype chain</strong>.</p></blockquote>
+<p>Let&#8217;s try a example for Prototype Chaining.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">let f = function () {
+this.a = 1;
+this.b = 2;
+}
+
+let o = new f();
+
+f.prototype.b = 3;
+f.prototype.c = 4;
+
+console.log(o.a);
+console.log(o.b);
+console.log(o.c);
+console.log(o.d);</pre>
+<p><strong>OUTPUT:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">1
+2
+4
+undefined</pre>
+<p><strong>How this code does work? Why does  </strong><code class="language-apache">console.log(o.d)</code> <strong>give us</strong> <code class="language-javascript">undefined</code><strong>?</strong></p>
+<ol>
+<li> Firstly, we create a function named f</li>
+<li>Creating a object from function f.</li>
+<li>Adding two properties <code class="language-apache">b</code> and <code class="language-apache">c</code>  in function f prototype. But, you can&#8217;t add prototype like <code class="language-apache">{ b: 3, c: 4 }</code>. Because, this will <strong>break prototype chaining</strong>.</li>
+<li>After adding properties, the whole scenario looks like this.
+<ul>
+<li><code class="language-apache">o.[[Prototype]]</code> has properties <code class="language-apache">b and c</code>.</li>
+<li><code class="language-apache">o.[[Prototype]].[[Prototype]]</code> is <strong>Object.prototype</strong>.</li>
+<li>Finally, <code>o.[[Prototype]].[[Prototype]].[[Prototype]]</code> is <code>null</code>.<br />
+&#8211; This is the <strong>end</strong> of the prototype chain, as <code>null</code>, by definition, has no <code>[[Prototype]]</code>.</li>
+<li>Thus, the full prototype chain looks like: <code>{ a: 1, b: 2 } ---&gt; { b: 3, c: 4 } ---&gt; Object.prototype ---&gt; null</code>.</li>
+</ul>
+</li>
+<li>As <code>o</code> contains <code>a</code>, so, it prints <strong>1</strong>.</li>
+<li>As <code>o</code> contains <code>b</code>, so, it prints <strong>2</strong>. You may see that <code>b</code> is also found <code>o.[[Prototype]]</code>. By default, object <span data-dobid="hdw">prioritize</span>s it&#8217;s own property first, then goes to it&#8217;s prototype if not found. This is <strong>Property Shadowing</strong>.</li>
+<li><code>c</code> exists in <code>o.[[Prototype]]</code> , so, first it tries to find it from it&#8217;s own property. But, not found, then searches into it&#8217;s <code>o.[[Prototype]]</code>. Yeah, found it!!!.</li>
+<li>In case of <code>d</code> we get <code>undefined</code>, the same thing goes for it also. It follows those steps:
+<ul>
+<li>Is there a <code>d</code> own property on <code>o</code>? <strong>No</strong>, check its <code>prototype</code>.</li>
+<li>Is there a <code>d</code> own property on <code>o.[[Prototype]]</code>? <strong>No</strong>, check its <code>prototype</code></li>
+<li><code>o.[[Prototype]].[[Prototype]]</code> is <strong>Object.prototype</strong> and there is no <code>d</code> property by default, check its <strong>prototype</strong></li>
+<li><code>o.[[Prototype]].[[Prototype]].[[Prototype]]</code> is <code>null</code>, <strong>stop</strong> searching</li>
+<li>no property found, return <code>undefined</code></li>
+</ul>
+</li>
+</ol>
+<h4><strong>What does happen If the object has long prototype chain and not found desired property? How can we overcome the negative impact?</strong></h4>
+<p>The searching time of prototype chaining is high which can lead negative impact on performance if performance is considered to be a major thing. Because it is trying to access nonexistent properties will always traverse the full prototype chain. For this, we have to use <code>hasOwnProperty</code> to check whether the property exists or not. <code>hasOwnProperty</code> is the only thing in JavaScript which deals with properties and does not traverse the prototype chain.</p>
+<p>That&#8217;s all for this part. In <strong>Part &#8211; 2</strong>, we will move into implement 4 pillars of OOP using object and function.</p>
+<hr />
+<p><em><strong>NOTE:</strong> Following the <strong>ECMAScript</strong> standard, the notation <code>someObject.[[Prototype]]</code> is used to designate the prototype of someObject. Since <strong>ECMAScript</strong> 2015, the <code>[[Prototype]]</code> is accessed using the accessors <code>Object.getPrototypeOf()</code> and <code>Object.setPrototypeOf()</code>. This is equivalent to the JavaScript property <code>__proto__</code> which is non-standard but de-facto implemented by many browsers.</em></p>
+<p><em>It should not be confused with the <code>func.prototype</code> property of functions, which instead specifies the <code>[[Prototype]]</code> to be assigned to all instances of objects created by the given function when used as a <code>constructor</code>. The <code>Object.prototype</code> property represents the Object prototype object.</em></p>
+<hr />
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/how-oop-works-part-1/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

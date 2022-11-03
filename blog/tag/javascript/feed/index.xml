@@ -1,0 +1,626 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>javascript &#8211; Vivasoft</title>
+	<atom:link href="/blog/tag/javascript/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Mon, 08 Aug 2022 13:08:45 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>javascript &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>ESC/POS printing by bridging (React Js + Flutter)</title>
+		<link>/blog/esc-pos-printing-by-bridging-react-js-flutter/</link>
+					<comments>/blog/esc-pos-printing-by-bridging-react-js-flutter/#respond</comments>
+		
+		<dc:creator><![CDATA[Tahsin Siad]]></dc:creator>
+		<pubDate>Mon, 08 Aug 2022 12:53:46 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[escpos-printing]]></category>
+		<category><![CDATA[javascript]]></category>
+		<category><![CDATA[ReactJS]]></category>
+		<guid isPermaLink="false">/?p=9756</guid>
+
+					<description><![CDATA[In this blog, we will discuss the implementation of pos printing in react js app and communicate with flutter app to print the receipt. Here there are two parts. Sending buffer data from reactjs Receiving buffer data from flutter app and sending it to pos printer. Before diving into details, first of all we have [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>In this blog, we will discuss the implementation of pos printing in react js app and communicate with flutter app to print the receipt. Here there are two parts.</p>
+<ul>
+<li aria-level="1">Sending buffer data from reactjs</li>
+<li aria-level="1">Receiving buffer data from flutter app and sending it to pos printer.</li>
+</ul>
+<p>Before diving into details, first of all we have to know what is pos printing, how it works. A short explanation is given below. If you want to know more, please google it.</p>
+<h3><strong>POS printing/receipt printing</strong></h3>
+<p>In restaurant/super shop we might see that the seller gives us a receipt after the successful bill payment using a pos printer. Some well known pos printer manufacturer companies are Sunmi, rongta, xprinter, star printer etc. There are 3 types of pos printers. They are thermal, inkjet and dot matrix. In our case, we have used a thermal printer. Receipts are printed by direct contact between the thermal head and thermal paper with the use of heat. Therefore, no ink is required.</p>
+<h3><strong>Sending buffer data from react js</strong></h3>
+<p>While we started thinking about the integration of pos printing in our system, we faced some challenges.</p>
+<ul>
+<li aria-level="1">Order api response</li>
+<li aria-level="1">Receipt Template</li>
+<li aria-level="1">Communication between flutter app and react js web app</li>
+<li aria-level="1">Printing setup (USB/Bluetooth)</li>
+</ul>
+<h4><strong>Order api response</strong></h4>
+<p>We know that flutter has complete pos printing libraries but why need to implement this from react js app. The answer is our system deals with multiple providers, different providers provide different responses while sending api responses. So, we need to process it from frontend to view those api responses. Another thing is displaying the whole website into  webview. For this, flutter app has limited access to get the order response from the backend. Thus, we overcame the first problem.</p>
+<h4><strong>Receipt Template</strong></h4>
+<p>The main challenge was making the template. Initially, we thought of making a template using html and css. Because it is developer friendly and easy to maintain. But, pos printer doesn’t support html. It only understands the <a href="https://aures-support.com/DATA/drivers/Imprimantes/Commande%20ESCPOS.pdf" rel="nofollow noopener" target="_blank">esc/pos command</a>. So, we had to change our decision. There are a lot of libraries for generating templates using the esc/pos command. But, coping up with our api response was a little bit tough as there were nested level addons list. Then, we found <a href="https://www.npmjs.com/package/@tillpos/xml-escpos-helper" rel="nofollow noopener" target="_blank">xml-escpose-helper</a> library which provided a xml layout, converted the xml into esc/pos command using xml parser and generated our desired buffer data. It supports all the basic things you need like raw text, qr code, bar code, image, new line, paper cut etc. Here, we have also used another npm library called <a href="https://www.npmjs.com/package/table" rel="nofollow noopener" target="_blank">table</a> which generates a string table like github readme table. It is very helpful to display the tabular format data easily.</p>
+<p><img decoding="async" class="alignnone size-large wp-image-9767" src="/wp-content/uploads/2022/07/escpos-156-1024x410.png" alt="escpos 156 ESC/POS printing by bridging (React Js + Flutter)" width="1024" height="410" srcset="/wp-content/uploads/2022/07/escpos-156-980x392.png 980w, /wp-content/uploads/2022/07/escpos-156-480x192.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1024px, 100vw"></p>
+<h5><strong>Procedure</strong></h5>
+<p><b>STEPS 1: Template Data as object </b></p>
+<p>First, we need to make an object for populating the xml template. Keep in mind that the object key must be the same as the key used in the xml template.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">const templateData = {
+      orderDate: 'Oct 27, 2022, 12:00',
+      userName: 'Tahsin Ahmed Khan',
+      providerName: 'Test',
+      shortId: `#TS-1234`,
+      qrCode,
+      qrCodeLabel,
+      brandTemplateTable,
+      cartTemplateTable,
+      pricesTemplateTable,
+      totalTemplateTable,
+      logo: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAQAAAC0NkA6AAA223pUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjapZ1pkiY3zqT`
+}</pre>
+<p><b>STEPS 2: Xml template</b></p>
+<p>The key which is used in object must be the key of the template. Here, the key must be surrounded by two curly braces like <i>{{key}}. </i>Keep in mind that extra space causes problems while generating buffer. Please make sure to avoid it.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">export const cartXmlTemplate = (qrCodeContent, qrCodeLabel) =&gt; `
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;document&gt; 
+    &lt;text-line&gt;Order Date: {{orderDate}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;text-line size="1:1"&gt;{{userName}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;text-line size="1:1"&gt;{{providerName}} {{shortId}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;text-line&gt;{{brandTemplateTable}}&lt;/text-line&gt;
+    &lt;line-feed /&gt;
+    &lt;bold&gt;
+      &lt;text-line&gt;{{cartTemplateTable}}&lt;/text-line&gt;
+    &lt;/bold&gt;
+    &lt;text-line&gt;{{pricesTemplateTable}}&lt;/text-line&gt;
+    &lt;bold&gt;
+      &lt;text-line&gt;{{totalTemplateTable}}&lt;/text-line&gt;
+    &lt;/bold&gt;
+    &lt;line-feed /&gt;
+    ${qrCodeLabel ? `&lt;align mode="center"&gt; &lt;text-line&gt; {{qrCodeLabel}} &lt;/text-line&gt;&lt;/align&gt; &lt;line-feed /&gt;` : ``}
+    ${
+      qrCodeContent
+        ? `&lt;align mode="center"&gt;
+        &lt;image density="d24"&gt;
+        {{qrCode}}
+      &lt;/image&gt;
+      &lt;/align&gt; 
+    &lt;line-feed /&gt;`
+        : `&lt;line-feed /&gt;`
+    }
+    &lt;align mode="center"&gt;
+      &lt;small&gt;
+        &lt;text-line&gt;Powered by&lt;/text-line&gt;
+      &lt;/small&gt;
+      &lt;image density="d24"&gt;
+        {{logo}}
+      &lt;/image&gt;
+      &lt;small&gt;
+        &lt;text-line&gt;Company name&lt;/text-line&gt;
+      &lt;/small&gt;
+    &lt;/align&gt;
+    &lt;line-feed /&gt;
+    &lt;paper-cut/&gt;
+  &lt;/document&gt;`;
+</pre>
+<p><b>STEPS 3: Generating buffer from template data and xml</b></p>
+<p>A method called <code class="language-javascript">getBufferFromTemplate</code> takes 2 parameters. First parameter is xml, the second is template data as an object.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">const buffer = EscPos.getBufferFromTemplate(
+      cartXmlTemplate(qrCodeContent, qrCodeLabel),
+      templateData,
+    );</pre>
+<p>We faced some problems while trying to make a template. They were–</p>
+<ul>
+<li aria-level="1">Some characters aren’t supported by pos printers like Peso (Philippines currency). Because, it depends on its code page. In computing, a <a href="https://en.wikipedia.org/wiki/Code_page" rel="nofollow noopener" target="_blank">code page</a> is a character encoding and as such it is a specific association of a set of printable characters and control characters with unique numbers. Some renowned code pages are PC437（Standard Europe), Katakana, PC850（Multilingual, PC860（Portuguese), PC863 (Canadian), PC865（Nordic) etc. It varies from printer to printer.</li>
+<li aria-level="1">Most of the printers support bar code but some of them don’t support qr code. We also faced this problem. We overcame this problem using <a href="https://www.npmjs.com/package/@cheprasov/qrcode" rel="nofollow noopener" target="_blank">@cheprasov/qrcode</a>. It converts the qrcode as image and image is supported by pos printer.</li>
+</ul>
+<p>Summarising the whole process is like this –</p>
+<blockquote><p><b><i>Template Data as object -&gt; Syncing with xml template -&gt; Generate buffer using data and xml template -&gt; Send it to flutter app -&gt; Ready to Print</i></b></p></blockquote>
+<h3><strong>Communication between flutter app and react js web app</strong></h3>
+<p>The problem is quite simple. We took the help of <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage" rel="nofollow noopener" target="_blank">postMessage</a> which solved our second problem. After making the buffer data from order api response, we sent it to the flutter end using postMessage.</p>
+<h3><strong>Receiving buffer and Printing Receipt<br />
+</strong></h3>
+<p>Currently we are providing support for USB. The set up and printing process was done from the flutter end. So, please go to this <a href="/esc-pos-printing-with-flutter">link</a> to see the details.</p>
+<h3><strong>Final Output</strong></h3>
+<p><img decoding="async" class="alignnone size-large wp-image-9757" src="/wp-content/uploads/2022/07/IMG_20220725_172224-768x1024.jpg" alt="IMG 20220725 172224 ESC/POS printing by bridging (React Js + Flutter)" width="768" height="1024"></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/esc-pos-printing-by-bridging-react-js-flutter/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>How OOP works in JS (Part 1 &#8211; Prototype and Prototype Chaining)</title>
+		<link>/blog/how-oop-works-part-1/</link>
+					<comments>/blog/how-oop-works-part-1/#respond</comments>
+		
+		<dc:creator><![CDATA[Tahsin Siad]]></dc:creator>
+		<pubDate>Tue, 01 Mar 2022 17:25:23 +0000</pubDate>
+				<category><![CDATA[Personal]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[javascript]]></category>
+		<category><![CDATA[oop]]></category>
+		<category><![CDATA[prototype]]></category>
+		<category><![CDATA[prototype chaining]]></category>
+		<guid isPermaLink="false">/?p=7750</guid>
+
+					<description><![CDATA[Before starting we have to keep in mind that Javascript is not a class-based object-oriented language. Javascript is a prototype based language. Lets see the definition of Class based language and Prototype based Javascript. In the future, a blog will be written discussing the difference between Class based language and Prototype based Javascript. According to [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Before starting we have to keep in mind that <strong>Javascript is not a class-based object-oriented language. Javascript is a prototype based language.</strong> Lets see the definition of Class based language and Prototype based Javascript. In the future, a blog will be written discussing the difference between Class based language and Prototype based Javascript.</p>
+<p>According to <strong>Wikipedia,</strong> class-based programming is</p>
+<blockquote><p>A style of Object-oriented programming (OOP) in which inheritance occurs via defining classes of objects, instead of inheritance occurring via the objects alone</p></blockquote>
+<p>According to <strong>MDN</strong>,</p>
+<blockquote><p>A prototype-based language has the notion of a prototypical object, an object used as a template from which to get the initial properties for a new object.</p></blockquote>
+<h3><strong>Prototype</strong></h3>
+<blockquote><p><strong>Each object has a private property which holds a link to another object called its prototype</strong>.</p></blockquote>
+<p>Take a look at this code:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">let name = {
+fname: "Tahsin",
+lname: "Ahmed"
+}
+console.log(name.fname);
+console.log(name.hasOwnProperty("mname"));</pre>
+<p><strong>OUTPUT:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">Tahsin
+false</pre>
+<p>The name object has only two properties, <code class="language-">fname</code> and <code class="language-javascript">lname</code>. Where does the <strong>hasOwnProperty</strong> come form? It comes from <strong>Object&#8217;s </strong><code class="language-javascript">[[Prototype]]</code>. By default, every object has it&#8217;s own prototype. If we console it, we will see.</p>
+<p><img decoding="async" class="alignnone size-medium wp-image-7753" src="/wp-content/uploads/2022/03/Screenshot-from-2022-02-28-12-14-27-300x254.png" alt="Screenshot from 2022 02 28 12 14 27 How OOP works in JS (Part 1 - Prototype and Prototype Chaining)" width="300" height="254" srcset="/wp-content/uploads/2022/03/Screenshot-from-2022-02-28-12-14-27-300x254.png 300w, /wp-content/uploads/2022/03/Screenshot-from-2022-02-28-12-14-27.png 321w" sizes="(max-width: 300px) 100vw, 300px"><br />
+We saw that a lot of properties under <strong>Object</strong>. All these properties are coming from the global <strong>Object</strong> prototype. But, we can modify it as our own requirements.</p>
+<h3><strong>Modifying the <code class="language-javascript">__proto__/[[Prototype]]</code> property</strong></h3>
+<p>Please see the example below:</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">function Person(name, age) {
+let personObj = Object.create(constructorObject);
+personObj.name = name;
+personObj.age = age;
+return personObj;
+}
+
+let constructorObject = {
+speak: function(){
+return "Man is mortal"
+}
+
+let bingo = Person("Bingo", 54);
+console.log(bingo);</pre>
+<p><img decoding="async" class="alignnone size-medium wp-image-7755" src="/wp-content/uploads/2022/03/Screenshot-from-2022-02-28-13-01-57-300x261.png" alt="Screenshot from 2022 02 28 13 01 57 How OOP works in JS (Part 1 - Prototype and Prototype Chaining)" width="300" height="261" srcset="/wp-content/uploads/2022/03/Screenshot-from-2022-02-28-13-01-57-300x261.png 300w, /wp-content/uploads/2022/03/Screenshot-from-2022-02-28-13-01-57.png 352w" sizes="(max-width: 300px) 100vw, 300px"></p>
+<p>Notice the <code class="language-javascript">__proto__</code> property and the speak method? <code>Object.create</code> uses the argument passed to it to become the prototype.</p>
+<p>Let&#8217;s regenerate this using <code class="language-javascript">new</code> keyword.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">function Person(name, age) {
+this.name = name;
+this.age = age;
+}
+Person.prototype.speak = function() {
+return "Man is mortal";
+}
+let john = new Person("John", 45);
+console.log(john);</pre>
+<p>If we console it from browser, we will get the same output as before. But, you may notice that, another <code class="language-cpp">__proto__</code> exists under the Person <code class="language-cpp">[[Prototype]</code>. It is called <strong>Prototype Chaining</strong>.</p>
+<h3><strong>Prototype Chaining</strong></h3>
+<p>We can wrap all these things reminding the short explanation of MDN which is given below:</p>
+<blockquote><p>Each object has a private property which holds a link to another object called its <strong>prototype.</strong> That prototype object has a prototype of its own, and so on until an object is reached with <code class="language-apache">null</code> as its prototype. By definition, <code class="language-apache">null</code> has no prototype, and acts as the final link in this <strong>prototype chain</strong>.</p></blockquote>
+<p>Let&#8217;s try a example for Prototype Chaining.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">let f = function () {
+this.a = 1;
+this.b = 2;
+}
+
+let o = new f();
+
+f.prototype.b = 3;
+f.prototype.c = 4;
+
+console.log(o.a);
+console.log(o.b);
+console.log(o.c);
+console.log(o.d);</pre>
+<p><strong>OUTPUT:</strong></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">1
+2
+4
+undefined</pre>
+<p><strong>How this code does work? Why does  </strong><code class="language-apache">console.log(o.d)</code> <strong>give us</strong> <code class="language-javascript">undefined</code><strong>?</strong></p>
+<ol>
+<li> Firstly, we create a function named f</li>
+<li>Creating a object from function f.</li>
+<li>Adding two properties <code class="language-apache">b</code> and <code class="language-apache">c</code>  in function f prototype. But, you can&#8217;t add prototype like <code class="language-apache">{ b: 3, c: 4 }</code>. Because, this will <strong>break prototype chaining</strong>.</li>
+<li>After adding properties, the whole scenario looks like this.
+<ul>
+<li><code class="language-apache">o.[[Prototype]]</code> has properties <code class="language-apache">b and c</code>.</li>
+<li><code class="language-apache">o.[[Prototype]].[[Prototype]]</code> is <strong>Object.prototype</strong>.</li>
+<li>Finally, <code>o.[[Prototype]].[[Prototype]].[[Prototype]]</code> is <code>null</code>.<br />
+&#8211; This is the <strong>end</strong> of the prototype chain, as <code>null</code>, by definition, has no <code>[[Prototype]]</code>.</li>
+<li>Thus, the full prototype chain looks like: <code>{ a: 1, b: 2 } ---&gt; { b: 3, c: 4 } ---&gt; Object.prototype ---&gt; null</code>.</li>
+</ul>
+</li>
+<li>As <code>o</code> contains <code>a</code>, so, it prints <strong>1</strong>.</li>
+<li>As <code>o</code> contains <code>b</code>, so, it prints <strong>2</strong>. You may see that <code>b</code> is also found <code>o.[[Prototype]]</code>. By default, object <span data-dobid="hdw">prioritize</span>s it&#8217;s own property first, then goes to it&#8217;s prototype if not found. This is <strong>Property Shadowing</strong>.</li>
+<li><code>c</code> exists in <code>o.[[Prototype]]</code> , so, first it tries to find it from it&#8217;s own property. But, not found, then searches into it&#8217;s <code>o.[[Prototype]]</code>. Yeah, found it!!!.</li>
+<li>In case of <code>d</code> we get <code>undefined</code>, the same thing goes for it also. It follows those steps:
+<ul>
+<li>Is there a <code>d</code> own property on <code>o</code>? <strong>No</strong>, check its <code>prototype</code>.</li>
+<li>Is there a <code>d</code> own property on <code>o.[[Prototype]]</code>? <strong>No</strong>, check its <code>prototype</code></li>
+<li><code>o.[[Prototype]].[[Prototype]]</code> is <strong>Object.prototype</strong> and there is no <code>d</code> property by default, check its <strong>prototype</strong></li>
+<li><code>o.[[Prototype]].[[Prototype]].[[Prototype]]</code> is <code>null</code>, <strong>stop</strong> searching</li>
+<li>no property found, return <code>undefined</code></li>
+</ul>
+</li>
+</ol>
+<h4><strong>What does happen If the object has long prototype chain and not found desired property? How can we overcome the negative impact?</strong></h4>
+<p>The searching time of prototype chaining is high which can lead negative impact on performance if performance is considered to be a major thing. Because it is trying to access nonexistent properties will always traverse the full prototype chain. For this, we have to use <code>hasOwnProperty</code> to check whether the property exists or not. <code>hasOwnProperty</code> is the only thing in JavaScript which deals with properties and does not traverse the prototype chain.</p>
+<p>That&#8217;s all for this part. In <strong>Part &#8211; 2</strong>, we will move into implement 4 pillars of OOP using object and function.</p>
+<hr />
+<p><em><strong>NOTE:</strong> Following the <strong>ECMAScript</strong> standard, the notation <code>someObject.[[Prototype]]</code> is used to designate the prototype of someObject. Since <strong>ECMAScript</strong> 2015, the <code>[[Prototype]]</code> is accessed using the accessors <code>Object.getPrototypeOf()</code> and <code>Object.setPrototypeOf()</code>. This is equivalent to the JavaScript property <code>__proto__</code> which is non-standard but de-facto implemented by many browsers.</em></p>
+<p><em>It should not be confused with the <code>func.prototype</code> property of functions, which instead specifies the <code>[[Prototype]]</code> to be assigned to all instances of objects created by the given function when used as a <code>constructor</code>. The <code>Object.prototype</code> property represents the Object prototype object.</em></p>
+<hr />
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/how-oop-works-part-1/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Kick Start Your JavaScript Career</title>
+		<link>/blog/kick-start-your-javascript-career/</link>
+		
+		<dc:creator><![CDATA[Md. Ashiqul Islam]]></dc:creator>
+		<pubDate>Mon, 13 Dec 2021 08:11:11 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[bootcamp]]></category>
+		<category><![CDATA[javascript]]></category>
+		<guid isPermaLink="false">/?p=4898</guid>
+
+					<description><![CDATA[JavaScript is one of the most popular and widely used programming languages in the world right now. It&#8217;s growing faster than any other programming language, big companies like Netflix, Walmart, Paypal, build entire applications around JavaScript. So, it&#8217;s a great opportunity to get a good job learning JavaScript. You can work as a front-end developer [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>JavaScript is one of the most popular and widely used programming languages in the world right now. It&#8217;s growing faster than any other programming language, big companies like Netflix, Walmart, Paypal, build entire applications around JavaScript. So, it&#8217;s a great opportunity to get a good job learning JavaScript. You can work as a front-end developer or back-end developer or a full stack developer, or who knows both the front-end and the back-end.</p>
+<p><strong>What can you do with JavaScript?</strong></p>
+<p>For a long time, JavaScript was only used in browsers to build interactive web pages. Some developers referred JavaScript as a toy language. But those days are gone because of huge community support and investments like large companies like Facebook and Google. These days you can build full-blown web and mobile apps as well as real-time networking apps like chats and video streaming services, command-line tools, and even games with JavaScript.</p>
+<p><strong>Where does JavaScript code run?</strong></p>
+<p>JavaScript was originally designed to run on only browsers. So, every browser has what we call a JavaScript Engine that can execute JavaScript code. For example, the JavaScript engines for Firefox and Chrome are SpiderMonkey and V8, In 2009, a very clever engineer called Ryan Dahl took the open-source JavaScript engine in Chrome and embedded it inside a C++ program. He calls that program a Node. So, Node is a C++ program, that includes the Google V8 JavaScript engine. Now with this, we can code JavaScript outside of a browser. We can pass our code to Node for execution. So, in a nutshell, JavaScript code can be run inside of a browser or in Node. Browsers and Node provide a runtime environment for JavaScript code.</p>
+<p>We have designed a basic guideline that will help you to know the fundamental of programming in JavaScript. Once you have finished this, you will have taken the first step towards becoming a skillful front-end developer. Are you ready to dive into JavaScript? Then let&#8217;s get started.</p>
+<p><strong>1. Course Introduction</strong><br />
+<strong>          1.1.  <span style="font-weight: 400;">Welcome to our Bootcamp</span></strong><br />
+<strong>          1.2.  <span style="font-weight: 400;">The story of this course?</span></strong><br />
+<strong>          1.3.  <span style="font-weight: 400;">How to set up the environments?</span></strong></p>
+<p><strong>2. JavaScript Fundamentals</strong><br />
+<strong>          2.1.  <span style="font-weight: 400;">Introduction to Compiler and Engine</span></strong><br />
+<strong>                  2.1.1.  <span style="font-weight: 400;"><a href="/compilers-and-interpreters/" target="_blank" rel="noopener">What are the compiler and interpreter</a></span></strong><br />
+<strong>                  2.1.2.  <span style="font-weight: 400;"><a href="/compilers-and-interpreters/" target="_blank" rel="noopener">Interpreter versus Compiler</a></span></strong><br />
+<strong>                  2.1.3.  <span style="font-weight: 400;">What is the JIT compiler and how does it work?</span></strong><br />
+<strong>                  2.1.4.  <span style="font-weight: 400;">Is JavaScript an interpreted or compiled language?</span></strong><br />
+<strong>                  2.1.5.  <span style="font-weight: 400;"><a href="/%e0%a6%9c%e0%a6%be%e0%a6%ad%e0%a6%be%e0%a6%b8%e0%a7%8d%e0%a6%95%e0%a7%8d%e0%a6%b0%e0%a6%bf%e0%a6%aa%e0%a7%8d%e0%a6%9f-%e0%a6%87%e0%a6%9e%e0%a7%8d%e0%a6%9c%e0%a6%bf%e0%a6%a8/" target="_blank" rel="noopener">Types of JS engine</a></span></strong><br />
+<strong>                  2.1.6.  <span style="font-weight: 400;">What’s the difference between compiling and polyfilling?</span></strong><br />
+<strong>          2.2.  <span style="font-weight: 400;">What is the thread of execution context?</span></strong><br />
+<strong>                  2.2.1.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/1.%20execution-context/README.md" target="_blank" rel="noopener nofollow">Global execution context</a></span></strong><br />
+<strong>                  2.2.2.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/1.%20execution-context/README.md" target="_blank" rel="noopener nofollow">Function or Local execution context</a></span></strong><br />
+<strong>          2.3.  <span style="font-weight: 400;">What is the thread of execution context?</span></strong><br />
+<strong>                  2.3.1.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/2.%20scope/README.md" target="_blank" rel="noopener nofollow">Global Scope</a></span></strong><br />
+<strong>                  2.3.2.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/2.%20scope/README.md" target="_blank" rel="noopener nofollow">Local Scope &amp; Lexical Scope</a></span></strong><br />
+<strong>          2.4.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/3.%20hoisting/README.md" target="_blank" rel="noopener nofollow">What is hoisting?</a></span></strong><br />
+<strong>          2.5.  <span style="font-weight: 400; color: green;"><a href="/what-is-closer-in-javascript/" target="_blank" rel="noopener">What is closure in JavaScript?</a></span></strong><br />
+<strong>          2.6.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/6.%20callback-and-higher-order-functions/README.md" target="_blank" rel="noopener nofollow">What are the callback and higher-order functions?</a></span></strong><br />
+<strong>          2.7.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/7.%20this-keyword/README.md" target="_blank" rel="noopener nofollow">What is the “this” keyword in JavaScript?</a></span></strong><br />
+<strong>          2.8.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/5.%20call-by-value-and-call-by-reference/README.md" target="_blank" rel="noopener nofollow">What is call by value and call by reference?</a></span></strong><br />
+<strong>          2.9.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/13.%20iife-in-javascript/README.md" target="_blank" rel="noopener nofollow">What is IIFE?</a></span></strong><br />
+<strong>          2.10.  <span style="font-weight: 400;"><a href="/%e0%a6%9c%e0%a6%be%e0%a6%ad%e0%a6%be%e0%a6%b8%e0%a7%8d%e0%a6%95%e0%a7%8d%e0%a6%b0%e0%a6%bf%e0%a6%aa%e0%a7%8d%e0%a6%9f%e0%a7%87-%e0%a6%aa%e0%a6%bf%e0%a6%93%e0%a6%b0-%e0%a6%ab%e0%a6%be%e0%a6%82%e0%a6%b6/" target="_blank" rel="noopener">What is the pure function?</a></span></strong><br />
+<strong>          2.11.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/12.%20use-strict/README.md" target="_blank" rel="noopener nofollow">What does use strict do in JavaScript?</a></span></strong><br />
+<strong>          2.12.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/advanced/1.%20call-apply-bind-methods/README.md" target="_blank" rel="noopener nofollow">Bind, Call, Apply in JavaScript</a></span></strong><br />
+<strong>          2.13.  <span style="font-weight: 400;">What is an array? And its methods?</span></strong></p>
+<p><strong>3. Introduction to DOM</strong><br />
+<strong>          3.1.  <span style="font-weight: 400;">What is the Window Object in DOM?</span></strong><br />
+<strong>          3.2.  <span style="font-weight: 400;">What is the Document Object in DOM?</span></strong><br />
+<strong>          3.3.  <span style="font-weight: 400;">Basic Selectors in DOM</span></strong><br />
+<strong>          3.4.  <span style="font-weight: 400;">Query Selectors in DOM</span></strong><br />
+<strong>          3.5.  <span style="font-weight: 400;">What is the difference between getElement and Query selectors?</span></strong><br />
+<strong>          3.6.  <span style="font-weight: 400;">How to traverse DOM elements?</span></strong><br />
+<strong>          3.7.  <span style="font-weight: 400;">How to create DOM elements?</span></strong><br />
+<strong>          3.8.  <span style="font-weight: 400;">How to insert the created elements? </span></strong><br />
+<strong>          3.9.  <span style="font-weight: 400;">How to update and remove the DOM element?</span></strong><br />
+<strong>          3.10.  <span style="font-weight: 400;">How to clone a node including its child elements?</span></strong><br />
+<strong>          3.11.  <span style="font-weight: 400;">What is the difference between event capturing and bubbling?</span></strong><br />
+<strong>          3.12.  <span style="font-weight: 400;">What are the events Delegation and Propagation?</span></strong><br />
+<strong>          3.13.  <span style="font-weight: 400;">Input elements and event handling</span></strong><br />
+<strong>          3.14.  <span style="font-weight: 400;">How to handle form data in DOM?</span></strong><br />
+<strong>          3.15.  <span style="font-weight: 400;">How to validate form data in DOM?</span></strong></p>
+<p><strong>4. Client Storage</strong><br />
+<strong>          4.1.  <span style="font-weight: 400;">Cookies</span></strong><br />
+<strong>          4.2.  <span style="font-weight: 400;">localStorage</span></strong><br />
+<strong>          4.3.  <span style="font-weight: 400;">sessionStorage</span></strong><br />
+<strong>          4.4.  <span style="font-weight: 400;">indexedDB</span></strong></p>
+<p><strong>5. Asynchronous in JavaScript</strong><br />
+<strong>          5.1.  <span style="font-weight: 400;">Understanding asynchronous programming in JavaScript</span></strong><br />
+<strong>          5.2.  <span style="font-weight: 400;">How to handle asynchronous operations in JavaScript?</span></strong><br />
+<strong>          5.3.  <span style="font-weight: 400;">What is Ajax?</span></strong><br />
+<strong>          5.4.  <span style="font-weight: 400;">How to handle XMLHttpRequest?</span></strong><br />
+<strong>          5.5.  <span style="font-weight: 400;">How to send GET, POST, PATCH, PUT and DELETE requests and display data?</span></strong><br />
+<strong>          5.6.  <span style="font-weight: 400;">What is the event loop in JavaScript?</span></strong></p>
+<p><strong>6. Error handling in JavaScript</strong><br />
+<strong>          6.1.  <span style="font-weight: 400;">How to handle errors in JavaScript?</span></strong><br />
+<strong>          6.2.  <span style="font-weight: 400;">Error handling with if-else condition check</span></strong><br />
+<strong>          6.3.  <span style="font-weight: 400;">Error handling with try-catch-finally block</span></strong><br />
+<strong>          6.4.  <span style="font-weight: 400;">How to throw an Error in JavaScript</span></strong></p>
+<p><strong>7. Introduction to OOP in JavaScript</strong><br />
+<strong>          7.1.  <span style="font-weight: 400;">What is OOP?</span></strong><br />
+<strong>          7.2.  <span style="font-weight: 400;">How to think of everything as an Object?</span></strong><br />
+<strong>          7.3.  <span style="font-weight: 400;">What are object Properties and Methods?</span></strong><br />
+<strong>          7.4.  <span style="font-weight: 400;">What is Class in OOP?</span></strong><br />
+<strong>          7.5.  <span style="font-weight: 400;">Create a class using the factory pattern</span></strong><br />
+<strong>          7.6.  <span style="font-weight: 400;">Creating class using Constructor Pattern</span></strong><br />
+<strong>          7.7.  <span style="font-weight: 400;">What is the &#8220;New&#8221; Keyword and How does it work?</span></strong><br />
+<strong>          7.8.  <span style="font-weight: 400;">What is Abstraction in JavaScript</span></strong><br />
+<strong>          7.9.  <span style="font-weight: 400;">Hide Private Properties in JavaScript</span></strong><br />
+<strong>          7.10.  <span style="font-weight: 400;">Polymorphism in JavaScript</span></strong><br />
+<strong>          7.11.  <span style="font-weight: 400;">How to Use Getter Setter in JavaScript</span></strong><br />
+<strong>          7.12.  <span style="font-weight: 400;">Prototype and Prototypical Inheritance in JavaScript</span></strong><br />
+<strong>          7.13.  <span style="font-weight: 400;">Multilevel Inheritance in JavaScript</span></strong></p>
+<p><strong>8. Introduce ES6 to ES10</strong><br />
+<strong>          8.1.  <span style="font-weight: 400;">What is ES6?</span></strong><br />
+<strong>          8.2.  <span style="font-weight: 400;">Tooling</span></strong><br />
+<strong>          8.3.  <span style="font-weight: 400;">Let and Const</span></strong><br />
+<strong>          8.4.  <span style="font-weight: 400;">Template Literals</span></strong><br />
+<strong>          8.5.  <span style="font-weight: 400;">Object Literals</span></strong><br />
+<strong>          8.6.  <span style="font-weight: 400;">Assignment Destructuring</span></strong><br />
+<strong>          8.7.  <span style="font-weight: 400;">Spread Operator, Rest Parameters, and Default Parameters </span></strong><br />
+<strong>          8.8.  <span style="font-weight: 400;">Arrow Functions</span></strong><br />
+<strong>          8.9.  <span style="font-weight: 400;">find, fill</span></strong><br />
+<strong>          8.10.  <span style="font-weight: 400;">For&#8230;of, for&#8230;in, </span></strong><br />
+<strong>          8.11.  <span style="font-weight: 400;">Classes</span></strong><br />
+<strong>          8.12.  <span style="font-weight: 400;">Symbols</span></strong><br />
+<strong>          8.13.  <span style="font-weight: 400;">Iterators and Generators</span></strong><br />
+<strong>          8.14.  <span style="font-weight: 400;">Promises</span></strong><br />
+<strong>          8.15.  <span style="font-weight: 400;">async/await</span></strong><br />
+<strong>          8.16.  <span style="font-weight: 400;">Maps and Sets</span></strong><br />
+<strong>          8.17.  <span style="font-weight: 400;">WeakMaps and WeakSets</span></strong><br />
+<strong>          8.18.  <span style="font-weight: 400;">Proxies</span></strong><br />
+<strong>          8.19.  <span style="font-weight: 400;">Reflection</span></strong><br />
+<strong>          8.20.  <span style="font-weight: 400;">Number</span></strong><br />
+<strong>          8.21.  <span style="font-weight: 400;">Math</span></strong><br />
+<strong>          8.22.  <span style="font-weight: 400;">Array</span></strong><br />
+<strong>          8.23.  <span style="font-weight: 400;">Object</span></strong><br />
+<strong>          8.24.  <span style="font-weight: 400;">Modules</span></strong><br />
+<strong>          8.25.  <span style="font-weight: 400;">String Padding</span></strong><br />
+<strong>          8.26.  <span style="font-weight: 400;">Exponential Operator</span></strong><br />
+<strong>          8.27.  <span style="font-weight: 400;">Trailing Comma</span></strong><br />
+<strong>          8.28.  <span style="font-weight: 400;">Object.keys(), Object.values() and Object.entries()</span></strong><br />
+<strong>          8.29.  <span style="font-weight: 400;">Array.prototype.includes()</span></strong><br />
+<strong>          8.30.  <span style="font-weight: 400;">Array.flat() and Array.flatMap()</span></strong><br />
+<strong>          8.31.  <span style="font-weight: 400;">Global This</span></strong><br />
+<strong>          8.32.  <span style="font-weight: 400;">Optional chaining and Nullish Coalescing Operator</span></strong></p>
+<p><strong>9. Introduction to TypeScript</strong><br />
+<strong>          9.1.  <span style="font-weight: 400;">Introduction to TypeScript</span></strong><br />
+<strong>          9.2.  <span style="font-weight: 400;">What is the thread of execution context?</span></strong><br />
+<strong>                  9.2.1.  <span style="font-weight: 400;">Type Annotation</span></strong><br />
+<strong>                  9.2.2.  <span style="font-weight: 400;">Type Inference</span></strong><br />
+<strong>                  9.2.3.  <span style="font-weight: 400;">Number Type</span></strong><br />
+<strong>                  9.2.4.  <span style="font-weight: 400;">String Type</span></strong><br />
+<strong>                  9.2.5.  <span style="font-weight: 400;">Boolean Type</span></strong><br />
+<strong>                  9.2.6.  <span style="font-weight: 400;">Object Type</span></strong><br />
+<strong>                  9.2.7.  <span style="font-weight: 400;">Array Type</span></strong><br />
+<strong>                  9.2.8.  <span style="font-weight: 400;">Tuple Type</span></strong><br />
+<strong>                  9.2.9.  <span style="font-weight: 400;">Enum Type</span></strong><br />
+<strong>                  9.2.10.  <span style="font-weight: 400;">Any Type</span></strong><br />
+<strong>                  9.2.11.  <span style="font-weight: 400;">Never Type</span></strong><br />
+<strong>                  9.2.12.  <span style="font-weight: 400;">Union Type</span></strong><br />
+<strong>                  9.2.13.  <span style="font-weight: 400;">Type Aliases</span></strong><br />
+<strong>          9.3.  <span style="font-weight: 400;">Functions</span></strong><br />
+<strong>                  9.3.1.  <span style="font-weight: 400;">Function</span></strong><br />
+<strong>                  9.3.2.  <span style="font-weight: 400;">Functions Type</span></strong><br />
+<strong>                  9.3.3.  <span style="font-weight: 400;">Optional Parameters</span></strong><br />
+<strong>                  9.3.4.  <span style="font-weight: 400;">Default Parameters</span></strong><br />
+<strong>                  9.3.5.  <span style="font-weight: 400;">Rest Parameters</span></strong><br />
+<strong>          9.4.  <span style="font-weight: 400;">Advanced Types</span></strong><br />
+<strong>                  9.4.1.  <span style="font-weight: 400;">Classes</span></strong><br />
+<strong>                  9.4.2.  <span style="font-weight: 400;">Interfaces</span></strong><br />
+<strong>                  9.4.3.  <span style="font-weight: 400;">Generics</span></strong><br />
+<strong>                  9.4.4.  <span style="font-weight: 400;">Decorators</span></strong><br />
+<strong>                  9.4.5.  <span style="font-weight: 400;">Modules</span></strong><br />
+<strong>                  9.4.6.  <span style="font-weight: 400;">Namespaces</span></strong><br />
+<strong>          9.5.  <span style="font-weight: 400;">Build a small admin template project using typescript</span></strong></p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>জাভাস্ক্রিপ্টে কলব্যাক ও হাইয়ার অর্ডার ফাংশন</title>
+		<link>/blog/callback-and-higher-order-function-in-javascript/</link>
+		
+		<dc:creator><![CDATA[Saroar Shahan]]></dc:creator>
+		<pubDate>Thu, 04 Feb 2021 13:22:28 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[callback function]]></category>
+		<category><![CDATA[higher order function]]></category>
+		<category><![CDATA[javascript]]></category>
+		<category><![CDATA[js]]></category>
+		<guid isPermaLink="false">/?p=2368</guid>
+
+					<description><![CDATA[কলব্যাক ব্যাপারটি আমাদের জীবনের সাথে ব্যাপকভাবে জড়িয়ে আছে। যদি “সে” কলব্যাক না করে আপনি হয়তো “অ” হয়ে যান! ইয়ে মানে বলতে চাচ্ছিলাম যে অভিমানী নয়তো অস্থির হয়ে যান 😉 আর যদি আপনার লাইফে “সে” না থাকে তবে তো কোন কথাই নেই। আমার মত বিন্দাস 😂। যাইহোক, আপনি “অ” হোন আর না হোন, “সে” কলব্যাক করুক [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>কলব্যাক ব্যাপারটি আমাদের জীবনের সাথে ব্যাপকভাবে জড়িয়ে আছে। যদি “সে” কলব্যাক না করে আপনি হয়তো “অ” হয়ে যান! ইয়ে মানে বলতে চাচ্ছিলাম যে অভিমানী নয়তো অস্থির হয়ে যান 😉 আর যদি আপনার লাইফে “সে” না থাকে তবে তো কোন কথাই নেই। আমার মত বিন্দাস 😂। যাইহোক, আপনি “অ” হোন আর না হোন, “সে” কলব্যাক করুক আর না করুক আজকে আমরা কলব্যাক নিয়ে আলোচনা করবই। চলুন তাহলে শুরু থেকেই শুরু করি…</p>
+<p>জাভাস্ক্রিপ্টে ফাংশন হচ্ছে একটি ফার্স্ট-ক্লাস অবজেক্ট। এই কারণে, ফাংশন ভেরিয়েবলের মাঝে এসাইন হতে পারে, অন্য একটি ফাংশনকে আর্গুমেন্ট হিসাবে নিতে পারে, ফাংশনের ভিতরেও কাজ করতে পারে এবং ফাংশন দ্বারা রিটার্নও হতে পারে।</p>
+<h3>কলব্যাক ফাংশন কি?</h3>
+<blockquote><p>সহজ কথায়, কলব্যাক ফাংশন হচ্ছে এমন একটি ফাংশন যেটি অন্য একটি ফাংশনে আর্গুমেন্ট হিসাবে পাস করা ফাংশন, যেটি কোন কাজ সম্পন্ন করার জন্যে আউটার ফাংশনের ভিতরে ইনভোক হয়।</p></blockquote>
+<h3>হাইয়ার অর্ডার ফাংশন কি?</h3>
+<blockquote><p>যে ফাংশনে অন্য কোন ফাংশনকে আর্গুমেন্ট হিসাবে পাস করা হয় বা কোন ফাংশন অন্য কোন ফাংশনকে রিটার্ন করে তাকে হাইয়ার অর্ডার ফাংশন বলা হয়। বাংলায় এটাকে ঊচ্চমার্গীয় ফাংশন হিসেবে ভেবে নিতে পারেন। ঊচ্চমার্গীয় কথাবার্তা মাথার উপর দিয়ে গেলেও ঊচ্চমার্গীয় ফাংশন মাথার নিচ দিয়েই যাবে ইনশাআল্লাহ্‌, নিশ্চিত থাকুন।</p></blockquote>
+<p>আমাদের এমন একটি ফাংশন আছে যেটি আর্গুমেন্ট হিশাবে একটি অ্যারে নিবে এবং সেটি কে মডিফাই করে একটি নতুন অ্যারে নিটার্ন করবে। এক্ষেত্রে, আমাদের ফাংশনটিকে যে অ্যারে দেওয়া হবে তার সাথে দুই যোগ করে নতুন একটি অ্যারে নিটার্ন করবে।</p>
+<pre><code class="language-js">function modifyBy2(arr) {
+    let output = [];
+
+    for(let i = 0; i &lt; arr.length; i++) {
+        output.push(arr[i] + 2);
+    }
+
+    return output;
+}
+
+const newArr = modifyBy2([1,2,3,4,5,6]);
+console.log(newArr); // [3, 4, 5, 6, 7, 8]</code></pre>
+<p>এখন আমাদের আরেকটি ফাংশন আছে যেটি আর্গুমেন্ট হিশাবে একটি অ্যারে নিবে এবং যে অ্যারে দেওয়া হবে তার সাথে দুই গুণ করে নতুন একটি অ্যারে নিটার্ন করবে।</p>
+<pre><code class="language-js">function multifyBy2(arr) {
+    let output = [];
+
+    for(let i = 0; i &lt; arr.length; i++) {
+        output.push(arr[i] * 2);
+    }
+
+    return output;
+}
+
+const newArr = modifyBy2([1,2,3,4,5,6]);
+console.log(newArr); // [2, 4, 6, 8, 10, 12]</code></pre>
+<p>এখন যদি আমরা বিয়োগ বা ভাগ করতে চাই? তাহলে আমাদেরকে আরও দুটি ফাংশন লিখতে হবে তাই না? ব্যাপারটা তাহলে কি ভাল কিছু হচ্ছে? কোড রিপিটেশন হয়ে যাচ্ছে। একটি বিষয় লক্ষ্য করেন আমাদের লেখা দুটি ফাংশনেই শুধু অপারেশনগুলা ছাড়া একই কোড লিখেছি। আমরা যদি এমন কিছু করতে পারি যে আমাদের ফাংশনে যোগ, বিয়োগ যে কাজই করুক না কেন সেটি আমরা বলে দিবো, তাহলে কেমন হয়? এখন আমরা সে কাজটাই করবো। তার জন্যে আমাদেরকে আমাদের ফাংশনের সাথে আরেকটি আর্গুমেন্ট পাস করতে হবে। যেটি আসলে আমাদের অপারেশনটা হ্যান্ডল করবে।</p>
+<pre><code class="language-js">function modifyArray(arr, fn) {
+    let output = [];
+
+    for(let i = 0; i &lt; arr.length; i++) {
+        output.push(fn(arr[i]));
+    }
+
+    return output;
+}
+
+function modifyBy2(elem) {
+    return elem + 2;
+}
+
+const newArr = modifyArray([1,2,3,4,5,6], modifyBy2);
+console.log(newArr); // [3, 4, 5, 6, 7, 8]</code></pre>
+<p>উপরের কোডে লক্ষ্য করুন, আমরা <strong>modifyArray</strong> নামে একটি ফাংশন ডিফাইন করেছি যেটি দুটি আর্গুমেন্টস নিচ্ছে। একটি অ্যারে এবং অন্যটি একটি ফাংশন। সে ফাংশনে আমরা বলে দিচ্ছি তার কাজ কি হবে। সে তার কাজ সম্পন্ন করে output অ্যারেতে তার ভ্যালুটা পুশ করে দিচ্ছে এবং modifyArray ফাংশনটি কাজ সম্পন্ন করে একটি নতুন অ্যারে রিটার্ন করতেছে। এখন যদি আমরা বিয়োগ, গুণ বা ভাগ করতে চাই সেটিও খুব সহজেই করতে পারবো এই ফাংশন দিয়ে। আমাদেরকে নতুন করে কোন লজিক লেখা লাগবে না শুধু আমরা একটি নতুন ফাংশন দিয়ে দিবো এবং সেখানে বলে দিবো তাকে কি করতে হবে। তাহলে চলেন দেখি আমাদের কাজ করতে পারি কিনা।</p>
+<pre><code class="language-js">function modifyArray(arr, callback) {
+    let output = [];
+
+    for(let i = 0; i &lt; arr.length; i++) {
+        output.push(callback(arr[i]));
+    }
+
+    return output;
+}
+
+function addBy2(elem) {
+    return elem + 2;
+}
+
+function multifyBy2(elem) {
+    return elem * 2;
+}
+
+const additionArr = modifyArray([1,2,3,4,5,6], addBy2);
+const multiArr = modifyArray([1,2,3,4,5,6], multifyBy2);
+
+console.log(additionArr); // [3, 4, 5, 6, 7, 8]
+console.log(multiArr); // [2, 4, 6, 8, 10, 12]</code></pre>
+<p><strong>modifyArray</strong> ফাংশনটিতে আর্গুমেন্ট হিসাবে যে ফাংশনটিকে পাস করতেছি ওই ফাংশনটিই হচ্ছে একটি কলব্যাক ফাংশন এবং <strong>modifyArray</strong> ফানশনটি হচ্ছে একটি <strong>হাইয়ার অর্ডার ফাংশন</strong>।</p>
+<p>বিঃ দ্রঃ এই হচ্ছে কলব্যাক এবং ঊচ্চমার্গীয় ফাংশনের কাজ কারবার। এইবার কি কলব্যাক এবং ঊচ্চমার্গীয় ফাংশন মাথার নিচ দিয়ে যাচ্ছে?? এরপরও যদি ৬০০+ ওয়র্ডের একটা লেখা পড়ে মাথার উপর দিয়ে যায় তাহলে কমেন্ট বক্সে কমেন্ট করে উড়াই দিবেন, আমি ধরে নিবো।</p>
+<p><a href="https://shahansdiary.com/callback-and-higher-order-function-in-javascript/" rel="nofollow noopener" target="_blank">এখানে ক্লিক</a> করে লেখকের ব্যক্তিগত ব্লগেও পড়তে পারবেন</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>জাভাস্ক্রিপ্টে স্কোপ কি?</title>
+		<link>/blog/what-is-scope-in-javascript/</link>
+		
+		<dc:creator><![CDATA[Saroar Shahan]]></dc:creator>
+		<pubDate>Fri, 08 Jan 2021 13:03:06 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[global scope]]></category>
+		<category><![CDATA[javascript]]></category>
+		<category><![CDATA[lexical scope]]></category>
+		<category><![CDATA[local scope]]></category>
+		<category><![CDATA[scope]]></category>
+		<category><![CDATA[গ্লোবাল স্কোপ]]></category>
+		<category><![CDATA[জাভাস্ক্রিপ্ট]]></category>
+		<category><![CDATA[লোকাল স্কোপ]]></category>
+		<category><![CDATA[স্কোপ]]></category>
+		<guid isPermaLink="false">/?p=2342</guid>
+
+					<description><![CDATA[জাভাস্ক্রিপ্টের আলোচিত বিষয়গুলোর মাঝে একটি হল Scope। আপনি যদি একজন নতুন জাভাস্ক্রিপ্ট প্রোগ্রামার হয়ে থাকেন তাহলে এটির সাথে ভাল করে পরিচয় হওয়া অতি প্রয়োজন। তাই আজকে scope নিয়ে মনের কিছু কথা বলতে চাচ্ছি। 😛 Scope কি? Scope মূলত একটা নির্দিষ্ট সীমানাকে বোঝায়। যার বাহিরে Variable এবং Function-গুলো এক্সেসিবল না। যদি এই সীমানার বাহিরে কোন Variable [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>জাভাস্ক্রিপ্টের আলোচিত বিষয়গুলোর মাঝে একটি হল <strong>Scope</strong>। আপনি যদি একজন নতুন জাভাস্ক্রিপ্ট প্রোগ্রামার হয়ে থাকেন তাহলে এটির সাথে ভাল করে পরিচয় হওয়া অতি প্রয়োজন। তাই আজকে <strong>scope</strong> নিয়ে মনের কিছু কথা বলতে চাচ্ছি। 😛</p>
+<h3>Scope কি?</h3>
+<blockquote><p><strong>Scope</strong> মূলত একটা নির্দিষ্ট সীমানাকে বোঝায়। যার বাহিরে <strong>Variable</strong> এবং <strong>Function</strong>-গুলো এক্সেসিবল না। যদি এই সীমানার বাহিরে কোন <strong>Variable</strong> এবং <strong>Function</strong> কে কল করা হয় তাহলে তার কোন অস্তিত্ব থাকবে না। একটি কথা ভাল করে মাথায় সংরক্ষণ করে রাখেন যে, জাভাস্ক্রিপ্টে একমাত্র তখনই <strong>Scope</strong> তৈরি হয়, যখন আমরা কোন <strong>function</strong> ইনভোক বা কাল করি। হ্যাঁ, <strong>function</strong> ছাড়া আর কোথাও <strong>Scope</strong> তৈরি হয় না। আর এই <strong>Scope</strong> হচ্ছে দুই প্রকার- ১. <strong>Global Scope</strong> এবং ২. <strong>Local Scope</strong>।</p></blockquote>
+<h3>১. Global Scope</h3>
+<p>জাভাস্ক্রিপ্টে বাই ডিফল্ট সব কিছু <strong>Global Scope</strong> &#8211; এ রান হয়ে। যার এক্সেসিবল সব জায়গায় থাকে। উদাহরণস্বরূপ-</p>
+<pre><code class="language-js">var globalVariable = &quot;I am global variable.&quot;;
+console.log(globalVariable); // I am global variable.
+
+var myFunc = function() {
+    console.log(globalVariable);
+}
+
+myFunc() // I am global variable.</code></pre>
+<p>উপরের কোডটুকু রান করলে দেখতে পারবেন যে globalVariable নামের ভেরিয়েবলটিকে সব যায়গায় ব্যবহার করা যাচ্ছে এবং সবার আউটপুটও একই দেখাচ্ছে।</p>
+<h3>২. Local Scope</h3>
+<p>আগেই বলেছিলাম যে, জাভাস্ক্রিপ্ট একমাত্র <strong>Scope</strong> তৈরি করে কোন <strong>Function</strong> ইনভোক বা কাল করলে। এই <strong>Scope</strong> কেই বলা হয় <strong>Local Scope</strong>। মানে হচ্ছে, তার ভিতরে যা কিছু থাকবে তার নিজস্ব <strong>Scope</strong> &#8211; এর বাহিরে এর কোন অস্তিত্ব থাকবে না। অর্থাৎ, তার <strong>Scope</strong> &#8211; এর ভিতরে লিখা কোন ভেরিয়েবলকে যদি আমরা বাহিরে অন্য কোথাও ব্যবহার করতে চাই তাহলে জাভাস্ক্রিপ্ট খুব সুন্দর করে একটি আনকট রেফারেন্সে ইরর দিয়ে বলে দিবে যে খোকা তুমি যাকে ব্যবহার করতে চাচ্ছ সে তো কোথাও ডেফাইন করা নেই। চলুন একটা উদাহরণ দিয়ে দেখা যাক-</p>
+<pre><code class="language-js">var globalVariable = &quot;I am global variable.&quot;;
+
+var myFunc = function() {
+    var localVariable = &quot;I am local variable.&quot;;
+
+    console.log(globalVariable);
+    console.log(localVariable);
+}
+
+myFunc();
+// I am global variable.
+// I am local variable.
+
+console.log(localVariable); // udefined</code></pre>
+<p>উপরের কোডটুকু রান করলে দেখতে পারবেন যে প্রথমে দেখাচ্ছে I am global variable. এবং I am local variable. তারপর অতি ভদ্রতার সাথে খুব সুন্দর করে বলে দিছে যে আনকট রেফারেন্সেঃ লোকাল ইজ নট ডিফাইন্ড।</p>
+<h3>Lexical Scoping কি?</h3>
+<p>এখন সবার মনে প্রশ্ন আসতে পারে যে, এই <strong>Lexical Scoping</strong> &#8211; টা আবার কি? একটু অপেক্ষা করেন মাথা গরম করার কোন দরকার নেই। আসলে জাভাস্ক্রিপ্টকে বলা হয় <strong>Lexical Scoping</strong> ল্যাঙ্গুয়েজ। আমরা ফাংশনের ভিতরে আমাদের প্রয়োজন অনুযায়ী একাধিক ফাংশন তৈরি করতে পারি এবং চাইল্ড ফাংশনগুলো তার প্যারেন্ট ফাংশনের সব ভেরিয়াবলস এবং আর্গুমেন্টেসের এক্সেস পায়। কিন্তু আউটার ফাংশনগুলো তার চাইল্ড ফাংশনের ভেরিয়াবলস এবং আর্গুমেন্টেসের কোন এক্সেস পায় না। এই যে চাইল্ড ফাংশনগুলো তার প্যারেন্ট ফাংশনের ভেরিয়াবলস এবং আর্গুমেন্টেসের এক্সেস পাচ্ছে এই এক্সেস পাওয়াকেই বল হয় <strong>Lexical Scoping</strong>।</p>
+<pre><code class="language-js">function outerFunc(a) {
+     var outerFuncVariable = &quot;Hi there, I am outer &quot; + a;
+
+     console.log(outerFuncVariable); // Hi there, I am inner function variable
+
+     function innerFunc() {
+         var innerFuncVariable = &quot;Hi there, I am inner &quot; + a;
+         console.log(innerFuncVariable);
+     }
+
+     innerFunc(); // Hi there, I am inner function variable
+
+     console.log(innerFuncVariable); // undefined
+ }
+
+ outerFunc(&quot;function variable&quot;);</code></pre>
+<p><strong>নোটসঃ</strong></p>
+<ul>
+<li>জাভাস্ক্রিপ্টের গ্লোবাল স্কোপ এবং লোকা স্কোপ আছে।</li>
+<li>যে কোন ফাংশনের বাইরে ডিক্লেয়ারড এবং ইনিশিয়ালাইজড ভ্যরিয়েবলগুলো গ্লোবাল ভ্যারিয়েবল হয়ে যায়।</li>
+<li>ফাংশনে ভিতরে ডিক্লেয়ারড এবং ইনিশিয়ালাইজড ভ্যারিয়েবলগুলো সেই ফাংশনের লোকাল ভ্যারিয়েবল হয়।</li>
+<li>যে কোন ফাংশনের ভেতরে ভ্যারিয়েবল কীওয়ার্ড ছাড়া ডিক্লেয়ারড ভ্যারিয়েবলগুলো স্বয়ংক্রিয়ভাবে গ্লোবাল ভ্যারিয়েবল হয়ে যায়।</li>
+<li>গ্লোবাল ভ্যারিয়েবলগুলো প্রোগ্রামের যেকোন জায়গায় অ্যাক্সেস এবং পরিবর্তন করা যেতে পারে।</li>
+<li>ফাংশন ডিক্লেয়ারেশনের বাইরে লোকাল ভ্যারিয়েবল সমূহ অ্যাক্সেস করা যাবে না।</li>
+<li>গ্লোবাল ভ্যারিয়েবল এবং লোকাল ভ্যারিয়েবল একই নাম থাকতে পারে। কিন্তু একই নাম ব্যবহার না করায় ভাল।</li>
+</ul>
+<p>আশা করি, এখন <strong>Scope</strong> কি এবং <strong>Lexical Scoping </strong>কি কিছুটা হলেও বুঝতে পারছেন। আজ এই পর্যন্তই পরবর্তীতে অন্য কোন টপিক নিয়ে আবার হাজির হবো ইনশাআল্লাহ্‌। ততক্ষণ পর্যন্ত সবাই ভাল থাকুন। আল্লাহ্‌ হাফেজ।</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

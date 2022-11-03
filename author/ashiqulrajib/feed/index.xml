@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Md. Ashiqul Islam &#8211; Vivasoft</title>
+	<atom:link href="/author/ashiqulrajib/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Wed, 09 Feb 2022 05:29:53 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>Md. Ashiqul Islam &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>লোকাল স্টোরেজ এবং সেশন স্টোরেজ</title>
+		<link>/blog/%e0%a6%b2%e0%a7%8b%e0%a6%95%e0%a6%be%e0%a6%b2-%e0%a6%8f%e0%a6%ac%e0%a6%82-%e0%a6%b8%e0%a7%87%e0%a6%b6%e0%a6%a8-%e0%a6%b8%e0%a7%8d%e0%a6%9f%e0%a7%8b%e0%a6%b0%e0%a7%87%e0%a6%9c/</link>
+		
+		<dc:creator><![CDATA[Md. Ashiqul Islam]]></dc:creator>
+		<pubDate>Mon, 17 Jan 2022 07:16:00 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=5254</guid>
+
+					<description><![CDATA[localStorageএবং sessionStorage হল ওয়েব স্টোরেজ অবজেক্ট যা ব্রাউজারে কী/মান জোড়া সংরক্ষণ করার অনুমতি দেয়। তাদের সম্পর্কে যা মজার তা হল যে ডেটা একটি পেইজ রিফ্রেশ (এর জন্য sessionStorage) এবং এমনকি একটি সম্পূর্ণ ব্রাউজার রিস্টার্ট (এর জন্য localStorage) এর পরও টিকে থাকে। আমরা খুব শীঘ্রই এ বিষয়ে বিস্তারিত দেখতে পাব। আমাদের মনে প্রশ্ন আসতে পারে ডাটা রাখার জন্য তো [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><code>localStorage</code>এবং <code>sessionStorage</code> হল ওয়েব স্টোরেজ অবজেক্ট যা ব্রাউজারে কী/মান জোড়া সংরক্ষণ করার অনুমতি দেয়। তাদের সম্পর্কে যা মজার তা হল যে ডেটা একটি পেইজ রিফ্রেশ (এর জন্য <code>sessionStorage</code>) এবং এমনকি একটি সম্পূর্ণ ব্রাউজার রিস্টার্ট (এর জন্য <code>localStorage</code>) এর পরও টিকে থাকে। আমরা খুব শীঘ্রই এ বিষয়ে বিস্তারিত দেখতে পাব।</p>
+<p>আমাদের মনে প্রশ্ন আসতে পারে ডাটা রাখার জন্য তো ইতিমধ্যে কুকিজ আছে. তাহলে আবার এই <code>localStorage</code> বা <code>sessionStorage</code> এর দরকার কি?</p>
+<ul>
+<li>ওয়েব স্টোরেজ অবজেক্টগুলো প্রতিটি অনুরোধের সাথে সার্ভারে পাঠানো হয় না। যে কারণে, আমরা আরো অনেক ডাটা সংরক্ষণ করতে পারি. বেশিরভাগ ব্রাউজার কমপক্ষে 2 মেগাবাইট ডেটা (বা তার বেশি) অনুমতি দেয় এবং সেটি কনফিগার করার জন্য সেটিংস থাকে।</li>
+<li>সার্ভার HTTP হেডারের মাধ্যমে স্টোরেজ অবজেক্টগুলিকে ম্যানিপুলেট করতে পারে না। জাভাস্ক্রিপ্টেই সবকিছু করা হয়ে থাকে।</li>
+</ul>
+<p>উভয় স্টোরেজ অবজেক্ট একই পদ্ধতি এবং বৈশিষ্ট্য প্রদান করে:</p>
+<ul>
+<li><code>setItem(key, value)</code> &#8211; স্টোর কী/ভ্যালু জোড়া।</li>
+<li><code>getItem(key)</code> &#8211; কী দ্বারা মান পাওয়া।</li>
+<li><code>removeItem(key)</code> &#8211; ভ্যালু দ্বারা কী রিমুভ করা।</li>
+<li><code>clear()</code> &#8211; সবকিছু মুছে ফেলা।</li>
+<li><code>key(index)</code> &#8211; একটি নিদিষ্ট অবস্থানের কী পাওয়া।</li>
+<li><code>length</code> &#8211; সঞ্চিত আইটেম সর্বমোট সংখ্যা।</li>
+</ul>
+<p><strong><code>localStorage</code> ডেমো:</strong></p>
+<p>লোকাল স্টোরেজের ডাটাগুলো ব্রাউজারের বিভিন্ন ট্যাব আর উইন্ডোর মধ্যে শেয়ার হয়। এটি ব্রাউজার রিস্টার্ট এবং এমনকি OS রিবুট হওয়ার পরেও ডাটার মেয়াদ শেষ হয় না। উদাহরণস্বরূপ, নিচের কোডটি চালান।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">localStorage.setItem('test', 1);</pre>
+<p>ব্রাউজারটি বন্ধ/খুলুন বা একই পেইজটি একটি ভিন্ন উইন্ডোতে খুলুন দেখবেন লোকাল স্টোরেজের ডাটাগুলো ঠিকই অ্যাক্সেস করতে পারছেন। নিচের কোডটির মাধ্যমে আপনি চেক করে দেখতে পারেন।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">alert( localStorage.getItem('test') );</pre>
+<p>ডাটা শেয়ারের কারণে আপনি যদি লোকাল স্টোরেজে কোন পরিবর্তনও করেন তবে ওই পরিবর্তনও অন্য ট্যাব বা ব্রাউজারে চলে আসবে।</p>
+<p><strong>অবজেক্টের মতো অ্যাক্সেসঃ</strong></p>
+<p>আমরা চাইলে অবজেক্টের মতো করেও লোকাল স্টোরেজে ডাটা get/set করতে পারি। এমনকি ডাটা ডিলিটও করতে পারি। চলুন দেখি কিভাবে করব।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">// For setting key
+localStorage.test = 2;
+
+// For getting key
+alert( localStorage.test ); // 2
+
+// For removing key
+delete localStorage.test;</pre>
+<p>&nbsp;</p>
+<p><strong>লুপের মাধ্যমে কী অ্যাক্সেসঃ</strong></p>
+<p>আমরা ইতিমধ্যে লোকাল স্টোরেজের ডাটা কি করে <code>set,get,delete</code> করা যায় টা দেখলাম। এখন মনে প্রশ্ন আসতে পারে, কি করে লোকাল স্টোরেজের সবগুলো কী/ভ্যালু জোড়া অ্যাক্সেস করা যায়?</p>
+<p>দুর্ভাগ্যবশত, লোকাল স্টোরেজের অবজেক্ট <code>Iterable</code> নয়। একটি উপায় হল একটি অ্যারের উপর তাদের লুপ করা।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">for(let i=0; i&lt;localStorage.length; i++) {
+  let key = localStorage.key(i);
+  alert(`${key}: ${localStorage.getItem(key)}`);
+}</pre>
+<p>আরেকটি উপায় হল <code>for key in localStorage</code>লুপ ব্যবহার করা, ঠিক যেমন আমরা নিয়মিত অবজেক্টের সাথে করে থাকি।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">for(let key in localStorage) {
+  if (!localStorage.hasOwnProperty(key)) {
+    continue;
+  }
+  alert(`${key}: ${localStorage.getItem(key)}`);
+}</pre>
+<p><strong>শুধুমাত্র স্ট্রিংঃ</strong></p>
+<p>মনে রাখবেন, লোকাল স্টোরেজের  কী এবং ভ্যালু উভয়ই স্ট্রিং হতে হবে। যদি অন্য কোন প্রকার হয়, যেমন একটি সংখ্যা, বা একটি বস্তু, এটি স্বয়ংক্রিয়ভাবে স্ট্রিং এ রূপান্তরিত হয়।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">localStorage.user = {name: "Rajib"};
+alert(localStorage.user);</pre>
+<p>যদিও <code>JSON</code> আমরা বস্তু সংরক্ষণ করতে ব্যবহার করতে পারি।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">localStorage.user = JSON.stringify({name: "Rajib"});
+
+let user = JSON.parse( localStorage.user );
+alert( user.name );</pre>
+<p>এছাড়াও পুরো স্টোরেজ অবজেক্টকে স্ট্রিং করা সম্ভব, যেমন ডিবাগিং উদ্দেশ্যে।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">alert( JSON.stringify(localStorage, null, 2) );</pre>
+<p>&nbsp;</p>
+<p><strong>সেশন স্টোরেজঃ</strong></p>
+<p><code>sessionStorage</code> অবজেক্ট <code>localStorage</code> অবজেক্ট থেকে অনেক কম ব্যবহৃত হয়। সেশন স্টোরেজর প্রপার্টি আর মেথডগুলো একই হলেও অনেক সীমিত।</p>
+<ul>
+<li><code>sessionStorage</code>শুধুমাত্র ব্রাউজার Current ট্যাবের মধ্যেই বিদ্যমান। একই পেইজের আরেকটি ট্যাবে আলাদা স্টোরেজ থাকবে।</li>
+<li>ডেটা পেইজ রিফ্রেশ হওয়ার পরও বেঁচে থাকে, কিন্তু ট্যাব বন্ধ বা নতুন ট্যাব খুললে আর থাকে না।</li>
+</ul>
+<p>চলুন টেস্ট করে দেখা যাক। নিচের কোডটি রান করুন।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">sessionStorage.setItem('test', 1);</pre>
+<p>এবার পেইজটি রিফ্রেশ করুন। এরপর কোডটি রান করুন।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">alert( sessionStorage.getItem('test') );</pre>
+<p>দেখবেন ঠিক থাক মত ডাটা পাবেন। এবার একই পেইজটি একটি অন্য ট্যাবে খুলুন দেখবেন <code>null</code> পাবেন তারমানে কোন ডাটা নেই। অর্থাৎ <code>sessionStorage</code> ব্রাউজার ট্যাবের মধ্যে আবদ্ধ।</p>
+<p>এই ছিল আজকের আলোচনা। পরবর্তীতে অন্য কোন বিষয় নিয়ে আবার কথা হবে।</p>
+<p>হ্যাপি কোডিং।</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>জাভাস্ক্রিপ্ট  কুকিজ</title>
+		<link>/blog/%e0%a6%9c%e0%a6%be%e0%a6%ad%e0%a6%be%e0%a6%b8%e0%a7%8d%e0%a6%95%e0%a7%8d%e0%a6%b0%e0%a6%bf%e0%a6%aa%e0%a7%8d%e0%a6%9f-%e0%a6%95%e0%a7%81%e0%a6%95%e0%a6%bf%e0%a6%9c/</link>
+		
+		<dc:creator><![CDATA[Md. Ashiqul Islam]]></dc:creator>
+		<pubDate>Sat, 15 Jan 2022 18:12:28 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=5238</guid>
+
+					<description><![CDATA[কুকি হলো আপনার কম্পিউটারে একটি ছোট টেক্সট ফাইল হিসেবে সংরক্ষিত ডাটা। যখন ওয়েব সার্ভার ব্রাউজারে একটি ওয়েব পেজ পাঠায়, পাঠানোর পর ওয়েব সার্ভার ও ব্রাউজারের সংযোগটি বন্ধ হয়ে যায় এবং সার্ভার ব্যবহারকারীর সম্পর্কে সকল তথ্য ভুলে যায় কারণ সার্ভার এবং ব্রাউজারের সাথে তখন কোন সম্পর্ক থাকে না। &#8220;কিভাবে ব্যবহারকারীর সম্পর্কে তথ্য সংরক্ষন করা যায়&#8221; এই [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>কুকি হলো আপনার কম্পিউটারে একটি ছোট টেক্সট ফাইল হিসেবে সংরক্ষিত ডাটা। যখন ওয়েব সার্ভার ব্রাউজারে একটি ওয়েব পেজ পাঠায়, পাঠানোর পর ওয়েব সার্ভার ও ব্রাউজারের সংযোগটি বন্ধ হয়ে যায় এবং সার্ভার ব্যবহারকারীর সম্পর্কে সকল তথ্য ভুলে যায় কারণ সার্ভার এবং ব্রাউজারের সাথে তখন কোন সম্পর্ক থাকে না।</p>
+<p>&#8220;কিভাবে ব্যবহারকারীর সম্পর্কে তথ্য সংরক্ষন করা যায়&#8221; এই সমস্যা সমাধান করার জন্যই কুকি উদ্ভাবিত হয়েছেঃ</p>
+<ul>
+<li>যখন একজন ব্যবহারকারী একটি ওয়েবপেজে ভিজিট করে তখন তার নাম কুকি হিসেবে সংরক্ষন করা যায়।</li>
+<li>পরবর্তী সময়ে ব্যবহারকারী যখন ঐ পেজে ভিজিট করে তখন কুকি তাকে চিনতে পারে।</li>
+</ul>
+<p>কুকিগুলোয় জোড়ায় জোড়ায়(name-value) ডাটা সংরক্ষণ করে। যেমনঃ</p>
+<div>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">username = John Doe</pre>
+</div>
+<p>ব্রাউজার থেকে সার্ভারে যখন কোন পেজের জন্য রিকুয়েস্ট পাঠানো হয়, পেজের কুকিগুলোও এই রিকুয়েস্টের সাথে পাঠানো হয়। এই ভাবেই সার্ভার ব্যবহারকারীর সম্পর্কে তথ্য মনে রাখতে পারে।</p>
+<p><strong>জাভাস্ক্রিপ্টের মাধ্যমে কুকি তৈরিঃ</strong></p>
+<p><strong><code>document.cookie</code></strong> প্রোপার্টির মাধ্যমে জাভাস্ক্রিপ্ট কুকি তৈরি করতে পারে, পড়তে পারে এবং ডিলেট করতে পারে। জাভাস্ক্রিপ্টের মাধ্যমে এইভাবে কুকি তৈরি করা যায়ঃ</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">document.cookie="username = John";</pre>
+<p>এছাড়াও আপনি কুকির মেয়াদ শেষ হওয়ার তারিখ(expiry date) নির্ধারণ করতে পারেন(UTC সময়ে)। ডিফল্টভাবে ব্রাউজার বন্ধ করার সাথে সাথে কুকি ডিলেট হয়ে যায়ঃ</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">document.cookie="username= javasscript-bootcamp; expires=Mon, 18 Dec 2017 12:00:00 UTC";</pre>
+<p>কুকি কোন পেজের জন্য হবে একটি প্যারামিটারের মাধ্যমে আপনি ব্রাউজারকে বলে দিতে পারেন। ডিফল্টভাবে কুকি বর্তমান পেজের জন্যই নেয়া হয়।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">document.cookie="username= javascript-bootcamp; expires=Mon, 18 Dec 2017 12:00:00 UTC; path=/";</pre>
+<div class="w3-card-4 w3-lighter-grey w3-padding w3-margin-bottom"></div>
+<div><strong>জাভাস্ক্রিপ্টের মাধ্যমে কুকি পড়াঃ</strong></div>
+<div></div>
+<div>জাভাস্ক্রিপ্টের মাধ্যমে নিম্নলিখিত উপায়ে কুকি পড়া যায়ঃ</div>
+<div></div>
+<div>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">var x = document.cookie;</pre>
+<p><b>document.cookie </b>একটি স্ট্রিংয়ে সকল কুকিগুলো অনেকটা এইভাবে রিটার্ন করা হয়ঃ cookie1=value; cookie2=value; cookie3=value;</p>
+<p><strong>জাভাস্ক্রিপ্টের মাধ্যমে কুকি পরির্বতনঃ</strong></p>
+<p>জাভাস্ক্রিপ্টের মাধ্যমে যেভাবে আপনি কুকি তৈরি করেছেন, ঠিক একইভাবে কুকি পরিবর্তন করতে পারেন।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC";</pre>
+<p>উল্লেখ্য যে আপনি যখন কুকি ডিলেট করবেন তখন কুকির ভ্যালু নির্ধারণ করা লাগবে না।</p>
+<p><strong>কুকি স্ট্রিংঃ</strong></p>
+<p><b>document.cookie</b> প্রোপার্টিটি দেখতে সাধারন টেক্সট স্ট্রিংয়ের মতো দেখায়। কিন্তু এটি সাধারণ স্ট্রিং নয়। এমনকি আপনি যদি document.cookie তে একটি সম্পূর্ণ কুকি স্ট্রিং লিখেন, যখন আপনি এটি আবার পড়তে যাবেন ,তখন আপনি শুধু name-value এর জোড়ায় জোড়ায় দেখতে পাবেন। আপনি যদি একটি নতুন কুকি সেট করেন, পুরাতন কুকি মুছে যায় না। নতুন কুকি document.cookie তে যোগ হয়, যদি আপনি পুনরায় document.cookie পড়তে যান তাহলে এমন কিছু দেখতে পাবেনঃ cookie1=value; cookie2=value;</p>
+<p>আপনি যদি একটি সুনির্দিষ্ট কুকির ভ্যালু খুজে পেতে চান, তাহলে আপনাকে অবশ্যই একটি জাভাস্ক্রিপ্ট ফাংশন লিখতে হবে।</p>
+<p><strong>কুকি সেট করার ফাংশনঃ</strong></p>
+<p>প্রথমে আমরা একটি ফাংশন তৈরি করি যা ভিজিটরের নাম একটি কুকি ভ্যারিয়েবলে সংরক্ষন করবে।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">function setCookie(cname, cvalue, exdays) {
+    var date = new Date();
+    date.setTime(date.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+date.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}</pre>
+<p>উপরে ফাংশনের প্যারামিটারগুলোর মধ্যে প্রথমটি হলো কুকির নাম(cname), দ্বিতীয়টি কুকির ভ্যালু(cvalue) এবং শেষেরটি কুকির মেয়াদউত্তীর্ণের তারিখ(exdays)।ফাংশনটি কুকির নাম, কুকির ভ্যালু এবং স্ট্রিংয়ের মেয়াদউত্তীর্ণের তারিখ একত্রে যুক্ত করে একটি কুকি তৈরি করে।</p>
+<p><strong>কুকি পাওয়ার ফাংশনঃ</strong></p>
+<p>তারপর আমরা একটি ফাংশন তৈরি করি যেটি কুকির ভ্যালু রিটার্ণ করবে।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">function getCookie(cname) {
+var name = cname + "=";
+var ca = document.cookie.split(";");
+for(var i=0; i&lt;ca.length; i++) {
+   var c = ca[i];
+   while (c.charAt(0) == " ") c = c.substring(1);
+   if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+  }
+  return "";
+}</pre>
+</div>
+<p>কুকির নাম(cname) প্যারামিটার হিসেবে নেয়। অনুসন্ধানের জন্য cname + &#8220;=&#8221; টেক্সটের সাহায্যে একটি ভ্যারিয়েবল(name) তৈরি করেছি। document.cookie কে সেমিকোলনে বিভক্ত করে ca(ca = document.cookie.split(&#8220;;&#8221;)) অ্যারেতে রাখি। ca অ্যারেতে লুপের(i=0;i&lt;ca.length;i++) মাধ্যমে অ্যারের প্রতিটি মান পড়ি(c ‍=ca[i])। যদি কুকি খুজে পাওয়া যায় (c.indexOf(name) == 0),তাহলে c.substring(name.length,c.length) কুকি ভ্যালু রিটার্ন করে। আর যদি কুকি না পাওয়া যায়, তাহলে &#8220;&#8221; রিটার্ন করে।</p>
+<p><strong>কুকি চেক করার ফাংশনঃ</strong></p>
+<p>সর্বশেষ,আমরা একটি ফাংশন তৈরি করি যা দিয়ে কুকি সেট হয়েছে কিনা তা চেক করে। যদি কুকি সেট করা থাকে তাহলে এটি একটি স্বাগত বার্তা প্রদর্শন করবে। আর যদি কুকি সেট করা না থাকে তাহলে setCookie ফাংশন কল করার মাধ্যমে ইহা একটি প্রোম্পট(prompt) বক্স প্রদর্শন করে ব্যবহারকারীর নাম চাইবে এবং ৩৬৫ দিনের জন্য ব্যবহারকারীর নাম সংরক্ষন করবে।</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="js">function checkCookie() {
+  var username=getCookie("username");
+  if (username!="") {
+     alert("Welcome " + username + "!");
+  }else{
+     username = prompt("Please enter your name:", "");
+     if (username != "" &amp;&amp; username != null) {
+       setCookie("username", username, 365);
+     }
+  }
+}</pre>
+<p>&nbsp;</p>
+<div class="w3-card-4 w3-lighter-grey w3-padding w3-margin-bottom"></div>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>কম্পাইলার বনাম ইন্টারপ্রেটার</title>
+		<link>/blog/%e0%a6%95%e0%a6%ae%e0%a7%8d%e0%a6%aa%e0%a6%be%e0%a6%87%e0%a6%b2%e0%a6%be%e0%a6%b0-%e0%a6%ac%e0%a6%a8%e0%a6%be%e0%a6%ae-%e0%a6%87%e0%a6%a8%e0%a7%8d%e0%a6%9f%e0%a6%be%e0%a6%b0%e0%a6%aa%e0%a7%8d%e0%a6%b0/</link>
+		
+		<dc:creator><![CDATA[Md. Ashiqul Islam]]></dc:creator>
+		<pubDate>Fri, 14 Jan 2022 06:23:56 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=5201</guid>
+
+					<description><![CDATA[সহজ ভাষায় বললে, কম্পাইলার এবং ইন্টারপ্রেটার উভয়ই এমন এক ধরণের Translator প্রোগ্রাম যা আমাদের লেখা High Level ল্যাঙ্গুয়েজ কে Low Level ল্যাঙ্গুয়েজ অথবা Binary কোড এ রূপান্তর করে যাহা কম্পিউটার দারা বোধগম্য।কিন্তু কম্পাইলার এবং ইন্টারপ্রেটার দুটি ভিন্ন ভাবে কাজ করে। তাই তাদেরকে আলাদা নাম দেয়া হয়েছে। কম্পাইলার একটি কম্পাইলার একটি হাই লেভেল ল্যাঙ্গয়েজ কে লো [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>সহজ ভাষায় বললে, কম্পাইলার এবং ইন্টারপ্রেটার উভয়ই এমন এক ধরণের Translator প্রোগ্রাম যা আমাদের লেখা High Level ল্যাঙ্গুয়েজ কে Low Level ল্যাঙ্গুয়েজ অথবা Binary কোড এ রূপান্তর করে যাহা কম্পিউটার দারা বোধগম্য।কিন্তু কম্পাইলার এবং ইন্টারপ্রেটার দুটি ভিন্ন ভাবে কাজ করে। তাই তাদেরকে আলাদা নাম দেয়া হয়েছে।</p>
+<p><b>কম্পাইলার</b><br />
+<span style="font-weight: 400">একটি কম্পাইলার একটি হাই লেভেল ল্যাঙ্গয়েজ কে লো লেভেল ল্যাঙ্গুয়েজে যেমন Assemble Language, Object Code অথবা Binary Code (0 and 1) এ একবারে translate করে. তারপরে টার্গেট প্রোগ্রাম টা  runnable হয়। সুতারং প্রোগ্রাম রান করার আগেই প্রোগ্রাম কে compile করে রাখা হয়। যেমন C, C++, C#, Java, etc. কম্পাইলার এর আবার অনেক রকম ধরণ রয়েছে।</span></p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="alignnone size-full wp-image-5207" src="/wp-content/uploads/2022/01/053018_0616_CompilervsI1-e1642141249413.png" alt="053018 0616 CompilervsI1 e1642141249413 কম্পাইলার বনাম ইন্টারপ্রেটার" width="800" height="140" srcset="/wp-content/uploads/2022/01/053018_0616_CompilervsI1-e1642141249413.png 800w, /wp-content/uploads/2022/01/053018_0616_CompilervsI1-e1642141249413-480x140.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 800px, 100vw"></p>
+<p><b>ইন্টারপ্রিটার</b><br />
+<span style="font-weight: 400">একটি ইন্টারপ্রেটার হাই লেভেল ল্যাঙ্গুয়েজ কে line by line translate করে যা শুধু টার্গেট প্রোগ্রাম রান করার সময় সম্পন্ন হয়। যেমন PHP, Python, JavaScript(basically), Perl, Ruby, etc. ইন্টারপ্রেটার এর ও অনেক ধরণ রয়েছে।</span></p>
+<p><img decoding="async" class="alignnone size-full wp-image-5208" src="/wp-content/uploads/2022/01/053018_0616_CompilervsI1-1-e1642141310310.png" alt="053018 0616 CompilervsI1 1 e1642141310310 কম্পাইলার বনাম ইন্টারপ্রেটার" width="796" height="173" srcset="/wp-content/uploads/2022/01/053018_0616_CompilervsI1-1-e1642141310310.png 796w, /wp-content/uploads/2022/01/053018_0616_CompilervsI1-1-e1642141310310-480x173.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 796px, 100vw"></p>
+<p>&nbsp;</p>
+<p><span style="font-weight: 400"><b>কম্পাইলার এবং ইন্টারপ্রেটারের মধ্যে পার্থক্য</b> </span></p>
+<p><span style="font-weight: 400">যেহেতু ইন্টারপ্রেটার এবং কম্পাইলার ভিন্ন ভাবে কাজ করে, তাদের মধ্যে অনেক পার্থক্য রয়েছে। চলেন প্রধান পার্থক্ষগুলা দেখে নেই।</span></p>
+<table>
+<tbody>
+<tr>
+<td style="text-align: center"><span style="font-weight: 400"><strong> Compiler</strong> </span></td>
+<td style="text-align: center"><span style="font-weight: 400"><strong>Interpreter</strong> </span></td>
+</tr>
+<tr>
+<td><span style="font-weight: 400">কম্পাইলার সম্পূর্ণ সোর্স কোড নিয়ে সেটা পুরোটা analyze করে ফাইনাল মেশিন কোড তৈরী করে.</span></td>
+<td><span style="font-weight: 400">ইন্টারপ্রেটার reads লাইন by লাইন, analyze and এক্সেকিউট লাইন by লাইন।</span></td>
+</tr>
+<tr>
+<td><span style="font-weight: 400">কম্পাইল্ড কোড দ্রুত রান হয়।</span></td>
+<td><span style="font-weight: 400">ইন্টারপ্রেটেড কোড একটু স্লোওলী রান হয়।</span></td>
+</tr>
+<tr>
+<td><span style="font-weight: 400">কম্পাইলার compile হবার সময় errors দেখায়। কোড এ errors  থাকলে compile হয়না।</span></td>
+<td><span style="font-weight: 400">ইন্টারপ্রেটার কোড রান হওয়ার সময় errors দেখায়, যেহেতু ইন্টারপ্রেটার কোড রান হওয়ার সময় ট্রান্সলেট করে।</span></td>
+</tr>
+<tr>
+<td><span style="font-weight: 400">কম্পাইলার প্রথমে ইন্টারমিডিয়েট machine/object  code তৈরী করে।</span></td>
+<td><span style="font-weight: 400">ইন্টারপ্রেটার কখনোই ইন্টারমিডিয়েট machine code বানায়না।</span></td>
+</tr>
+<tr>
+<td><span style="font-weight: 400">বেশি মেমোরি এর দরকার হয় যেহেতু ইন্টারমিডিয়েট অবজেক্ট কোড তৈরী করে।</span></td>
+<td><span style="font-weight: 400">কম মেমোরি এর দরকার হয়।</span></td>
+</tr>
+<tr>
+<td><span style="font-weight: 400">একবার compile হবার পর আর কম্পাইলার এর দরকার নেই।</span></td>
+<td><span style="font-weight: 400">বারবার ইন্টারপ্রেটার এর দরকার হয়, রান করার জন্য।</span></td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>জাভাস্ক্রিপ্টে পিওর ফাংশন (Pure Function) কি?</title>
+		<link>/blog/%e0%a6%aa%e0%a6%bf%e0%a6%93%e0%a6%b0-%e0%a6%ab%e0%a6%be%e0%a6%82%e0%a6%b6%e0%a6%a8/</link>
+		
+		<dc:creator><![CDATA[Md. Ashiqul Islam]]></dc:creator>
+		<pubDate>Fri, 14 Jan 2022 06:03:01 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=5134</guid>
+
+					<description><![CDATA[জাভাস্ক্রিপ্টে ফাংশন হল প্রথম শ্রেণীর নাগরিক। জাভাস্ক্রিপ্টে শুধু কোন ফাংশনই তৈরি করা যায় তাই নয়, ফাংশনটিকে Modify করতে পারা যায়, একটি ফাংশনকে অন্য একটি ফাংশনের প্যারামিটার হিসেবে পাঠানো যায় এমনকি ফাংশনকে অন্য কোন ফাংশন থেকে returnও করতে পারা যায়। শুধু তাই নয়, আমরা কোন ভেরিয়েবলের মধ্যে কোন ফাংশনকে Assign ও করতে পারি। মূল কথা হল, [&#8230;]]]></description>
+										<content:encoded><![CDATA[<div>জাভাস্ক্রিপ্টে ফাংশন হল প্রথম শ্রেণীর নাগরিক। জাভাস্ক্রিপ্টে শুধু কোন ফাংশনই তৈরি করা যায় তাই নয়, ফাংশনটিকে Modify করতে পারা যায়, একটি ফাংশনকে অন্য একটি ফাংশনের প্যারামিটার হিসেবে পাঠানো যায় এমনকি ফাংশনকে অন্য কোন ফাংশন থেকে returnও করতে পারা যায়। শুধু তাই নয়, আমরা কোন ভেরিয়েবলের মধ্যে কোন ফাংশনকে Assign ও করতে পারি। মূল কথা হল, ফাংশন ব্যাতিত জাভাস্ক্রিপ্টে কাজের উপযোগী কোন কোড লিখা প্রায় অসম্ভব। আজকের আলোচনাতে আমরা জাভাস্ক্রিপ্টের পিউর ফাংশন (Pure Function) নিয়ে আলোচনা করব। তাহলে চলুন শুরু করা যাক।</div>
+<p>&nbsp;<br />
+জাভাস্ক্রিপ্টে সকল Pure ফাংশনই ফাংশন কিন্তু সকল ফাংশনই Pure ফাংশন নয়। তাহলে Pure ফাংশন আসলে কি? আসলে Pure ফাংশন হল একটি Deterministic ফাংশন যার মানে হল যদি ওই ফাংশনে একই ইনপুটের জন্য সর্বদা একই আউটপুট থাকবে। একটি Pure ফাংশনের অবশ্যই নিচের বৈশিষ্ট্যগুলো থাকতে হবে।</p>
+<ol>
+<li style="text-align: left"> সর্বদা নিজের আর্গুমেন্টের উপর নির্ভর করবে।</li>
+<li style="text-align: left"> ফাংশনটি নিজের Scope এর বাইরে কোন ভারিয়েবলের মান পরিবর্তন করবে না।</li>
+<li style="text-align: left"> ফাংশনটি কোন side effects তৈরি করবে না।</li>
+</ol>
+<div>নিচের কোডটি লক্ষ্য করুন।</div>
+<div></div>
+<div>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">let val1 = 6;
+let val2 = 4;
+function pure() {
+   return val1 * val2;
+}
+pure();</pre>
+</div>
+<div>উপরের ফাংশনটি একটি Impure ফাংশন। কারণ এই ফাংশনটি তার নিজের Scoper এর বাহিরে গিয়ে <strong>val1</strong> এবং <strong>val2</strong> কে ব্যবহার করছে। যদি কোন কারণে <strong>val1</strong> বা <strong>val2</strong> ভ্যালু পরিবর্তন হয় তবে ফাংশনটি কখনো একই ইনপুটের জন্য একই আউটপুট return করবে না। তাহলে এই ফাংশনটিকে কি করে পিওর করা যায়। একটু চিন্তা করে দেখুন তো ।</div>
+<div></div>
+<p>&nbsp;</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">function pure() {
+let val1 = 6;
+let val2 = 4;
+   return val1 * val2;
+}
+pure();</pre>
+<div>এখন কোডটি একটি পিওর ফাংশন।</div>
+<div></div>
+<div></div>
+<p>&nbsp;</p>
+<div>চলুন আরও একটি উদাহরন দেখা যাক।</div>
+<div>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">function pure(arg) {
+   let val = 100;
+   return val * arg;
+}
+pure(2);</pre>
+<p>উপরের কোডটি সম্পূর্ণ একটি পিওর ফাংশন। কারণ এইখানে ফাংশনটি তার আর্গুমেন্ট এবং ফাংশন Scoop এর মধ্যে ভারিয়েবল <strong>val</strong> এর উপর নির্ভরশীল।</p>
+</div>
+<div></div>
+<div>নিচের কোডটি লক্ষ্য করুন;</div>
+<p>&nbsp;</p>
+<div>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">const impureAssoc = (key, value, object) =&gt; {
+   object[key] = value;
+};
+const person = {
+   name:'Bobo',
+};
+const result = impureAssoc('shoeSize', 400, person);
+console.log({
+   person,
+   result,
+});</pre>
+<p>বলুন তো এখানে <strong>impureAssoc</strong> ফাংশনটি পিওর কিনা? একটু চিন্তা করুন।</p>
+</div>
+<div></div>
+<p>&nbsp;</p>
+<div>ঠিক বলেছেন, এটি একটি Impure ফাংশন। কারন এই ফাংশনটির Side Effect রয়েছে। এখানে <strong>person</strong> object টিকে <strong>impureAssoc</strong> ফাংশনটি চিরতরে পরিবর্তন করে দিয়েছে। অর্থাৎ <strong>impureAssoc</strong> ফাংশনটির জন্য আমাদের ফাংশনের বাহিরে কোড পরিবর্তন হয়েছে। তাই এটি অবশই একটি Impure ফাংশন।</div>
+<div>তাহলে এটিকে পিওর করব কি করে। একটু চেষ্টা করে দেখুন তারপর নিচের সমাধানটি দেখুন।</div>
+<p>&nbsp;</p>
+<div>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">const pureAssoc = (key, value, object) =&gt; ({
+   ...object,
+   [key]:value,
+});
+const person = {
+   name:'Bobo',
+};
+const result = pureAssoc('shoeSize', 400, person);
+console.log({
+   person,
+   result,
+});</pre>
+<p>এখন <strong>person</strong> object টি শুধুমাত্র ফাংশনটির ভিতর পরিবর্তন হবে যার কোন Effect ফাংশনটির বাহিরে পরবে না।</p>
+</div>
+<p>&nbsp;</p>
+<div>আশা করি এখন থেকে পিওর ফাংশন বুঝতে আর কোন সমস্যা হবে না।</div>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>জাভাস্ক্রিপ্ট ইঞ্জিন</title>
+		<link>/blog/%e0%a6%9c%e0%a6%be%e0%a6%ad%e0%a6%be%e0%a6%b8%e0%a7%8d%e0%a6%95%e0%a7%8d%e0%a6%b0%e0%a6%bf%e0%a6%aa%e0%a7%8d%e0%a6%9f-%e0%a6%87%e0%a6%9e%e0%a7%8d%e0%a6%9c%e0%a6%bf%e0%a6%a8/</link>
+		
+		<dc:creator><![CDATA[Md. Ashiqul Islam]]></dc:creator>
+		<pubDate>Fri, 14 Jan 2022 04:54:28 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=5177</guid>
+
+					<description><![CDATA[জাভাস্ক্রিপ্ট ল্যাংগুয়েজ টি আসলে কম্পিউটারের কাছে বোধগম্য নয়। এই ল্যাংগুয়েজ দিয়ে কাজ করার জন্য আমাদের দরকার এমন একটি প্রোগ্রাম যেটা জাভাস্ক্রিপ্ট-কে কম্পিউটারের জন্য বোধগম্য ভাষায় রূপান্তর করতে পারে। জাভাস্ক্রিপ্ট ইঞ্জিন বলতে আমরা আসলে এই প্রোগ্রাম টিকেই বোঝাচ্ছি। গুগোল ক্রোম বা মজিলা ফায়ারফক্স এর মতো বিভিন্ন ধরনের ব্রাউজার-গুলো তাদের পছন্দ মতো নিজস্ব জাভাস্ক্রিপ্ট ইঞ্জিন ব্যবহার করে [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>জাভাস্ক্রিপ্ট ল্যাংগুয়েজ টি আসলে কম্পিউটারের কাছে বোধগম্য নয়। এই ল্যাংগুয়েজ দিয়ে কাজ করার জন্য আমাদের দরকার এমন একটি প্রোগ্রাম যেটা জাভাস্ক্রিপ্ট-কে কম্পিউটারের জন্য বোধগম্য ভাষায় রূপান্তর করতে পারে। জাভাস্ক্রিপ্ট ইঞ্জিন বলতে আমরা আসলে এই প্রোগ্রাম টিকেই বোঝাচ্ছি। গুগোল ক্রোম বা মজিলা ফায়ারফক্স এর মতো বিভিন্ন ধরনের ব্রাউজার-গুলো তাদের পছন্দ মতো নিজস্ব জাভাস্ক্রিপ্ট ইঞ্জিন ব্যবহার করে থাকে। কয়েকটি জনপ্রিয় ব্রাউজারের জাভাস্ক্রিপ্ট ইঞ্জিন-গুলোর নাম নিচে দেয়া হলোঃ</p>
+<ol>
+<li><span style="font-weight: 400">গুগোল ক্রোম &#8211; V8 ইঞ্জিন</span></li>
+<li><span style="font-weight: 400">মজিলা ফায়ারফক্স &#8211; স্পাইডার মাঙ্কি </span></li>
+<li><span style="font-weight: 400">সাফারি &#8211; জাভাস্ক্রিপ্ট কোর </span></li>
+<li><span style="font-weight: 400">নোড জেএস &#8211; V8 ইঞ্জিন</span></li>
+<li><span style="font-weight: 400">মাইক্রোসফট এজ &#8211; চাকরা</span></li>
+</ol>
+<p><span style="font-weight: 400">এই ইঞ্জিনগুলোর মধ্যে V8-কে বর্তমানে সবচেয়ে জনপ্রিয় এবং দক্ষ হিসেবে ধরা হয়। আমাদের এই লেখায় সবগুলো ইঞ্জিন নিয়ে আলোচনা করা সম্ভব নয়। তাই আমরা এখানে চেষ্টা করবো শুধুমাত্র V8 ইঞ্জিন নিয়ে কথা বলতে। এই ইঞ্জিন-টার কর্মপদ্ধতি বুঝতে পারলে আশা করছি বাকি ইঞ্জিনগুলো বোঝা খুব বেশি  কঠিন হবেনা আপনাদের জন্য। V8 ইঞ্জিন কিভাবে কাজ করে এটা বোঝার জন্য আগে কিছু বিষয়ে ধারনা নেয়া দরকার।</span></p>
+<p><b>১) পার্সার (Parser): </b><span style="font-weight: 400"> পার্সারের কাজ হলো আমাদের জাভাস্ক্রিপ্ট কোড-কে টোকেনে ভাগ করা। এখন প্রশ্ন আসতে পারে যে এই টোকেনে ভাগ করার কি প্রয়োজন। টোকেনাইজেশন এর কাজ শেষে এই টোকেন-গুলো থেকেই এবস্ট্রাক্ট সিনট্যাক্স ট্রি (Abstract Syntax Tree) তৈরি হবে।</span></p>
+<p><b>২) এবস্ট্রাক্ট সিনট্যাক্স ট্রি (Abstract Syntax Tree): </b><span style="font-weight: 400">AST বা Abstract Syntax Tree হলো আমাদের জাভাস্ক্রিপ্ট প্রোগ্রামের একটি ট্রি এর মত কাঠামো যেটা টোকেন লিস্ট থেকে তৈরি হয়। একটি ইন্টারপ্রেটার-কে AST দিয়ে দিলে পরবর্তীতে সেটি থেকে বাইটকোড পাওয়া যায়।</span></p>
+<p><b>৩) ইন্টারপ্রেটারঃ </b><span style="font-weight: 400">জাভাস্ক্রিপ্ট হলো একটি ইন্টারপ্রেটার ল্যাঙ্গুয়েজ।</span> <span style="font-weight: 400">AST (Abstract Syntax Tree) কে বাইট কোডে রূপান্তর</span> <span style="font-weight: 400">করাই মূলত ইন্টারপ্রেটারের কাজ। ইন্টারপ্রেটার থেকে পাওয়া বাইট কোড কে আরো অপটিমাইজ করার জন্য কম্পাইলার ব্যবহার করা হয়। </span></p>
+<p><b>৪) প্রোফাইলারঃ </b><span style="font-weight: 400">আমাদের কোডে সবসময় এমন কিছু অংশ থাকে যেটা বিভিন্ন যায়গায় বারবার ব্যবহৃত হয়। এগুলোকে &#8216;হট কোড&#8217; (Hot Code) বলা হয়। প্রোফাইলার এর কাজ হলো এই হট কোড কে খুঁজে বের করা।এই কোডগুলো যেহেতু অনেক বেশি সংখ্যক বার এক্সিকিউট হচ্ছে, কোডের এই অংশগুলো কতটা অপটিমাইজড সেটার উপর সম্পূর্ন প্রোগ্রাম-টির পারফরম্যান্স নির্ভর করছে। </span></p>
+<p><b>৫) কম্পাইলারঃ </b><span style="font-weight: 400">আমরা আগেই বলেছি যে জাভাস্ক্রিপ্ট একটি ইন্টারপ্রেটার ল্যাঙ্গুয়েজ। কিন্তু তাহলে এখানে কম্পাইলার এর কথা আসছে কেন। জাভাস্ক্রিপ্ট ইঞ্জিনে কম্পাইলারের ভূমিকা আসলে  অপটিমাইজেশন এ। ইন্টারপ্রেটার হতে পাওয়া বাইটকোড ব্যবহার করেও প্রোগ্রাম ব্রাউজারে রান করানো যায় কিন্তু আরো ভালো হতো যদি আমরা আমাদের কোডের &#8216;হট&#8217; পার্ট গুলোকে অপটিমাইজড কোডে রূপান্তর করে ফেলতে পারতাম। এই কাজটি করার জন্যই কম্পাইলার এর প্রয়োজন। V8 ইঞ্জিন এর ক্ষেত্রে এই কম্পাইলার-টির নাম &#8216;টার্বোফ্যান&#8217;। </span></p>
+<p><span style="font-weight: 400">এখন আমরা V8 ইঞ্জিন কিভাবে কাজ করে এটি বোঝার জন্য প্রয়োজনীয় ধারনাগুলো পেয়ে গেছি। এবারে এই জিনিসগুলো একসাথে কিভাবে কাজ করছে সেটি দেখি। নিচের ছবিটা দেখে আপনারা একটা ভালো ধারনা পেতে পারেন।</span></p>
+<p><img decoding="async" class="wp-image-5193 aligncenter" src="/wp-content/uploads/2022/01/js_engine_inner-1024x519.jpg" alt="js engine inner জাভাস্ক্রিপ্ট ইঞ্জিন" width="769" height="390"></p>
+<p>&nbsp;</p>
+<p><span style="font-weight: 400">একটি গুরুত্বপূর্ন বিষয় যেটি আমাদের জানা প্রয়োজন সেটি হলো আগের জাভাস্ক্রিপ্ট ইঞ্জিনগুলোর ভেতরে শুধুমাত্র ইন্টারপ্রেটার ব্যবহৃত হতো। ইন্টারপ্রেটার লাইন ধরে ধরে কোড এক্সিকিউট করে। ডিবাগিং এর জন্য এটা ভালো হলেও পুরো প্রোগ্রামটি রান করতে অনেক সময় লেগে যেত। এই প্রক্রিয়াটি আরো দ্রুত করার জন্য জাস্ট ইন টাইম কম্পাইলার বা JIT (Just In Time) এর ধারনাটি জাভাস্ক্রিপ্ট ইঞ্জিনে নিয়ে আসা হয়েছে। JIT আসলে ইন্টারপ্রেটার এবং কম্পাইলার এই দুইটির-ই ভালো দিকগুলো একসাথে নিয়ে কাজ করে। ইন্টারপ্রেটার আগের মতোই স্বাভাবিকভাবে তার কাজ করে যায়। শুধুমাত্র কম অপটিমাইজড এবং বেশি বার এক্সিকিউট হওয়া কোড-গুলো নিয়ে কম্পাইলার আরো বেশি অপটিমাইজড কোডে রুপান্তর করে। একারনেই এখনকার V8 ইঞ্জিন এত বেশি দক্ষ এবং জনপ্রিয়। </span></p>
+<p><span style="font-weight: 400">একটি জাভাস্ক্রিপ্ট প্রোগ্রাম প্রথমে পার্সারের কাছে গেলে সেখান থেকে পার্সার টোকেনাইজেশন শেষে টোকেনগুলো দিয়ে একেকটি নোড তৈরি করে। এই নোড গুলো থেকেই এরপর AST তৈরি হয় যেটিকে আমাদের ইন্টারপ্রেটার বাইটকোডে রূপান্তর করে। V8 ইঞ্জিনের ইন্টারপ্রেটার-টি ইগনিশন (Ignition) নামে পরিচিত। ইন্টারপ্রেটারের ভেতরে কিন্তু বাইটকোড এক্সিকিউট করার জন্য মেমরি হিসেবে রেজিস্টার ব্যবহার করা হয়। ইগনিশন এখানে প্রত্যেকটা অবজেক্ট এর জন্য একেকটা ‘শেইপ’ তৈরি করে যেটা আসলে অবজেক্ট এর একটা গঠন ছাড়া আর কিছুই না। এই শেইপ তৈরি করে রাখার কারনে পরবর্তীতে ‘ইনলাইন ক্যাশিং’ ও অন্যান্য অপটিমাইজেশন করতে V8 ইঞ্জিনের সুবিধা হয়।</span></p>
+<p><span style="font-weight: 400">উপরের এই কাজগুলো হতে হতে আমাদের ‘প্রোফাইলার’ কিন্তু বসে নেই। সে তার কাজ করে যাচ্ছে এবং কোডের ‘হট’ পার্ট গুলোকে বের করে ‘টার্বোফ্যান’ কম্পাইলার এর কাছে পাঠিয়ে দিচ্ছে। ‘টার্বোফ্যান’ কম্পাইলার-টি হলো V8 ইঞ্জিনের ক্ষেত্রে আমাদের JIT কম্পাইলার যার দায়িত্ব আমাদের ‘হট কোড’ এর অপটিমাইজেশন।</span></p>
+<p><span style="font-weight: 400">প্রোফাইলার থেকে বাইটকোড পেয়ে টার্বোফ্যান ওগুলোকে মেশিন কোডে রুপান্তর করে যাতে কোডের ওই অংশটা অনেক দ্রুত রান করে। এই মেশিন কোড কিন্তু আর্কিটেকচার অনুযায়ী ভিন্ন ভিন্ন হয় যাতে করে ওই নির্দিষ্ট মেশিনে সেটা অবশ্যই ভালো পারফর্ম করে।</span></p>
+<p><span style="font-weight: 400">এই ছিল জাভাস্ক্রিপ্ট ইঞ্জিন নিয়ে আমাদের আজকের আলোচনা।</span></p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Kick Start Your React Career</title>
+		<link>/blog/kick-start-your-react-career/</link>
+		
+		<dc:creator><![CDATA[Md. Ashiqul Islam]]></dc:creator>
+		<pubDate>Wed, 22 Dec 2021 05:25:17 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<guid isPermaLink="false">/?p=4945</guid>
+
+					<description><![CDATA[React is Javascript library for building fast and interactive user interfaces. It was developed at Facebook in 2011 and it&#8217;s the most popular Javascript library for building user interfaces. If you see in the Google trends, React is dominating the space of libraries and frameworks for building user interfaces. The other two players are Angular [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>React is Javascript library for building fast and interactive user interfaces. It was developed at Facebook in 2011 and it&#8217;s the most popular Javascript library for building user interfaces. If you see in the Google trends, React is dominating the space of libraries and frameworks for building user interfaces. The other two players are Angular and Vue. So, if you want to expand your job opportunities as front-end developer, you should have React in your resume.</p>
+<p>At the heart of all React applications are components, a component is essentially a piece of user interface. So, when building applications with React, we build a bunch of independent, isolated and reusable components and then compose them to build complex user interfaces. Every React application has at least one component, which we refer to as the root component. This component represents the entire application and contains other child components. So, every React application is essentially a tree of components.</p>
+<p>Here is an example, let&#8217;s imagine we want to build an application like Facebook, so we can split the page into components like navbar, profile, trends and feed. You can build each components in isolation and compose them to build the whole user interfaces.</p>
+<p>We have designed a basic guideline to get started with React. Once you have finished this, you will have taken a step towards becoming a skillful front-end developer in React. Are you ready to dive? Then let’s get started.</p>
+<p><strong>1. Introduction JS frameworks &amp; Libraries</strong><br />
+<strong>          1.1. <span style="font-weight: 400;">What are the frameworks and Libraries?</span></strong><br />
+<strong>          1.2. <span style="font-weight: 400;">What is the difference between a traditional Website and a SPA?</span></strong><br />
+<strong>          1.3. <span style="font-weight: 400;">Why should we learn the frameworks?</span></strong><br />
+<strong>          1.4. <span style="font-weight: 400;">Which frameworks should we learn?</span></strong></p>
+<p><strong>2. Introduction to ReactJS</strong><br />
+<strong>          2.1. <span style="font-weight: 400;">How Reactjs works?</span></strong><br />
+<strong>          2.2. <span style="font-weight: 400;">How to set up the environment?</span></strong><br />
+<strong>          2.3. <span style="font-weight: 400;">Folder structure and hello world in Reactjs</span></strong><br />
+<strong>          2.4. <span style="font-weight: 400;">What is JSX?</span></strong><br />
+<strong>          2.5. <span style="font-weight: 400;">How to use JSX?</span></strong><br />
+<strong>          2.6. <span style="font-weight: 400;">Rendering Elements</span></strong><br />
+<strong>          2.7. <span style="font-weight: 400;">Fragments</span></strong></p>
+<p><strong>3. Components in ReactJS</strong><br />
+<strong>          3.1. <span style="font-weight: 400;">What is the component?</span></strong><br />
+<strong>          3.2. <span style="font-weight: 400;">Types of React components</span></strong><br />
+<strong>          3.3. <span style="font-weight: 400;">Specifying Children</span></strong><br />
+<strong>          3.4. <span style="font-weight: 400;">Embedding expressions and setting attributes</span></strong><br />
+<strong>          3.5. <span style="font-weight: 400;">Rendering lists</span></strong><br />
+<strong>          3.6. <span style="font-weight: 400;">Conditional rendering</span></strong></p>
+<p><strong>4. State &amp; Props in ReactJS</strong><br />
+<strong>          4.1. <span style="font-weight: 400;">What are the state and props?</span></strong><br />
+<strong>          4.2. <span style="font-weight: 400;">Why do we need the state?</span></strong><br />
+<strong>          4.3. <span style="font-weight: 400;">How to update the state?</span></strong><br />
+<strong>          4.4. <span style="font-weight: 400;">How to pass props?</span></strong><br />
+<strong>          4.5. <span style="font-weight: 400;">Props vs State</span></strong><br />
+<strong>          4.6. <span style="font-weight: 400;">Lifting the state up</span></strong><br />
+<strong>          4.7. <span style="font-weight: 400;">Destructuring arguments</span></strong></p>
+<p><strong>5. Composing Components in ReactJS</strong><br />
+<strong>          5.1. <span style="font-weight: 400;">Introduction</span></strong><br />
+<strong>          5.2. <span style="font-weight: 400;">Composing components</span></strong><br />
+<strong>          5.3. <span style="font-weight: 400;">Passing data to components</span></strong><br />
+<strong>          5.4. <span style="font-weight: 400;">Passing Children</span></strong><br />
+<strong>          5.5. <span style="font-weight: 400;">Render props</span></strong><br />
+<strong>          5.6. <span style="font-weight: 400;">Type Checking with PropTypes</span></strong><br />
+<strong>          5.7. <span style="font-weight: 400;">Understand the default props</span></strong></p>
+<p><strong>6. Handling Events in ReactJS</strong><br />
+<strong>          6.1. <span style="font-weight: 400;">What is the event?</span></strong><br />
+<strong>          6.2. <span style="font-weight: 400;">Binding event handlers</span></strong><br />
+<strong>          6.3. <span style="font-weight: 400;">Raising and handling events</span></strong></p>
+<p><strong>7. Life cycle phases in ReactJS</strong><br />
+<strong>         7.1. <span style="font-weight: 400;">Mounting phase</span></strong><br />
+<strong>         7.2. <span style="font-weight: 400;">Updating phase</span></strong><br />
+<strong>         7.3. <span style="font-weight: 400;">Unmounting phase</span></strong></p>
+<p><strong>8. Client Storage</strong><br />
+<strong>         8.1. <span style="font-weight: 400;">Introduction</span></strong><br />
+<strong>         8.2. <span style="font-weight: 400;">Building a form</span></strong><br />
+<strong>         8.3. <span style="font-weight: 400;">Controlled and uncontrolled Elements</span></strong><br />
+<strong>         8.4. <span style="font-weight: 400;">Handling multiple inputs</span></strong><br />
+<strong>         8.5. <span style="font-weight: 400;">Handling form submission</span></strong><br />
+<strong>         8.6. <span style="font-weight: 400;">Validation</span></strong><br />
+<strong>         8.7. <span style="font-weight: 400;">Building signup and login form</span></strong></p>
+<p><strong>9. Introduction to Hooks in ReactJS</strong><br />
+<strong>         9.1. <span style="font-weight: 400;">Introduction</span></strong><br />
+<strong>         9.2. <span style="font-weight: 400;">useState hook</span></strong><br />
+<strong>         9.3. <span style="font-weight: 400;">useEffect hook</span></strong><br />
+<strong>         9.4. <span style="font-weight: 400;">useRef hook</span></strong><br />
+<strong>         9.5. <span style="font-weight: 400;">useLayoutEffect hook</span></strong><br />
+<strong>         9.6. <span style="font-weight: 400;">useCallback hook</span></strong><br />
+<strong>         9.7. <span style="font-weight: 400;">useMemo hook</span></strong></p>
+<p><strong>10. Introduction to Router</strong><br />
+<strong>         10.1. <span style="font-weight: 400;">Introduction</span></strong><br />
+<strong>         10.2. <span style="font-weight: 400;">Setup</span></strong><br />
+<strong>         10.3. <span style="font-weight: 400;">Adding Routing</span></strong><br />
+<strong>         10.4. <span style="font-weight: 400;">Switch</span></strong><br />
+<strong>         10.5. <span style="font-weight: 400;">Link</span></strong><br />
+<strong>         10.6. <span style="font-weight: 400;">Route props</span></strong><br />
+<strong>         10.7. <span style="font-weight: 400;">Passing Props</span></strong><br />
+<strong>         10.8. <span style="font-weight: 400;">Route Parameters</span></strong><br />
+<strong>         10.9. <span style="font-weight: 400;">Optional Parameters</span></strong><br />
+<strong>         10.10. <span style="font-weight: 400;">Query String Parameters</span></strong><br />
+<strong>         10.11. <span style="font-weight: 400;">Redirect</span></strong><br />
+<strong>         10.12. <span style="font-weight: 400;">Programmatic Navigation</span></strong></p>
+<p><strong>11. Introduction to Redux</strong><br />
+<strong>         11.1. <span style="font-weight: 400;">Introduction</span></strong><br />
+<strong>         11.2. <span style="font-weight: 400;">Why do we need redux?</span></strong><br />
+<strong>         11.3. <span style="font-weight: 400;">Understanding the core concepts of Redux</span></strong><br />
+<strong>         11.4. <span style="font-weight: 400;">CreateStore</span></strong><br />
+<strong>         11.5. <span style="font-weight: 400;">CombineStore</span></strong><br />
+<strong>         11.6. <span style="font-weight: 400;">ApplyMiddleware</span></strong><br />
+<strong>         11.7. <span style="font-weight: 400;">BindActionCreators</span></strong><br />
+<strong>         11.8. <span style="font-weight: 400;">Compose</span></strong></p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Kick Start Your JavaScript Career</title>
+		<link>/blog/kick-start-your-javascript-career/</link>
+		
+		<dc:creator><![CDATA[Md. Ashiqul Islam]]></dc:creator>
+		<pubDate>Mon, 13 Dec 2021 08:11:11 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[bootcamp]]></category>
+		<category><![CDATA[javascript]]></category>
+		<guid isPermaLink="false">/?p=4898</guid>
+
+					<description><![CDATA[JavaScript is one of the most popular and widely used programming languages in the world right now. It&#8217;s growing faster than any other programming language, big companies like Netflix, Walmart, Paypal, build entire applications around JavaScript. So, it&#8217;s a great opportunity to get a good job learning JavaScript. You can work as a front-end developer [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>JavaScript is one of the most popular and widely used programming languages in the world right now. It&#8217;s growing faster than any other programming language, big companies like Netflix, Walmart, Paypal, build entire applications around JavaScript. So, it&#8217;s a great opportunity to get a good job learning JavaScript. You can work as a front-end developer or back-end developer or a full stack developer, or who knows both the front-end and the back-end.</p>
+<p><strong>What can you do with JavaScript?</strong></p>
+<p>For a long time, JavaScript was only used in browsers to build interactive web pages. Some developers referred JavaScript as a toy language. But those days are gone because of huge community support and investments like large companies like Facebook and Google. These days you can build full-blown web and mobile apps as well as real-time networking apps like chats and video streaming services, command-line tools, and even games with JavaScript.</p>
+<p><strong>Where does JavaScript code run?</strong></p>
+<p>JavaScript was originally designed to run on only browsers. So, every browser has what we call a JavaScript Engine that can execute JavaScript code. For example, the JavaScript engines for Firefox and Chrome are SpiderMonkey and V8, In 2009, a very clever engineer called Ryan Dahl took the open-source JavaScript engine in Chrome and embedded it inside a C++ program. He calls that program a Node. So, Node is a C++ program, that includes the Google V8 JavaScript engine. Now with this, we can code JavaScript outside of a browser. We can pass our code to Node for execution. So, in a nutshell, JavaScript code can be run inside of a browser or in Node. Browsers and Node provide a runtime environment for JavaScript code.</p>
+<p>We have designed a basic guideline that will help you to know the fundamental of programming in JavaScript. Once you have finished this, you will have taken the first step towards becoming a skillful front-end developer. Are you ready to dive into JavaScript? Then let&#8217;s get started.</p>
+<p><strong>1. Course Introduction</strong><br />
+<strong>          1.1.  <span style="font-weight: 400;">Welcome to our Bootcamp</span></strong><br />
+<strong>          1.2.  <span style="font-weight: 400;">The story of this course?</span></strong><br />
+<strong>          1.3.  <span style="font-weight: 400;">How to set up the environments?</span></strong></p>
+<p><strong>2. JavaScript Fundamentals</strong><br />
+<strong>          2.1.  <span style="font-weight: 400;">Introduction to Compiler and Engine</span></strong><br />
+<strong>                  2.1.1.  <span style="font-weight: 400;"><a href="/compilers-and-interpreters/" target="_blank" rel="noopener">What are the compiler and interpreter</a></span></strong><br />
+<strong>                  2.1.2.  <span style="font-weight: 400;"><a href="/compilers-and-interpreters/" target="_blank" rel="noopener">Interpreter versus Compiler</a></span></strong><br />
+<strong>                  2.1.3.  <span style="font-weight: 400;">What is the JIT compiler and how does it work?</span></strong><br />
+<strong>                  2.1.4.  <span style="font-weight: 400;">Is JavaScript an interpreted or compiled language?</span></strong><br />
+<strong>                  2.1.5.  <span style="font-weight: 400;"><a href="/%e0%a6%9c%e0%a6%be%e0%a6%ad%e0%a6%be%e0%a6%b8%e0%a7%8d%e0%a6%95%e0%a7%8d%e0%a6%b0%e0%a6%bf%e0%a6%aa%e0%a7%8d%e0%a6%9f-%e0%a6%87%e0%a6%9e%e0%a7%8d%e0%a6%9c%e0%a6%bf%e0%a6%a8/" target="_blank" rel="noopener">Types of JS engine</a></span></strong><br />
+<strong>                  2.1.6.  <span style="font-weight: 400;">What’s the difference between compiling and polyfilling?</span></strong><br />
+<strong>          2.2.  <span style="font-weight: 400;">What is the thread of execution context?</span></strong><br />
+<strong>                  2.2.1.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/1.%20execution-context/README.md" target="_blank" rel="noopener nofollow">Global execution context</a></span></strong><br />
+<strong>                  2.2.2.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/1.%20execution-context/README.md" target="_blank" rel="noopener nofollow">Function or Local execution context</a></span></strong><br />
+<strong>          2.3.  <span style="font-weight: 400;">What is the thread of execution context?</span></strong><br />
+<strong>                  2.3.1.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/2.%20scope/README.md" target="_blank" rel="noopener nofollow">Global Scope</a></span></strong><br />
+<strong>                  2.3.2.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/2.%20scope/README.md" target="_blank" rel="noopener nofollow">Local Scope &amp; Lexical Scope</a></span></strong><br />
+<strong>          2.4.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/3.%20hoisting/README.md" target="_blank" rel="noopener nofollow">What is hoisting?</a></span></strong><br />
+<strong>          2.5.  <span style="font-weight: 400; color: green;"><a href="/what-is-closer-in-javascript/" target="_blank" rel="noopener">What is closure in JavaScript?</a></span></strong><br />
+<strong>          2.6.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/6.%20callback-and-higher-order-functions/README.md" target="_blank" rel="noopener nofollow">What are the callback and higher-order functions?</a></span></strong><br />
+<strong>          2.7.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/7.%20this-keyword/README.md" target="_blank" rel="noopener nofollow">What is the “this” keyword in JavaScript?</a></span></strong><br />
+<strong>          2.8.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/5.%20call-by-value-and-call-by-reference/README.md" target="_blank" rel="noopener nofollow">What is call by value and call by reference?</a></span></strong><br />
+<strong>          2.9.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/13.%20iife-in-javascript/README.md" target="_blank" rel="noopener nofollow">What is IIFE?</a></span></strong><br />
+<strong>          2.10.  <span style="font-weight: 400;"><a href="/%e0%a6%9c%e0%a6%be%e0%a6%ad%e0%a6%be%e0%a6%b8%e0%a7%8d%e0%a6%95%e0%a7%8d%e0%a6%b0%e0%a6%bf%e0%a6%aa%e0%a7%8d%e0%a6%9f%e0%a7%87-%e0%a6%aa%e0%a6%bf%e0%a6%93%e0%a6%b0-%e0%a6%ab%e0%a6%be%e0%a6%82%e0%a6%b6/" target="_blank" rel="noopener">What is the pure function?</a></span></strong><br />
+<strong>          2.11.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/basic/12.%20use-strict/README.md" target="_blank" rel="noopener nofollow">What does use strict do in JavaScript?</a></span></strong><br />
+<strong>          2.12.  <span style="font-weight: 400;"><a href="https://github.com/vivasoft-ltd/javascript-bootcamp/blob/main/advanced/1.%20call-apply-bind-methods/README.md" target="_blank" rel="noopener nofollow">Bind, Call, Apply in JavaScript</a></span></strong><br />
+<strong>          2.13.  <span style="font-weight: 400;">What is an array? And its methods?</span></strong></p>
+<p><strong>3. Introduction to DOM</strong><br />
+<strong>          3.1.  <span style="font-weight: 400;">What is the Window Object in DOM?</span></strong><br />
+<strong>          3.2.  <span style="font-weight: 400;">What is the Document Object in DOM?</span></strong><br />
+<strong>          3.3.  <span style="font-weight: 400;">Basic Selectors in DOM</span></strong><br />
+<strong>          3.4.  <span style="font-weight: 400;">Query Selectors in DOM</span></strong><br />
+<strong>          3.5.  <span style="font-weight: 400;">What is the difference between getElement and Query selectors?</span></strong><br />
+<strong>          3.6.  <span style="font-weight: 400;">How to traverse DOM elements?</span></strong><br />
+<strong>          3.7.  <span style="font-weight: 400;">How to create DOM elements?</span></strong><br />
+<strong>          3.8.  <span style="font-weight: 400;">How to insert the created elements? </span></strong><br />
+<strong>          3.9.  <span style="font-weight: 400;">How to update and remove the DOM element?</span></strong><br />
+<strong>          3.10.  <span style="font-weight: 400;">How to clone a node including its child elements?</span></strong><br />
+<strong>          3.11.  <span style="font-weight: 400;">What is the difference between event capturing and bubbling?</span></strong><br />
+<strong>          3.12.  <span style="font-weight: 400;">What are the events Delegation and Propagation?</span></strong><br />
+<strong>          3.13.  <span style="font-weight: 400;">Input elements and event handling</span></strong><br />
+<strong>          3.14.  <span style="font-weight: 400;">How to handle form data in DOM?</span></strong><br />
+<strong>          3.15.  <span style="font-weight: 400;">How to validate form data in DOM?</span></strong></p>
+<p><strong>4. Client Storage</strong><br />
+<strong>          4.1.  <span style="font-weight: 400;">Cookies</span></strong><br />
+<strong>          4.2.  <span style="font-weight: 400;">localStorage</span></strong><br />
+<strong>          4.3.  <span style="font-weight: 400;">sessionStorage</span></strong><br />
+<strong>          4.4.  <span style="font-weight: 400;">indexedDB</span></strong></p>
+<p><strong>5. Asynchronous in JavaScript</strong><br />
+<strong>          5.1.  <span style="font-weight: 400;">Understanding asynchronous programming in JavaScript</span></strong><br />
+<strong>          5.2.  <span style="font-weight: 400;">How to handle asynchronous operations in JavaScript?</span></strong><br />
+<strong>          5.3.  <span style="font-weight: 400;">What is Ajax?</span></strong><br />
+<strong>          5.4.  <span style="font-weight: 400;">How to handle XMLHttpRequest?</span></strong><br />
+<strong>          5.5.  <span style="font-weight: 400;">How to send GET, POST, PATCH, PUT and DELETE requests and display data?</span></strong><br />
+<strong>          5.6.  <span style="font-weight: 400;">What is the event loop in JavaScript?</span></strong></p>
+<p><strong>6. Error handling in JavaScript</strong><br />
+<strong>          6.1.  <span style="font-weight: 400;">How to handle errors in JavaScript?</span></strong><br />
+<strong>          6.2.  <span style="font-weight: 400;">Error handling with if-else condition check</span></strong><br />
+<strong>          6.3.  <span style="font-weight: 400;">Error handling with try-catch-finally block</span></strong><br />
+<strong>          6.4.  <span style="font-weight: 400;">How to throw an Error in JavaScript</span></strong></p>
+<p><strong>7. Introduction to OOP in JavaScript</strong><br />
+<strong>          7.1.  <span style="font-weight: 400;">What is OOP?</span></strong><br />
+<strong>          7.2.  <span style="font-weight: 400;">How to think of everything as an Object?</span></strong><br />
+<strong>          7.3.  <span style="font-weight: 400;">What are object Properties and Methods?</span></strong><br />
+<strong>          7.4.  <span style="font-weight: 400;">What is Class in OOP?</span></strong><br />
+<strong>          7.5.  <span style="font-weight: 400;">Create a class using the factory pattern</span></strong><br />
+<strong>          7.6.  <span style="font-weight: 400;">Creating class using Constructor Pattern</span></strong><br />
+<strong>          7.7.  <span style="font-weight: 400;">What is the &#8220;New&#8221; Keyword and How does it work?</span></strong><br />
+<strong>          7.8.  <span style="font-weight: 400;">What is Abstraction in JavaScript</span></strong><br />
+<strong>          7.9.  <span style="font-weight: 400;">Hide Private Properties in JavaScript</span></strong><br />
+<strong>          7.10.  <span style="font-weight: 400;">Polymorphism in JavaScript</span></strong><br />
+<strong>          7.11.  <span style="font-weight: 400;">How to Use Getter Setter in JavaScript</span></strong><br />
+<strong>          7.12.  <span style="font-weight: 400;">Prototype and Prototypical Inheritance in JavaScript</span></strong><br />
+<strong>          7.13.  <span style="font-weight: 400;">Multilevel Inheritance in JavaScript</span></strong></p>
+<p><strong>8. Introduce ES6 to ES10</strong><br />
+<strong>          8.1.  <span style="font-weight: 400;">What is ES6?</span></strong><br />
+<strong>          8.2.  <span style="font-weight: 400;">Tooling</span></strong><br />
+<strong>          8.3.  <span style="font-weight: 400;">Let and Const</span></strong><br />
+<strong>          8.4.  <span style="font-weight: 400;">Template Literals</span></strong><br />
+<strong>          8.5.  <span style="font-weight: 400;">Object Literals</span></strong><br />
+<strong>          8.6.  <span style="font-weight: 400;">Assignment Destructuring</span></strong><br />
+<strong>          8.7.  <span style="font-weight: 400;">Spread Operator, Rest Parameters, and Default Parameters </span></strong><br />
+<strong>          8.8.  <span style="font-weight: 400;">Arrow Functions</span></strong><br />
+<strong>          8.9.  <span style="font-weight: 400;">find, fill</span></strong><br />
+<strong>          8.10.  <span style="font-weight: 400;">For&#8230;of, for&#8230;in, </span></strong><br />
+<strong>          8.11.  <span style="font-weight: 400;">Classes</span></strong><br />
+<strong>          8.12.  <span style="font-weight: 400;">Symbols</span></strong><br />
+<strong>          8.13.  <span style="font-weight: 400;">Iterators and Generators</span></strong><br />
+<strong>          8.14.  <span style="font-weight: 400;">Promises</span></strong><br />
+<strong>          8.15.  <span style="font-weight: 400;">async/await</span></strong><br />
+<strong>          8.16.  <span style="font-weight: 400;">Maps and Sets</span></strong><br />
+<strong>          8.17.  <span style="font-weight: 400;">WeakMaps and WeakSets</span></strong><br />
+<strong>          8.18.  <span style="font-weight: 400;">Proxies</span></strong><br />
+<strong>          8.19.  <span style="font-weight: 400;">Reflection</span></strong><br />
+<strong>          8.20.  <span style="font-weight: 400;">Number</span></strong><br />
+<strong>          8.21.  <span style="font-weight: 400;">Math</span></strong><br />
+<strong>          8.22.  <span style="font-weight: 400;">Array</span></strong><br />
+<strong>          8.23.  <span style="font-weight: 400;">Object</span></strong><br />
+<strong>          8.24.  <span style="font-weight: 400;">Modules</span></strong><br />
+<strong>          8.25.  <span style="font-weight: 400;">String Padding</span></strong><br />
+<strong>          8.26.  <span style="font-weight: 400;">Exponential Operator</span></strong><br />
+<strong>          8.27.  <span style="font-weight: 400;">Trailing Comma</span></strong><br />
+<strong>          8.28.  <span style="font-weight: 400;">Object.keys(), Object.values() and Object.entries()</span></strong><br />
+<strong>          8.29.  <span style="font-weight: 400;">Array.prototype.includes()</span></strong><br />
+<strong>          8.30.  <span style="font-weight: 400;">Array.flat() and Array.flatMap()</span></strong><br />
+<strong>          8.31.  <span style="font-weight: 400;">Global This</span></strong><br />
+<strong>          8.32.  <span style="font-weight: 400;">Optional chaining and Nullish Coalescing Operator</span></strong></p>
+<p><strong>9. Introduction to TypeScript</strong><br />
+<strong>          9.1.  <span style="font-weight: 400;">Introduction to TypeScript</span></strong><br />
+<strong>          9.2.  <span style="font-weight: 400;">What is the thread of execution context?</span></strong><br />
+<strong>                  9.2.1.  <span style="font-weight: 400;">Type Annotation</span></strong><br />
+<strong>                  9.2.2.  <span style="font-weight: 400;">Type Inference</span></strong><br />
+<strong>                  9.2.3.  <span style="font-weight: 400;">Number Type</span></strong><br />
+<strong>                  9.2.4.  <span style="font-weight: 400;">String Type</span></strong><br />
+<strong>                  9.2.5.  <span style="font-weight: 400;">Boolean Type</span></strong><br />
+<strong>                  9.2.6.  <span style="font-weight: 400;">Object Type</span></strong><br />
+<strong>                  9.2.7.  <span style="font-weight: 400;">Array Type</span></strong><br />
+<strong>                  9.2.8.  <span style="font-weight: 400;">Tuple Type</span></strong><br />
+<strong>                  9.2.9.  <span style="font-weight: 400;">Enum Type</span></strong><br />
+<strong>                  9.2.10.  <span style="font-weight: 400;">Any Type</span></strong><br />
+<strong>                  9.2.11.  <span style="font-weight: 400;">Never Type</span></strong><br />
+<strong>                  9.2.12.  <span style="font-weight: 400;">Union Type</span></strong><br />
+<strong>                  9.2.13.  <span style="font-weight: 400;">Type Aliases</span></strong><br />
+<strong>          9.3.  <span style="font-weight: 400;">Functions</span></strong><br />
+<strong>                  9.3.1.  <span style="font-weight: 400;">Function</span></strong><br />
+<strong>                  9.3.2.  <span style="font-weight: 400;">Functions Type</span></strong><br />
+<strong>                  9.3.3.  <span style="font-weight: 400;">Optional Parameters</span></strong><br />
+<strong>                  9.3.4.  <span style="font-weight: 400;">Default Parameters</span></strong><br />
+<strong>                  9.3.5.  <span style="font-weight: 400;">Rest Parameters</span></strong><br />
+<strong>          9.4.  <span style="font-weight: 400;">Advanced Types</span></strong><br />
+<strong>                  9.4.1.  <span style="font-weight: 400;">Classes</span></strong><br />
+<strong>                  9.4.2.  <span style="font-weight: 400;">Interfaces</span></strong><br />
+<strong>                  9.4.3.  <span style="font-weight: 400;">Generics</span></strong><br />
+<strong>                  9.4.4.  <span style="font-weight: 400;">Decorators</span></strong><br />
+<strong>                  9.4.5.  <span style="font-weight: 400;">Modules</span></strong><br />
+<strong>                  9.4.6.  <span style="font-weight: 400;">Namespaces</span></strong><br />
+<strong>          9.5.  <span style="font-weight: 400;">Build a small admin template project using typescript</span></strong></p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>

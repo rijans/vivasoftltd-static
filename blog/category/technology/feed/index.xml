@@ -1,0 +1,1599 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Technology &#8211; Vivasoft</title>
+	<atom:link href="/blog/category/technology/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Tue, 01 Nov 2022 05:24:11 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>Technology &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Efficient way to handle Procedures, Views, Functions in EF Core</title>
+		<link>/blog/procedures-views-functions-in-entity-framework-core/</link>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Mon, 31 Oct 2022 10:00:24 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[entity framework]]></category>
+		<category><![CDATA[function]]></category>
+		<category><![CDATA[procedure]]></category>
+		<category><![CDATA[view]]></category>
+		<guid isPermaLink="false">/?p=12348</guid>
+
+					<description><![CDATA[Sometimes we need to write new Functions, Views and Procedures or use existing ones. In the past, EFCore hasn’t had a super nice way to handle non-table database structures. Therefore, in order to work with non-table database objects in EFCore5 code first implemented some new functionality around some of these items, including the ability to [&#8230;]]]></description>
+										<content:encoded><![CDATA[<div dir="ltr">Sometimes we need to write new Functions, Views and Procedures or use existing ones. In the past, EFCore hasn’t had a super nice way to handle non-table database structures. Therefore, in order to work with non-table database objects in EFCore5 code first implemented some new functionality around some of these items, including the ability to do a ToFunction or ToView call in the Fluent API to map queries to table-valued functions, procedures and views, which we can leverage in EFCore6.</div>
+<div dir="ltr"></div>
+<div dir="ltr">In this post, we will see how to add non-table database objects to db context  and put the SQL scripts into migration script in a nicer and cleaner way.</div>
+<div dir="ltr"></div>
+<div dir="ltr">
+<p>At first we will create one Procedure (spGetWeatherInformation), one View (vwLocationTemperatureSummery) and one Function (fnGetTemperatureByLocation) for example.  Then we will keep them in  three seperate directory in Sql Script directory of our WeatherForecast.Infrastructure project.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">CREATE OR ALTER VIEW vwLocationTemperatureSummery
+AS
+SELECT 
+     Date,
+     Location,
+     TemperatureC Temperature,
+     Summary
+FROM WeatherForecasts</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">CREATE OR ALTER PROCEDURE spGetWeatherForecast
+(
+   @location NVARCHAR(50)
+)
+AS
+BEGIN
+    SELECT 
+         Date,
+         Location,
+         TemperatureC Temperature,
+         Summary
+    FROM WeatherForecasts
+    WHERE LOWER(Location) = LOWER(@location)
+END</pre>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">CREATE OR ALTER FUNCTION fnGetTemperatureByLocation
+(
+   @location NVARCHAR(50)
+)
+RETURNS INT
+AS
+BEGIN
+
+    DECLARE @Temperature INT
+
+    SELECT TOP(1)
+    	@Temperature = TemperatureC
+    FROM WeatherForecasts
+    WHERE LOWER(Location) = LOWER(@location)
+    ORDER BY Id DESC
+
+    RETURN @Temperature
+
+END</pre>
+<p>&nbsp;</p>
+<p><img decoding="async" class="aligncenter size-full wp-image-12356" src="/wp-content/uploads/2022/10/script-directory-1.png" alt="script directory 1 Efficient way to handle Procedures, Views, Functions in EF Core" width="448" height="821" srcset="/wp-content/uploads/2022/10/script-directory-1.png 448w, /wp-content/uploads/2022/10/script-directory-1-164x300.png 164w" sizes="(max-width: 448px) 100vw, 448px"><br />
+Build Action of those file should be Embedded resource- Right click on the file then select Property—<br />
+<img decoding="async" class="aligncenter size-full wp-image-12357" src="/wp-content/uploads/2022/10/2-build-action.png" alt="2 build action Efficient way to handle Procedures, Views, Functions in EF Core" width="570" height="902" srcset="/wp-content/uploads/2022/10/2-build-action.png 570w, /wp-content/uploads/2022/10/2-build-action-480x760.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 570px, 100vw"></p>
+</div>
+<div dir="ltr"></div>
+<div dir="ltr">
+<div dir="ltr">
+<p>Now opening the Package Manager Console, will run following migration command—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="bash">add-migration v1_3 -c ApplicationDbContext -o Migrations</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-12358" src="/wp-content/uploads/2022/10/3.-run-migration.png" alt="3. run migration Efficient way to handle Procedures, Views, Functions in EF Core" width="1885" height="946" srcset="/wp-content/uploads/2022/10/3.-run-migration.png 1885w, /wp-content/uploads/2022/10/3.-run-migration-1280x642.png 1280w, /wp-content/uploads/2022/10/3.-run-migration-980x492.png 980w, /wp-content/uploads/2022/10/3.-run-migration-480x241.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1885px, 100vw"></p>
+<p>we could have add the SQL Scripts like bellow in our migration to generate migration script</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">namespace WeatherForecast.Infrastucture.Migrations
+{
+    public partial class v1_3 : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(@"'CREATE OR ALTER VIEW vwLocationTemperatureSummery
+                                    AS
+                                    SELECT 
+    	                                Date,
+    	                                Location,
+    	                                TemperatureC Temperature,
+    	                                Summary
+                                    FROM WeatherForecasts'");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(string.Format(@"DROP VIEW IF EXISTS {0}", "vwLocationTemperatureSummery"));
+        }
+    }
+}</pre>
+<p>But we will follow another approach so that we can create migration scripts dynamically from previously created scripts as well as those scripts can be tracked by the source control easily.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">namespace WeatherForecast.Infrastucture.Migrations
+{
+    public partial class v1_3 : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.RunSqlScript(View.LocationTemperatureSummery);
+            migrationBuilder.RunSqlScript(Procedure.GetWeatherInformation);       
+            migrationBuilder.RunSqlScript(Function.GetTemperatureByLocation);
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(string.Format(@"DROP VIEW IF EXISTS {0}", View.LocationTemperatureSummery));
+            migrationBuilder.Sql(string.Format(@"DROP PROCEDURE IF EXISTS {0}", Procedure.GetWeatherInformation));
+            migrationBuilder.Sql(string.Format(@"DROP FUNCTION IF EXISTS dbo.{0}", Function.GetTemperatureByLocation));
+        }
+    }
+}</pre>
+<p>Here RunSqlScript is an Extention funtion that takes the script name as parameter to generate the script—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">namespace WeatherForecast.Infrastucture.Extensions
+{
+    public static class MigrationExtension
+    {
+        public static void RunSqlScript(this MigrationBuilder migrationBuilder, string script)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(x =&gt; x.EndsWith($"{script}.sql"));
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            using var reader = new StreamReader(stream);
+            var sqlResult = reader.ReadToEnd();
+            migrationBuilder.Sql(sqlResult);
+        }
+    }
+}</pre>
+<p>Besides this, we will use constants to keep the name of View, Procedure and Function because this name needs to be used in many places.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class View
+{
+    /// &lt;summary&gt;
+    /// vwLocationTemperatureSummery
+    /// &lt;/summary&gt;
+    public const string LocationTemperatureSummery = "vwLocationTemperatureSummery";
+}
+
+public class Function
+{
+    /// &lt;summary&gt;
+    /// fnGetTemperatureByLocation(@location nvarchar) returns int
+    /// &lt;/summary&gt;
+    public const string GetTemperatureByLocation = "fnGetTemperatureByLocation";
+}
+
+public class Procedure
+{
+    /// &lt;summary&gt;
+    /// spGetWeatherInformation(@location nvarchar(50))
+    /// &lt;/summary&gt;
+    public const string GetWeatherInformation = "spGetWeatherInformation";
+}</pre>
+<p>Now to generate the migration script, run the following command—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="bash">Script-Migration location-added v1_3 -c ApplicationDbContext -o Services/WeatherForecast/WeatherForecast.Infrastucture/Migrations/Scripts/v1.3.sql -i</pre>
+<p>-o = output location<br />
+-c = db-context<br />
+From location-added to v1_3<br />
+-i = Generate a script that can be used on a database at any migration</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    CREATE OR ALTER VIEW vwLocationTemperatureSummery
+    AS
+    SELECT 
+    	Date,
+    	Location,
+    	TemperatureC Temperature,
+    	Summary
+    FROM WeatherForecasts
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    CREATE OR ALTER PROCEDURE spGetWeatherForecast(@location nvarchar(50))
+    AS
+    SELECT 
+    	Date,
+    	Location,
+    	TemperatureC Temperature,
+    	Summary
+    FROM WeatherForecasts
+    WHERE LOWER(Location) = LOWER(@location)
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+
+    CREATE OR ALTER FUNCTION fnGetTemperatureByLocation
+    (
+
+    	@location NVARCHAR(50)
+    )
+    RETURNS int
+    AS
+    BEGIN
+
+    	DECLARE @Temperature int
+
+    	SELECT TOP(1)
+    		@Temperature = TemperatureC
+    	FROM WeatherForecasts
+    	WHERE LOWER(Location) = LOWER(@location)
+    	ORDER BY Id DESC
+
+    	RETURN @Temperature
+
+    END
+
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20221031051328_v1_3', N'6.0.4');
+END;
+GO
+
+COMMIT;
+GO
+
+</pre>
+<p>But this script show some syntax error—<br />
+<img decoding="async" class="aligncenter size-full wp-image-12360" src="/wp-content/uploads/2022/10/4.-error-1-1.png" alt="4. error 1 1 Efficient way to handle Procedures, Views, Functions in EF Core" width="1922" height="818" srcset="/wp-content/uploads/2022/10/4.-error-1-1.png 1922w, /wp-content/uploads/2022/10/4.-error-1-1-1280x545.png 1280w, /wp-content/uploads/2022/10/4.-error-1-1-980x417.png 980w, /wp-content/uploads/2022/10/4.-error-1-1-480x204.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1922px, 100vw">So that we will add some modification maually and script sould be like folllowing—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="sql">BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+EXEC(N'    CREATE OR ALTER VIEW vwLocationTemperatureSummery
+    AS
+    SELECT 
+    	Date,
+    	Location,
+    	TemperatureC Temperature,
+    	Summary
+    FROM WeatherForecasts')
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    EXEC(N'    CREATE OR ALTER PROCEDURE spGetWeatherForecast(@location nvarchar(50))
+        AS
+        SELECT 
+    		Date,
+    		Location,
+    		TemperatureC Temperature,
+    		Summary
+        FROM WeatherForecasts
+        WHERE LOWER(Location) = LOWER(@location)')
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+
+   EXEC(N' CREATE OR ALTER FUNCTION fnGetTemperatureByLocation
+    (
+    	@location NVARCHAR(50)
+    )
+    RETURNS int
+    AS
+    BEGIN
+
+    	DECLARE @Temperature int
+
+    	SELECT TOP(1)
+    		@Temperature = TemperatureC
+    	FROM WeatherForecasts
+    	WHERE LOWER(Location) = LOWER(@location)
+    	ORDER BY Id DESC
+
+    	RETURN @Temperature
+
+    END')
+
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20221031051328_v1_3')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20221031051328_v1_3', N'6.0.4');
+END;
+GO
+
+COMMIT;
+GO
+
+</pre>
+<p>Run the script and see the output—<br />
+<img decoding="async" class="aligncenter size-full wp-image-12362" src="/wp-content/uploads/2022/10/5.script-runngr-1-1.png" alt="5.script runngr 1 1 Efficient way to handle Procedures, Views, Functions in EF Core" width="1920" height="910" srcset="/wp-content/uploads/2022/10/5.script-runngr-1-1.png 1920w, /wp-content/uploads/2022/10/5.script-runngr-1-1-1280x607.png 1280w, /wp-content/uploads/2022/10/5.script-runngr-1-1-980x464.png 980w, /wp-content/uploads/2022/10/5.script-runngr-1-1-480x228.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><br />
+Migration is done, Now we will create Dtos against our View, Procedure and Functions as well as map them in DbContext.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">public class ApplicationDbContext: DbContext, IApplicationDbContext
+{
+   public ApplicationDbContext()
+   {
+   }
+    #region TABLES
+    public DbSet&lt;WeatherForecastEntity&gt; WeatherForecasts =&gt; Set&lt;WeatherForecastEntity&gt;();
+    #endregion
+
+    #region VIEWS
+    /// &lt;summary&gt;
+    /// vwLocationTemperatureSummery
+    /// &lt;/summary&gt;
+    public DbSet&lt;LocationTemperatureSummeryDto&gt; LocationTemperatureSummery =&gt; Set&lt;LocationTemperatureSummeryDto&gt;();
+    #endregion
+
+    #region PROCEDURES
+    /// &lt;summary&gt;
+    /// spGetWeatherInformation(@location nvarchar(50)
+    /// &lt;/summary&gt;
+    public DbSet&lt;WeatherInformationDto&gt; GetWeatherInformation =&gt; Set&lt;WeatherInformationDto&gt;();
+    #endregion
+
+    #region FUNCTIONS
+    /// &lt;summary&gt;
+    /// fnGetTemperatureByLocation(@location nvarchar(50)
+    /// &lt;/summary&gt;
+    public DbSet&lt;TemperatureByLocationDto&gt; GetTemperatureByLocation =&gt; Set&lt;TemperatureByLocationDto&gt;();
+    #endregion
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        base.OnModelCreating(builder);
+
+        #region VIEWS
+        builder.Entity&lt;LocationTemperatureSummeryDto&gt;(x =&gt;
+        {
+            x.HasNoKey();
+            x.ToView(View.LocationTemperatureSummery);
+            x.Metadata.SetIsTableExcludedFromMigrations(true);
+        });
+        #endregion
+
+        #region FUNCTIONS
+        builder.Entity&lt;TemperatureByLocationDto&gt;(x =&gt;
+        {
+            x.HasNoKey();
+            x.ToFunction(Function.GetTemperatureByLocation);
+            x.Metadata.SetIsTableExcludedFromMigrations(true);
+        });
+        #endregion
+
+        #region PROCEDURES
+        builder.Entity&lt;WeatherInformationDto&gt;(x =&gt;
+        {
+            x.HasNoKey();
+            x.ToView(Procedure.GetWeatherInformation);
+            x.Metadata.SetIsTableExcludedFromMigrations(true);
+        });
+        #endregion
+    }
+}
+</pre>
+<p>all are done, now test with running following code—</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="csharp">var locationTemp = await _context
+    .LocationTemperatureSummery
+    .Where(x =&gt; x.Location == request.Location)
+    .ToListAsync();
+
+var location = new SqlParameter("location", System.Data.SqlDbType.NVarChar);
+location.Value = request.Location;
+
+// procedure 
+var weatherInfo = await _context
+    .GetWeatherInformation
+    .FromSqlRaw($"EXEC dbo.{Procedure.GetWeatherInformation} @location", location)
+    .ToListAsync();
+
+// function         
+var temp = (await _context
+.GetTemperatureByLocation
+.FromSqlRaw($"SELECT dbo.{Function.GetTemperatureByLocation}(@location) Temperature", location)
+.FirstOrDefaultAsync())!.Temperature;</pre>
+<p><img decoding="async" class="aligncenter size-full wp-image-12363" src="/wp-content/uploads/2022/10/final.png" alt="final Efficient way to handle Procedures, Views, Functions in EF Core" width="1914" height="918" srcset="/wp-content/uploads/2022/10/final.png 1914w, /wp-content/uploads/2022/10/final-1280x614.png 1280w, /wp-content/uploads/2022/10/final-980x470.png 980w, /wp-content/uploads/2022/10/final-480x230.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1914px, 100vw"></p>
+<p>Hope this will help to track non-table database objects by source controll and make easy to use of non-table database like View, Procedure and Function.</p>
+<p>Thanks with <a href="https://github.com/Khairultaher/SimpleCleanArchV2" rel="nofollow noopener" target="_blank">Source</a>.</p>
+</div>
+</div>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Guideline for switching to GoLang from other Programming Languages</title>
+		<link>/blog/guideline-for-switching-to-golang-from-other-programming-languages/</link>
+		
+		<dc:creator><![CDATA[abdul.mukit]]></dc:creator>
+		<pubDate>Thu, 13 Oct 2022 06:49:29 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=12197</guid>
+
+					<description><![CDATA[Not just Golang, but for learning any programming language, one should be aware of basic concepts like data types, variables, branching, looping, functions, etc. If you are familiar with the C language, learning Golang will be very easy. The syntax of Golang is somewhat similar to the C language. However, switching from other programming languages [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span style="font-weight: 400;">Not just Golang, but for learning any programming language, one should be aware of basic concepts like data types, variables, branching, looping, functions, etc.</span></p>
+<p><span style="font-weight: 400;">If you are familiar with the C language, learning Golang will be very easy. The syntax of Golang is somewhat similar to the C language. However, switching from other programming languages is also more accessible and more interesting.</span></p>
+<p><span style="font-weight: 400;">As a beginner, you should cover the following topics to learn GoLang:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Basic syntax and data structure </span><a href="https://go.dev/ref/spec" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">go syntax</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Learn the basics of Go </span><a href="https://go.dev/tour/welcome/1" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Tour to Go</span></a>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Understand basic data types</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Build something using control structures</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Understand the pointer and its scope</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Get practice with functions</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Get practice with array, slice, maps, and type conversion</span></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Understand Interface and its usage  </span><a href="http://jordanorelli.com/post/32665860244/how-to-use-interfaces-in-go" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">interface in golang</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Error handling (Go doesn’t have exceptions, you have to handle errors in a different way) </span><a href="https://medium.com/gett-engineering/error-handling-in-go-53b8a7112d04" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Handling errors in golang</span></a><span style="font-weight: 400;"> </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Goroutine and  channel for concurrency </span></li>
+</ul>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><a href="/blog/concurrency-in-go-goroutine-and-channels/"><span style="font-weight: 400;">concurrency in go</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://gist.github.com/rushilgupta/228dfdf379121cb9426d5e90d34c5b96" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">dive into go concurrency</span></a></li>
+</ul>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Understand Go’s design patterns </span><span style="font-weight: 400;"><br />
+</span><span style="font-weight: 400;">      &#8211;  </span><a href="https://github.com/tmrts/go-patterns" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">go patterns</span><span style="font-weight: 400;"><br />
+</span></a><span style="font-weight: 400;">      &#8211;  </span><a href="/blog/dive-to-clean-architecture/"><span style="font-weight: 400;">go clean architecture</span></a><span style="font-weight: 400;"> </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Learn testing with Go </span><a href="https://go.dev/doc/tutorial/add-a-test" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Write test in Go</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Web frameworks and routers (at least one)</span></li>
+</ul>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><a href="https://echo.labstack.com/guide/" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Echo</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://github.com/gin-gonic/gin#quick-start" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Gin</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://github.com/gorilla/mux" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">Mux</span></a></li>
+</ul>
+<p><span style="font-weight: 400;">Knowledge of log frameworks can be useful </span><a href="https://pkg.go.dev/log" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">log framework</span></a></p>
+<p><b>Recommended Books for GoLang:</b></p>
+<ol>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">The Go Programming Language (Alan A. A. Donovan and Brian Kernighan)</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Learning Go (Jon Bodner)</span></li>
+</ol>
+<p><b>Some useful resources/tutorials:</b></p>
+<ol>
+<li style="font-weight: 400;" aria-level="1"><a href="https://go.dev/tour/welcome/1" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">https://go.dev/tour/welcome/1</span></a><span style="font-weight: 400;"> </span></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://gobyexample.com/" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">https://gobyexample.com/</span></a><span style="font-weight: 400;"> </span></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://golangbot.com/" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">https://golangbot.com/</span></a></li>
+<li style="font-weight: 400;" aria-level="1"><a href="https://www.golang-book.com/books/intro" rel="nofollow noopener" target="_blank"><span style="font-weight: 400;">https://www.golang-book.com/books/intro</span></a></li>
+</ol>
+<ul>
+<li style="list-style-type: none;"></li>
+</ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Elasticsearch কি এবং কেন?</title>
+		<link>/blog/elasticsearch/</link>
+		
+		<dc:creator><![CDATA[Jidul Islam]]></dc:creator>
+		<pubDate>Fri, 30 Sep 2022 10:06:37 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Data]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=12161</guid>
+
+					<description><![CDATA[আমরা যারা সফটওয়্যার ইঞ্জিনিয়ার বা যারা টেকনোলোজি নিয়ে কাজ করি বা যে যাই নিয়ে আছি না কেন, সবাই আমরা একটা কথায় একমত হব যে, প্রতিটা টেকনোলজি কোন না কোন নির্দিষ্ট সমস্যাকে সমাধান করতে এসেছে, সেইটা প্রোগ্রামিং লেঙ্গুয়েজে থেকে শুরু করে ডাটাবেস, ফ্রেমেওয়ার্ক কিংবা লাইব্রেরি (প্রোগ্রামিং ল্যাঙ্গুয়েজে এর) পর্যন্ত, তা না হলে টেকনোলজির এত বিস্তার কখনোই [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span style="font-weight: 400;">আমরা যারা সফটওয়্যার ইঞ্জিনিয়ার বা যারা টেকনোলোজি নিয়ে কাজ করি বা যে যাই নিয়ে আছি না কেন, সবাই আমরা একটা কথায় একমত হব যে, প্রতিটা টেকনোলজি কোন না কোন নির্দিষ্ট সমস্যাকে সমাধান করতে এসেছে, সেইটা প্রোগ্রামিং লেঙ্গুয়েজে থেকে শুরু করে ডাটাবেস, ফ্রেমেওয়ার্ক কিংবা লাইব্রেরি (প্রোগ্রামিং ল্যাঙ্গুয়েজে এর) পর্যন্ত, তা না হলে টেকনোলজির এত বিস্তার কখনোই হতো না।</span><span style="font-weight: 400;"> </span></p>
+<h2><b>Elasticsearch কি</b></h2>
+<p><span style="font-weight: 400;">এটি একটি NoSQL ডাটাবেস যেটা বিশেষ ভাবে distributed search  এবং aggregation ইঞ্জিন হিসাবে ব্যবহার এর জন্য বানানো হয়েছে। Elasticsearch এ স্ট্রাকচার্ড এবং আনস্ট্রাকচার্ড ডাটা ইন্সার্ট করা যায় এবং তার ভিত্তিতে রেজাল্ট পাওয়া যায়। আমরা সবাই NoSQL ডাটাবেস হিসাবে MongoDB এর কথা জানি কিন্তু MongoDB সাধারণ ভাবে (general purpose) NoSQL কে ব্যবহার করার জন্য বানানো হয়েছে। Elasticsearch এর রেজাল্ট কিন্তু </span><b>প্রায়</b><span style="font-weight: 400;"> রিয়েল টাইম।</span></p>
+<h2><b>কেন প্রয়োজন </b></h2>
+<p><span style="font-weight: 400;">আগে একটা কেইস বলি তারপর </span><b>কেন প্রয়োজন</b><span style="font-weight: 400;"> সেইটা নিয়ে বলবো, কথা দিলাম।  আমরা যখন একটা সফটওয়্যার বানায়, তখন আমাদের সফটওয়্যার খুব ভালো ভাবে চলে, আচরণ ও ভালো করে কিন্তু আস্তে আস্তে যখন সফটওয়্যার এর বয়স ও দায়িত্ব বাড়তে থাকে (ডাটা ভলিউম, read  এবং write concurrency) তখন আর আগের মতো ভালো আচরণ করে না, স্লো হয়ে যায়, ল্যাটেন্সি বেড়ে যায়। ফলাফলে end user নাখোশ। এইটা হয় </span><i><span style="font-weight: 400;">বেশিরভাগ সময় </span></i><span style="font-weight: 400;"> ঠিকঠাক ইনডেক্সিং না করা, রেপ্লিকেশনের অভাব, পচা কোয়েরি (N + ১) লেখা এবং সর্বোপরি না বুঝে ডাটাবেস সিলেক্ট করা </span><i><span style="font-weight: 400;">(কোথায় কত ইঞ্চির পেরেক মারা লাগবে তা জানা জরুরি)</span></i><span style="font-weight: 400;">। </span></p>
+<p><span style="font-weight: 400;">তারপর খুব সাধারণ ভাবে প্রায় সময় আমরা দোষ দেয় প্রোগ্রামিং ল্যাঙ্গুয়েজকে, ভাবি, ইশ একটা রকেট মার্কা ল্যাংগুজে দিয়ে লিখলে আজ এই দিন দেখা লাগতো না। </span><b>বেশির ভাগ সময় সময় সফটওয়্যার (ডাটা পারসিস্ট করে এমন) এর bottleneck থাকে হল ডাটাবেস</b><span style="font-weight: 400;"> </span></p>
+<p><span style="font-weight: 400;">এইবার আসি মূল গল্পে, </span><b>কেন প্রয়োজন</b><span style="font-weight: 400;">, </span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">আপনি একটা ইকমার্স সফটওয়্যার বানাচ্ছেন যেইখানে হেভি সার্চ অপারেশন আছে, প্রোডাক্ট এর সংখ্যা ১০ লাখ বা তার ও বেশি। আপনাকে কিওয়ার্ড ধরে ধরে প্রথমে সাজেশন দেখতে হবে তারপর রেজাল্ট এবং ফিল্টার ও থাকতে পারে। রেস্পন্স টাইম থাকতে হবে ৩০০ মিলিসেকেন্ড এর কাছাকাছি। </span></li>
+<li><span style="font-weight: 400;">আপনি একটা রিয়েল এস্টেট সফটওয়্যার বানাচ্ছেন বাংলাদেশ এর জন্য যেইখানে geolocation এর উপর সার্চ হবে। ধরুন বনানী লিখে সার্চ দেয়ার পর বনানী এরিয়ার ভিতর এ যত বাসা ভাড়া দেয়া হবে তার একটা লিস্ট আসবে। মানে বনানীর পলিগন দিয়ে সার্চ। </span></li>
+<li><span style="font-weight: 400;">আপনার কাছে প্রচুর পরিমানে ডাটা আছে যেখানে ফুল টেক্সট সার্চ দরকার, উদহারণ হিসাবে ব্লগ টাইপের কনটেন্ট যেখানে সেন্টেন্স দিয়ে সার্চ করে কন্টেন্ট গুলা ফিল্টার করতে চাচ্ছেন</span></li>
+<li><span style="font-weight: 400;">আপনি দেশের জাতীয় ডাটাবেস থেকে একটা ডেমোগ্রাফিক aggregetion চাচ্ছেন, যেমন &#8211; বয়স, জেন্ডার, চাকরি, বেকার এর সংখ্যা ইত্যাদি এর রিপোর্ট। ডেটা ভলিউম বুজতেই পারছেন, প্রায় ১৮ কোটি এর উপর </span></li>
+</ul>
+<p><span style="font-weight: 400;">আমি শুধু কিছু আইডিয়া দেয়ার চেষ্টা করলাম কেইস গুলা বলে, এছাড়া আরো অনেক কিছু থাকতে পারে, এইটা আপনাদের বিবেচনা। </span></p>
+<h2><b>কিছু মৌলিক জ্ঞান</b><span style="font-weight: 400;"> </span></h2>
+<p><span style="font-weight: 400;">Elasticsearch এর কথা যখনি বলছি তখন অনেকে হয়তো SQL এর সাথে তুলুনা করতে পারেন। বুঝার সুবিধার্তে SQL এর সাথে তুলুনা করলে Elasticsearch এর কোনটাকে আমরা কি বলতে পারি এবং কি কি পার্থক্য আছে, সেইগুলা নিয়ে কথা হবে। </span></p>
+<p><span style="font-weight: 400;">চলুন শুরু করি &#8211; </span></p>
+<table>
+<tbody>
+<tr>
+<td>SQL</td>
+<td>Elasticsearch</td>
+<td>পার্থক্য</td>
+</tr>
+<tr>
+<td>column</td>
+<td>field</td>
+<td>SQL এ field এর যে data type দিব, আমাদেরকে সেইটাই ব্যবহার করতে হবে কিন্তু elasticsearch এ আমরা  একই datatype এর একাধিক (list) data রাখতে পারি</td>
+</tr>
+<tr>
+<td>row</td>
+<td>document</td>
+<td>SQL এর row বেশ কড়া (strict), schema তে যা আছে তাতেই ডাটা ঢুকাতে হবে, যতটা আছে, ঠিক ততটা কিন্তু elasticsearch এই দিক দিয়ে ফ্লেক্সিবল (যদিও তার schema আগে বলে দেয়া যায়), রানটাইমে column ও বাড়ানো যায়</td>
+</tr>
+<tr>
+<td>table</td>
+<td>index</td>
+<td>দুইটায় একই জিনিস, মানে যার উপর query হবে</td>
+</tr>
+<tr>
+<td>schema</td>
+<td>implicit</td>
+<td>SQL এ schema হল একটা boundary (দুস্টুমি চলবে না), elasticsearch schemaless হলেও predefined mapping করা যায় (বিস্তারিত পরে বলবো) যদিও পরবর্তীতে field এর সংখ্যা runtime এ বাড়ানো যায়</td>
+</tr>
+<tr>
+<td>database</td>
+<td>cluster</td>
+<td>SQL এ অনেক গুলা table একটা database এ encapsulate থাকে, elasticsearch এ database কন্সেপ্টটা নাই কিন্তু এইখানে indices গুলা একটা cluster এর মধ্যে থাকে। মানে, এইখানে SQL এর মতো আলাদা database তৈরি করা যায় না।</td>
+</tr>
+</tbody>
+</table>
+<h3><b>Mapping</b></h3>
+<p><span style="font-weight: 400;">Elasticsearch এ</span> <span style="font-weight: 400;">mapping</span> <span style="font-weight: 400;">হলো, index (table) এর মধ্যে field গুলাকে কিভাবে রাখা হবে / store হবে, কিভাবে index হবে তার একটা process. সহজ কথা হলো &#8211; একটা schema define করে দেয়া কোন field এর data type কেমন হবে এবং indexable হবে কিনা। যেমন &#8211; name, email, age, gender তিনটা ফিল্ড আছে</span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">PUT /users
+
+{
+
+  "mappings": {
+
+    "properties": {
+
+      "name":   { "type": "text"  }
+
+      "email":  { "type": "keyword"  },  
+
+      "age":    { "type": "integer" }, 
+
+      "gender":    { "type": "keyword", "index": false, },     
+
+    }
+
+  }
+
+}</pre>
+<p>&nbsp;</p>
+<p><span style="font-weight: 400;">তারপর যখন data ঢুকানো হবে তখন mapping অনুযায়ী data persist হবে। elasticsearch এ by default সব কিছু index থাকে, যদি কোন ফিল্ড এর index দরকার না হয় তখন mapping এর সময় index কে false করে দেয়া যায়। </span></p>
+<p><span style="font-weight: 400;">Mapping দুই ধরণের হতে পারে </span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Dynamic mapping </span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">যদি field এর নাম এবং data type যদি run time এ সেট হয়, predefined না থাকে তাহলে dynamic mapping ভালো একটা চয়েজ </span></li>
+</ul>
+</li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Explicit mapping </span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">এই mapping টাতে অনেক বেশি কন্ট্রোল পাওয়া যায়, যেহেতু predefined থাকে field এর নাম এবং data type</span></li>
+</ul>
+</li>
+</ul>
+<h3><b>Field এর data type</b></h3>
+<p><span style="font-weight: 400;">কিছু কমন data type নিয়ে কথা বলবো, যেগুলা প্রায় সব সময় লাগে </span></p>
+<ul>
+<li><b>text</b><span style="font-weight: 400;"> &#8211; যখন একটা বড় content রাখতে হয় এবং পরে full text search করার প্রয়োজন হয়, তখন এটি ব্যবহার করা হয় সাধারণত</span></li>
+<li style="font-weight: 400;" aria-level="1"><b>keyword</b><span style="font-weight: 400;"> &#8211; exact match করবে এই ধরণের কেইস এ keyword ব্যবহার করা হয়</span></li>
+<li style="font-weight: 400;" aria-level="1"><b>numeric</b><span style="font-weight: 400;">  &#8211; এইখানে integer, long, short, double, float এবং আরো কিছু ধরণের value রাখা যায় </span></li>
+<li style="font-weight: 400;" aria-level="1"><b>date</b><span style="font-weight: 400;"> &#8211; এইখানে বিভিন্ন format এ date রাখা যায় &#8211; date, date-time, </span><span style="font-weight: 400;">milliseconds-since-the-epoch ইত্যাদি </span></li>
+<li style="font-weight: 400;" aria-level="1"><b>boolean</b><span style="font-weight: 400;"> &#8211; true, “true”, false, “false”</span></li>
+<li style="font-weight: 400;" aria-level="1"><b>object</b><span style="font-weight: 400;"> &#8211; field এ inner object হিসাবে data রাখার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="1"><b>geo_point</b><span style="font-weight: 400;"> &#8211; এই field এ latitude এবং longitude রাখা যায়</span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">একটা boundary এর ভিতরে geopoint খুঁজে পাওয়ার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">central point থেকে নির্দিষ্ট দুরুত্বে (radius এ) অন্য coordinate গুলা খুঁজে বের করার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">polygon দিয়ে search করার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">geographically কোন aggregated data পাওয়ার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">distance এর ভিত্তিতে sort করার জন্য </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">multipolygon দিয়ে search করে data পাওয়ার জন্য </span></li>
+</ul>
+</li>
+<li style="font-weight: 400;" aria-level="1"><b>geo_shape</b><span style="font-weight: 400;">  &#8211; যে কোন latitude এবং longitude এর shape store করার জন্য এটি ব্যবহার করা যায়, যেমন &#8211; polygon, multipolygon অথবা যে কোন ধরণের shape, যা দিয়ে পরবর্তীতে geo_point এর উপর search operation চালিয়ে data পাওয়া যায়</span></li>
+</ul>
+<p><span style="font-weight: 400;">আরো অনেক ধরনের data type আছে, দয়া করে নিজ দায়িত্বে দেখে নিবেন elasticsearch documentation এ</span></p>
+<h3><b>DSL query</b></h3>
+<p><span style="font-weight: 400;"> </span><span style="font-weight: 400;">DSL (Domain specific language) হল JSON based query language. DSL query দুইটা context এর উপর রান করে &#8211; </span><b><i>query</i></b><span style="font-weight: 400;">, </span><b><i>filter</i></b></p>
+<ul>
+<li><span style="font-weight: 400;">Query context: এই context টার মূল লক্ষ্য হল, একটা query এর response কতটা match করবে এবং relevant হবে। document এ _score নামে একটা meta field থাকে, যেখানে একটা number থাকে, যেই document এর </span><i><span style="font-weight: 400;">_score</span></i><span style="font-weight: 400;"> যত বেশি সেইটা ততটা match করেছে এবং সেইটা সবচেয়ে relevant</span></li>
+<li><span style="font-weight: 400;">Filter context: এই context মূলত কোন কিছু filter করে আনার জন্য, match করতে ও পারে আবার না ও পারে। এই context এর কোন _score নেই এবং এটি ব্যবহার করা হয় structure data filter করার জন্য। filter context frequent call হলে, elasticsearch তা cache করে রাখে performance বাড়ানোর জন্য। </span></li>
+</ul>
+<p><span style="font-weight: 400;">Query এবং filter context এর একটি উদাহরণ &#8211;</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">title ফিল্ড এ Database নামের একটা word (text data type) থাকবে </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">content field এ Elasticsearch নামের একটা word (text data type) থাকবে</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">status field এ published নামের একটা exact word (keyword data type) থাকবে</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">published_date এ একটা date (date data type) থাকবে </span></li>
+</ul>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET posts/_search
+
+{
+
+  "query": { 
+
+    "bool": { 
+
+      "must": [
+
+        { "match": { "title":   "Database" }},
+
+        { "match": { "content":   "Elasticsearch" }}
+
+      ],
+
+      "filter": [ 
+
+        { "term":  { "status": "published" }},
+
+        { "range": { "publish_date": { "gte": "2015-01-01" }}}
+
+      ]
+
+    }
+
+  }
+
+}</pre>
+<p>&nbsp;</p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">এইখানে query parameter টা query context কে বুজাচ্ছে </span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">bool এবং match ব্যবহার করা হচ্ছে query context এ যাতে কতটা ভালো ভাবে match হয়েছে তার উপর ভিত্তি করে  _score আসে</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">filter parameter দিয়ে filter context বুঝানো হচ্ছে, term এবং range query দিয়ে docuent filter করে আনা হচ্ছে, এতে query context এর _score এর কোন সমস্যা হবে না। </span></li>
+</ul>
+<h3><b>Compound queries</b></h3>
+<p><span style="font-weight: 400;">এক বা একাধিক leaf queries অথবা compound query এর সমন্বয়ে compound query তৈরী হয়। সহজ ভাষায় বলতে গেলে bool, boosting অথবা এই ধরণের আরো কিছু scope এ যখন কোন query কে group করা হয়। </span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Bool &#8211; document গুলা query তে match করে আসবে কি আসবে না তার একটা boolean combination. bool এর ভিতর must, must_not, should, filter ব্যবহার করা হয়</span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">must &#8211; যেই clause গুলা match করতেই হবে, সেইগুলা must দিয়ে ব্যবহার করা যায় </span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">must_not &#8211; যেই clause গুলা ম্যাচ করবে না,  সেইগুলা must_not এ রাখা হয়</span></li>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">should &#8211; যখন কোন additional value দিয়ে match এর relevency বাড়িয়ে _score বাড়ানো হয় তখন should ব্যবহার করা হয়  </span></li>
+</ul>
+</li>
+</ul>
+<h3><b>Match query</b></h3>
+<p><span style="font-weight: 400;">যখন word / sentence দিয়ে কোন content search করার প্রয়োজন হয় তখন match query দিয়ে full text search করা যায়। field এর data type text হতে হবে </span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET posts/_search
+
+{
+
+  "query": {
+
+    "match": {
+
+      "body": {
+
+        "query": "elasticsearch is fast"
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<p>&nbsp;</p>
+<p><span style="font-weight: 400;">Match query বিভিন্ন ভাবে করা যায়, documentation বিস্তারিত বলা আছে, আমি শুধু প্রাথমিক ধারণা দিয়েছি</span></p>
+<h3><b>Term query</b></h3>
+<p><span style="font-weight: 400;">যখন exact match প্রয়োজন হয় তখন term query করা হয়, এই ক্ষেত্রে field এর data type keyword হতে হবে</span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET posts/_search
+
+{
+
+  "query": {
+
+    "match": {
+
+      "body": {
+
+        "query": "elasticsearch is fast"
+
+      }
+
+    },
+
+    "term": {
+
+      "is_published": {
+
+        "value": true
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h3><b>Range query</b></h3>
+<p><span style="font-weight: 400;">যখন কোন range এর ভিতরে search করার প্রয়োজন হয় তখন এই query ব্যবহার করা যায়, যেমন &#8211; numeric value অথবা date এর range</span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET populations/_search
+
+{
+
+  "query": {
+
+    "range": {
+
+      "age": {
+
+        "gte": 10,
+
+        "lte": 20
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h3><b>Geo distance query</b></h3>
+<p><span style="font-weight: 400;">কোন geo_point থেকে নির্দিষ্ট radius এ geolocation based search করার জন্য এই query ব্যবহার করা হয়ে থাকে। </span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET /locations/_search
+
+{
+
+  "query": {
+
+    "bool": {
+
+      "must": {
+
+        "match_all": {}
+
+      },
+
+      "filter": {
+
+        "geo_distance": {
+
+          "distance": "20km",
+
+          "pin.location": {
+
+            "lat": 40,
+
+            "lon": -70
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h3><b>Geo shape query</b></h3>
+<p><span style="font-weight: 400;">কোন geo_point এর উপর polygon অথবা multipolygon দিয়ে search করে documents পাওয়ার জন্য geo_shape কোয়েরি করা হয়। ধরা যাক, বনানী এলাকার ভিতরে সব হসপিটাল এর documents লাগবে (হসপিটাল এর geo_point গুলা আগে থেকে ingest করা আছে), তখন বনানী এলাকার multipolygon দিয়ে search করলে সব গুলা documents পাওয়া সম্ভব। </span></p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">GET /hospitals/_search
+
+{
+
+  "query": {
+
+    "bool": {
+
+      "must": {
+
+        "match_all": {}
+
+      },
+
+      "filter": {
+
+        "geo_shape": {
+
+          "location": {
+
+            "shape": {
+
+              "type": "multipolygon",
+
+              "coordinates": [ [ 13.0, 53.0 ], [ 14.0, 52.0 ] ]
+
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}</pre>
+<h2><b>শেষের কথা</b></h2>
+<p><span style="font-weight: 400;">আমি চেষ্টা করেছি সহজ ভাবে বলার এবং শক্ত কথা গুলা এড়িয়ে যাওয়ার, elasticsearch বেশ বড় একটা বিষয়, এর মধ্যে আরো অনেক কিছু আছে, আমি শুধু কিছু প্রাথমিক আলোচনা করার চেষ্টা করেছি। আমার আলোচনার বাহিরে আরো অনেক বিষয় আছে যেমন &#8211; </span><b>aggregation</b><span style="font-weight: 400;"> (মেট্রিক্স দেখানোর জন্য অনেক কাজের একটা জিনিস), </span><b>kibana</b><span style="font-weight: 400;"> (data visualization এর জন্য), </span><b>logstash</b><span style="font-weight: 400;"> (data migration এর কাজে লাগে) এবং আরো অনেক কিছু, যা নিয়ে আলোচনা করা হয় নাই। নিজ গুনে দেখে নেয়ার জন্য অনুরুধ করা হলো।</span></p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Microsoft Power Platform: Power Apps</title>
+		<link>/blog/microsoft-power-platform-power-apps/</link>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Wed, 28 Sep 2022 11:33:41 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=11969</guid>
+
+					<description><![CDATA[Microsoft Power Platform is a group of business intelligence, app development and app connectivity software applications. Power Platform integration lets us create apps and flows by using the new Power Platform environment that is automatically created for you. Integrate finance and operations apps data with the Dataverse platform by using virtual tables, business events, and [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><strong>Microsoft Power Platform</strong> is a group of business intelligence, app development and app connectivity software applications. Power Platform integration lets us create apps and flows by using the new Power Platform environment that is automatically created for you. Integrate finance and operations apps data with the Dataverse platform by using virtual tables, business events, and dual-write features. Microsoft developed the Power Fx low-code programming language for expressing logic across the Power Platform. It also provides integrations with GitHub, Teams etc.</p>
+<p>Microsoft Power Platform is combination of four key products: Power Apps, Power Automate, Power BI and Power Virtual Agents-</p>
+<ul>
+<li><strong>Power Apps</strong> provides a rapid low code or no code development environment for building custom apps for business needs. It has services, connectors(built in + custom), a scalable data service and app platform (Microsoft Dataverse) to allow simple integration and interaction with existing data. Power Apps enables the creation of web and mobile applications that run on all devices. Power Apps eases users into app development with a simple interface so that every business user or pro developer can build custom apps. Power Apps integration allows you to connect data from multiple services and dashboards, including Outlook, OneDrive,PowerPoint, Excel, SharePoint, Dynamics 365, Salesforce, Dropbox, and others.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12044" src="/wp-content/uploads/2022/09/c1.jpg" alt="c1 Microsoft Power Platform: Power Apps" width="908" height="577" srcset="/wp-content/uploads/2022/09/c1.jpg 908w, /wp-content/uploads/2022/09/c1-480x305.jpg 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 908px, 100vw"></p>
+<ul>
+<li><strong>Canvas app </strong>is one of the main types of applications that you can create in PowerApps. It gives you a blank canvas and allows you to design the form, also it allows you to connect with many types of data sources. If you want to make your own design, then the Canvas app is the best choice for you. The Canvas app provides you with a blank canvas and you will design your app screen-by-screen, which means that you will have full control of building your own design.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12045" src="/wp-content/uploads/2022/09/canvas.png" alt="canvas Microsoft Power Platform: Power Apps" width="1923" height="937" srcset="/wp-content/uploads/2022/09/canvas.png 1923w, /wp-content/uploads/2022/09/canvas-1280x624.png 1280w, /wp-content/uploads/2022/09/canvas-980x478.png 980w, /wp-content/uploads/2022/09/canvas-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1923px, 100vw"></li>
+<li><strong>Model-driven app</strong> is another app type that you can create in PowerApps. Unlike the Canvas App, the PowerApps will design the appearance of your Model-driven app according to the data you will add to your app. If you don’t have a custom design and your data is in Data Verse ” common data service before” then you should choose the model-driven app.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12046" src="/wp-content/uploads/2022/09/model-drivem.png" alt="model drivem Microsoft Power Platform: Power Apps" width="2736" height="1463" srcset="/wp-content/uploads/2022/09/model-drivem.png 2736w, /wp-content/uploads/2022/09/model-drivem-1280x684.png 1280w, /wp-content/uploads/2022/09/model-drivem-980x524.png 980w, /wp-content/uploads/2022/09/model-drivem-480x257.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2736px, 100vw"></li>
+<li><strong>Portal </strong>is an external-facing website that enables users outside their organizations to sign in to create and view data. Also, the Portal App provides viewing the content anonymously. When you want to create websites that can be accessed by external users with a wide variety of identities including personal accounts, LinkedIn, and other Azure Active Directory organizations, and enable anonymous access to content, then you will use Portal App.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12047" src="/wp-content/uploads/2022/09/portal.png" alt="portal Microsoft Power Platform: Power Apps" width="1918" height="935" srcset="/wp-content/uploads/2022/09/portal.png 1918w, /wp-content/uploads/2022/09/portal-1280x624.png 1280w, /wp-content/uploads/2022/09/portal-980x478.png 980w, /wp-content/uploads/2022/09/portal-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"></li>
+</ul>
+</li>
+<li><strong>Power Automate</strong> allows users create automated workflows between applications and services. It helps automate repetitive business processes such as communication, data collections, and decision approvals.Don&#8217;t waste important productive hours on drafting the same email for a weekly update or walking approvals through. Not only for the individual user, Power Automate allows for the creation of enterprise-grade process automation. Power Automate&#8217;s simple interface allows every level of user to automate work tasks &#8211; from beginners to seasoned developers.</li>
+<li><strong>Power BI </strong>(Business Intelligence) is a business analytics service that delivers insights for analyzing data. It can share those insights through data visualizations which make up reports and dashboards to enable fast, informed decisions. Power BI scales across an organization, and it has built-in governance and security allowing businesses to focus on using data more than managing it.<br />
+You can consider Power BI as the analysis and insights leg of Microsoft Power Platform. It takes business data and allows you to display it in ways that makes the most sense to users. A Power BI dashboard could potentially replace a standing meeting to report out on company metrics such as sales data, progress against goals, or employee performance.</li>
+<li><strong>Power Virtual Agents </strong>enables anyone to create powerful chatbots using a guided, no-code graphical interface, without the need for data scientists or developers.<br />
+It minimizes the IT effort required to deploy and maintain a custom solution by empowering subject matter experts to build and maintain their own conversational solutions. Power Virtual Agents is part of Microsoft Power Platform, therefore integration into existing systems is streamlined with out-of-the-box integration with Power Automate and its ecosystems of hundreds of connectors. Users can enable chatbots to perform an action by simply calling a Power Automate flow. Flows help users automate activities or call back end systems. Users can utilize existing flows that have been created in their Power Apps environment or they can create a flow within Power Virtual Agents authoring canvas.</li>
+</ul>
+<p>Among the programs listed above, there are cross cutting features which enable Microsoft Power Platform to be leveraged to its full potential. Some of these are:</p>
+<ul>
+<li><strong>AI Builder</strong> lets users and developers add AI capabilities to the workflows and Power Apps they create and use. AI Builder is a turnkey solution that allows you to easily add intelligence to your workflows and apps and predict outcomes to help improve business performance without writing code.</li>
+<li><strong>Microsoft Dataverse</strong> is scalable data service and app platform which lets users securely store and manage data from multiple sources and integrate that data in business applications using a common data model to ensure ease and consistency to users. Microsoft Dataverse is the common currency that enables the components of Microsoft Power Platform to work together. It’s the foundation that enables the consolidation, display, and manipulation of data.</li>
+<li><strong>Connectors</strong> enable you to connect apps, data, and devices in the cloud. Consider connectors the bridge across which information and commands travel. There are more than 600 connectors for Microsoft Power Platform, enabling all of your data and actions to connect cohesively. Examples of popular connectors include Salesforce, Office 365, Twitter, Dropbox, Google services, and more.</li>
+</ul>
+<p>Want to see how easy and fast it is to create a Power Apps? Let&#8217;s create a canvas app with data from an Excel file.</p>
+<ul>
+<li>Sign in to <a href="https://make.powerapps.com/?utm_source=padocs&amp;utm_medium=linkinadoc&amp;utm_campaign=referralsfromdoc" data-linktype="external" rel="nofollow noopener" target="_blank">Power Apps</a>.<br />
+<img decoding="async" class="aligncenter size-full wp-image-12049" src="/wp-content/uploads/2022/09/Capture1-1.png" alt="Capture1 1 Microsoft Power Platform: Power Apps" width="1920" height="849" srcset="/wp-content/uploads/2022/09/Capture1-1.png 1920w, /wp-content/uploads/2022/09/Capture1-1-1280x566.png 1280w, /wp-content/uploads/2022/09/Capture1-1-980x433.png 980w, /wp-content/uploads/2022/09/Capture1-1-480x212.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>Click on create and select Excel<br />
+<img decoding="async" class="aligncenter size-full wp-image-12051" src="/wp-content/uploads/2022/09/Capture2-1.png" alt="Capture2 1 Microsoft Power Platform: Power Apps" width="1917" height="937" srcset="/wp-content/uploads/2022/09/Capture2-1.png 1917w, /wp-content/uploads/2022/09/Capture2-1-1280x626.png 1280w, /wp-content/uploads/2022/09/Capture2-1-980x479.png 980w, /wp-content/uploads/2022/09/Capture2-1-480x235.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1917px, 100vw"></li>
+<li>Select Google Drive as Source connection then click on Create button<br />
+<img decoding="async" class="aligncenter size-full wp-image-12056" src="/wp-content/uploads/2022/09/Capture3-1.png" alt="Capture3 1 Microsoft Power Platform: Power Apps" width="1918" height="934" srcset="/wp-content/uploads/2022/09/Capture3-1.png 1918w, /wp-content/uploads/2022/09/Capture3-1-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture3-1-980x477.png 980w, /wp-content/uploads/2022/09/Capture3-1-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"></li>
+<li>Select your source Excel file and click on Connect button, You can download the example file from here <a href="https://az787822.vo.msecnd.net/documentation/get-started-from-data/FlooringEstimates.xlsx" data-linktype="external" rel="nofollow noopener" target="_blank">Flooring Estimates </a><br />
+<img decoding="async" class="aligncenter size-full wp-image-12059" src="/wp-content/uploads/2022/09/Capture6.png" alt="Capture6 Microsoft Power Platform: Power Apps" width="1920" height="936" srcset="/wp-content/uploads/2022/09/Capture6.png 1920w, /wp-content/uploads/2022/09/Capture6-1280x624.png 1280w, /wp-content/uploads/2022/09/Capture6-980x478.png 980w, /wp-content/uploads/2022/09/Capture6-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>Your App is now ready to run, Click on run button<br />
+<img decoding="async" class="aligncenter size-full wp-image-12060" src="/wp-content/uploads/2022/09/Capture7.png" alt="Capture7 Microsoft Power Platform: Power Apps" width="1920" height="935" srcset="/wp-content/uploads/2022/09/Capture7.png 1920w, /wp-content/uploads/2022/09/Capture7-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture7-980x477.png 980w, /wp-content/uploads/2022/09/Capture7-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12061" src="/wp-content/uploads/2022/09/Capture8.png" alt="Capture8 Microsoft Power Platform: Power Apps" width="1412" height="927" srcset="/wp-content/uploads/2022/09/Capture8.png 1412w, /wp-content/uploads/2022/09/Capture8-1280x840.png 1280w, /wp-content/uploads/2022/09/Capture8-980x643.png 980w, /wp-content/uploads/2022/09/Capture8-480x315.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1412px, 100vw"> <img decoding="async" class="aligncenter size-full wp-image-12062" src="/wp-content/uploads/2022/09/Capture9.png" alt="Capture9 Microsoft Power Platform: Power Apps" width="1417" height="937" srcset="/wp-content/uploads/2022/09/Capture9.png 1417w, /wp-content/uploads/2022/09/Capture9-1280x846.png 1280w, /wp-content/uploads/2022/09/Capture9-980x648.png 980w, /wp-content/uploads/2022/09/Capture9-480x317.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1417px, 100vw"> <img decoding="async" class="aligncenter size-full wp-image-12063" src="/wp-content/uploads/2022/09/Capture10.png" alt="Capture10 Microsoft Power Platform: Power Apps" width="1414" height="939" srcset="/wp-content/uploads/2022/09/Capture10.png 1414w, /wp-content/uploads/2022/09/Capture10-1280x850.png 1280w, /wp-content/uploads/2022/09/Capture10-980x651.png 980w, /wp-content/uploads/2022/09/Capture10-480x319.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1414px, 100vw"></li>
+<li>To publish the app click on publish icon from top right corner<br />
+<img decoding="async" class="aligncenter size-full wp-image-12064" src="/wp-content/uploads/2022/09/Capture11.0.png" alt="Capture11.0 Microsoft Power Platform: Power Apps" width="1918" height="937" srcset="/wp-content/uploads/2022/09/Capture11.0.png 1918w, /wp-content/uploads/2022/09/Capture11.0-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture11.0-980x479.png 980w, /wp-content/uploads/2022/09/Capture11.0-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12065" src="/wp-content/uploads/2022/09/Capture11.png" alt="Capture11 Microsoft Power Platform: Power Apps" width="1918" height="936" srcset="/wp-content/uploads/2022/09/Capture11.png 1918w, /wp-content/uploads/2022/09/Capture11-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture11-980x478.png 980w, /wp-content/uploads/2022/09/Capture11-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1918px, 100vw"></li>
+<li>Now you can share the app to your users, To share click on share icon from top right corner<br />
+<img decoding="async" class="aligncenter size-full wp-image-12067" src="/wp-content/uploads/2022/09/Capture13.0.png" alt="Capture13.0 Microsoft Power Platform: Power Apps" width="1920" height="934" srcset="/wp-content/uploads/2022/09/Capture13.0.png 1920w, /wp-content/uploads/2022/09/Capture13.0-1280x623.png 1280w, /wp-content/uploads/2022/09/Capture13.0-980x477.png 980w, /wp-content/uploads/2022/09/Capture13.0-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-12066" src="/wp-content/uploads/2022/09/Capture13.png" alt="Capture13 Microsoft Power Platform: Power Apps" width="1920" height="937" srcset="/wp-content/uploads/2022/09/Capture13.png 1920w, /wp-content/uploads/2022/09/Capture13-1280x625.png 1280w, /wp-content/uploads/2022/09/Capture13-980x478.png 980w, /wp-content/uploads/2022/09/Capture13-480x234.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"></li>
+<li>To use the App, Users will find the shared app list in Power Apps Desktop or in Power Apps mobile<br />
+<img decoding="async" class="aligncenter wp-image-12068" src="/wp-content/uploads/2022/09/Capture14.1.jpeg" alt="Capture14.1 Microsoft Power Platform: Power Apps" width="236" height="498"><img decoding="async" class="aligncenter size-full wp-image-12132" src="/wp-content/uploads/2022/09/Capture14-3.png" alt="Capture14 3 Microsoft Power Platform: Power Apps" width="1912" height="1134" srcset="/wp-content/uploads/2022/09/Capture14-3.png 1912w, /wp-content/uploads/2022/09/Capture14-3-1280x759.png 1280w, /wp-content/uploads/2022/09/Capture14-3-980x581.png 980w, /wp-content/uploads/2022/09/Capture14-3-480x285.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1912px, 100vw"><br />
+<img decoding="async" class="aligncenter size-full wp-image-12131" src="/wp-content/uploads/2022/09/Capture15.png" alt="Capture15 Microsoft Power Platform: Power Apps" width="1913" height="1200" srcset="/wp-content/uploads/2022/09/Capture15.png 1913w, /wp-content/uploads/2022/09/Capture15-1280x803.png 1280w, /wp-content/uploads/2022/09/Capture15-980x615.png 980w, /wp-content/uploads/2022/09/Capture15-480x301.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1913px, 100vw"><br />
+Next, Will try to show how to create custom REST connector for a Canvas Apps.<br />
+Thanks&#8230;</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>Machine Learning quick start guide for enthusiast</title>
+		<link>/blog/machine-learning-quick-start-guide-for-enthusiast/</link>
+					<comments>/blog/machine-learning-quick-start-guide-for-enthusiast/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Fri, 16 Sep 2022 08:26:45 +0000</pubDate>
+				<category><![CDATA[Data]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=10277</guid>
+
+					<description><![CDATA[To achieve a better and professional level in Machine Learning as well as a quick start, We have to have some basic and professional level skills and knowledge in some related topics. In this post we will see the related topics, where to start, where the resources are available for study and practice. Understand your [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>To achieve a better and professional level in Machine Learning as well as a quick start, We have to have some basic and professional level skills and knowledge in some related topics. In this post we will see the related topics, where to start, where the resources are available for study and practice.</p>
+<ul>
+<li><strong>Understand your data first:<br />
+<img decoding="async" class="wp-image-10290 alignnone" src="/wp-content/uploads/2022/09/UntitledDiagram13.png" alt="UntitledDiagram13 Machine Learning quick start guide for enthusiast" width="800" height="290" srcset="/wp-content/uploads/2022/09/UntitledDiagram13.png 800w, /wp-content/uploads/2022/09/UntitledDiagram13-480x174.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 800px, 100vw"><br />
+</strong>“Data! Data! Data!” he cried impatiently. “I can’t make bricks without clay.” —Arthur Conan Doyle.<br />
+Machine Learning is highly dependent on data, historical data. we are to collect, clean, preprocess (For ML model need numeric data)  the data then  identify and discover the hidden pattern of data to teach the machine. There are basically two types  data &#8211; <strong>Structured</strong> (organized) data, <strong>Unstructured</strong> (unorganized) data.</p>
+<ul>
+<li><span class="TextRun SCXW177857176 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW177857176 BCX0">These two data types can be defined as follows:</span></span>
+<ul>
+<li><strong>Quantitative data:</strong> This data can be described using numbers, and basic mathematical procedures, including addition, are possible on the set.<br />
+Quantitative/Numeric data can be broken down, one step further, into discrete and continuous quantities. These can be defined as follows:</p>
+<ul>
+<li><strong> Discrete data</strong>: This describes data that is counted. It can only take on certain values. Examples of discrete quantitative data include a dice roll, because it can only take on six values, and the number of customers in a café, because you can&#8217;t have a real range of people.</li>
+<li><strong>Continuous data</strong>: This describes data that is measured. It exists on an infinite range of values.</li>
+</ul>
+</li>
+<li><strong>Qualitative data:</strong> This data cannot be described using numbers and basic mathematics. This data is generally thought of as being described using &#8220;natural&#8221; categories and language.<br />
+Qualitative /Categorical data takes only a fixed set of values, such as a type of TV screen (plasma, LCD, LED, etc.) or a state name (Alabama, Alaska, etc.). Binary data is an important special case of categorical data that takes on only one of two values, such as 0/1, yes/no, or true/false. Another useful type of categorical data is ordinal data in which the categories are ordered; an example of this is a numerical rating (1, 2, 3, 4, or 5)</li>
+</ul>
+</li>
+<li>There also four levels of data to understand:
+<ul>
+<li><strong>The nominal level:</strong> Data at the nominal level is mostly categorical in nature. At the nominal level, we deal with data usually described using vocabulary (but sometimes with numbers), with no order, and little use of mathematics. In order to find the center of nominal data, we generally turn to the mode (the most common element) of the dataset.</li>
+<li><strong>The ordinal level</strong>: At the ordinal level, we have data that can be described with numbers and also have a &#8220;natural&#8221; order, allowing us to put one in front of the other. At the ordinal level, the median is usually an appropriate way of defining the center of the data. The mean, however, would be impossible because division is not allowed at this level.</li>
+<li><strong>The interval level:</strong> Allow Addition, Subtraction. At this level, we can use the median and mode to describe this data; however, usually the most accurate description of the center of data would be the arithmetic mean, more commonly referred to as, simply, &#8220;the mean&#8221;</li>
+<li><strong>The ratio level:</strong> the ratio level proves to be the strongest of the four. Not only can we define order and difference, the ratio level allows us to multiply and divide as well. The arithmetic mean still holds meaning at this level, as does a new type of mean called the geometric mean. Data at the ratio level is usually non-negative.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Understanding of data will help to collect, clean and pre-process data as per the need to build the ML model</p>
+<ul>
+<li><strong>Programming Langulage &amp; Lybraries:<br />
+<img decoding="async" class="size-full wp-image-10292 alignnone" src="/wp-content/uploads/2022/09/25f6b013-351d-442f-b6f1-0ae11cd285d3-e1581506887542.jpg" alt="25f6b013 351d 442f b6f1 0ae11cd285d3 e1581506887542 Machine Learning quick start guide for enthusiast" width="600" height="321" srcset="/wp-content/uploads/2022/09/25f6b013-351d-442f-b6f1-0ae11cd285d3-e1581506887542.jpg 600w, /wp-content/uploads/2022/09/25f6b013-351d-442f-b6f1-0ae11cd285d3-e1581506887542-480x257.jpg 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 600px, 100vw"><br />
+</strong>For machine learning Python/R is in leading but from a developer perspective Python could be a choice for it&#8217;s huge community and rich <span class="TextRun SCXW144258744 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW144258744 BCX0">libraries</span></span>. We need a bettter understanding with all of it&#8217;s language related basics like- <em>Lists, List Slicing, Tuples, Dictionaries, Counters, Sets, Zip and Argument Unpacking</em> , data structure and algorighms. As well as following libraries are need to know while starting-</p>
+<ul>
+<li><strong>NumPy</strong> is a well known general-purpose array-processing package. An extensive collection of high complexity mathematical functions make NumPy powerful to process large multi-dimensional arrays and matrices</li>
+<li><strong>SciPy</strong> is a free and open-source library that’s based on NumPy. It can be used to perform scientific and technical computing on large sets of data. Similar to NumPy, SciPy comes with embedded modules for array optimization and linear algebra. It’s considered a foundational Python library due to its critical role in scientific analysis and engineering.</li>
+<li><strong>scikit-learn</strong> is a free Python library based on NumPy and SciPy, that’s often considered a direct extension of SciPy. It was specifically designed for data modeling and developing machine learning algorithms, both supervised and unsupervised.</li>
+<li><strong>Pandas</strong> is another Python library that is built on top of NumPy, responsible for preparing high-level data sets for machine learning and training. It relies on two types of data structures, one-dimensional (series) and two-dimensional (DataFrame).</li>
+<li><strong>Seaborn</strong> is another open-source Python library, one that is based on Matplotlib (which focuses on plotting and data visualization) but features Pandas’ data structures. Seaborn is often used in ML projects because it can generate plots of learning data.</li>
+<li><strong>Matplotlib</strong> is a Python library focused on data visualization and primarily used for creating beautiful graphs, plots, histograms, and bar charts. It is compatible for plotting data from SciPy, NumPy, and Pandas. If you have experience using other types of graphing tools, Matplotlib might be the most intuitive choice for you.there are many more <span class="TextRun SCXW144258744 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW144258744 BCX0">libraries</span></span></li>
+</ul>
+</li>
+<li><strong>Linear Algebra:<br />
+<img decoding="async" class="wp-image-10293 alignnone" src="/wp-content/uploads/2022/09/linear-algebra.jpg" alt="linear algebra Machine Learning quick start guide for enthusiast" width="738" height="359"><br />
+</strong></p>
+<ul>
+<li>Vectors Basics: Introduction to vectors, Vector arithmetic, Coordinate system</li>
+<li>Vector Projections and Basis: Dot product of vectors, Scalar and vector projection, Changing basis of vectors, Basis, linear independence, and span</li>
+<li>Matrices: Matrices introduction,Types of matrices,Types of matrix transformation,Composition or combination of matrix transformations</li>
+<li>Gaussian Elimination: Solving linear equations using Gaussian elimination,Gaussian elimination and finding the inverse matrix, Inverse and determinant</li>
+<li>Matrices from Orthogonality to Gram–Schmidt Process: Matrices changing basis ,Transforming to the new basis ,Orthogonal matrix, Gram–Schmidt process</li>
+<li>Eigenvalues and Eigenvectors: Calculating eigenvalues and eigenvectors</li>
+</ul>
+</li>
+</ul>
+<p><span class="EOP SCXW177857176 BCX0" data-ccp-props="{&quot;335559739&quot;:0}">                 For <a href="https://www.khanacademy.org/math/linear-algebra" rel="nofollow noopener" target="_blank">Linear algebra Khan Accademy</a>  and <a href="https://learning.edx.org/course/course-v1:Microsoft+DAT256x+2T2018/home" rel="nofollow noopener" target="_blank">edX Essential Math for Machine Learning: Python Edition </a> </span></p>
+<ul>
+<li><strong>Statistics &amp; Probability:<br />
+<img decoding="async" class="wp-image-10295 alignnone" src="/wp-content/uploads/2022/09/Screen-Shot-2022-06-13-at-10.20.58-AM.png" alt="Screen Shot 2022 06 13 at 10.20.58 AM Machine Learning quick start guide for enthusiast" width="846" height="385"><br />
+</strong></p>
+<ul>
+<li>Populations and Samples</li>
+<li>Mean, Median, Mode</li>
+<li>Variance, Range, Inter Quartile Range (IQR), Skewness</li>
+<li>Correlation, Correlation and Causation</li>
+<li>Dependence and Independency</li>
+<li>Conditional Probability</li>
+<li>Bayes&#8217;s Theorem and Random variables</li>
+<li>Distributions
+<ul>
+<li>Continuous Distribution</li>
+<li>Normal Distribution</li>
+</ul>
+</li>
+<li>Central Limit Theorem (CLT)</li>
+<li>Hypothesis Testing: Null Hypothesis(H0), Alternate Hypothesis (HA)</li>
+<li>Errors in Hypothesis Testing: Type 1 Error, Type 2 Error</li>
+<li>Statistical Significance and P-Values</li>
+<li>The chi-square goodness of fit test</li>
+<li><span class="TextRun SCXW130375983 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW130375983 BCX0">Confusion Matrix, <span class="TextRun Underlined SCXW112836330 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW112836330 BCX0">Precision, <span class="TextRun SCXW82991890 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW82991890 BCX0">Accuracy</span></span>, Recall, F1 Score</span></span></span></span></li>
+</ul>
+</li>
+</ul>
+<p>Resource for learning: <a href="https://www.khanacademy.org/math/statistics-probability" rel="nofollow noopener" target="_blank">Statistics and probability &#8211; Khan Academy</a>,<a href="https://www.coursera.org/learn/stanford-statistics" rel="nofollow noopener" target="_blank"> Introduction to Statistics-Coursera</a>,  <a href="https://www.coursera.org/learn/statistics-for-data-science-python" rel="nofollow noopener" target="_blank">Statistics for Data Science with Python-Coursera </a></p>
+<ul>
+<li><strong>Database Knowledge</strong>: Some basics of SQL and NoSQL may help. Basic of SQL queries like-
+<ul>
+<li>Join (Inner, Outer, Full, Cross)</li>
+<li>Pivot and Unpivote</li>
+<li>Window Functions
+<ul>
+<li>Aggregate Window Functions &#8211; SUM, MIN, MAX, AVG, COUNT</li>
+<li>Ranking Window Functions &#8211;  RANK, DENSE_RANK, ROW_NUMBER, NTILE</li>
+<li>Value Window Functions &#8211; LAG() and LEAD,FIRST_VALUE and LAST_VALUE</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>IDE:<br />
+<img decoding="async" class="wp-image-10298 alignnone" src="/wp-content/uploads/2022/09/maxresdefault.jpg" alt="Machine Learning quick start guide for enthusiast" width="711" height="400"><br />
+</strong></p>
+<ul>
+<li><strong>Spyder</strong>: Scientific Python Development Environment (Spyder) is a free &amp; open-source python IDE. It is lightweight and is an excellent python ide for data science &amp; ML</li>
+<li><strong>Jupiter Notebook:</strong> For its simplicity this one became a great IDE among the data enthusiasts as it is the descendant of IPython. Best thing of JuPyter is that there you can very easily switch between the different versions of python (or any other language) according to your preference.</li>
+<li><strong>Visual Studio Code</strong>: Visual Code is one of the most used Python IDE by ML &amp; DS professionals. It works on Windows, Mac, and Linux operating systems.</li>
+</ul>
+</li>
+<li><strong><span class="NormalTextRun SCXW174132279 BCX0">Machine</span> Learning:</strong> Supervised and Unsupervised learning are the two techniques of machine learning. But both the techniques are used in different scenarios and with different datasets.<br />
+<strong>Supervised</strong> learning is a machine learning method in which models are trained using labeled data.In supervised learning, models need to find the mapping function to map the input variable (X)<br />
+with the output variable (Y).<br />
+<strong>Unsupervised</strong> learning is another machine learning method in which patterns inferred from the unlabeled input data. The goal of unsupervised learning is to find the structure and patterns from the input data. Unsupervised learning does not need any supervision. Instead, it finds patterns from the data by its own. Machine Learning steps are &#8211;</p>
+<ul>
+<li><strong>Business Understanding</strong>: What you want to achieve by implementing it. This is the “business understanding”.
+<ul>
+<li>Identify the business objective/problem
+<ul>
+<li>Regression problems: We have data that needs to be mapped onto a predictor variable, so we need to learn a function that can do this mapping.</li>
+<li>Classification problems: Here, we have data that needs to be divided into predefined classes, based on some features of the data. We need an algorithm that can use previously classified data to learn how to put unknown data into the correct class. Ex: K-Nearest Neighbor for classification of a categorical outcome or prediction of a numerical outcome, Naïve Bays Classifier- Can be applied to data with categorical predictor.</li>
+<li>Summarization problems: Suppose we have data that needs to be shortened or summarized in some way. This could be as simple as calculating basic statistics from data, or as complex as learning how to summarize text or finding a topic model for text.</li>
+<li>Dependency modeling problems: For these problems, we have data that might be connected in some way, and we need to develop an algorithm that can calculate the probability of connection or describe the structure of connected data.</li>
+<li>Change and deviation detection problems: In another case, we have data that has changed significantly or where some subset of the data deviates from normative values. To solve these problems, we need an algorithm that can detect these issues automatically.</li>
+</ul>
+</li>
+<li>Assess the situation</li>
+<li>Determine the analytical goals</li>
+<li>Produce a project plan</li>
+</ul>
+</li>
+<li><strong>Data Understanding</strong>: Determining what kind of data can be collected to build a deployable model. In the next phase, “data understanding,”
+<ul>
+<li>Collect the data</li>
+<li>Describe the data</li>
+<li>Explore the data</li>
+<li>Verify the data quality</li>
+</ul>
+</li>
+<li><strong>Data Preprocessing:</strong>
+<ul>
+<li style="text-align: left;">Importing/Selecting the Dataset<br />
+<img decoding="async" class="wp-image-10363 alignnone" src="/wp-content/uploads/2022/09/5.3.1.png" alt="5.3.1 Machine Learning quick start guide for enthusiast" width="858" height="115"></li>
+<li style="text-align: left;">Handling Missing Data<br />
+<img decoding="async" class=" wp-image-10364 alignnone" src="/wp-content/uploads/2022/09/5.3.2.png" alt="5.3.2 Machine Learning quick start guide for enthusiast" width="858" height="139"></li>
+<li style="text-align: left;">Handling Categorical Data<br />
+<img decoding="async" class=" wp-image-10365 alignnone" src="/wp-content/uploads/2022/09/5.3.3.png" alt="5.3.3 Machine Learning quick start guide for enthusiast" width="858" height="222"></li>
+<li style="text-align: left;">Splitting the Dataset into the Training set and Test set<br />
+<img decoding="async" class=" wp-image-10366 alignnone" src="/wp-content/uploads/2022/09/5.3.4.png" alt="5.3.4 Machine Learning quick start guide for enthusiast" width="859" height="84"></li>
+<li style="text-align: left;">Feature Scaling<br />
+<img decoding="async" class=" wp-image-10367 alignnone" src="/wp-content/uploads/2022/09/5.3.5.1-1.png" alt="5.3.5.1 1 Machine Learning quick start guide for enthusiast" width="858" height="199"><br />
+<img decoding="async" class=" wp-image-10368 alignnone" src="/wp-content/uploads/2022/09/5.3.5.2.png" alt="5.3.5.2 Machine Learning quick start guide for enthusiast" width="857" height="332"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li><strong><span class="TextRun SCXW89223852 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW89223852 BCX0" data-ccp-parastyle="heading 2">Modeling: </span></span></strong><span class="TextRun SCXW89223852 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW89223852 BCX0" data-ccp-parastyle="heading 2">As per the business need we have to chose <span class="NormalTextRun SCXW205233688 BCX0">appropriate</span> model from various kind of available models-</span></span>
+<ul>
+<li><strong>Regression:</strong> Value estimation, Ex- how much wills this customer use the service?
+<ul>
+<li><strong>Linear Regression:</strong> Linear regression is an approach in modeling that helps model the scalar linear relationship between a scalar dependent variable, Y, and an independent variable, X, which can be one or more in value: y = X_ +_
+<ul>
+<li><span class="TextRun SCXW60745364 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW60745364 BCX0" data-ccp-charstyle="Heading 4 Char"><strong>Simple linear regression:</strong> <span class="TextRun SCXW241629472 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW241629472 BCX0">A simple linear regression has a single variable, and it can be described using the following formula: </span></span><span class="TextRun SCXW241629472 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW241629472 BCX0">y= A + Bx</span></span><span class="EOP SCXW241629472 BCX0" data-ccp-props="{&quot;201341983&quot;:0,&quot;335559685&quot;:720,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span></span></span></li>
+<li>
+<p aria-level="5"><span data-contrast="none"><strong>Multiple linear regression model:</strong> </span><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto">Multiple linear regression occurs when more than one independent variable is used to predict a dependent variable: Y_ = a +b1x1+b2x2 +…+ bnxn</span><span data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span></p>
+</li>
+<li>
+<p aria-level="5"><b><span data-contrast="none">Polynomial Regression:</span></b><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto">A regression equation is a polynomial regression equation if the power of independent variable is more than 1. The equation below represents a polynomial equation: y=a + b*x^2</span><span data-ccp-props="{}"><br />
+<img decoding="async" class="aligncenter size-full wp-image-10339" src="/wp-content/uploads/2022/09/regression.png" alt="regression Machine Learning quick start guide for enthusiast" width="1183" height="250" srcset="/wp-content/uploads/2022/09/regression.png 1183w, /wp-content/uploads/2022/09/regression-980x207.png 980w, /wp-content/uploads/2022/09/regression-480x101.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) 1183px, 100vw"><br />
+</span></p>
+</li>
+</ul>
+</li>
+<li><strong><span class="NormalTextRun SCXW80789932 BCX0" data-ccp-parastyle="heading 4">Non-Linear</span><span class="NormalTextRun SCXW80789932 BCX0" data-ccp-parastyle="heading 4"> Regression:</span></strong>
+<ul>
+<li><span class="TextRun SCXW151676946 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW151676946 BCX0" data-ccp-parastyle="heading 5">Support Vector Regression SVR</span></span></li>
+<li><span class="TextRun SCXW221411858 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW221411858 BCX0" data-ccp-parastyle="heading 5">Decision Tree Regression</span></span><span class="EOP SCXW221411858 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span></li>
+<li><span class="TextRun SCXW58969965 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW58969965 BCX0" data-ccp-parastyle="heading 5">Random Forest Regression</span></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong><span class="TextRun SCXW213434387 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW213434387 BCX0" data-ccp-parastyle="heading 3">Classification: </span></span></strong><span class="TextRun SCXW213434387 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW213434387 BCX0" data-ccp-parastyle="heading 3"><span class="TextRun SCXW9609195 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW9609195 BCX0">Will this customer purchase service S1 if given incentive I? Which service package (S1, S2, or none) will a customer likely purchase if given incentive I?</span></span></span></span>
+<ul>
+<li><span class="TextRun Underlined SCXW196884260 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><strong><span class="NormalTextRun SCXW196884260 BCX0" data-ccp-parastyle="heading 4">Decision trees</span></strong><span class="NormalTextRun SCXW196884260 BCX0" data-ccp-parastyle="heading 4">: </span></span><span class="EOP SCXW196884260 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW36949272 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW36949272 BCX0">Decision tree is a type of supervised learning algorithm (having a pre-defined target variable) that is mostly used in classification problems. It works for both categorical and continuous input and output variables.</span></span></li>
+<li><strong><span class="TextRun SCXW235591358 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW235591358 BCX0" data-ccp-parastyle="heading 4">Random Forest Classification</span></span></strong><span class="TextRun SCXW235591358 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW235591358 BCX0" data-ccp-parastyle="heading 4">:</span></span><span class="EOP SCXW235591358 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW131443930 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW131443930 BCX0">Random Forest is a trademark term for an ensemble of decision trees. In Random Forest, we’ve collection of decision trees (so known as “Forest”). To classify a new object based on attributes, each tree gives a classification and we say the tree “votes” for that class. The forest chooses the classification having the most votes (over all the trees in the forest.</span></span><span class="EOP SCXW131443930 BCX0" data-ccp-props="{}"> </span></li>
+<li><span class="TextRun SCXW256144533 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><strong><span class="NormalTextRun SCXW256144533 BCX0" data-ccp-parastyle="heading 4">Logistic regression</span></strong><span class="NormalTextRun SCXW256144533 BCX0" data-ccp-parastyle="heading 4"><strong>:</strong> </span></span><span class="EOP SCXW256144533 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW250130968 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW250130968 BCX0">Logistic regression extends the idea of linear regression to the situation where the dependent variable Y is categorical. We can think of a categorical variable as dividing the observations in to classes.  </span></span><span class="LineBreakBlob BlobObject DragDrop SCXW250130968 BCX0"><span class="SCXW250130968 BCX0"> </span></span><span class="TextRun SCXW250130968 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW250130968 BCX0">Don’t get confused by its name! It is a classification not a regression algorithm.<br />
+<img decoding="async" class="wp-image-10343 alignnone" src="/wp-content/uploads/2022/09/lr.png" alt="lr Machine Learning quick start guide for enthusiast" width="924" height="310"><br />
+</span></span></li>
+<li>
+<p aria-level="4"><b><span data-contrast="none">The naive Bayes classifier: </span></b><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto">It works on Bayes theorem of probability to predict the class of unknown data set.</span> <span data-contrast="auto">Naive Bayes uses a similar method to predict the probability of different class based on various attributes. This algorithm is mostly used in text classification and with problems having multiple classes.</span></p>
+</li>
+<li>
+<p aria-level="4"><b><i><span data-contrast="none">SVM (Support Vector Machine):</span></i></b><span data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span data-contrast="auto"> </span><span data-contrast="auto">It is a classification method. In this algorithm, we plot each data item as a point in n-dimensional space (where n is number of features you have) with the value of each feature being the value of a particular coordinate.</span><span data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span><span data-contrast="auto">For example, if we only had two features like Height and Hair length of an individual, we’d first plot these two variables in two dimensional space where each point has two co-ordinates (these co-ordinates are known as Support Vectors)</span><span data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:0,&quot;335559740&quot;:240}"> </span></p>
+</li>
+<li><span class="TextRun SCXW157341624 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW157341624 BCX0" data-ccp-parastyle="heading 4"><strong>K-Nearest Neighbor:</strong> </span></span><span class="EOP SCXW157341624 BCX0" data-ccp-props="{&quot;335559738&quot;:200,&quot;335559739&quot;:0}"> </span><span class="TextRun SCXW48525375 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW48525375 BCX0">KNN can be used for both classification and regression predictive problems. The “K” in KNN algorithm is the nearest neighbors we wish to take vote from?<br />
+<img decoding="async" class="wp-image-10349 alignnone" src="/wp-content/uploads/2022/09/knn.png" alt="knn Machine Learning quick start guide for enthusiast" width="783" height="297"><br />
+</span></span></li>
+</ul>
+</li>
+<li><span class="TextRun SCXW77015521 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW77015521 BCX0" data-ccp-parastyle="heading 3"><strong>Clustering</strong>: </span></span>
+<ul>
+<li><span class="NormalTextRun SCXW193408192 BCX0"><strong>k-means clustering:</strong>  The k-means clustering is an unsup</span><span class="NormalTextRun SCXW193408192 BCX0">ervised learning technique that </span><span class="NormalTextRun SCXW193408192 BCX0">helps in partitioning data of n observations into K buckets of similar observations.</span></li>
+<li><strong><span class="TextRun Underlined SCXW129119889 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW129119889 BCX0">Hierarchical clustering:</span></span></strong> <span class="TextRun SCXW129119889 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW129119889 BCX0">Hierarchical clustering is an unsupervised learning technique where a hierarchy of clusters is built out of observations</span></span></li>
+<li><strong> <span class="TextRun SCXW65955475 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW65955475 BCX0">Divisive hierarchical clustering</span></span></strong><span class="TextRun SCXW65955475 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW65955475 BCX0"><strong>:</strong> This is a top-down approach where observations start off in a single cluster and then they are split into two as they go down a hierarchy</span><span class="NormalTextRun SCXW65955475 BCX0">.</span></span></li>
+</ul>
+</li>
+<li><strong>Recommender Systems: </strong>Recommendations help monetize user behavior data that businesses capture. This allows them to recommend the content that they like. Recommender systems are a way of suggesting or similar items and ideas to a user’s specific way of thinking.</li>
+</ul>
+</li>
+<li><strong><span class="TextRun Underlined SCXW60958742 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW60958742 BCX0" data-ccp-parastyle="heading 2">Model </span><span class="NormalTextRun SCXW60958742 BCX0" data-ccp-parastyle="heading 2">Evaluation:</span></span><span class="EOP SCXW60958742 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}"> </span></strong>
+<ul>
+<li><span class="TextRun SCXW28168107 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW28168107 BCX0"> Evaluate the results, is it Overfitting (Good performance on the training data, poor generliazation to other data) or Underfitting (Poor performance on the training data and poor generalization to other data)</span></span></li>
+<li><span class="TextRun SCXW13247658 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW13247658 BCX0">Review the process</span></span></li>
+<li><span class="TextRun SCXW172585727 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="TextRun SCXW172585727 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW172585727 BCX0">Determine the next steps based on evaluation score<br />
+<img decoding="async" class="wp-image-10352 alignnone" src="/wp-content/uploads/2022/09/model-evPNG.png" alt="model evPNG Machine Learning quick start guide for enthusiast" width="706" height="284" srcset="/wp-content/uploads/2022/09/model-evPNG.png 706w, /wp-content/uploads/2022/09/model-evPNG-480x193.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 706px, 100vw"></span></span></span></li>
+</ul>
+</li>
+<li><strong><span class="TextRun Underlined SCXW146877088 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW146877088 BCX0" data-ccp-parastyle="heading 2">Test &amp; Deployment:</span></span><span class="EOP SCXW146877088 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}">  </span></strong><span class="EOP SCXW146877088 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}"><span class="EOP SCXW146877088 BCX0" data-ccp-props="{&quot;134233117&quot;:true,&quot;134233118&quot;:true,&quot;201341983&quot;:0,&quot;335559740&quot;:240}">After validation using various matix model is ready for testing. Here test set will be used for testing. The more data we will use the more the model will be robust.</span></span>More resource</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>for study and parctice : <a href="https://www.coursera.org/learn/machine-learning-with-python" rel="nofollow noopener" target="_blank"> Machine Learning with Python -Coursera</a>   , <a href="https://www.kaggle.com/" rel="nofollow noopener" target="_blank">Kaggle</a>, <a href="https://www.edx.org/" rel="nofollow noopener" target="_blank">edX</a><br />
+Hope this will help to quick start and Achieve Success Quicker.<br />
+Thanks&#8230;..</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/machine-learning-quick-start-guide-for-enthusiast/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>ছোটদের Agile ও Scrum : মুরুব্বিদের জন্য নিষিদ্ধ</title>
+		<link>/blog/agile-scrum/</link>
+					<comments>/blog/agile-scrum/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Thu, 08 Sep 2022 10:40:23 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=10382</guid>
+
+					<description><![CDATA[কি করতেছি, কেন করতেছি, করলে ফায়দাটাই কি বা এভাবেই কেন, আরও ভালো কিছু করা যায় না, যা সময় উপযোগী ও বেশি কার্যকরী?  এসব প্রশ্ন কখনো মনে আসে নাই বা সময় করতে পারিনাই। মুরব্বিরা এই ভাবেই করে গেছে তাই আমরাও করি। দিনে একবার সবাই মিলে মিটিং রুমে গোল হয়ে দাড়িয়ে ম্যানেজার/টিমলিড কে কাজের জবাবদিহি করি আর [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>কি করতেছি, কেন করতেছি, করলে ফায়দাটাই কি বা এভাবেই কেন, আরও ভালো কিছু করা যায় না, যা সময় উপযোগী ও বেশি কার্যকরী?  এসব প্রশ্ন কখনো মনে আসে নাই বা সময় করতে পারিনাই। মুরব্বিরা এই ভাবেই করে গেছে তাই আমরাও করি। দিনে একবার সবাই মিলে মিটিং রুমে গোল হয়ে দাড়িয়ে ম্যানেজার/টিমলিড কে কাজের জবাবদিহি করি আর ম্যানেজার/টিমলিড আমদেরকে কাজ দিয়ে (ডেড লাইন সহ) সেটা Kanban বোর্ডে টানিয়ে দেয়। এইতো হয়ে গেল Agile মেথড আর Scrum, সিম্পল তাই না! হ্যাঁ, এভাবেই — <em>দিনে দিনে হলো আমার দিন আখেরি&#8230;!</em></p>
+<p>যাদের মনে উপরের প্রশ্ন গুলো আসে, তাদের জন্য  Agile ও Scrum নিয়ে আজকের সংক্ষিপ্ত আলোচনা।</p>
+<p><img decoding="async" class="aligncenter size-full wp-image-10384" src="/wp-content/uploads/2022/09/agile-software-development-umberilla.png" alt="agile software development umberilla ছোটদের Agile ও Scrum : মুরুব্বিদের জন্য নিষিদ্ধ" width="652" height="422" srcset="/wp-content/uploads/2022/09/agile-software-development-umberilla.png 652w, /wp-content/uploads/2022/09/agile-software-development-umberilla-480x311.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 652px, 100vw"></p>
+<p><strong>Agile: </strong>আমরা জানি <em>Agile</em> ইনক্রিমেন্টাল ডেভেলপমেন্টের একটা Methodology! আসলে <em>Agile</em> &#8211; Mindset, Ideology, যা কিনা একটা বৃহৎ ছাতার মত, যে ইনক্রিমেন্টাল ডেভেলপমেন্টের অনেক গুলো ফ্রেমওয়ার্ক কে ধারন করে। কেন এইটা Methodology না হয়ে Mindset বা Ideology? তা বোঝার জন্য আমাদের <em>Agile</em> <em>Manifesto </em>-র সাহায্য নিতে হবে। দেখি <em>Agile</em> <em>Manifesto </em>কি বলে-</p>
+<ul>
+<li><strong>Individuals and interactions</strong> over processes and tools</li>
+<li><strong>Working software</strong> over comprehensive documentation</li>
+<li><strong>Customer collaboration</strong> over contract negotiation</li>
+<li><strong>Responding to change</strong> over following a plan</li>
+</ul>
+<div class="wpb_text_column wpb_content_element dbd-mani-text">
+<div class="wpb_wrapper">
+<p>That is, while there is value in the items on the right, <strong>we value the items on the left more </strong>(Source: agilealliance)</p>
+<p><em>Agile</em> <em>Manifesto </em>কে আরও সহজ করে বোঝার জন্য রয়েছে <em>Agile</em> <em>Manifesto </em>-র আরও ১২ টি ব্যাখ্যা মূলক Principle, যা <em>Agile</em> কে বোঝার জন্য বা ধারন করার জন্য। <em>Agile</em> <em>Manifesto </em>-র উপর ভিত্তি করে ১২ টি Principle &#8211;</p>
+<ol>
+<li>Our highest priority is to satisfy the customer through early and continuous delivery of valuable software.</li>
+<li>Welcome changing requirements, even late in development. Agile processes harness change for the customer’s competitive advantage.</li>
+<li>Deliver working software frequently, from a couple of weeks to a couple of months, with a preference to the shorter timescale.</li>
+<li>Business people and developers must work together daily throughout the project.</li>
+<li>Build projects around motivated individuals. Give them the environment and support they need, and trust them to get the job done.</li>
+<li>The most efficient and effective method of conveying information to and within a development team is face-to-face conversation.</li>
+<li>Working software is the primary measure of progress.</li>
+<li>Agile processes promote sustainable development. The sponsors, developers, and users should be able to maintain a constant pace indefinitely.</li>
+<li>Continuous attention to technical excellence and good design enhances agility.</li>
+<li>Simplicity–the art of maximizing the amount of work not done–is essential.</li>
+<li>The best architectures, requirements, and designs emerge from self-organizing teams.</li>
+<li>At regular intervals, the team reflects on how to become more effective, then tunes and adjusts its behavior accordingly.</li>
+</ol>
+</div>
+<p>আসল কথা হল- <em>&#8216;Continuous delivery of valuable software, <strong>Working software</strong>&#8216; , </em>যার জন্য দরকার সেলফ অর্গানাইজড একটা টিম- যারা নিজেদের মাঝে কমিউনিকেশন/আলোচনার মাধ্যমে কাজকে এগিয়ে নেয়, প্রয়োজনে কাস্টমারের অংশ গ্রহণকেও নিশ্চিত করে এগিয়ে যাওয়ার জন্য। বস্তা বস্তা ডকুমেন্টের চেয়ে সরাসরি আলোচনা ও শুধু মাত্র প্রয়োজনীয় ডকুমেন্ট কে প্রাধান্য দেয় (এখানে বলে রাখা ভাল অনেকে ধারনা করে বা মনে করে থাকে <em>Agile</em> -এ ডকুমেন্টের প্রয়োজন নেই) । এই সেলফ অর্গানাইজড টিম ধাপে ধাপে শিখতে থাকে এবং উত্তর উত্তর উন্নতি করতে থাকে যা কাস্টমার ও অর্গানিজেশন উভয়ের জন্য ফলপ্রসূ ।</p>
+<p><em>Agile</em> <em>Manifesto </em>ও <em>Principle</em> এর উপর ভিত্তি করে অনেক গুলো ফ্রেমওয়ার্ক আছে যেমন- XP, Lean, Kanban, Scrum  যা কিভাবে একটা সেলফ অর্গানাইজড টিম কমিউনিকেট করবে, কাস্টমারের অংশ গ্রহণকে নিশ্চিত করবে, ধারাবাহিক ডেলিভারি অক্ষুন্ন রাখবে সে সব বিষয়ে ফ্লেক্সিবল গাইডলাইন তৈরি করেছে। এই ফ্রেমওয়ার্ক গুলো সময়ের সাথে সাথে বিবর্তিত হয়ে থাকে। এক একটা অর্গানিজেশন বা টিম তাদের ন্যাচার এর উপর ভিত্তি করে তাদের উপযোগী ফ্রেমওয়ার্কে কাজ করে থাকে। আজ আমরা <strong>Scrum</strong> কে জানার ও বোঝার চেষ্টা করব।<br />
+<img decoding="async" class="aligncenter size-full wp-image-10388" src="/wp-content/uploads/2022/09/agile-scrum-lifecycle-diagram.png" alt="agile scrum lifecycle diagram ছোটদের Agile ও Scrum : মুরুব্বিদের জন্য নিষিদ্ধ" width="930" height="320" srcset="/wp-content/uploads/2022/09/agile-scrum-lifecycle-diagram.png 930w, /wp-content/uploads/2022/09/agile-scrum-lifecycle-diagram-480x165.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 930px, 100vw"></p>
+<p><strong>Scrum:</strong> এটি একটি লাইটওয়েট ও সহজবোধ্য ফ্রেমওয়ার্ক যার সাহায্যে একজন মানুষ, টিম বা অর্গানিজেশন জটিল সমস্যার অভিযোজিত সমাধানের (Adaptive Solution) মাধ্যমে সম্ভাব্য সর্বোচ্চ ডেলিভারি দিয়ে থাকে।<br />
+সহজে বলতে গেলে, একজন Scrum Master  এর সাহায্যে একটি পরিবেশ গড়ে তোলা হয় যেখানে-</p>
+<ul>
+<li>একজন Product Owner কাজগুলো কে Product Backlog  অ্যাড করে এবং গুরুত্ব অনুযায়ী সাজায়</li>
+<li>Scrum Team কাজ গুলোকে বাস্তবায়িত করে থাকে</li>
+<li>Scrum Team ও কাস্টমাররা বাস্তবায়িত কাজের ফলাফল গুলোকে পর্যবেক্ষণ করে পরের স্প্রিন্টের কাজ কে অভিযোজিত করে</li>
+<li>পুনরাবর্তন</li>
+</ul>
+<p><strong>Scrum Theory:</strong> অভিজ্ঞতাবাদ (Empiricism) ও লিন থিঙ্কিং (Lean Thinking) এর উপর Scrum প্রতিষ্ঠিত। অভিজ্ঞতাবাদ শেখায় অভিজ্ঞতা ও পর্যবেক্ষণের ভিত্তিতে নেয়া সিদ্ধান্তের মাধ্যমে জ্ঞান আহরন করা ও কাজে লাগানো। লিন থিঙ্কিং অপ্রয়োজনীয় অংশকে বাদ দিয়ে শুধু প্রয়োজনীয় অংশের উপরে ফোকাস করে। Scrum এর অভিজ্ঞতাবাদী  ভিত্তি তিনটি &#8211;</p>
+<ul>
+<li>স্বচ্ছতা (Transparency)</li>
+<li>পর্যবেক্ষণ (Inspection)</li>
+<li>অভিযোজন (Adaptation)</li>
+</ul>
+<p><strong>Scrum Values:</strong> Scrum এর পাঁচটি Values হল- প্রতিশ্রুতিবদ্ধা (commitment), স্থির লক্ষ্য (focus), গোপনীয়তা হীনতা (openness), সম্মান (respect) এবং সাহস (courage). এই পাঁচটির উপরেই একজন মানুষ বা একটি টিমের সাফল্য নির্ভর করে থাকে।<br />
+টিমের সদস্যরা লক্ষ্য অর্জনের জন্য ও একে অপরের সাহায্যের জন্য প্রতিশ্রুতিবদ্ধ।<br />
+টিম তাদের মুল লক্ষে স্থির থাকে এবং লক্ষ অর্জনের জন্য সর্বোচ্চ চেষ্টা ও সেরা পন্থা অবলম্বন করে থাকে।<br />
+টিম এবং স্টেকহোল্ডারদের মাঝে কাজের অগ্রগতি বা কোন অসুবিধা নিয়ে কোন গোপনীয়তা থাকবেনা<br />
+টিমের সদস্যরা একে অন্যর প্রতি- অন্যর  স্বাধীন ব্যক্তিত্ব ও মতামতের প্রতি সম্মান রাখে<br />
+টিমের সদস্যরা কঠিন কাজ বা সঠিক সময়ে সঠিক কাজ করার সাহস রাখে।</p>
+<p><strong>Scrum Team:</strong> Scrum টিমের মুল ভিত্তি হল- কয়েকজন জন মানুষের একটা টিম, যেখানে থাকে একজন Product Owner, Scrum Master, Developers.<br />
+<img decoding="async" class="aligncenter size-full wp-image-10801" src="/wp-content/uploads/2022/09/I-Am-Not-Lazy-Funny-Polar-Bear-Meme-Image.jpg" alt="I Am Not Lazy Funny Polar Bear Meme Image ছোটদের Agile ও Scrum : মুরুব্বিদের জন্য নিষিদ্ধ" width="540" height="432" srcset="/wp-content/uploads/2022/09/I-Am-Not-Lazy-Funny-Polar-Bear-Meme-Image.jpg 540w, /wp-content/uploads/2022/09/I-Am-Not-Lazy-Funny-Polar-Bear-Meme-Image-480x384.jpg 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 540px, 100vw"></p>
+<p>না উপরের ছবিটার মত নয় একেবারেই! Scrum টিম হাইলি মোটিভেটেড, সেলফ অরগানাইজড, ক্রস ফাংশনাল। এর মানে একটি স্প্রিন্টকে অর্থবহ করা ও লক্ষ অর্জনের জন্য প্রয়োজনীয় সকল দক্ষতা টিমের থাকে, এরা স্ব-পরিচালিত হয়, টিম সিদ্ধান্ত নেয় কে কি করবে, কখন করবে, কিভাবে করবে যার মাধ্যমে তাদের  মধ্যকার পারস্পরিক বোঝাপড়াও প্রতিফলিত হয়।</p>
+<ul>
+<li><strong>Product Owner:</strong><em> Product Owner এর </em>কাজের মাধ্যমেই  তাকে জানার চেষ্টা করি-<br />
+১) প্রোডাক্ট এর মিশন ভিসন তৈরি করা এবং তা সু-স্পষ্ট ভাবে সবাইকে বুঝিয়ে দেয়া<br />
+২) প্রোডাক্ট ব্যাকলগ তৈরি করা এবং সবাইকে অবগত করা<br />
+৩) ব্যাকলগ আইটেমের গুরুত্ব অনুযায়ী ক্রমবিন্যাস করা<br />
+৪) প্রোডাক্ট ব্যাকলগ সবার কাছে পরিষ্কার, সু-স্পষ্ট, এবং বোধগম্য কি না তা সুনিশ্চিত করা।<br />
+এই কাজ গুলো <em>Product Owner </em>নিজে করতে পারে বা অন্যকে দিয়েও করাতে পারে কিন্তু দায়বদ্ধতা <em>Product Owner </em>নিজের।</li>
+<li><strong>Developers:</strong> এরা হল সেই সব সদস্য যারা স্প্রিন্ট শেষে একটি ব্যবহার উপযোগী ইনক্রিমেন্ট গড়ে তলার জন্য প্রতিশ্রুতিবদ্ধ। ব্যবহার উপযোগী ইনক্রিমেন্টের জন্য তারা যা করে থাকে-<br />
+১) চলমান স্প্রিন্টের জন্য স্প্রিন্ট  ব্যাকলগ তৈরি করা<br />
+২) Definition of Done (DOD) এর সাথে সঙ্গতি রেখে কাজের গুনগত মান নিশ্চিত করা<br />
+৩) স্প্রিন্টের লক্ষ্য অনুযায়ী প্রতিদিন তাদের পরিকল্পনা কে অভিযোজিত (adjust, adapt) করা<br />
+৪) পেশাদারিত্বের সাথে প্রতেকের সামর্থ্য অনুযায়ী কাজ ভাগ করে নেয়া ও সম্পন্ন করা</li>
+<li><strong>Scrum Master: </strong>Scrum Guide অনুযায়ী, টিমে বা অর্গানাইজেশনে <em>Scrum </em>বাস্তবায়ন করা বা সবাইকে <em>Scrum  </em>সম্বন্ধে অবহিত করে, <em>Scrum </em>তত্ত্ব বা মূলনীতি বুঝিয়ে তা বাস্তবে রূপ দেয়ার জন্য সম্পূর্ণ ভাবে দায়বদ্ধ। <em>Scrum Master </em>কে বলা হয় Servant leader -যার কাজ টিমকে সর্বোচ্চ অর্জনে নিন্মক্তভাবে সাহায্য করা-<br />
+১) টিম মেম্বার বা টিমের লক্ষ্য অর্জনের পথে যদি কোন প্রতিবন্ধকতা থেকে থাকে তা অপসারণে ব্যবস্থা নেয়া।<br />
+২) টিম কে সেলফ ম্যানেজমেন্ট ও ক্রস ফাংশনালিটি বিষয়ে কোচিং দেয়া যাতে করে টিম তাদের সর্বোচ্চ প্রচেষ্টা সুনিশ্চিত করতে পারে।<br />
+৩) সকল Scrum event গুলো কে সঠিক ভাবে, সাফল্যের সাথে, টাইম বক্সের মধ্যে শেষ হয় তা সুনিশ্চিত করা<br />
+৪) <em>Product Owner </em>কে প্রোডাক্ট প্লানিং এ সহায়তা করা ও টিম কে ব্যাকলগ আইটেম বুঝতে সহায়তা করা<br />
+৫) অর্গানিজেশন Scrum কে প্রতিষ্ঠিত করতে, ব্যবহারে ও পরিচালনায় উপদেশ এবং পরিকল্পনা করা<br />
+৬) Developers, Product Owner এবং Stakeholder দের মাঝে সেতু বন্ধন তৈরি করা।<br />
+A funny Scrum Master movie with Jeff Sutherland(must watch):<br />
+<iframe title="a funny Scrum Master movie with Jeff Sutherland" width="1080" height="608" src="https://www.youtube.com/embed/oheekef7oJk?feature=oembed"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></li>
+</ul>
+<p><em>এইবার আর একটু সহজ করার চেষ্টা করি, আশাকরি নৌকা বাইচ দেখেছেন- Scrum টিমকে যদি একটা বাইচের নৌকার সাথে তুলনা করি তবে&#8211;</em><br />
+<em>নৌকার পেছনে একজন লক্ষের দিকে শক্ত করে হাল ধরে আছে, প্রয়োজনে সে একবার ডাইনে কাটে আবার বায়ে, সে তার লক্ষে স্থির, এ হল আমাদের নৌকার Product Owner যে এই বাইচ/Race টা জিততে চায়।</em><br />
+<em>মাঝের সদস্যরা সর্বোচ্চ চেষ্টা দিয়ে বৈঠা চালিয়ে যাচ্ছে- এরা আমাদের Developers যারা ও  এই বাইচ/Race টা জিততে চায়।</em><br />
+<em>সবার সামনে একটা লোক গ্রাম্য একটা টেঁটা  বা রামদ নিয়ে দাড়িয়ে আছে তার সামনে যে বাধাই আসুক সে মোকাবেলা করবে আর সর্বদাই গুলুয়ে দাড়িয়ে সামনে ঝুকে ঝুকে একটানা একটা রিদম দিয়ে যাচ্ছে যার তালে তালে সবাই বৈঠা চালায়- এ আমাদের নৌকার Scrum Master.<br />
+এখানে আমি তুমি বলে কিছু নেই , আমরা &#8211; মানে যদি এই  নৌকা  ডোবে তবে সবাই ডুববে / যদি জেতে তবে সবাই জিতে যাবে।</em></p>
+<p><strong>Scrum Events: </strong>Scrum -এর প্রতিটা ইভেন্ট Scrum artifact গুলোকে পর্যবেক্ষণ ও অভিযোজনের জন্য সুযোগ এনে দেয়। এই ইভেন্ট গুলো কাজের স্বচ্ছতা আনার জন্য বিশেষ ভাবে তৈরি। এই ইভেন্ট গুলো নিয়ামুবর্তিতা তৈরি করতে এবং Scrum ইভেন্ট এর বাইরের  মিটিং গুলো কমাতে সাহায্য করে। Scrum ইভেন্ট গুলো সাধারণত  একই  জায়গায়, একই  সময়ে এবং Time Bound  হয়ে থাকে।</p>
+<ul>
+<li><strong><strong>Sprint: </strong></strong>এটি Scrum -এর প্রাণ, যেখানে আইডিয়া বা ব্যাকলগ আইটেম Values &#8211; রুপান্তরিত হয়। ব্যাকলগ আইটেম থেকে গুরুত্ব অনুসারে কিছু আইটেম টিম নিজে বাছাই করে থাকে। Sprint এর দৈর্ঘ্য কত হবে তা টিম দ্বারা নির্ধারিত হয় যা একমাস বা তার চেয়ে কম সময়ের  একটি নির্দিষ্ট দৈর্ঘ্যের হয়ে থাকে। কাজের অগ্রগতি পর্যবেক্ষণের জন্য বার্ন-ডাউন, বার্ন-আপ চার্ট ব্যাবহার করা যেতে পারে। Sprint এর দৈর্ঘ্য বেশি হয়ে গেলে তা কার্যকারিতা হারায়, কাজের জটিলতা বাড়ে, ঝুকি বেড়ে যায়। যদি কোন কারনে দেখা যায় যে Sprint কার্যকারি হবে না বা লক্ষ্য পরিবর্তন বা অপ্রয়োজনীয় হয়ে যায় সে ক্ষেত্রে একমাত্র Product Owner Sprint টি বাতিল করতে পারবে।</li>
+<li><strong><strong>Sprint Planning: </strong></strong>Sprint -এ যা যা করা হবে তার জন্য পরিকল্পনা। টিম পরস্পরে সহযোগিতায়, আলোচনার ভিত্তিতে সব থেকে গুরুত্বপূর্ণ আইটেম গুলো ব্যাকলগ থেকে নির্বাচিত করা হয় এবং এটা প্রোডাক্টের লক্ষের সাথে সামঞ্জস্যপূর্ণ কিনা তা Product Owner নিশ্চিত করে।  এই পরিকল্পনা সাধারণত তিনটি বিষয়ে জোর দেয়া হয়-<br />
+১) Sprint টি কেন প্রয়োজনীয় বা গুরুত্বপূর্ণ<br />
+২) এই Sprint  -এ কি কি করা যেতে পারে<br />
+৩)  নির্বাচিত কাজ গুলো কিভাবে সম্পূর্ণ করা হবে<br />
+পরিকল্পনার সময়সীমা (timebox)  সাধারণত এক মাসের Sprint এর জন্য ৮ ঘণ্টা হয়ে থাকে। ছোট Sprint এর জন্য আনুপাতিক হারে কম সময় নিরধারন করা হয়।</li>
+<li><strong><strong>Daily Scrum: </strong></strong>এটা Scrum এর অন্যতম গুরুত্বপূর্ণ একটা ইভেন্ট যার মাধ্যমে Sprint এর অগ্রগতি পর্যবেক্ষণ করা হয়। জটিলতা কমানোর জন্য প্রতিদিন একই সময়ে এবং একই জায়গায় অনুষ্ঠিত হয় যার দৈর্ঘ্য ১৫ মিনিট। Scrum Master  সাধারণত এটি পরিচালনা করে থাকে। টিম মেম্বাররা এখানে তিনটি প্রশ্নের উত্তর দিয়ে থাকে &#8211;<br />
+১) গতকাল কি করেছি<br />
+২) আজ কি করব<br />
+৩) কাজের ক্ষেত্রে কোন আসুবিধা বা  প্রতিবন্ধকতা আছে কিনা<br />
+এছাড়াও প্রয়োজনে সারাদিনে একাধিকবার পারস্পরিক আলোচনার মাধ্যমে কাজকে এগিয়ে নেয়া হয়। যদি কারো কোন অসুবিধা/প্রতিবন্ধকতা থাকে  বা ব্যাকলগ বুঝতে অসুবিধা হয় তবে Scrum Master  এর জন্য আলাদা মিটিং আয়োজন করে থাকে।</li>
+<li><strong><strong>Sprint review: </strong></strong>এই ইভেন্টের মাধ্যমে টিম এবং স্টেকহোল্ডারা যে কাজ সম্পন্ন হয়েছে এবং তার ফলে আনুসঙ্গিক যে পরিবর্তন হয়েছে তা আলোচনা, পর্যালোচনা করে থাকে, এই ফলাফলের উপর ভিত্তি করে  ইভেন্টের সবাই মিলে ঠিক করে এর পরে কি করা উচিত। নতুন কাজের সম্ভাবনাকে স্থান দেয়ার জন্য ব্যাকলগে ও পরিবর্তন আসতে পারে।<br />
+এই ইভেন্টের সময়সীমা (timebox)  সাধারণত এক মাসের Sprint এর জন্য ৪ ঘণ্টা হয়ে থাকে। ছোট Sprint এর জন্য আনুপাতিক হারে কম সময় নিরধারন করা হয়। সব চেয়ে বড় কথা এটা একটা কাজের ইভেন্ট একে অর্থপূর্ণ করতে হবে তাই খেয়াল রাখতে হবে যেন শুধু মাত্র প্রেজেন্টেশন দিয়ে যেন শেষ না হয়।</li>
+<li><strong>Sprint Retrospective: </strong>এই ইভেন্টের উদ্দেশ্য হল- টিমের গুনগত মান ও কার্যকারিতা বাড়ানো। টিম এখানে নিজেদের মাঝে আলোচনা পর্যালোচনা করে তাদের বিগত Sprint এর অর্জন ও বর্জন গুলো, ভ্যালু অ্যাড করে এমন যা কিছু শিখেছে বা কি কি অসুবিধার সম্মুখীন হয়েছে এবং সে গুলো কি ভাবে সমাধান করেছে।<br />
+এই ইভেন্টের সময়সীমা (timebox)  সাধারণত এক মাসের Sprint এর জন্য ৩ ঘণ্টা হয়ে থাকে। ছোট Sprint এর জন্য আনুপাতিক হারে কম সময় নিরধারন করা হয়।</li>
+</ul>
+<p><strong>Scrum Artifacts: </strong>Scrum আর্টিফ্যাক্টগুলি এমন তথ্য যা একটি স্ক্রাম টিম এবং স্টেকহোল্ডাররা প্রোডাক্ট ডেভেলপ করার সময় যে সব ক্রিয়াকলাপ করে থেকে এবং প্রোজেক্ট চলাকালীন সম্পাদিত ক্রিয়াগুলির বিশদ বিবরণের জন্য ব্যবহার করে। স্ক্রাম আর্টিফ্যাক্টগুলি হল প্রোডাক্ট ব্যাকলগ, স্প্রিন্ট ব্যাকলগ এবং ইনক্রিমেন্ট।<br />
+একটি স্প্রিন্ট ব্যাকলগ &#8211;<br />
+<img decoding="async" class="aligncenter size-full wp-image-10991" src="/wp-content/uploads/2022/09/sprint-backlog.png" alt="sprint backlog ছোটদের Agile ও Scrum : মুরুব্বিদের জন্য নিষিদ্ধ" width="1631" height="552" srcset="/wp-content/uploads/2022/09/sprint-backlog.png 1631w, /wp-content/uploads/2022/09/sprint-backlog-1280x433.png 1280w, /wp-content/uploads/2022/09/sprint-backlog-980x332.png 980w, /wp-content/uploads/2022/09/sprint-backlog-480x162.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1631px, 100vw"><br />
+অনেক হইছে- <em>জানার কোন শেষ নাই, জানার চেষ্টা বৃথা তাই- যে বেশি জানে সে কম মানে !<br />
+</em>এরপরেও যারা মানার জন্য আরো জানতে চায় তারা আরও যা দেখতে পারে &#8211;<br />
+১) <a href="https://www.scrumalliance.org/" rel="nofollow noopener" target="_blank">ScrumAlliance</a><br />
+২) <a href="https://www.mountaingoatsoftware.com/agile/scrum" rel="nofollow noopener" target="_blank">Mountain Goat</a><br />
+৩) Agile Principles, Patterns, and Practices in C# By Robert C. Martin<br />
+৪) Scrum the art of doing twice the work in half the time By Jeff Sutherland<br />
+5) Agile Project Management with Scrum-Microsoft Press By Ken Schwaber</p>
+</div>
+<div class="wpb_text_column wpb_content_element dbd-mani-text">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+<p>&nbsp;</p>
+<div class="wpb_text_column wpb_content_element dbd-mani-text">
+<div class="wpb_wrapper">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/agile-scrum/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Reliable UDP (RUDP): Can UDP be made reliable?</title>
+		<link>/blog/can-udp-be-made-reliable/</link>
+					<comments>/blog/can-udp-be-made-reliable/#respond</comments>
+		
+		<dc:creator><![CDATA[Nafayeth]]></dc:creator>
+		<pubDate>Fri, 26 Aug 2022 07:07:18 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<guid isPermaLink="false">/?p=10247</guid>
+
+					<description><![CDATA[The major decision has to be made for the real-time application is which transport protocol will be used, as some features demand reliability, some need real time effects. Beyond these, developers had to develop an optimized solution so that user can use the application in low bandwidth efficiently, reducing user handset&#8217;s power consumption, and also [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>The major decision has to be made for the real-time application is which transport protocol will be used, as some features demand reliability, some need real time effects. Beyond these, developers had to develop an optimized solution so that user can use the application in low bandwidth efficiently, reducing user handset&#8217;s power consumption, and also using peer-to-peer communication system where possible.</p>
+<p>&nbsp;</p>
+<h3><strong>Popular Communication Protocols:</strong></h3>
+<p>TCP and UDP are the most commonly used ones.</p>
+<p>TCP provides a reliable connection and is used by the majority of current Internet applications. TCP, besides being responsible for error checking and correcting, is also responsible for controlling the speed at which this data is sent. TCP is capable of detecting congestion in the network and will back off transmission speed when congestion occurs. These features protect the network from congestion collapse. As TCP provides features such as congestion control, it would be the preferred protocol to use. Unfortunately due to the fact that TCP is a reliable service, delays will be introduced whenever a bit error or packet loss occurs. This delay is caused by retransmission of the broken packet, along with any successive packets that may have already been sent. This can be a large source of jitter. TCP uses a combination of four algorithms to provide congestion control, slow start, and congestion avoidance, fast retransmit and fast recovery. These algorithms all use packet loss as an indication of congestion, and all alter the number of packets TCP will send before waiting for acknowledgments of those packets. These alterations affect the bandwidth available and also change delays seen on a link, providing another source of jitter. Combined, TCP raises jitter to an unacceptable level rendering TCP unusable for real-time services. And also affects handset&#8217;s power consumption.</p>
+<p>UDP is a thin layer on top of IP that provides a way to distinguish among multiple programs running on a single machine. UDP also inherits all of the properties of IP that TCP attempts to hide. UDP is therefore also a packet based connectionless, best-effort service. It is up to the application to split data into packets, and provide any necessary error checking that is required. Because of this, UDP allows the fastest and most simple way of transmitting data to the receiver. There is no interference in the stream of data that can be possibly avoided. This provides the way for an application to get as close to meeting real-time constraints as possible. UDP however provides no congestion control systems. A congested link that is only running TCP will be approximately fair to all users. When UDP data is introduced into this link, there is no requirement for the UDP data rates to back off, forcing the remaining TCP connections to back off even further.</p>
+<p>&nbsp;</p>
+<h3><b>What is RUDP?</b></h3>
+<p>In summary, TCP is easy because it works in all cases, but it is less efficient because of that. On the other hand, UDP either needs its applications to be resilient to loss or the application developer needs to write in a system for ensuring that missing/corrupted packets are retransmitted. And such systems are in effect proprietary RUDP. RUDP is used in many famous projects, such as Google&#8217;s QUIC and WebRTC.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="wp-image-10248 size-full aligncenter" src="/wp-content/uploads/2022/08/What-is-RUDP.png" alt="What is RUDP" width="848" height="448" srcset="/wp-content/uploads/2022/08/What-is-RUDP.png 848w, /wp-content/uploads/2022/08/What-is-RUDP-480x254.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 848px, 100vw" /></p>
+<p style="text-align: center;"><strong><em><u>Diagram: &#8211; What is RUDP?</u></em></strong></p>
+<p>&nbsp;</p>
+<h3><strong>Why RUDP?</strong></h3>
+<p>Now we will take a look how RUDP can solve <strong>Latencies in Network Games.</strong></p>
+<p>One of the major problems in network games has been that of latency (lagging) that game<br />
+technology researchers are still tackling. Latency largely affects user satisfaction and it is often caused by insufficient hardware capacity or the internet speed that the user is employing. Even though online games are becoming more complex and the number of participants in these games is increasing continuously, users cannot properly deal with the requirements to play these games, as system upgrades and subscription changes to a higher speed internet service are costly. Instead of passing such a burden on to the users, the game companies should instead invest in providing an improved communication algorithm.</p>
+<p>When RUDP is ideally implemented, it is possible to distinguish between the information essential and non-essential for playing games even if it has been lost. Also, the essential information can be distinguished into the cases where its order is guaranteed or unguaranteed. Actually, since the amount and the frequency of these non-essential packets being lost during<br />
+communications are low, they can be effective when they are used appropriately. The data which is to be transmitted repeatedly can be renewed/updated even if it is lost and the information which does not largely affect the visual component (e.g., the movement of an unnoticeable character at the edge of the screen, etc.) should be utilized more actively.</p>
+<p>Unlike TCP, it is possible that the delay caused by momentary packet error in the network (latency) can be reduced a little. For instance, supposing that the information (low-reliability + no order) of the characters A, B, and C have died in sequence has been transmitted by the server, it will not be so strange in the game that the characters B and C would die first followed by A when the information is used regardless of its credibility and order. In the case where TCP is used, the information of A will be retransmitted first and all the characters will die later. In other words, if the process is implemented with TCP only, the delay will not only occur for B and C but also for all the actions taking place after their death. Actually, UDP can be used widely in games as it has fewer constraints between the personal networks.</p>
+<p>Meanwhile, RUDP is introducing the concept ‘Reliable state’ in addition to 3 data types.<br />
+For example, when the state has been changed as A → B → C, any re-transmission request will<br />
+not be requested even when only A has been received followed by C, skipping B. Therefore, RUDP is optimized for making the most of its characteristics of maintaining the latest information with reliability while maintaining the main concept of the game.</p>
+<p>&nbsp;</p>
+<p><img decoding="async" class="wp-image-10249 size-full aligncenter" src="/wp-content/uploads/2022/08/RUDP-Work-Flow.png" alt="RUDP Work Flow" width="758" height="544" srcset="/wp-content/uploads/2022/08/RUDP-Work-Flow.png 758w, /wp-content/uploads/2022/08/RUDP-Work-Flow-480x344.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 758px, 100vw" /></p>
+<p style="text-align: center;"><strong><em><u>Diagram: &#8211; RUDP Work Flow</u></em></strong></p>
+<p>&nbsp;</p>
+<p>The game companies and their researchers are still dealing with one of the major issues in their gaming software, the latency or the lagging. A variety of factors (e.g., hardware capacities, internet connections, etc.) are involved in this issue and its effect is growing larger as the online games are becoming more complex and sophisticated allowing more participants to join them. Although the game companies encourage or recommend the users to upgrade their systems or change internet service providers to solve the problem, they still need to consider the situation where their customers would not be able to afford costly upgrades or move to an expensive internet service. This will definitely affect their sales policy so that they are consistently looking for a more efficient way of stabilizing the gaming speed without actually forcing the customers to make changes. One of the major problems involved with gaming speed has been the communication algorithm, and the communication protocol in particular.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/can-udp-be-made-reliable/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>SQL Server Database Source Control using Visual Studio: Git</title>
+		<link>/blog/sql-server-database-source-control-using-visual-studio-git/</link>
+					<comments>/blog/sql-server-database-source-control-using-visual-studio-git/#respond</comments>
+		
+		<dc:creator><![CDATA[Khairul Alam]]></dc:creator>
+		<pubDate>Mon, 22 Aug 2022 15:35:25 +0000</pubDate>
+				<category><![CDATA[Git]]></category>
+		<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[git]]></category>
+		<category><![CDATA[visual studio]]></category>
+		<guid isPermaLink="false">/?p=10213</guid>
+
+					<description><![CDATA[In this brief article, we will see how to setup SQL Server Database Source Control using Visual Studio step by step &#8212; 1. Create a new repository to GitHub 2. Clone the repository to local directory 3. Create a new Sql Server Database project inside the repository 4. Right click on the project -&#62; Import -&#62; [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p><span class="TextRun SCXW47672020 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW47672020 BCX0">In this brief </span></span><span class="TextRun SCXW47672020 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW47672020 BCX0">article, we will see how to setup SQL Server Database Source Control using Visual Studio step by step &#8212; </span></span></p>
+<p><span class="TextRun SCXW154446793 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW154446793 BCX0"><strong>1. Create a new repository to GitHub</strong><br />
+<img decoding="async" class="aligncenter size-full wp-image-10215" src="/wp-content/uploads/2022/08/1.-create-new-repo.png" alt="1. create new repo SQL Server Database Source Control using Visual Studio: Git" width="1957" height="1108" srcset="/wp-content/uploads/2022/08/1.-create-new-repo.png 1957w, /wp-content/uploads/2022/08/1.-create-new-repo-1280x725.png 1280w, /wp-content/uploads/2022/08/1.-create-new-repo-980x555.png 980w, /wp-content/uploads/2022/08/1.-create-new-repo-480x272.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1957px, 100vw"><strong><span class="TextRun SCXW64228351 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW64228351 BCX0">2. Clone the repository to local directory<br />
+</span></span>3. <span class="NormalTextRun SCXW148413887 BCX0">Create a new </span><span class="NormalTextRun SpellingErrorV2Themed SCXW148413887 BCX0">Sql</span><span class="NormalTextRun SCXW148413887 BCX0"> Server Database project inside the repository<br />
+<img decoding="async" class="aligncenter size-full wp-image-10233" src="/wp-content/uploads/2022/08/3.-select-sql-server-database-project-1.png" alt="3. select sql server database project 1 SQL Server Database Source Control using Visual Studio: Git" width="1917" height="1040" srcset="/wp-content/uploads/2022/08/3.-select-sql-server-database-project-1.png 1917w, /wp-content/uploads/2022/08/3.-select-sql-server-database-project-1-1280x694.png 1280w, /wp-content/uploads/2022/08/3.-select-sql-server-database-project-1-980x532.png 980w, /wp-content/uploads/2022/08/3.-select-sql-server-database-project-1-480x260.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1917px, 100vw"><br />
+4. <span class="NormalTextRun SCXW83752731 BCX0">Right click on the project -&gt; Import -&gt; Select Database or Data-tier Application(*.</span><span class="NormalTextRun SpellingErrorV2Themed SCXW83752731 BCX0">dacpac</span><span class="NormalTextRun SCXW83752731 BCX0">)</span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10217" src="/wp-content/uploads/2022/08/4.-import-database-data-tier.png" alt="4. import database data tier SQL Server Database Source Control using Visual Studio: Git" width="1920" height="1200" srcset="/wp-content/uploads/2022/08/4.-import-database-data-tier.png 1920w, /wp-content/uploads/2022/08/4.-import-database-data-tier-1280x800.png 1280w, /wp-content/uploads/2022/08/4.-import-database-data-tier-980x613.png 980w, /wp-content/uploads/2022/08/4.-import-database-data-tier-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><span class="NormalTextRun SCXW83752731 BCX0">For Data-tier Application(*.</span><span class="NormalTextRun SpellingErrorV2Themed SCXW83752731 BCX0">dacpac</span><span class="NormalTextRun SCXW83752731 BCX0">) option, Select/Browse the file then click on ’Start’.<br />
+<img decoding="async" class="aligncenter size-full wp-image-10218" src="/wp-content/uploads/2022/08/4.1.-import-data-tier.png" alt="4.1. import data tier SQL Server Database Source Control using Visual Studio: Git" width="1919" height="1047" srcset="/wp-content/uploads/2022/08/4.1.-import-data-tier.png 1919w, /wp-content/uploads/2022/08/4.1.-import-data-tier-1280x698.png 1280w, /wp-content/uploads/2022/08/4.1.-import-data-tier-980x535.png 980w, /wp-content/uploads/2022/08/4.1.-import-data-tier-480x262.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw">For Database option, Select Connection of the Source <span class="NormalTextRun SpellingErrorV2Themed SCXW83752731 BCX0">Sql</span> Server Database then click on ’Start’.<br />
+</span></span></strong><span class="NormalTextRun SCXW148413887 BCX0"><span class="NormalTextRun SCXW83752731 BCX0">[But this option is not available in Visual Studio Community Edition]<br />
+<img decoding="async" class="aligncenter size-full wp-image-10219" src="/wp-content/uploads/2022/08/4.2.-import-database.png" alt="4.2. import database SQL Server Database Source Control using Visual Studio: Git" width="1919" height="1040" srcset="/wp-content/uploads/2022/08/4.2.-import-database.png 1919w, /wp-content/uploads/2022/08/4.2.-import-database-1280x694.png 1280w, /wp-content/uploads/2022/08/4.2.-import-database-980x531.png 980w, /wp-content/uploads/2022/08/4.2.-import-database-480x260.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1919px, 100vw"><br />
+<img decoding="async" class="aligncenter size-full wp-image-10220" src="/wp-content/uploads/2022/08/4.3.-finish.png" alt="4.3. finish SQL Server Database Source Control using Visual Studio: Git" width="1915" height="1041" srcset="/wp-content/uploads/2022/08/4.3.-finish.png 1915w, /wp-content/uploads/2022/08/4.3.-finish-1280x696.png 1280w, /wp-content/uploads/2022/08/4.3.-finish-980x533.png 980w, /wp-content/uploads/2022/08/4.3.-finish-480x261.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1915px, 100vw"><br />
+</span></span><strong><span class="NormalTextRun SCXW148413887 BCX0">5. <span class="NormalTextRun SCXW30582366 BCX0">Now update a Stored procedure (Add comment) from source </span><span class="NormalTextRun SpellingErrorV2Themed SCXW30582366 BCX0">Sql</span><span class="NormalTextRun SCXW30582366 BCX0"> Server Database as well as create a new table for testing purpose.<br />
+<img decoding="async" class="aligncenter size-full wp-image-10221" src="/wp-content/uploads/2022/08/5.-update-source-database.png" alt="5. update source database SQL Server Database Source Control using Visual Studio: Git" width="1914" height="1140" srcset="/wp-content/uploads/2022/08/5.-update-source-database.png 1914w, /wp-content/uploads/2022/08/5.-update-source-database-1280x762.png 1280w, /wp-content/uploads/2022/08/5.-update-source-database-980x584.png 980w, /wp-content/uploads/2022/08/5.-update-source-database-480x286.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1914px, 100vw"><br />
+6. <span class="NormalTextRun SCXW260703710 BCX0">To compare the Source Database and our target project, Right click on the project name the </span><span class="NormalTextRun ContextualSpellingAndGrammarErrorV2Themed SCXW260703710 BCX0">select  ‘</span><span class="NormalTextRun SCXW260703710 BCX0">Schema Compare’</span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10222" src="/wp-content/uploads/2022/08/6.-compare-schema.png" alt="6. compare schema SQL Server Database Source Control using Visual Studio: Git" width="1920" height="1200" srcset="/wp-content/uploads/2022/08/6.-compare-schema.png 1920w, /wp-content/uploads/2022/08/6.-compare-schema-1280x800.png 1280w, /wp-content/uploads/2022/08/6.-compare-schema-980x613.png 980w, /wp-content/uploads/2022/08/6.-compare-schema-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><br />
+7. <span class="TextRun SCXW133696771 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW133696771 BCX0">Select Source Database and Target Project then click on ‘Compare Button’</span></span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10223" src="/wp-content/uploads/2022/08/7.-compare.png" alt="7. compare SQL Server Database Source Control using Visual Studio: Git" width="1920" height="1200" srcset="/wp-content/uploads/2022/08/7.-compare.png 1920w, /wp-content/uploads/2022/08/7.-compare-1280x800.png 1280w, /wp-content/uploads/2022/08/7.-compare-980x613.png 980w, /wp-content/uploads/2022/08/7.-compare-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1920px, 100vw"><br />
+8. <span class="TextRun SCXW202309690 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW202309690 BCX0">Check the changes</span></span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10224" src="/wp-content/uploads/2022/08/8.1.-check-changes.png" alt="8.1. check changes SQL Server Database Source Control using Visual Studio: Git" width="2255" height="1226" srcset="/wp-content/uploads/2022/08/8.1.-check-changes.png 2255w, /wp-content/uploads/2022/08/8.1.-check-changes-1280x696.png 1280w, /wp-content/uploads/2022/08/8.1.-check-changes-980x533.png 980w, /wp-content/uploads/2022/08/8.1.-check-changes-480x261.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2255px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-10225" src="/wp-content/uploads/2022/08/8.2.-check-changes.png" alt="8.2. check changes SQL Server Database Source Control using Visual Studio: Git" width="2260" height="1222" srcset="/wp-content/uploads/2022/08/8.2.-check-changes.png 2260w, /wp-content/uploads/2022/08/8.2.-check-changes-1280x692.png 1280w, /wp-content/uploads/2022/08/8.2.-check-changes-980x530.png 980w, /wp-content/uploads/2022/08/8.2.-check-changes-480x260.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2260px, 100vw"><br />
+9. <span class="TextRun SCXW183378634 BCX0" lang="EN-US" xml:lang="EN-US" data-contrast="auto"><span class="NormalTextRun SCXW183378634 BCX0">To update the Target Project/Source Control click on ‘Update’ </span></span><br />
+<img decoding="async" class="aligncenter size-full wp-image-10226" src="/wp-content/uploads/2022/08/9.1.-update-target.png" alt="9.1. update target SQL Server Database Source Control using Visual Studio: Git" width="2257" height="1411" srcset="/wp-content/uploads/2022/08/9.1.-update-target.png 2257w, /wp-content/uploads/2022/08/9.1.-update-target-1280x800.png 1280w, /wp-content/uploads/2022/08/9.1.-update-target-980x613.png 980w, /wp-content/uploads/2022/08/9.1.-update-target-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2257px, 100vw"><img decoding="async" class="aligncenter size-full wp-image-10227" src="/wp-content/uploads/2022/08/9.2.-update-target.png" alt="9.2. update target SQL Server Database Source Control using Visual Studio: Git" width="2242" height="1344" srcset="/wp-content/uploads/2022/08/9.2.-update-target.png 2242w, /wp-content/uploads/2022/08/9.2.-update-target-1280x767.png 1280w, /wp-content/uploads/2022/08/9.2.-update-target-980x587.png 980w, /wp-content/uploads/2022/08/9.2.-update-target-480x288.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2242px, 100vw"><br />
+10. <span class="NormalTextRun SCXW37175716 BCX0">Commit &amp; Push the </span><span class="NormalTextRun SCXW37175716 BCX0">changes.<br />
+<img decoding="async" class="aligncenter size-full wp-image-10228" src="/wp-content/uploads/2022/08/10.-final-updated-source-controll.png" alt="10. final updated source controll SQL Server Database Source Control using Visual Studio: Git" width="2257" height="1411" srcset="/wp-content/uploads/2022/08/10.-final-updated-source-controll.png 2257w, /wp-content/uploads/2022/08/10.-final-updated-source-controll-1280x800.png 1280w, /wp-content/uploads/2022/08/10.-final-updated-source-controll-980x613.png 980w, /wp-content/uploads/2022/08/10.-final-updated-source-controll-480x300.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 2257px, 100vw"><br />
+<img decoding="async" class="aligncenter size-full wp-image-10236" src="/wp-content/uploads/2022/08/10.1.-final-updated-source-controll.png" alt="10.1. final updated source controll SQL Server Database Source Control using Visual Studio: Git" width="1844" height="980" srcset="/wp-content/uploads/2022/08/10.1.-final-updated-source-controll.png 1844w, /wp-content/uploads/2022/08/10.1.-final-updated-source-controll-1280x680.png 1280w, /wp-content/uploads/2022/08/10.1.-final-updated-source-controll-980x521.png 980w, /wp-content/uploads/2022/08/10.1.-final-updated-source-controll-480x255.png 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) and (max-width: 980px) 980px, (min-width: 981px) and (max-width: 1280px) 1280px, (min-width: 1281px) 1844px, 100vw"><br />
+</span></span></span></strong></span></span>Thanks&#8230;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/sql-server-database-source-control-using-visual-studio-git/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>What is Docker</title>
+		<link>/blog/what-is-docker/</link>
+					<comments>/blog/what-is-docker/#respond</comments>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Fri, 12 Aug 2022 12:04:02 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Personal]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[container]]></category>
+		<category><![CDATA[devops]]></category>
+		<category><![CDATA[docker]]></category>
+		<category><![CDATA[image]]></category>
+		<guid isPermaLink="false">/?p=10018</guid>
+
+					<description><![CDATA[Docker is an open-source, container technology that allows developers and sysadmins to package applications so that they can be easily moved from one environment to another. This includes their dependencies, libraries, the code itself, and more. Docker&#8217;s use cases are limitless. It can be used as a way to deploy web applications, set up development [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p class="maps-to-line">Docker is an open-source, container technology that allows developers and sysadmins to package applications so that they can be easily moved from one environment to another. This includes their dependencies, libraries, the code itself, and more.</p>
+<p class="maps-to-line">Docker&#8217;s use cases are limitless. It can be used as a way to deploy web applications, set up development environments, or build libraries of pre-tested components in a reliable and repeatable fashion.</p>
+<p class="maps-to-line">As software engineers, We are assigned a task that solves a specific client-related business problem in the IT world. As we try to solve that specific problem, we always use specific tools and technology that will solve that problem efficiently and as quickly as possible. As our software team grows and also each one of us like different OS(Operating System) preferences like someone like MacOS, others like Linux, Many of us like Windows, etc. Now when a new member joins our team, we provide him with a Personal Computer(PC) which he will use to work on. Another member of the team will provide him with the latest project repository so that he can easily set up the project on his new pc to work on. Most of the target focuses on a new team member, and how quickly he/she can contribute to that project. To do so the project should take a minimal amount of time to set up so our new members can start contributing to the project. This same problem occurs when we try to deploy our project solution to the dev, staging, or production server.</p>
+<p class="maps-to-line">You may say, what the hell? What that story above mentioned, relates to <strong>Docker</strong>. Let&#8217;s first go through the official definition of docker then we will explain it in simple terms</p>
+<blockquote class="maps-to-line"><p>What is Docker? What problem is it trying to solve?</p></blockquote>
+<p class="maps-to-line">Also, let&#8217;s try to relate how the above story relates to Docker.</p>
+<h2 id="official-definition" class="maps-to-line">Official Definition</h2>
+<blockquote class="maps-to-line"><p><strong>Docker</strong> is an open platform for developing, shipping, and running applications. Docker enables you to separate your applications from your infrastructure so you can deliver software quickly. With Docker, you can manage your infrastructure in the same ways you manage your applications. By taking advantage of Docker’s methodologies for shipping, testing, and deploying code quickly, you can significantly reduce the delay between writing code and running it in production.</p></blockquote>
+<p class="maps-to-line">The official definition isn&#8217;t that hard to understand, right?</p>
+<p class="maps-to-line">Simplified Definition</p>
+<blockquote class="maps-to-line"><p><strong>Docker</strong> is a tool to automate the deployment of an application as a lightweight container so that the application can work efficiently in different environments.</p></blockquote>
+<blockquote class="maps-to-line"><p>Let&#8217;s try to relate Docker with Our example above.</p></blockquote>
+<p class="maps-to-line">As software Engineers, We always heard almost every day that, a project working perfectly on my machine may be some issue with your(another teammate&#8217;s) pc or the server pc and the blame game starts.</p>
+<p class="maps-to-line">This is what Docker trying to solve,</p>
+<blockquote class="maps-to-line"><p>This works on my machine&#8230;</p></blockquote>
+<p class="maps-to-line">Every single project runs on every machine without any problem with minimal dependencies to set up. Project code works fine on the developer machine but as soon as it is deployed or moved to a new teammate&#8217;s pc, it doesn&#8217;t work like it was expected.</p>
+<blockquote class="maps-to-line"><p>Docker is like a <strong>blank box</strong> when you as a developer put your files moves into a new place and it works no matter where you place that box.</p></blockquote>
+<p class="maps-to-line">This blank box where you put your code, in docker term, it&#8217;s called <strong>Containers</strong>. These containers are the absolute heart of the docker. when every time you take these containers it&#8217;s going to work absolutely and exactly like how it worked on your machine. Docker also allows us to publish this as an image to the public or private registry like docker hub, AWS ECR, Harbor, etc. So that others can also use your code on other projects as if you run on your pc.</p>
+<p class="maps-to-line">A simple example can be given like these, Suppose you need an older version of MySQL for a particular project and your pc has the latest version of MySQL so to install the other version of MySQL you need to stop your latest MySQL service and then install the older which is tedious most of the time. But using docker it will take a single command to install the required version of MySQL without stopping your latest MySQL version.</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="bash">docker run --name mymysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:latest -p 3310:3306</pre>
+<pre class="hljs"><code>
+</code>Let's break down the command for better understanding...</pre>
+</div>
+<p class="maps-to-line"><code class="inline-code">docker</code>: represents the executable</p>
+<p class="maps-to-line"><code class="inline-code">run</code>: this is a subcommand. There&#8217;re lots of other commands. To check we can use <code class="inline-code">docker --help</code>.</p>
+<p class="maps-to-line"><code class="inline-code">--name</code>: will set a custom name to the container. If not provided it will set a random name for the container.</p>
+<p class="maps-to-line"><code class="inline-code">-e</code>: represents environment variables. if we have multiple environment variables then we have to add <code class="inline-code">-e</code> for each.</p>
+<p class="maps-to-line"><code class="inline-code">-d</code>: means to run the container as detached mode.</p>
+<p class="maps-to-line"><code class="inline-code">mysql:latest</code>: is the image(a set of instructions) itself which will be used to generate the container.</p>
+<p class="maps-to-line"><code class="inline-code">-p</code>: refer to <code class="inline-code">port</code>. we always write like this <code class="inline-code">3310:3306</code> which actually means <code class="inline-code">&lt;local_pc_port&gt;:&lt;container_port&gt;</code>. Also if your PC port and the container port are the same then <code class="inline-code">3306</code> we can exclude the <code class="inline-code">:3306</code>.</p>
+<blockquote class="maps-to-line">
+<h5 id="noteto-remember-this-i-always-think-like-this-ports-always-start-from-your-local-pc-port-to-the-docker-container-port">Note:To remember this, I always think like this, ports always start from your local pc port to the docker container port.</h5>
+</blockquote>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/what-is-docker" rel="nofollow noopener" target="_blank">[Personal blog]</a></p>
+<blockquote>
+<h4>You can read my other blog-posts <a href="https://rezwanul-haque.hashnode.dev/" rel="nofollow noopener" target="_blank">[Here]</a></h4>
+</blockquote>
+<p class="maps-to-line">In Conclusion, Docker is often used as a “development tool” by developers who want to ensure that they have required dependencies in the development environment without including them in their codebase or having to learn about those dependencies on each new machine that they use for development.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/what-is-docker/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>What is REST API?</title>
+		<link>/blog/what-is-rest-api/</link>
+					<comments>/blog/what-is-rest-api/#respond</comments>
+		
+		<dc:creator><![CDATA[Rezwanul Haque]]></dc:creator>
+		<pubDate>Wed, 10 Aug 2022 06:42:37 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[Personal]]></category>
+		<category><![CDATA[Technology]]></category>
+		<category><![CDATA[api]]></category>
+		<category><![CDATA[Basics]]></category>
+		<category><![CDATA[Http]]></category>
+		<category><![CDATA[microservices]]></category>
+		<category><![CDATA[REST]]></category>
+		<guid isPermaLink="false">/?p=9944</guid>
+
+					<description><![CDATA[Let&#8217;s go through an example to understand what a REST API is. Let&#8217;s say that we work for a cloud kitchen and we want to build a web application that can give you how much stock particular items suppose ice cream flavors are available and the worker working on the physical location of the kitchen [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p class="maps-to-line">Let&#8217;s go through an example to understand what a REST API is. Let&#8217;s say that we work for a cloud kitchen and we want to build a web application that can give you how much stock particular items suppose ice cream flavors are available and the worker working on the physical location of the kitchen makes updates to those flavors. So the question arises how do we do this?</p>
+<blockquote class="maps-to-line">
+<h3 id="the-answer-will-be-with-a-rest-api">The answer will be with a REST API.</h3>
+</blockquote>
+<p class="maps-to-line">Most of the application today uses 3-tier architecture. Some complex systems can even have an n-tier architecture which we called <code class="inline-code">microservices</code>, which will be explained in another post in the future.<br />
+So In 3-tier architecture&#8230;</p>
+<ul>
+<li class="maps-to-line">Backend (Application tier)</li>
+<li class="maps-to-line">Frontend (Presentation tier)</li>
+<li class="maps-to-line">Database (Data tier)</li>
+</ul>
+<p class="maps-to-line">So we have our frontend app or web page communicate with a cloud-based backend server via a REST API. We use the term REST API whenever our Frontend app communicates with our Backend server. So Let&#8217;s jump into what exactly a REST API is.</p>
+<h3 id="what-does-rest-stand-for" class="maps-to-line">What does <code class="inline-code">REST</code> stand for?</h3>
+<blockquote class="maps-to-line"><p>REST &#8211; Representational State Transfer.</p></blockquote>
+<p class="maps-to-line">This is a type of web communications protocol that allows browsers to access data from a server using the HTTP or HTTPS protocols. RESTful architecture is an approach to designing and building software systems such as websites, mobile applications, and web services that use HTTP methods to manipulate resources residing on the server. RESTful APIs are becoming more popular because they are lightweight, easy to use and consume, and easy to read and understand. They allow for easier integration with front-end developers&#8217; code. A RESTful API can be accessed via different devices such as computers and smartphones by using a library or framework known as a client library.</p>
+<p class="maps-to-line">It&#8217;s a standardized software architecture style which is a specific type of API that&#8217;s an industry known and used.</p>
+<p class="maps-to-line">The first thing that we have to know about REST API is, that they&#8217;re all about communications. So this is how our frontend application communicates with our backend server. Sometimes we also heard RESTFUL Web service, which means is when a service that uses REST APIs to communicate. Let&#8217;s go through some of the benefits of REST API</p>
+<ol>
+<li class="maps-to-line"><strong>Simple/Standardized</strong> &#8211; approach to communication. We don&#8217;t have to worry about how to format our data or how to format each request coming to our system.</li>
+<li class="maps-to-line"><strong>Scale</strong> &#8211; As our service grows in complexity, we can make modifications to handle a large number of requests</li>
+<li class="maps-to-line"><strong>Stateless</strong> &#8211; we don&#8217;t have to worry about what data is in which state they&#8217;re in and keep track of that across client and server.</li>
+<li class="maps-to-line"><strong>High Performance</strong> &#8211; even though our service gets more complex the performance remains very high.</li>
+<li class="maps-to-line"><strong>Cache</strong> &#8211; It supports caching too.</li>
+</ol>
+<p class="maps-to-line">Let&#8217;s back to our example again, for the cloud kitchen shop, a REST API would look like the below&#8230;</p>
+<p class="maps-to-line">We have an endpoint that might look something like this: <code class="inline-code">https://api.littlegiants.io/v1/items</code><br />
+So <code class="inline-code">api.littlegiants.io</code> is our DNS(Domain Name Server) for our backend application and the <code class="inline-code">api</code> part signifies it&#8217;s an API subdomain and <code class="inline-code">v1</code> means it&#8217;s the version one of that API and <code class="inline-code">items</code> represents a <code class="inline-code">resource</code>. So, this signifies that we&#8217;re working with the <code class="inline-code">items</code> resource in this REST API.</p>
+<p class="maps-to-line">In our example, we can build some blocks to define REST API.</p>
+<p class="maps-to-line">First, we have to be able to send a request to the server or a specific service in our case cloud kitchen service. So, for a REST API call <code class="inline-code">request</code> we need to have some blocks.</p>
+<p class="maps-to-line">Lets break <code class="inline-code">Request</code> &amp; <code class="inline-code">Response</code> apart a little bit. Let&#8217;s say <code class="inline-code">Request</code> as a big black box.<br />
+First things first, let&#8217;s define the type of things that we might want to do with a REST API. What actions or verbs would we want to use when working with one?<br />
+As a developer, we have all heard of <code class="inline-code">CRUD</code> &#8211; what does <code class="inline-code">CRUD</code> stands for?</p>
+<ul>
+<li class="maps-to-line">Create</li>
+<li class="maps-to-line">Read</li>
+<li class="maps-to-line">Update</li>
+<li class="maps-to-line">Delete</li>
+</ul>
+<p class="maps-to-line">So what&#8217;ll be the equivalent of <code class="inline-code">Create</code> in an HTTP method? Well, it&#8217;s <code class="inline-code">POST</code>. How about <code class="inline-code">Read</code> &#8211; it&#8217;s <code class="inline-code">GET</code>. An update would be <code class="inline-code">PUT</code>, Also Note if you want a partial update we use <code class="inline-code">PATCH</code> and for <code class="inline-code">DELETE</code> we use <code class="inline-code">DELETE</code> HTTP methods.</p>
+<p class="maps-to-line">The <code class="inline-code">Request</code> itself has some blocks which will be explained below&#8230;</p>
+<ol>
+<li class="maps-to-line"><strong>Operation</strong> &#8211; This could be HTTP methods like POST, GET, PUT, PATCH, etc. In our case, we&#8217;ll use PATCH to update the item stock in our application.</li>
+<li class="maps-to-line"><strong>Parameters/Body</strong> &#8211; Although this is Optional. In our case, we send a JSON object as a body stating the current stock of the item in our system.</li>
+<li class="maps-to-line"><strong>Endpoint</strong> &#8211; This part will be exposed by the cloud kitchen service where we need to send the resource&#8217;s current state to the endpoint. <code class="inline-code">https://api.littlegiants.io/v1/items</code></li>
+<li class="maps-to-line"><strong>Headers</strong> &#8211; This is a special part of a REST API request which might have things like an API key or some authentication data.</li>
+</ol>
+<p class="maps-to-line">The above four points act as a request in a REST API call.</p>
+<p class="maps-to-line">So now the question is what will be the response of the REST API call? Typically it&#8217;s some form of raw data, maybe JSON(Which Stands for Javascript Object Notation) or maybe XML(Extended Markup language), etc. In JSON it might look like below</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="json">{
+    "message": "items updated"
+}</pre>
+<p>&nbsp;</p>
+</div>
+<p class="maps-to-line">Let&#8217;s look at a few different scenarios that might happen with our cloud kitchen shop. So let&#8217;s say that we want to display what&#8217;s products we&#8217;re selling in the shop. For that, we have to get the items we have in the shop. From the <code class="inline-code">Request</code> point of view how it looks like?<br />
+Well, we have the <code class="inline-code">GET</code> HTTP method as the operation, the endpoint is <code class="inline-code">https://api.littlegiants.io/v1/items</code>, Also parameters can be set to get a single item in the endpoint, headers are some <code class="inline-code">Authorization: Bearer access_token</code> for authenticated endpoints.<br />
+In response, we&#8217;ll get a list of item resources.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">{
+    [
+        {
+            "item_id": 1,
+            "name": "Burger",
+            "price": 10,
+            "stock": 5
+        },
+        {
+            "item_id": 2,
+            "name": "Sandwitch",
+            "price": 8,
+            "stock": 3
+        }
+    ]
+}</pre>
+<p class="maps-to-line">So we get some items like burgers, sandwiches, etc. In our shop let&#8217;s say a Sandwich is so popular that it runs out for the day and the store is scrambling and they want to update the stock of that item. So let&#8217;s say they want to update the Sandwich stock so that they can sell Sandwich.<br />
+Well, we have the <code class="inline-code">PUT</code> HTTP method as the operation, the endpoint is <code class="inline-code">https://api.littlegiants.io/v1/items/2</code>, Also parameters 2 represent the Sandwich item in the endpoint also in the body we add the latest stock value as json,</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="json">{
+    "name": "Sandwitch",
+    "price": 8,
+    "stock": 10
+}</pre>
+<p class="maps-to-line">headers are some <code class="inline-code">Authorization: Bearer access_token</code> for authenticated endpoints.</p>
+<p class="maps-to-line">Let&#8217;s say we want to add a new item in the store like <code class="inline-code">Ice cream</code>. Well, we have the <code class="inline-code">POST</code> HTTP method as the operation, the endpoint is <code class="inline-code">https://api.littlegiants.io/v1/items</code>, As body, we add the latest item value as json,</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="json">{
+    "name": "Ice Cream",
+    "price": 4,
+    "stock": 10
+}</pre>
+</div>
+<p class="maps-to-line">headers are some <code class="inline-code">Authorization: Bearer access_token</code> for authenticated endpoints.<br />
+In response, we see a response like below</p>
+<div class="joplin-editable">
+<pre class="EnlighterJSRAW" data-enlighter-language="json">{
+    "item_id": 3
+    "name": "Ice Cream",
+    "price": 4,
+    "stock": 10
+}</pre>
+</div>
+<p class="maps-to-line">Let&#8217;s say some item is not selling at all in the shop so the store owner decided to remove it from the store. Well, we have the <code class="inline-code">DELETE</code> HTTP method as the operation, the endpoint is <code class="inline-code">https://api.littlegiants.io/v1/items/3</code>, Also parameters 3 represent the item in the endpoint, headers are some <code class="inline-code">Authorization: Bearer access_token</code> for authenticated endpoints.</p>
+<p>If you like, you can read the same article on my <a href="https://rezwanul-haque.hashnode.dev/what-is-rest-api" rel="nofollow noopener" target="_blank">[Personal blog]</a></p>
+<blockquote>
+<h4>You can read my other blog-posts <a href="https://rezwanul-haque.hashnode.dev/" rel="nofollow noopener" target="_blank">[Here]</a></h4>
+</blockquote>
+<p class="maps-to-line">In Conclusion, We&#8217;re hoping that this clarifies what exactly is a REST API. What are some of the benefits? What&#8217;s a real-world example look like and how are the REST APIs fundamental to cloud-based application development?</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/what-is-rest-api/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

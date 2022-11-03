@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>hirok.biswas &#8211; Vivasoft</title>
+	<atom:link href="/author/hirok-biswas/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>Top Software Company with Talented Geeks</description>
+	<lastBuildDate>Wed, 24 Aug 2022 13:01:41 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.1</generator>
+
+<image>
+	<url>/wp-content/uploads/2021/08/cropped-feb-icon-32x32.png</url>
+	<title>hirok.biswas &#8211; Vivasoft</title>
+	<link>/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>How and when to use sync.WaitGroup in Golang</title>
+		<link>/blog/how-and-when-to-use-sync-waitgroup-in-golang/</link>
+					<comments>/blog/how-and-when-to-use-sync-waitgroup-in-golang/#respond</comments>
+		
+		<dc:creator><![CDATA[hirok.biswas]]></dc:creator>
+		<pubDate>Mon, 22 Aug 2022 06:58:25 +0000</pubDate>
+				<category><![CDATA[Programming & Development]]></category>
+		<category><![CDATA[channels]]></category>
+		<category><![CDATA[golang]]></category>
+		<category><![CDATA[golang concurrency]]></category>
+		<category><![CDATA[golang waitgroup]]></category>
+		<guid isPermaLink="false">/?p=10198</guid>
+
+					<description><![CDATA[Golang is known for its first-class support for concurrency, or the ability for a program to deal with multiple things at once. Running code concurrently is becoming a more critical part of programming as computers move from running a single code stream faster to running more streams simultaneously. Goroutines solve the problem of running concurrent [&#8230;]]]></description>
+										<content:encoded><![CDATA[<p>Golang is known for its first-class support for concurrency, or the ability for a program to deal with multiple things at once. Running code concurrently is becoming a more critical part of programming as computers move from running a single code stream faster to running more streams simultaneously.</p>
+<p>Goroutines solve the problem of running concurrent code in a program, and channels solve the problem of communicating safely between concurrently running code.</p>
+<p>Read details concept of Goroutines and Channels <a href="/concurrency-in-go-goroutine-and-channels">Concurrency in GO 101 &#8211; goroutine and channels</a></p>
+<p>In that article, we looked at using channels in Go to get data from one concurrent operation to another. But we also ran across another concern: How do we know when all the concurrent operations are complete? One answer is that we can use<strong> sync.WaitGroup</strong>.</p>
+<h3></h3>
+<h3>Waitgroup</h3>
+<p>Allows you to block a specific code block to allow a set of goroutines to complete their executions.</p>
+<p>WaitGroup ships with 3 methods:</p>
+<ul>
+<li> <strong>wg.Add(int)</strong>: Increase the counter based on the parameter (generally &#8220;1&#8221;).</li>
+<li> <strong>wg.Wait()</strong>: Blocks the execution of code until the internal counter reduces to 0 value.</li>
+<li> <strong>wg.Done()</strong>: Decreases the count parameter in Add(int) by 1.</li>
+</ul>
+<h6>Example:</h6>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang" data-enlighter-theme="monokai">package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+var taskIDs = []int32{1, 2, 3}
+
+func main() {
+    var wg sync.WaitGroup
+    for _, taskID := range taskIDs {
+        wg.Add(1)
+        go performTask(&amp;wg, taskID)
+    }
+    // waiting until counter value reach to 0
+    wg.Wait()
+}
+
+func performTask(wg *sync.WaitGroup, taskID int32) {
+    defer wg.Done()
+    time.Sleep(3 * time.Second)
+    fmt.Println(taskID, " - Done")
+}</pre>
+<p><a href="https://go.dev/play/p/xsJANC2xQA7" rel="nofollow noopener" target="_blank">Run code here</a></p>
+<p>In the above example, we have simply initiated 3 goroutines (we can also initiate more goroutines as we want). Before initiating every goroutine <strong>wg.Add(1)</strong> increases the counter by <strong>1</strong>. From inside goroutine <strong>defer</strong> <strong>wg.Done()</strong> executes after all functionality is done and decreases the counter value by <strong>1</strong>. And finally <strong>wg.Wait()</strong> releases the main block when the counter value reached to <strong>0</strong>.<br />
+So, <strong>WaitGroup</strong> ensures the completion of all initiated goroutine&#8217;s execution.</p>
+<h3>When to use Waitgroup?</h3>
+<ul>
+<li>The major use case is to simply wait for a set of goroutines untill complete their execution.</li>
+<li>Another is to use along with channel(s) to achieve better outcomes.</li>
+</ul>
+<p>For a better explanation of 2nd use case let&#8217;s solve a real-world problem. Assume we have 7 order ids. using concurrency we have to collect successful order details of those orders.</p>
+<p>At First, we will go for channel approach to collect individual order details.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang" data-enlighter-theme="monokai">package main
+import (
+    "fmt"
+    "time"
+)
+
+var orderIDs = []int32{1, 2, 3, 4, 5, 6, 7}
+type order struct {
+    id   int32
+    time string
+}
+
+func main() {
+    var orders []order
+    ch := make(chan order)
+
+    for _, orderID := range orderIDs {
+        go getOrderDetails(ch, orderID)
+    }
+
+    // iterate over length of orderIDs and append orders
+    for i := 0; i &lt; len(orderIDs); i++ {
+        orders = append(orders, &lt;-ch)
+    }
+
+    fmt.Printf("collected orders: %v", orders)
+}
+
+func getOrderDetails(ch chan order, orderID int32) {
+    time.Sleep(3 * time.Second)
+    // details collection logic
+    orderDetails := order{id: orderID, time: time.Now().UTC().Format("15:04:05")}
+
+    ch &lt;- orderDetails
+}</pre>
+<p><a href="https://go.dev/play/p/84IHnwkVz5N" rel="nofollow noopener" target="_blank">Run code here</a></p>
+<p>Here, we have created an unbuffered channel <strong>ch</strong>. Every goroutine collects order details and sends data to the channel. Same time for collecting order details we have iterated over the length of expected order ids to receive order data one by one from the channel for every order ids. As far the program works fine as expected and the output is:</p>
+<h6>Output:</h6>
+<pre><code class="language-bash">collected orders: [{3 23:00:03} {1 23:00:03} {7 23:00:03} {4 23:00:03} {2 23:00:03} {6 23:00:03} {5 23:00:03}]</code></pre>
+<p>But, suppose one of our goroutine returns an error instead of sending order data to the channel. On the other hand, our channel is trying to receive data but data is not available in the channel. In this situation program will enter a <strong>deadlock</strong> situation. <a href="https://go.dev/play/p/TxofC0aqFpQ" rel="nofollow noopener" target="_blank">Try this scenario here</a></p>
+<p>Now we will combine <strong>channel</strong> and <strong>waitgroup</strong> to collect successful order data.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="golang" data-enlighter-theme="monokai">package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+var orderIDs = []int32{1, 2, 3, 4, 5, 6, 7}
+type order struct {
+    id   int32
+    time string
+}
+
+func main() {
+    var wg sync.WaitGroup
+    var orders []order
+
+    // create a buffered channel wit length of orderIDs
+    ch := make(chan order, len(orderIDs))
+
+    for _, orderID := range orderIDs {
+        wg.Add(1)
+        go getOrderDetails(ch, &amp;wg, orderID)
+    }
+    // here we wait until all jobs done
+    wg.Wait()
+    // closing channel after all job done
+    close(ch)
+
+    // iterate over available channel results
+    for v := range ch {
+        orders = append(orders, v)
+    }
+
+    fmt.Printf("collected orders: %v", orders)
+}
+
+func getOrderDetails(ch chan order, wg *sync.WaitGroup, orderID int32) {
+    defer wg.Done()
+
+    time.Sleep(3 * time.Second)
+    // details collection logic
+    orderDetails := order{id: orderID, time: time.Now().UTC().Format("15:04:05")}
+    
+    if orderID == 4 {
+        fmt.Println("Something went wrong")
+        return
+    }
+
+    ch &lt;- orderDetails
+}</pre>
+<p><a href="https://go.dev/play/p/XrptK2WGgFh" rel="nofollow noopener" target="_blank">Run code here</a></p>
+<p>Here we have created a buffered channel having max buffer size of orders ids length. From goroutine, order data will be sent to channel(not necessary all order data will be sent, in case of error). Here for order id <strong>4</strong> no data is sent to the channel but <strong>wg.Done()</strong> executed as expected. After <strong>wg.Wait()</strong> reached its ends, we have closed the channel as all goroutine&#8217;s job done. Then from the channel, we have simply collected available order data by iterating over available channel results.</p>
+<p>In our case, there were <strong>7</strong> incoming order ids and we finally got <strong>6</strong> successful orders detail from the channel without any error.</p>
+<h6>Output:</h6>
+<pre><code class="language-bash">collected orders: [{5 23:00:00} {6 23:00:00} {3 23:00:00} {1 23:00:00} {7 23:00:00} {2 23:00:00}]</code></pre>
+<h3>Final thoughts:</h3>
+<p>Channels being a signature feature of the Go language shouldn&#8217;t mean that it is idiomatic to use them alone whenever possible. What is idiomatic in Go is to use the simplest and easiest way to understand the solution. The WaitGroup conveys both the meaning (the main function is Waiting for workers to be done) and the mechanic (the workers notify when they are Done).</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/blog/how-and-when-to-use-sync-waitgroup-in-golang/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>
